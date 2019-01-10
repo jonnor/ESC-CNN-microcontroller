@@ -76,9 +76,14 @@ Avoid spectrogram feature calculation.
 Use filters on time-domain directly.
 Does it help to initialize 
 
-Can we prune convolutions?
+Can we prune the s
+Reduce from top (high frequency)
+Reduce from bottom (low frequency)
+
+Can we prune convolutions inside network?
 Estimate importance, eliminate those without much contributions
 Or maybe introduce L1 regularization?
+
 
 How to choose optimal hyperparameters for mel/spectrogram calculation
 Frame length (milliseconds)
