@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<project name="Master Thesis" company="" manager="" phase="Preparation" project-start="20190110T000000Z" mrproject-version="2" calendar="1">
+  <properties/>
+  <phases>
+    <phase name="Preparation"/>
+  </phases>
+  <calendars>
+    <day-types>
+      <day-type id="0" name="Working" description="A default working day"/>
+      <day-type id="1" name="Nonworking" description="A default non working day"/>
+      <day-type id="2" name="Use base" description="Use day from base calendar"/>
+    </day-types>
+    <calendar id="1" name="Default">
+      <default-week mon="0" tue="0" wed="0" thu="0" fri="0" sat="1" sun="1"/>
+      <overridden-day-types>
+        <overridden-day-type id="0">
+          <interval start="0800" end="1200"/>
+          <interval start="1300" end="1700"/>
+        </overridden-day-type>
+      </overridden-day-types>
+      <days/>
+    </calendar>
+  </calendars>
+  <tasks>
+    <task id="1" name="Setup project" note="" work="28800" start="20190110T000000Z" end="20190110T170000Z" work-start="20190110T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+    <task id="2" name="Choose and test datasets" note="" work="28800" start="20190115T000000Z" end="20190115T170000Z" work-start="20190115T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <constraint type="start-no-earlier-than" time="20190115T000000Z"/>
+    </task>
+    <task id="3" name="Write experimental protocol" note="" work="28800" start="20190115T170000Z" end="20190116T170000Z" work-start="20190116T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="2" type="FS"/>
+      </predecessors>
+    </task>
+    <task id="4" name="Setup report skeleton" note="" work="28800" start="20190110T000000Z" end="20190110T170000Z" work-start="20190110T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+    <task id="5" name="Review protocol" note="" work="115200" start="20190116T170000Z" end="20190118T170000Z" work-start="20190117T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="2" type="FS"/>
+        <predecessor id="1" predecessor-id="3" type="FS"/>
+      </predecessors>
+    </task>
+    <task id="6" name="Experimental protocol reviewed" note="" work="0" start="20190125T000000Z" end="20190125T000000Z" work-start="20190125T080000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
+      <constraint type="must-start-on" time="20190125T000000Z"/>
+    </task>
+    <task id="7" name="Implement baseline methods" note="" work="144000" start="20190115T170000Z" end="20190122T170000Z" work-start="20190116T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="2" type="FS"/>
+      </predecessors>
+    </task>
+    <task id="8" name="Implement model on microcontroller" note="" work="144000" start="20190110T000000Z" end="20190116T170000Z" work-start="20190110T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+    <task id="9" name="Setup experiments" note="" work="28800" start="20190110T000000Z" end="20190110T170000Z" work-start="20190110T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+    <task id="10" name="Develop/test different models" note="" work="720000" start="20190122T170000Z" end="20190226T170000Z" work-start="20190123T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="9" type="FS"/>
+        <predecessor id="1" predecessor-id="7" type="FS"/>
+      </predecessors>
+    </task>
+    <task id="11" name="Write Results" note="" work="144000" start="20190226T170000Z" end="20190305T170000Z" work-start="20190227T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="10" type="FS"/>
+      </predecessors>
+    </task>
+    <task id="12" name="Results done" note="" work="0" start="20190308T000000Z" end="20190308T000000Z" work-start="20190308T080000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
+      <constraint type="must-start-on" time="20190308T000000Z"/>
+    </task>
+    <task id="13" name="Write Background" note="" work="86400" start="20190226T170000Z" end="20190301T170000Z" work-start="20190227T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="10" type="FS"/>
+      </predecessors>
+    </task>
+    <task id="14" name="Review results" note="" work="144000" start="20190305T170000Z" end="20190308T120000Z" work-start="20190306T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="11" type="FS"/>
+      </predecessors>
+    </task>
+    <task id="15" name="Results reviewed" note="" work="0" start="20190315T000000Z" end="20190315T000000Z" work-start="20190315T080000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
+      <constraint type="must-start-on" time="20190315T000000Z"/>
+    </task>
+    <task id="16" name="Write Conclusion" note="" work="28800" start="20190308T120000Z" end="20190311T120000Z" work-start="20190308T120000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="14" type="FS"/>
+      </predecessors>
+    </task>
+    <task id="17" name="Finalize draft" note="" work="115200" start="20190308T120000Z" end="20190314T120000Z" work-start="20190308T120000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="14" type="FS"/>
+      </predecessors>
+    </task>
+    <task id="18" name="Draft submitted" note="" work="0" start="20190401T000000Z" end="20190401T000000Z" work-start="20190401T080000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
+      <constraint type="must-start-on" time="20190401T000000Z"/>
+    </task>
+    <task id="19" name="Review draft" note="" work="144000" start="20190314T120000Z" end="20190318T170000Z" work-start="20190314T120000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="17" type="FS"/>
+      </predecessors>
+    </task>
+    <task id="20" name="Draft reviewed" note="" work="0" start="20190415T000000Z" end="20190415T000000Z" work-start="20190415T080000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
+      <constraint type="must-start-on" time="20190415T000000Z"/>
+    </task>
+    <task id="21" name="Integrated draft feedback" note="" work="144000" start="20190318T170000Z" end="20190325T170000Z" work-start="20190319T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="19" type="FS"/>
+      </predecessors>
+    </task>
+    <task id="22" name="Write Abstract" note="" work="28800" start="20190318T170000Z" end="20190319T170000Z" work-start="20190319T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="19" type="FS"/>
+      </predecessors>
+    </task>
+    <task id="23" name="Final check" note="" work="86400" start="20190319T170000Z" end="20190321T120000Z" work-start="20190320T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="22" type="FS"/>
+      </predecessors>
+    </task>
+    <task id="24" name="Print thesis" note="" work="28800" start="20190321T120000Z" end="20190322T120000Z" work-start="20190321T120000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="23" type="FS"/>
+      </predecessors>
+    </task>
+    <task id="25" name="Upload to Brage" note="" work="28800" start="20190321T120000Z" end="20190322T120000Z" work-start="20190321T120000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="23" type="FS"/>
+      </predecessors>
+    </task>
+    <task id="26" name="Thesis submitted" note="" work="0" start="20190501T000000Z" end="20190501T000000Z" work-start="20190501T080000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
+      <constraint type="must-start-on" time="20190501T000000Z"/>
+    </task>
+    <task id="27" name="Thesis defended?" note="" work="0" start="20190603T000000Z" end="20190603T000000Z" work-start="20190603T080000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
+      <constraint type="must-start-on" time="20190603T000000Z"/>
+    </task>
+  </tasks>
+  <resource-groups>
+    <group id="1" name="Supervisors" admin-name="" admin-phone="" admin-email=""/>
+  </resource-groups>
+  <resources>
+    <resource id="1" name="Jon" short-name="J" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource group="1" id="2" name="Oliver" short-name="O" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource group="1" id="3" name="Kristian" short-name="K" type="1" units="0" email="" note="" std-rate="0"/>
+  </resources>
+  <allocations>
+    <allocation task-id="8" resource-id="1" units="100"/>
+    <allocation task-id="23" resource-id="2" units="100"/>
+    <allocation task-id="5" resource-id="2" units="100"/>
+    <allocation task-id="19" resource-id="2" units="100"/>
+    <allocation task-id="14" resource-id="2" units="100"/>
+    <allocation task-id="23" resource-id="3" units="100"/>
+    <allocation task-id="5" resource-id="3" units="100"/>
+    <allocation task-id="19" resource-id="3" units="100"/>
+    <allocation task-id="14" resource-id="3" units="100"/>
+  </allocations>
+</project>
