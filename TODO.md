@@ -4,11 +4,6 @@
 
 ## Milestone 1: Ready for experimentation
 
-Setup project infrastructure
-
-- Move project to dedicated git repo
-- Setup skeleton of report Latex/Markdown
-- Setup Travis CI
 
 Test & choose datasets
 
@@ -28,6 +23,11 @@ Methodology proposal
 
 ## Done
 
+- Move project to dedicated git repo
+- Setup skeleton of report Latex/Markdown
+- Setup Travis CI
 - Installed STM32Cube AI toolchain, and build STM32 AI examples (HAR)
 - Make a shortlist of datasets to consider
 - Order STM32 devkits
+
+
