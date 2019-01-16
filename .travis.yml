@@ -7,3 +7,11 @@ install:
 script:
   - pytest -v
   - make
+addons:
+  apt:
+    packages:
+      - pandoc
+      - pandoc-citeproc
+      - texlive
+      - lmodern
+      - ghostscript
