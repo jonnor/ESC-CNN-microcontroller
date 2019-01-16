@@ -7,6 +7,7 @@ install:
 script:
   - pytest -v
   - make
+  - pdfinfo merged.pdf
 addons:
   apt:
     packages:
@@ -14,4 +15,5 @@ addons:
       - pandoc-citeproc
       - texlive
       - lmodern
+      - poppler-utils
       - ghostscript
