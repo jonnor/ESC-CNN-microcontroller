@@ -17,4 +17,9 @@ Scope:
 
 Focused on Convolutional Neural Networks as a base/framework
 
+## Deps
+
+    pandoc
+    pandoc-citeproc
+    pdflatex / texlive-most
 
