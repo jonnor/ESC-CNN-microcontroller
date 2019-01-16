@@ -1,6 +1,7 @@
 dist: xenial
-lang: python
-python: 3.6
+language: python
+python: 
+  - "3.6"
 install:
   - pip install -r requirements.txt
 script:
