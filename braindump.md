@@ -249,6 +249,13 @@ Can we prune convolutions inside network?
 Estimate importance, eliminate those without much contributions
 Or maybe introduce L1 regularization?
 
+Architecture search.
+MnasNet: Towards Automating the Design of Mobile Machine Learning Models
+https://ai.googleblog.com/2018/08/mnasnet-towards-automating-design-of.html
+> Formulate a multi-objective optimization problem that aims to achieve both high accuracy and high speed,
+> and utilize a reinforcement learning algorithm with a customized reward function to find Pareto optimal solutions 
+> With the same accuracy, our MnasNet model runs 1.5x faster
+> than the hand-crafted state-of-the-art MobileNetV2, and 2.4x faster than NASNet.
 
 How to choose optimal hyperparameters for mel/spectrogram calculation
 Frame length (milliseconds)
@@ -256,6 +263,7 @@ Frame overlap (percent/milliseconds)
 Number of bands. fmin, fmax
 Can a sparse FFT save time?
 Challenge: Interacts with model, especially convolution sizes
+
 
 ## Not so relevant
 
@@ -286,3 +294,10 @@ Lots of existing work out there.
 
 Quantized weights
 Quantized activations
+
+
+Custom On-Device ML Models with Learn2Compress 
+https://ai.googleblog.com/2018/05/custom-on-device-ml-models.html
+Uses pruning, quantization, distillation and joint-training
+CIFAR-10 94x smaller than NASNet, perf drop 7%
+
