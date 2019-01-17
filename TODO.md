@@ -13,8 +13,10 @@ Test & choose datasets
 
 Test CNN model on microcontroller
 
-- Test standard models examples on STM32 devkits
-- Test a trivial custom model with SMT32CubeAI
+- Test a trivial audio custom model with SMT32CubeAI
+- Trigger LED change to reflect model predictions
+- Check how the neural networks are implemented
+- Test measuring current
 
 Methodology proposal
 
@@ -23,6 +25,10 @@ Methodology proposal
 
 ## Done
 
+- Test standard models examples on STM32 devkits.
+AudioLoop has USB Audio out, useful for recording test data.
+ST BlueSensor Android app useful for testing.
+Built-in example also had BT audio out (but locked at 8kHz?)
 - Move project to dedicated git repo
 - Setup skeleton of report Latex/Markdown
 - Setup Travis CI

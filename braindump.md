@@ -294,10 +294,36 @@ Lots of existing work out there.
 
 Quantized weights
 Quantized activations
-
+Pruning channels
+Sparsifying weights
 
 Custom On-Device ML Models with Learn2Compress 
 https://ai.googleblog.com/2018/05/custom-on-device-ml-models.html
 Uses pruning, quantization, distillation and joint-training
 CIFAR-10 94x smaller than NASNet, perf drop 7%
+
+
+## References
+
+Veniat2018StochasticAN
+Keyword spotting.
+Designing multiple architectures with different complexity,
+switching automatically at runtime to use simpler models to reduce CPU time 
+Evaluated on Speech Command Set and http://github.com/TomVeniat/SANAS
+cnn-trad-fpool3 used 120-130 MFLOPS/frame,
+their solution 70-100 for matched or slightly better perf.
+
+
+Tang2018AnEA
+https://arxiv.org/pdf/1711.00333.pdf
+> Study the power consumption of a family of convolutional neural networks for keyword spotting on a Raspberry PI.
+> We find that both number of parameters and multiply operations are good predictors of energy usage,
+> although the number of multiplies is more predictive than the number of model parameters
+
+
+RETHINKING THE VALUE OF NETWORK PRUNING
+After pruning, retraining from scratch is more efficient than keeping original weights.
+Pruning can be seen as a type of architecture search.
+! references state-of-the-art pruning methods for CNNs
+Network pruning dates back to, Optimal Brain Damage (LeCun et al., 1990)
 
