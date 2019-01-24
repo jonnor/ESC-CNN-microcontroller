@@ -11,17 +11,26 @@ Test & choose datasets
 - Make a trivial model, run against each
 - Decide evaluation metrics
 
-Test CNN model on microcontroller
+Methodology proposal
+
+- Write it
+- Ask Oliver/Kristian for feedback
+
+Speech Command dataset
+
+* Run Tensorflow examples, check perf against published
+* Translate 1/2 examples to Keras, check performance
+* Test to change from MFCC to mel-spec
+* Visualize results with LIME
+
+Run CNN model on microcontroller
 
 - Test a trivial audio custom model with SMT32CubeAI
 - Trigger LED change to reflect model predictions
 - Check how the neural networks are implemented
 - Test measuring current
 
-Methodology proposal
 
-- Write it
-- Ask Oliver/Kristian for feedback
 
 ## Done
 
