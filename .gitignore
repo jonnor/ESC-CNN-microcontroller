@@ -3,3 +3,5 @@
 merged.pdf
 report.pdf
 summary.pdf
+data/
+experiments/speechcommands/train/
