@@ -2,7 +2,7 @@
 all: report speechcommands
 
 speechcommands:
-	cd experiments/speechcommands && python3 train.py --data_dir=../../data/speech_dataset/ --train_dir=./train --how_many_training_steps=5,5 | grep -v Downloading
+	cd experiments/speechcommands && python3 train.py --data_dir=../../data/speech_dataset/ --train_dir=./train --how_many_training_steps=5,5
 
 report: merged.pdf
 

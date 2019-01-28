@@ -180,7 +180,9 @@ class AudioProcessor(object):
 
   def __init__(self, data_url, data_dir, silence_percentage, unknown_percentage,
                wanted_words, validation_percentage, testing_percentage,
-               model_settings, summaries_dir):
+               model_settings, summaries_dir, download_progress=False):
+    self.download_progress = download_progress
+
     if data_dir:
       self.data_dir = data_dir
       self.maybe_download_and_extract_dataset(data_url, data_dir)
@@ -212,6 +214,9 @@ class AudioProcessor(object):
     if not os.path.exists(filepath):
 
       def _progress(count, block_size, total_size):
+        if not self.download_progress:
+          return
+
         sys.stdout.write(
             '\r>> Downloading %s %.1f%%' %
             (filename, float(count * block_size) / float(total_size) * 100.0))
