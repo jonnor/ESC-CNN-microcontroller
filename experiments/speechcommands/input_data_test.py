@@ -24,11 +24,11 @@ import numpy as np
 import tensorflow as tf
 
 from tensorflow.contrib.framework.python.ops import audio_ops as contrib_audio
-from tensorflow.examples.speech_commands import input_data
-from tensorflow.examples.speech_commands import models
 from tensorflow.python.framework import test_util
 from tensorflow.python.platform import test
 
+import input_data
+import models
 
 class InputDataTest(test.TestCase):
 

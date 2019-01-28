@@ -20,7 +20,7 @@ from __future__ import print_function
 
 import numpy as np
 
-from tensorflow.examples.speech_commands import generate_streaming_test_wav
+import generate_streaming_test_wav
 from tensorflow.python.platform import test
 
 

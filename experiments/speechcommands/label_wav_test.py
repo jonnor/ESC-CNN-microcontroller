@@ -23,7 +23,7 @@ import os
 import tensorflow as tf
 
 from tensorflow.contrib.framework.python.ops import audio_ops as contrib_audio
-from tensorflow.examples.speech_commands import label_wav
+import label_wav
 from tensorflow.python.platform import test
 
 
