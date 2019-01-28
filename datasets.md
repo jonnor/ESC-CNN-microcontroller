@@ -70,6 +70,11 @@ Relevant as examples of single-function systems, security
 ### TensorFlow Speech Commands Data Set
 Task: Keyword spotting / speech command
 
+
+
+DSCNN-L  [How to Achieve High-Accuracy Keyword Spotting on Cortex-M Processors](https://community.arm.com/processors/b/blog/posts/high-accuracy-keyword-spotting-on-cortex-m-processors)
+
+
 Very well explored.
 
 Has state-of-the-art results for microcontroller.
@@ -77,7 +82,8 @@ https://arxiv.org/abs/1711.07128
 Running on STM32F746G-DISCO. DSCNNL model gives 0.83/84.6% on Kaggle leaderboard
 [How to Achieve High-Accuracy Keyword Spotting on Cortex-M Processors](https://community.arm.com/processors/b/blog/posts/high-accuracy-keyword-spotting-on-cortex-m-processors).
 Reviews many deep learning approaches. DNN, CNN, RNN, CRNN, DS-CNN.
-Considering 3 different sizes of networks, bound by NN memory limit and ops/second limits. Small= 80KB, 6M ops/inference.
+Considering 3 different sizes of networks, bound by NN memory limit and ops/second limits.
+Small= 80KB, 6M ops/inference.
 Depthwise Separable Convolutional Neural Network (DS-CNN) provides the best accuracy while requiring significantly lower memory and compute resources.
 94.5% accuracy for small network.
 8-bit weights and 8-bit activations, with KWS running at 10 inferences per second.
@@ -132,8 +138,25 @@ that can generate convolutional filters very efficiently on-the-fly.
 Deter-ministic Binary Filters, DBF.
 Orthogonal variable spreading factor, OVSF
 Also using MFCC features.
-State of the art results (over Hey Edge) for models under 3MOPs and 30kB of model size.
-! but CRNN at 3.3MOP has much higher performance, and smaller variation of CRNN nor DS-CNN not tested...
+Claims state of the art results (over Hey Edge) for models under 3MOPs and 30kB of model size.
+! but CRNN at 3.3MOP has much higher performance
+! smaller variation of CRNN nor DS-CNN not tested...
+
+FastGRNN: A Fast, Accurate, Stable and Tiny Kilobyte Sized Gated Recurrent Neural Network
+https://www.microsoft.com/en-us/research/publication/fastgrnn-a-fast-accurate-stable-and-tiny-kilobyte-sized-gated-recurrent-neural-network/
+Evaluated on Google Speech Command Set, both 30 and 12 class. Clips are 1 second
+12 class: Smallest model 5.5KB, 92% acc, 242 ms on Cortex M0+ @ 48Mhz.
+Using Log mel spectrograms, 32 mels, 25ms window, 10ms stride
+
+
+
+Veniat2018StochasticAN
+Keyword spotting.
+Designing multiple architectures with different complexity,
+switching automatically at runtime to use simpler models to reduce CPU time 
+Evaluated on Speech Command Set and http://github.com/TomVeniat/SANAS
+cnn-trad-fpool3 used 120-130 MFLOPS/frame for 72.8% correct,
+their solution 40M for 80% correct and higher match for matched or slightly better perf.
 
 ### ESC-50
 
@@ -151,7 +174,7 @@ Github repo has an excellent overview of attempted methods and their results.
 * Baseline MFCC-RF, 44.30%.
 * Over 20 CNN variations attempted.
 
-Relevant for context-aware-computing, smarthome?
+Relevant for context-aware-computing, smarthome, environmental noise source prediction?
 
 ### Urbansound-8k
 
@@ -163,6 +186,11 @@ Relevant for environmental noise source prediction.
 
 ! recommendation. Use the predefined 10 folds and perform 10-fold (not 5-fold) cross validation.
 Otherwise will get inflated scores, due to related samples being mixed.
+
+https://link.springer.com/chapter/10.1007/978-3-030-03335-4_31
+83.7% on UrbanSound8k.
+Uses mixup and data augmentation. 5% increase in perf
+1-D convolutions in some places instead of 3x3.
 
 Detection of Anomalous Noise Events on Low-Capacity Acoustic Nodes
 for Dynamic Road Traffic Noise Mapping within an Hybrid WASN

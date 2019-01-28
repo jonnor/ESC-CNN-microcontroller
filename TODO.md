@@ -7,8 +7,6 @@
 
 Test & choose datasets
 
-- Download the datasets, explore the data
-- Make a trivial model, run against each
 - Decide evaluation metrics
 
 Methodology proposal
@@ -19,7 +17,7 @@ Methodology proposal
 Speech Command dataset
 
 * Run Tensorflow examples, check perf against published
-* Translate 1/2 examples to Keras, check performance
+* Compare Keras models to Tensorflow
 * Test to change from MFCC to mel-spec
 * Visualize results with LIME
 
@@ -27,9 +25,8 @@ Run CNN model on microcontroller
 
 - Test a trivial audio custom model with SMT32CubeAI
 - Trigger LED change to reflect model predictions
-- Check how the neural networks are implemented
+- Check how the neural networks are implemented in STM32CubeAI
 - Test measuring current
-
 
 
 ## Done

@@ -1,6 +1,26 @@
 
+## Onepager
 
+Audio Classification on microcontrollers
 
+Jon Nordby <jonnord@nmbu.no>
+
+PICTURE
+Board. Coin as size ref
+Sensor costs `<1000` NOK
+
+Microphone
+Microcontroller
+Radio transmitter
+
+Sound -> Inference -> Classification -> Transmission
+
+Application example: Industrial monitoring.
+
+    Motor off
+    Operation normal
+    Maintenance needed
+    Failure
 
 
 ## Methodology
@@ -63,6 +83,9 @@ Scattering transform might be good feature for 1D conv? melspectrogram might not
 
 Hypothesis: A tree-based classifier is more CPU/storage efficient than FC/conv as last part of CNN
 Test: Replace last layers with tree-based classifier, check perf vs storage/execution
+Test: Use knowledge distillation to a soft decision tree (Hinton 2017)
+Some support in Adaptive Neural Trees, https://arxiv.org/abs/1807.06699. Good CIFAR10,MINST perf with few parameters.
+and Deep Neural Decision Forests.
 
 Hypothesis: Using raw audio convolution filters instead of computing STFT/melspec/MFCC can save considerable compute
 Test: Find how much percent of time is used for MFCC feature calculation versus classifier 
@@ -86,11 +109,14 @@ Using GradientBoostedTrees/RandomForest/ExtraTrees as classifier, pulling in con
 Memoization to store intermediate results.
 Flips dataflow in the classifier from forward to backward direction
 
+Hypothesis: Pruning spectrogram field-of-view can reduce computations needed
 
-Can we prune the field of view of spectrogram?
 Reduce from top (high frequency)
 Reduce from bottom (low frequency)
 Reduce in middle?
+
+Use LIME to visualize existing networks and get some idea of possibility of reduction
+
 
 Can we prune convolutions inside network?
 Prune kernels. Prunt weights
@@ -153,20 +179,6 @@ CIFAR-10 94x smaller than NASNet, perf drop 7%
 
 ## References
 
-FastGRNN: A Fast, Accurate, Stable and Tiny Kilobyte Sized Gated Recurrent Neural Network
-https://www.microsoft.com/en-us/research/publication/fastgrnn-a-fast-accurate-stable-and-tiny-kilobyte-sized-gated-recurrent-neural-network/
-Evaluated on Google Speech Command Set, both 30 and 12 class. Clips are 1 second
-12 class: Smallest model 5.5KB, 92% acc, 242 ms on Cortex M0+ @ 48Mhz.
-Using Log mel spectrograms, 32 mels, 25ms window, 10ms stride
-
-Veniat2018StochasticAN
-Keyword spotting.
-Designing multiple architectures with different complexity,
-switching automatically at runtime to use simpler models to reduce CPU time 
-Evaluated on Speech Command Set and http://github.com/TomVeniat/SANAS
-cnn-trad-fpool3 used 120-130 MFLOPS/frame,
-their solution 70-100 for matched or slightly better perf.
-
 
 Tang2018AnEA
 https://arxiv.org/pdf/1711.00333.pdf
@@ -181,3 +193,8 @@ Pruning can be seen as a type of architecture search.
 ! references state-of-the-art pruning methods for CNNs
 Network pruning dates back to, Optimal Brain Damage (LeCun et al., 1990)
 
+
+Learning from Between-class Examples for Deep Sound Recognition
+https://openreview.net/forum?id=B1Gi6LeRZ
+Data augmentation technique designed for audio,
+quite similar to mixup.
