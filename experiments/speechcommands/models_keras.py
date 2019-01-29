@@ -55,12 +55,39 @@ def build_low_latency_conv(input_frames, input_bins, n_classes=12, dropout=0.5):
     model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
     return model
 
+def build_aclnet_lowlevel(input_samples, c1=32, s1=8, s2=4):
+
+    """
+
+    The following values were tested in the paper.
+    c1= 8,16,32
+    s1= 2,4,8
+    s2= 2,4
+    """    
+
+    from keras.layers import Conv1D, MaxPooling1D
+    input_shape = (input_samples, 1)
+
+    model = keras.Sequential([
+        Conv1D(filters=c1, kernel_size=9, strides=s1, input_shape=input_shape,
+                padding='valid', activation=None, use_bias=False,),
+        Conv1D(filters=64, kernel_size=5, strides=s2, input_shape=input_shape,
+                padding='valid', activation=None, use_bias=False,),
+        MaxPooling1D(pool_size=(160/(s2*s1),),
+                    padding='valid', data_format='channels_last'),
+    ])
+
+    return model
+
 
 def main():
     m = build_low_latency_conv(98, 40)
     m.summary()
 
     m = build_tiny_conv(32, 40)
+    m.summary()
+
+    m = build_aclnet_lowlevel(20480)
     m.summary()
 
 if __name__ == '__main__':

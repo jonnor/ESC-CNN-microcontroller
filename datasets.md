@@ -166,6 +166,8 @@ their solution 40M for 80% correct and higher match for matched or slightly bett
 Compiled from freesound.org data
 ! only 40 samples per class.
 
+Relevant for context-aware-computing, smarthome, environmental noise source prediction?
+
 Github repo has an excellent overview of attempted methods and their results.
 
 * Best models achieving 86.50% accuracy.
@@ -174,7 +176,72 @@ Github repo has an excellent overview of attempted methods and their results.
 * Baseline MFCC-RF, 44.30%.
 * Over 20 CNN variations attempted.
 
-Relevant for context-aware-computing, smarthome, environmental noise source prediction?
+What resource-efficient methods exist?
+
+How would FastGRNN do on this dataset?
+How would FastGRNN do in combination with learned audio->2d features?
+
+#### AclNet: efficient end-to-end audio classification CNN
+https://arxiv.org/abs/1811.06669
+November, 2018
+
+Depthwise-Separable @44kHz. 81.75% accuracy, 155k parameters, 49M multiply-adds/second. 
+Standard Convolutio @44kHz, 82.20% accuracy, 84k parameters, 131 multiply-adds/second.
+16kHz topped at 80.9%, just below human perf.
+! 16kHz Standard Convolution not tested?
+Using data augmentation and mixup. 5% improvement. a=0.1/0.2 for mixup
+Using two layers of 1D strided convolution as FIR decimation filterbank.
+Then a VGG type architecture.
+
+Is this strided convolution on raw audio
+more computationally efficent than STFT,log-mel calculation?
+LLF 1.44k params, 4.35 MMACS. 2 conv, maxpool.
+1.28 second window. 64x128 output. Equivalent to 64 bin, 10ms skip log-mel?
+Can it be performed with quantizied weights? 8 bit integer. SIMD.
+Would be advantage, FFT is hard to compute in this manner..
+Advantage, potential offloading to CNN co-processor
+
+Calc mult-add from model.
+Tensorflow, https://stackoverflow.com/questions/51077386/how-to-count-multiply-adds-operations
+
+https://dsp.stackexchange.com/questions/9267/fft-does-the-result-of-n-log-2n-stand-for-total-operations-or-complex-ad
+def fft_splitradix(N):
+    return 4*N*math.log(N,2) - (6*N) + 8
+
+Could one use teacher-student / knowledge distillation to pre-train 1D conv on raw audio?
+Previously raw audio conv have been quite different than logmel, advantageous together.
+Maybe this allows training a version similar to logmel, which can still be executed with convolutions,
+and combined together for higher perf?
+
+### WaveMsNet, Learning Environmental Sounds with Multi-scale Convolutional Neural Network
+https://arxiv.org/abs/1803.10219
+March, 2018
+
+When only using raw audio. 
+When combined with log-mel features, 79.10% on ESC-50. 93.75% on ESC-10.
+
+Uses 1-d convolutions on raw audio in frontend.
+Tests small,medium,large receptive field, and a model with all.
+Multi-scale outperforms single by 2-3% absolute.
+
+
+### EnvNet
+Learning environmental sounds with end-to-end convolutional neural network
+https://www.mi.t.u-tokyo.ac.jp/assets/publication/LEARNING_ENVIRONMENTAL_SOUNDS_WITH_END-TO-END_CONVOLUTIONAL_NEURAL_NETWORK.pdf
+When combined with log-mel, gives 6.5% improvement 
+
+Tests different filter sizes for low level features. Find 8 long performs best. For 44.1kHz
+! graphs showing frequency response of the learned layers.
+When filter indexes are sorted, has similar shape to mel-scale.
+
+Uses a 1 second window. Randomly chosen at training time.
+Longer clips are classified by probabalistic voting over windows. 0.2second stride 
+
+### EnvNet2
+
+
+
+
 
 ### Urbansound-8k
 
@@ -187,7 +254,10 @@ Relevant for environmental noise source prediction.
 ! recommendation. Use the predefined 10 folds and perform 10-fold (not 5-fold) cross validation.
 Otherwise will get inflated scores, due to related samples being mixed.
 
+Deep Convolutional Neural Network with Mixup for Environmental Sound Classification
 https://link.springer.com/chapter/10.1007/978-3-030-03335-4_31
+November, 2018
+
 83.7% on UrbanSound8k.
 Uses mixup and data augmentation. 5% increase in perf
 1-D convolutions in some places instead of 3x3.
@@ -195,6 +265,19 @@ Uses mixup and data augmentation. 5% increase in perf
 Detection of Anomalous Noise Events on Low-Capacity Acoustic Nodes
 for Dynamic Road Traffic Noise Mapping within an Hybrid WASN
 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5948866/
+
+
+#### Environmental sound classification with dilated convolutions
+https://www.sciencedirect.com/science/article/pii/S0003682X18306121
+December, 2018
+Dilated CNN achieves better results than that of CNN with max-pooling.
+About 4% on UrbanSound8K.
+! not compared with striding
+
+Dilated convolution increased receptive field without adding parameters.
+3x3 kernel with dilation rate 2 = 7x7 receptive field, dilation rate 3 = 11x11 receptive field
+! great images in the article.
+
 
 ## DCASE2018 Task 2, General Purpose Audio Tagging
 Task: Acoustic event tagging.

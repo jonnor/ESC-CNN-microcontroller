@@ -22,6 +22,40 @@ Application example: Industrial monitoring.
     Maintenance needed
     Failure
 
+## Experiment notes
+
+Converting Tensorflow model to Keras.
+Need to manually write Keras model, and the load weights.
+https://stackoverflow.com/questions/44466066/how-can-i-convert-a-trained-tensorflow-model-to-keras/53638524#53638524
+
+### Speech commands
+
+Reproducing existing TensorFlow tutorials.
+
+mfcc40
+`--preprocess=mfcc --how_many_training_steps=20000,6000 --learning_rate=0.01,0.001 --model_architecture=low_latency_conv` reaches about 80% val accuracy. Final test 77.8%. Final test 78.3%.
+
+average40
+`--preprocess=average --how_many_training_steps=30000,6000 --learning_rate=0.01,0.001 --model_architecture=low_latency_conv`
+fails to reach more than 50% accuracy...
+
+logmel32
+`preprocess=logmel --feature_bin_count 32 --how_many_training_steps=20000,6000 --learning_rate=0.01,0.001 --model_architecture=low_latency_conv`
+Reaches about 80% val accuracy after 7000 epochs.
+Trains faster than MFCC, performs much better than average.
+Final test 
+
+`--preprocess=mfcc --feature_bin_count=13 --how_many_training_steps=20000,6000 --learning_rate=0.01,0.001 --model_architecture=low_latency_conv` ? MFCC13 
+
+`--preprocess=mfcc --model_architecture=low_latency_svdf --how_many_training_steps=100000,3500 --learning_rate=0.01,0.005`
+Should reach 85%.
+
+Main model should reach between 85% and 90%.
+
+Is SVDF used/usable for CNNs? Seems to work well for DNN and RNN
+
+FastGRNN does amazingly on Speech commands. How does it do on ECS-10/50 or Urbanset 8k?
+
 
 ## Methodology
 

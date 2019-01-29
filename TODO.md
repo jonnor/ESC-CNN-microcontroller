@@ -5,10 +5,6 @@
 ## Milestone 1: Ready for experimentation
 
 
-Test & choose datasets
-
-- Decide evaluation metrics
-
 Methodology proposal
 
 - Write it
@@ -16,9 +12,7 @@ Methodology proposal
 
 Speech Command dataset
 
-* Run Tensorflow examples, check perf against published
-* Compare Keras models to Tensorflow
-* Test to change from MFCC to mel-spec
+* Train Keras models, compare with Tensorflow
 * Visualize results with LIME
 
 Run CNN model on microcontroller
@@ -31,6 +25,8 @@ Run CNN model on microcontroller
 
 ## Done
 
+* Tensorflow speechcommand, test to change from MFCC to mel-spec
+* Run Tensorflow speechcommand examples, check perf against published
 - Test standard models examples on STM32 devkits.
 AudioLoop has USB Audio out, useful for recording test data.
 ST BlueSensor Android app useful for testing.
