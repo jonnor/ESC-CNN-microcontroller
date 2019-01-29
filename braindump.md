@@ -41,16 +41,17 @@ fails to reach more than 50% accuracy...
 
 logmel32
 `preprocess=logmel --feature_bin_count 32 --how_many_training_steps=20000,6000 --learning_rate=0.01,0.001 --model_architecture=low_latency_conv`
-Reaches about 80% val accuracy after 7000 epochs.
-Trains faster than MFCC, performs much better than average.
-Final test 
+Reaches about 80% val accuracy after 7000 epochs, about 84% total.
+Trains faster than MFCC, and performs much better than average.
+Final test accuracy = 83.5%.
 
-`--preprocess=mfcc --feature_bin_count=13 --how_many_training_steps=20000,6000 --learning_rate=0.01,0.001 --model_architecture=low_latency_conv` ? MFCC13 
+MFCC13?
+`--preprocess=mfcc --feature_bin_count=13 --how_many_training_steps=20000,6000 --learning_rate=0.01,0.001 --model_architecture=low_latency_conv`
 
+SVDF
 `--preprocess=mfcc --model_architecture=low_latency_svdf --how_many_training_steps=100000,3500 --learning_rate=0.01,0.005`
 Should reach 85%.
 
-Main model should reach between 85% and 90%.
 
 Is SVDF used/usable for CNNs? Seems to work well for DNN and RNN
 

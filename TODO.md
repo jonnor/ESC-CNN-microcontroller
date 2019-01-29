@@ -2,26 +2,27 @@
 
 ## TODO
 
-## Milestone 1: Ready for experimentation
+## Phase 2: Experimentation
 
-
-Methodology proposal
-
-- Write it
-- Ask Oliver/Kristian for feedback
 
 Speech Command dataset
 
-* Train Keras models, compare with Tensorflow
+* Send --preproces=logmel patch as PR to TensorFlow
 * Visualize results with LIME
+* Train Keras models, compare with Tensorflow
+* Try to run FastRCNN
 
 Run CNN model on microcontroller
 
 - Test a trivial audio custom model with SMT32CubeAI
 - Trigger LED change to reflect model predictions
 - Check how the neural networks are implemented in STM32CubeAI
-- Test measuring current
+- Test measuring current with ST board
 
+Verification methodology proposal
+
+- Write it
+- Ask Oliver/Kristian for feedback
 
 ## Done
 
