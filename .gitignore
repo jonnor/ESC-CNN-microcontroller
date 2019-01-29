@@ -5,3 +5,4 @@ report.pdf
 summary.pdf
 data/
 experiments/speechcommands/train/
+.ipynb_checkpoints/
