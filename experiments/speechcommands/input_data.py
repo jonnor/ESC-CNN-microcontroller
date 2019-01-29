@@ -447,6 +447,21 @@ class AudioProcessor(object):
             dct_coefficient_count=model_settings['fingerprint_width'])
         tf.summary.image(
             'mfcc', tf.expand_dims(self.output_, -1), max_outputs=1)
+      elif model_settings['preprocess'] == 'logmel':
+        num_spectrogram_bins = spectrogram.shape[-1].value
+        lower_edge_hertz, upper_edge_hertz, = 80.0, 7600.0
+        num_mel_bins = model_settings['fingerprint_width']
+        sample_rate = model_settings['sample_rate']
+
+        linear_to_mel_weight_matrix = tf.contrib.signal.linear_to_mel_weight_matrix(
+            num_mel_bins, num_spectrogram_bins, sample_rate, lower_edge_hertz, upper_edge_hertz)
+        mel_spectrogram = tf.tensordot(spectrogram, linear_to_mel_weight_matrix, 1)
+        mel_spectrogram.set_shape(spectrogram.shape[:-1].concatenate(linear_to_mel_weight_matrix.shape[-1:]))
+        log_mel_spectrogram = tf.log(mel_spectrogram + 1e-6)
+
+        self.output_ = log_mel_spectrogram
+        tf.summary.image(
+            'logmel', tf.expand_dims(self.output_, -1), max_outputs=1)
       else:
         raise ValueError('Unknown preprocess mode "%s" (should be "mfcc" or'
                          ' "average")' % (model_settings['preprocess']))
