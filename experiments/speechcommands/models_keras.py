@@ -55,7 +55,7 @@ def build_low_latency_conv(input_frames, input_bins, n_classes=12, dropout=0.5):
     model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
     return model
 
-def build_aclnet_lowlevel(input_samples, c1=32, s1=8, s2=4):
+def build_aclnet_lowlevel(input_samples, c1=32, s1=8, s2=4, input_tensor=None):
 
     """
 
@@ -65,16 +65,19 @@ def build_aclnet_lowlevel(input_samples, c1=32, s1=8, s2=4):
     s2= 2,4
     """    
 
-    from keras.layers import Conv1D, MaxPooling1D
+    from keras.layers import Conv1D, MaxPooling1D, InputLayer, Flatten, Dense
     input_shape = (input_samples, 1)
 
     model = keras.Sequential([
-        Conv1D(filters=c1, kernel_size=9, strides=s1, input_shape=input_shape,
+        InputLayer(input_shape=input_shape, input_tensor=input_tensor),
+        Conv1D(filters=c1, kernel_size=9, strides=s1,
                 padding='valid', activation=None, use_bias=False,),
-        Conv1D(filters=64, kernel_size=5, strides=s2, input_shape=input_shape,
+        Conv1D(filters=64, kernel_size=5, strides=s2,
                 padding='valid', activation=None, use_bias=False,),
-        MaxPooling1D(pool_size=(160/(s2*s1),),
+        MaxPooling1D(pool_size=(int(160/(s2*s1)),),
                     padding='valid', data_format='channels_last'),
+        Flatten(),
+        Dense(1, activation=None),
     ])
 
     return model

@@ -7,10 +7,15 @@
 
 Speech Command dataset
 
-* Send --preproces=logmel patch as PR to TensorFlow
-* Visualize results with LIME
+* Send --preprocess=logmel patch as PR to TensorFlow
+* Verify/fix LIME explainer. Verify with trivial model on sinewaves?
+Split spectrogram evenly over RGB. Test that roundtrip is correct
 * Train Keras models, compare with Tensorflow
-* Try to run FastRCNN
+
+Experiments
+
+- Try to run 1D CNN on STM32 (AclNet LL)
+* Try to run FastGRNN
 
 Run CNN model on microcontroller
 
