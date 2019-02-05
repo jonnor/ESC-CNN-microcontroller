@@ -7,7 +7,7 @@ def build_tiny_conv(input_frames, input_bins, n_classes=12, dropout=0.5):
     """
 
     from keras.layers import Conv2D, Dense, Dropout, Flatten
-    input_shape = (input_frames, input_bins, 1)
+    input_shape = (input_bins, input_frames, 1)
 
     model = keras.Sequential([
         Conv2D(8, (8, 10), strides=(2, 2),
