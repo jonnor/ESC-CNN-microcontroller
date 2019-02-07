@@ -86,7 +86,6 @@ Ideally with open code for easily reproducability.
 
 - Create and tests hypothesis for approaches to take for making more efficient models
 
-
 Power efficiency. Measurement: Current consumption. Proxy: CPU inference time 
 Cost efficient. Measurement: Microcontroller cost. Proxy: RAM,CPU requirements
 
@@ -102,33 +101,31 @@ Approaches
 - Model compression
 - Space/compute tradeoffs
 
-## Compute less
+# Hypotheses
 
-Use softmax instead of Dense layer(s) to combine features
+## Raw audio instead of spectrogram input
 
-Use 1D convolution instead of Dense to flatten feature vector
+Hypothesis: Using raw audio convolution filters instead of computing STFT/melspec/MFCC can save considerable compute
 
-Use 1D convolutions instead of 2D.
+Tests:
 
-Stacked in layers. Or 2d separable.
-DS-CNN for KWS by ARM had good results (on MFCC).
+- Find how much percent of time is used for feature calculation versus classifier 
+- Test 1D CNN in comparison. ACL
 
-Scattering transform might be good feature for 1D conv? melspectrogram might not be?
+Ideas:
 
+- Does it help to initialize initial convolutions as well-behaved filters?
+- Can we perform a greedy search for filters?
 
-Hypothesis: A tree-based classifier is more CPU/storage efficient than FC/conv as last part of CNN
+## Tree-based CNN backend
+
+### Hypothesis: A tree-based classifier is more CPU/storage efficient than FC/conv as last part of CNN
 Test: Replace last layers with tree-based classifier, check perf vs storage/execution
 Test: Use knowledge distillation to a soft decision tree (Hinton 2017)
 Some support in Adaptive Neural Trees, https://arxiv.org/abs/1807.06699. Good CIFAR10,MINST perf with few parameters.
 and Deep Neural Decision Forests.
 
-Hypothesis: Using raw audio convolution filters instead of computing STFT/melspec/MFCC can save considerable compute
-Test: Find how much percent of time is used for MFCC feature calculation versus classifier 
-Estimate how deep filters can be before FFT is beneficial
-Does it help to initialize initial convolutions as well-behaved filters?
-Can we perform a greedy search for filters?
-
-Hypothesis: Optimizing execution path across an entire forest/GBM can reduce compute time
+### Hypothesis: Optimizing execution path across an entire forest/GBM can reduce compute time
 Test: Check literature for existing results
 How to reduce redundancies across nodes without causing overfitting
 Can one identify critical nodes which influence decisions a lot, and should be done first
@@ -138,20 +135,42 @@ Probabalistic
 Intervals
 Test: Count how often features are accessed in forest/GBM. Plot class distributions wrt feature value (histogram) and thresholds
 
-Hypothesis: On-demand computation of features can save significant amount of time.
+### Hypothesis: On-demand computation of features can save significant amount of time.
 Test: Use decision_path() to determine how often features are accessed per sample
 Using GradientBoostedTrees/RandomForest/ExtraTrees as classifier, pulling in convolutions as needed.
 Memoization to store intermediate results.
 Flips dataflow in the classifier from forward to backward direction
 
+
+### Spectrogram pruning
+
 Hypothesis: Pruning spectrogram field-of-view can reduce computations needed
 
-Reduce from top (high frequency)
-Reduce from bottom (low frequency)
-Reduce in middle?
+- Reduce from top (high frequency)
+- Reduce from bottom (low frequency)
+- Try subsampling filters on input. Equivalent to reducing filterbank bins?
 
-Use LIME to visualize existing networks and get some idea of possibility of reduction
+How to test
 
+- Use *LIME* to visualize existing networks to get some idea of possibility of reduction
+- Use *permutation feature importance* on spectrogram bins to quantify importance of each band
+
+
+### Stacked 1D instead of 2D
+
+Hypothesis: Stacked 1D convolutions instead of 2D are more compute efficient
+
+Ideas:
+
+- Scattering transform might be good feature for 1D conv? Or MFCC.
+Melspectrogram might not be, since information spreads out over bands.
+
+Related:
+
+- DS-CNN for KWS by ARM had good results with depthwise-separable CNN (on MFCC).
+
+
+## Other
 
 Can we prune convolutions inside network?
 Prune kernels. Prunt weights

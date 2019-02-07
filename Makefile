@@ -20,3 +20,6 @@ merged.pdf: report.pdf summary.pdf
 
 summary.pdf: summary.md
 	pandoc -V papersize:a4 -V geometry:margin=1.0in -V fontsize=12pt -s summary.md -o summary.pdf
+
+status.pdf: status.md
+	pandoc -t beamer -s status.md -o status.pdf --slide-level=2 --mathml
