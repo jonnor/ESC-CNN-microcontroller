@@ -7,25 +7,17 @@
 
 Speech Command dataset
 
-* Verify/fix LIME explainer. Verify with trivial model on sinewaves?
-Split spectrogram evenly over RGB. Test that roundtrip is correct
+* Verify/fix LIME explainer.
 * Send --preprocess=logmel patch as PR to TensorFlow
-* Train Keras models, compare with Tensorflow
 
 Experiments
 
 * Try to run FastGRNN
-- Try to run 1D CNN on STM32 (AclNet LL)
+- Try to run 1D CNN on STM32 (AclNet LL), check performance
 
 Run CNN model on microcontroller
 
-- Test a trivial audio custom model with SMT32CubeAI
-** Use STM preprocessing when training
-** Maybe without max normalization?
-** Update the generated model
-** Try enabling USB audio input
-** Try playing back tests speaker->microphone
-** Change to shorter classification window and FFT
+- Test USB audio input
 - Test measuring current with ST board
 
 Verification methodology proposal
@@ -35,6 +27,9 @@ Verification methodology proposal
 
 ## Done
 
+- Test a trivial audio custom model with SMT32CubeAI.
+First crack detection.
+9000 MACC, 2 ms classifier. 8 frames, under 15 ms log-mel preprocessing.
 - Test CNN performance on STM32AI. 80Mhz.
 float32 1024bin FFT,30mels,32frames log-mel preprocessing under 68ms.
 float32 517k MACC CNN classification 78ms. Approx 6M MACCS/second.
@@ -53,4 +48,15 @@ Built-in example also had BT audio out (but locked at 8kHz?)
 - Make a shortlist of datasets to consider
 - Order STM32 devkits
 
+
+## Status
+
+TODO.
+
+* Check progress plan
+- List of datasets, and baseline model performance
+- ?? did anyone run Urbansound/ESC on microcontroller
+- Make list of hypotheses presentable
+- Image of overall pipeline
+- Project image, title page
 

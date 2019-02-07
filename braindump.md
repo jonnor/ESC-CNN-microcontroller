@@ -233,3 +233,24 @@ Learning from Between-class Examples for Deep Sound Recognition
 https://openreview.net/forum?id=B1Gi6LeRZ
 Data augmentation technique designed for audio,
 quite similar to mixup.
+
+
+Better Machine Learning Models with Multi Objective Optimization
+https://www.youtube.com/watch?v=oSLASLV4cTc
+applying multi-object optimization to feature selection
+Better options than greedy SFS,SBS.
+Suggests using Evolutionary Algorithms instead.
+Example on the sonar dataset.
+Regularized risk. Empirical risk (accuracy/metric) plus tradeoff * structural risk (model complexity).
+Problem: how to choose tradeoff
+Using multi-objective optimization to optimize them at the same time. Accuracy and number of parameters.
+Formulated as a Pareto front.
+Non-dominated sorting. Builds up population by first selecting individuals that dominate others.
+Gives the best results, and can inspect selection.
+
+Can be used for unsupervised/clustering also, which is classically hard.
+When clustering feature selection tends to push number of features down.
+Because smaller dimensions condenses value space.
+When using multi-objective optimization, maximize the number of features.
+
+What about greedy algorithms with random restarts/jumps?
