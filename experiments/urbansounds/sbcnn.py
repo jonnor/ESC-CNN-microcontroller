@@ -7,7 +7,7 @@ from keras.layers import Convolution2D, MaxPooling2D
 from keras.regularizers import l2
 
 
-def build_model(frames=128, bands=128, num_channels=1, num_labels=10, f_size=5):
+def build_model(frames=41, bands=60, num_channels=1, num_labels=10, f_size=3):
     """
     Implements SB-CNN model from
     Deep Convolutional Neural Networks and DataAugmentation for Environmental SoundClassification
