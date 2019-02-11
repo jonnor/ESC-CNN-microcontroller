@@ -244,9 +244,16 @@ Longer clips are classified by probabalistic voting over windows. 0.2second stri
 
 
 
+### Look, Listen and Learn
+August, 2017.
 
+Unsupervised learning of audio+image embeddings.
+Using log-spectrogram input.
+Output audio: 512 dimensional vector.
 
-### Urbansound-8k
+ESC-50. 79.3%
+
+## Urbansound-8k
 
 [Urbansound-8k](https://urbansounddataset.weebly.com/urbansound8k.html)
 
@@ -257,29 +264,59 @@ Relevant for environmental noise source prediction.
 ! recommendation. Use the predefined 10 folds and perform 10-fold (not 5-fold) cross validation.
 Otherwise will get inflated scores, due to related samples being mixed.
 
-Deep Convolutional Neural Network with Mixup for Environmental Sound Classification
+### Deep Convolutional Neural Network with Mixup for Environmental Sound Classification
 https://link.springer.com/chapter/10.1007/978-3-030-03335-4_31
 November, 2018.
 83.7% on UrbanSound8k.
 Uses mixup and data augmentation. 5% increase in perf
 1-D convolutions in some places instead of 3x3.
 
-Deep Convolutional Neural Networks and Data Augmentation for Environmental Sound Classification
+### Deep Convolutional Neural Networks and Data Augmentation for Environmental Sound Classification
 Justin Salamon and Juan Pablo Bello.
 November 2016.
+https://arxiv.org/pdf/1608.04363.pdf
 SB-CNN. 73% without augmentation, 79% with data augmentation.
 3-layer convolutional, using 5x5 conv and max pooling.
-References PiczakCNN and SKM.
-? Baseline candidate
+References models PiczakCNN 72% avg acc and SKM 72% avg acc. 
+? Baseline candidate.
+Parameters not specified. Estimated 444k
 
-Keras implementation
-https://gist.github.com/jaron/5b17c9f37f351780744aefc74f93d3ae
+### ENVIRONMENTAL SOUND CLASSIFICATION WITH CONVOLUTIONAL NEURAL NETWORKS
+https://karol.piczak.com/papers/Piczak2015-ESC-ConvNet.pdf
+2015.
+PiczakCNN
+Tested on Urbansound, ESC-10 and ESC-50.
+5 variation of models. Baseline, short/long segments, majority/probability voting.
+Average accuracy from 69% to 72%. Best model, LP long+probability.
+Parameters not specified. Estimated 25M ! (almost all from 5000,5000 FC layers) 
 
-* LEARNING FILTER BANKS USING DEEP LEARNING FOR ACOUSTIC SIGNALS. Shuhui Qu.
+### LEARNING FILTER BANKS USING DEEP LEARNING FOR ACOUSTIC SIGNALS. Shuhui Qu.
 Based on the procedure of log Mel-filter banks, we design a filter bank learning layer.
 Urbansound8K dataset, the experience guided learning leads to a 2% accuracy improvement.
 
-#### Environmental sound classification with dilated convolutions
+### WSN: COMPACT AND EFFICIENT NETWORKS WITH WEIGHT SAMPLING
+2018.
+CNN trained on raw audio.
+Compared on UrbanSound8k and ESC-50.
+70.5% average acc on UrbandSound8k.
+! evaluated on 5 folds? the dataset is pre-stratified with 10 folds, leakage can happen
+2 model variations evaluated, plus quantized versions.
+520K and 288K parameters.
+1.0e9 mult-adds.
+SoundNet used as baseline.
+
+SoundNet.
+Transfer learning
+
+### Listening to the World Improves Speech Command Recognition
+2017.
+
+Uses multi-resolution approach with dilated convolutions.
+4 different dilations.
+Using padding to keep them the same size, and stacking along channel dimension.
+Uses Urbansound8k -> Google Speech Command transfer learning.
+
+### Environmental sound classification with dilated convolutions
 https://www.sciencedirect.com/science/article/pii/S0003682X18306121
 December, 2018
 Dilated CNN achieves better results than that of CNN with max-pooling.
@@ -290,8 +327,14 @@ Dilated convolution increased receptive field without adding parameters.
 3x3 kernel with dilation rate 2 = 7x7 receptive field, dilation rate 3 = 11x11 receptive field
 ! great images in the article.
 
+### Audio Event Classification using Deep Learning in an End-to-End Approach
+Jose Luis Diez Antich
+Explored end-2-end learning, using raw audio as input.
+Was unable to reach more than 62% average accuracy.
+? how many parameters
 
-### DCASE2018 Task 2, General Purpose Audio Tagging
+
+## DCASE2018 Task 2, General Purpose Audio Tagging
 Task: Acoustic event tagging.
 Based on FreeSound data.
 41 classes. Using AudioNet ontology
@@ -302,12 +345,12 @@ Baseline CNN on log melspec. 0.70 mAP@3
 
 Relevant for: context-aware-computing, smarthome?
 
-### DCASE2018 Task3, Bird Audio Detection.
+## DCASE2018 Task3, Bird Audio Detection.
 Binary classification.
 
 Relevant for on-edge pre-processing / efficient data collection.
 
-### DCASE2018 Task4
+## DCASE2018 Task4
 Event Detection with precise time information.
 Events from domestic tasks. 10 classes.
 Subset of Audioset.
@@ -315,7 +358,7 @@ Subset of Audioset.
 Relevant for: smarthome and context-aware-computing
 
 
-### TUT Urban Acoustic Scenes 2018
+## TUT Urban Acoustic Scenes 2018
 Used in DCASE2018 Task 1.
 
 Task: Acoustic Scene Classification.
@@ -325,7 +368,7 @@ One variant dataset has parallel recording with multiple devices, for testing mi
 
 Relevant for: context-aware-computing?
 
-### TUT Acoustic Scenes 2017. Used for DCASE2017 Task 1.
+## TUT Acoustic Scenes 2017. Used for DCASE2017 Task 1.
 Scenes from urban environments.
 15 classes.
 10 second segments.
@@ -334,13 +377,13 @@ Relatively hard, systems achieved 35-55% F1.
 
 Relevant for context-aware-computing?
 
-### DCASE2017 Task 4, Large Scale Sound Event detection
+## DCASE2017 Task 4, Large Scale Sound Event detection
 http://www.cs.tut.fi/sgn/arg/dcase2017/challenge/task-large-scale-sound-event-detection
 17 classes from 2 categories, Warning sounds and Vehicle sounds.
 
 Relevant for autonomous vehicles?
 
-### TUT Sound Events 2017
+## TUT Sound Events 2017
 Used for DCASE2017 Task 3, Sound event detection in real life audio
 
 Events related to car/driving.
