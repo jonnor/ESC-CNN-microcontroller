@@ -193,15 +193,6 @@ Can a sparse FFT save time?
 Challenge: Interacts with model, especially convolution sizes
 
 
-## Not so relevant
-
-* DCASE2018 Task 5.
-Domestic activities. 
-10 second segments.
-9 classes.
-From 4 separate microphone arrays (in single room).
-Each array has 4 microphones.
-
 
 
 ## Compute more efficiently
@@ -213,17 +204,14 @@ Winograd convolutional kernels
 Can weights of convolution kernels be decomposed and expressed as a combination of smaller pieces?
 BinaryCmd does this, with some success on Keyword spotting.
 
-
-
-
 ## Model compression
 
 Lots of existing work out there.
 
-Quantized weights
-Quantized activations
-Pruning channels
-Sparsifying weights
+- Quantized weights
+- Quantized activations
+- Pruning channels
+- Sparsifying weights
 
 Custom On-Device ML Models with Learn2Compress 
 https://ai.googleblog.com/2018/05/custom-on-device-ml-models.html

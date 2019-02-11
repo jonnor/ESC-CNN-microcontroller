@@ -4,21 +4,27 @@
 
 ## Phase 2: Experimentation
 
+Misc
+
+- Image of overall pipeline
+- Project image, title page
 
 Speech Command dataset
 
-* Verify/fix LIME explainer.
 * Send --preprocess=logmel patch as PR to TensorFlow
 
 Experiments
 
-* Try to run FastGRNN
 - Try to run 1D CNN on STM32 (AclNet LL), check performance
+* Try to run FastGRNN
+* Test LIME explainer on a strong model
 
 Run CNN model on microcontroller
 
 - Test USB audio input
 - Test measuring current with ST board
+- STM32AI: Unhardcode FFT size
+- STM32AI: Support window overlap
 
 Verification methodology proposal
 
@@ -35,6 +41,7 @@ float32 1024bin FFT,30mels,32frames log-mel preprocessing under 68ms.
 float32 517k MACC CNN classification 78ms. Approx 6M MACCS/second.
 - Trigger LED change to reflect model predictions
 - Check how the neural networks are implemented in STM32CubeAI
+- Tool for extracting MACC from Keras/TensorFlow model. `./experiments/speechcommands/featurecomplexity.py`
 * Tensorflow speechcommand, test to change from MFCC to mel-spec
 * Run Tensorflow speechcommand examples, check perf against published
 - Test standard models examples on STM32 devkits.
@@ -53,10 +60,6 @@ Built-in example also had BT audio out (but locked at 8kHz?)
 
 TODO.
 
-* Check progress plan
 - List of datasets, and baseline model performance
 - ?? did anyone run Urbansound/ESC on microcontroller
-- Make list of hypotheses presentable
-- Image of overall pipeline
-- Project image, title page
 

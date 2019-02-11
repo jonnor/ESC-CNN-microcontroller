@@ -42,6 +42,11 @@ Has speaker demographics.
 Task: Automatic Speech Recognition.
 Not something to do on microcontroller.
 Could maybe be used for Transfer Learning for more relevant speech tasks.
+* DCASE2018 Task 5.
+Domestic activities. 
+10 second segments. 9 classes.
+From 4 separate microphone arrays (in single room).
+Each array has 4 microphones
 
 ## Relevant but lacking
 
@@ -71,9 +76,7 @@ Relevant as examples of single-function systems, security
 Task: Keyword spotting / speech command
 
 
-
 DSCNN-L  [How to Achieve High-Accuracy Keyword Spotting on Cortex-M Processors](https://community.arm.com/processors/b/blog/posts/high-accuracy-keyword-spotting-on-cortex-m-processors)
-
 
 Very well explored.
 
@@ -279,7 +282,7 @@ Dilated convolution increased receptive field without adding parameters.
 ! great images in the article.
 
 
-## DCASE2018 Task 2, General Purpose Audio Tagging
+### DCASE2018 Task 2, General Purpose Audio Tagging
 Task: Acoustic event tagging.
 Based on FreeSound data.
 41 classes. Using AudioNet ontology
@@ -290,12 +293,12 @@ Baseline CNN on log melspec. 0.70 mAP@3
 
 Relevant for: context-aware-computing, smarthome?
 
-## DCASE2018 Task3, Bird Audio Detection.
+### DCASE2018 Task3, Bird Audio Detection.
 Binary classification.
 
 Relevant for on-edge pre-processing / efficient data collection.
 
-## DCASE2018 Task4
+### DCASE2018 Task4
 Event Detection with precise time information.
 Events from domestic tasks. 10 classes.
 Subset of Audioset.
@@ -303,7 +306,7 @@ Subset of Audioset.
 Relevant for: smarthome and context-aware-computing
 
 
-## TUT Urban Acoustic Scenes 2018
+### TUT Urban Acoustic Scenes 2018
 Used in DCASE2018 Task 1.
 
 Task: Acoustic Scene Classification.
@@ -313,7 +316,7 @@ One variant dataset has parallel recording with multiple devices, for testing mi
 
 Relevant for: context-aware-computing?
 
-## TUT Acoustic Scenes 2017. Used for DCASE2017 Task 1.
+### TUT Acoustic Scenes 2017. Used for DCASE2017 Task 1.
 Scenes from urban environments.
 15 classes.
 10 second segments.
@@ -322,13 +325,13 @@ Relatively hard, systems achieved 35-55% F1.
 
 Relevant for context-aware-computing?
 
-## DCASE2017 Task 4, Large Scale Sound Event detection
+### DCASE2017 Task 4, Large Scale Sound Event detection
 http://www.cs.tut.fi/sgn/arg/dcase2017/challenge/task-large-scale-sound-event-detection
 17 classes from 2 categories, Warning sounds and Vehicle sounds.
 
 Relevant for autonomous vehicles?
 
-## TUT Sound Events 2017
+### TUT Sound Events 2017
 Used for DCASE2017 Task 3, Sound event detection in real life audio
 
 Events related to car/driving.
@@ -337,3 +340,5 @@ Multiple overlapping events present. Both in training and testing.
 Hard, systems only achieved 40%-45% F1.
 Quite small. 2 GB dataset total.
 Relevant for autonomous vehicles?
+
+
