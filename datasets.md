@@ -258,6 +258,7 @@ EnvNet-v2 is like EnvNet but with
 44.1 kHz instead of 16kHz,
 13 layers instead of 7.
 
+Without special learning, 69.1% on Urbansound8k
 Using between-class learning and strong augmentation, got
 84.9% on ESC-50, 91.4% on ESC-10, 78.3% on Urbansound8k 
 
@@ -315,6 +316,17 @@ Relevant for environmental noise source prediction.
 
 ! recommendation. Use the predefined 10 folds and perform 10-fold (not 5-fold) cross validation.
 Otherwise will get inflated scores, due to related samples being mixed.
+
+### UNSUPERVISED FEATURE LEARNING FOR URBAN SOUND CLASSIFICATION
+2015.
+
+Using spherical-k-means to learn single layer of convolutions.
+
+Reaches 72% accuracy.
+log-melspectrogram input.
+Patches were 128 band tall. 8 frames long.
+k=2000
+128*8*2000 = 2.1M parameters
 
 ### Deep Convolutional Neural Network with Mixup for Environmental Sound Classification
 https://link.springer.com/chapter/10.1007/978-3-030-03335-4_31
@@ -384,6 +396,20 @@ Jose Luis Diez Antich
 Explored end-2-end learning, using raw audio as input.
 Was unable to reach more than 62% average accuracy.
 ? how many parameters
+
+### LD-CNN: A Lightweight Dilated Convolutional Neural Network for Environmental Sound Classification
+2018.
+http://web.pkusz.edu.cn/adsp/files/2015/10/ICPR_final.pdf
+
+Early layers use 1D stacked convolutions.
+
+Model size 2.05MB.
+79% Urbansound.
+66% ESC-50.
+
+References multiple other lightweight ESC models.
+?? Claims DenseNet performs well at 390.3KB size. But their reference does not support this.
+
 
 
 ## DCASE2018 Task 2, General Purpose Audio Tagging
