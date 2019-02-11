@@ -1,0 +1,10 @@
+name,input,accuracy,parameters,macc,reference
+SKM,logmel,0.72,2100000,,
+PiczakCNN,logmel,0.72,25000000,,
+Dilated,logmel,0.78,,
+M18,audio,0.71,3700000,,
+M5-big,audio,0.63,2200000,,
+EnvNet2,audio,0.691,,,
+EnvNet,audio,0.64,,,
+MC-DCNN,audio,0.73,,,
+WSN,audio,0.705,520000,,
