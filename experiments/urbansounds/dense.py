@@ -1,5 +1,5 @@
 
-def build_model(bands=60, frames=41, channels=2,
+def build_model(bands=60, frames=41, channels=1,
                 n_labels=10, dropout=0.0):
     """
     Environmental sound classification with dilated convolutions
