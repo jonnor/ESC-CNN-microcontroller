@@ -9,17 +9,14 @@ Misc
 - Image of overall pipeline
 - Project image, title page
 
-Speech Command dataset
+Urbansound/ESC-50/ESC-10
 
-* Send --preprocess=logmel patch as PR to TensorFlow
-
-Urbanosound/ESC-50/ESC-10
-
-* Check for papers on embedded/microcontroller
+* Estimate parameters for existing models, make table
+* Estimate multiply-adds for existing models
 
 Experiments
 
-- Try to run 1D CNN on STM32 (AclNet LL), check performance
+- Try to run 1D CNN on STM32 (AclNet LL?), check performance
 * Try to run FastGRNN
 * Test LIME explainer on a strong model
 

@@ -18,10 +18,7 @@ Not so relevant:
 
 ## To be reviewed.
 
-
-* DCASE 2013. Audio Event Detection. Indoor office sounds. 16 classes. Segmented. 19 minutes total.
 * DCASE 2016.
-
 
 ## Not relevant 
 
@@ -228,19 +225,74 @@ Tests small,medium,large receptive field, and a model with all.
 Multi-scale outperforms single by 2-3% absolute.
 
 
-### EnvNet
-Learning environmental sounds with end-to-end convolutional neural network
-https://www.mi.t.u-tokyo.ac.jp/assets/publication/LEARNING_ENVIRONMENTAL_SOUNDS_WITH_END-TO-END_CONVOLUTIONAL_NEURAL_NETWORK.pdf
-When combined with log-mel, gives 6.5% improvement 
+### Learning environmental sounds with end-to-end convolutional neural network
+EnvNet
 
-Tests different filter sizes for low level features. Find 8 long performs best. For 44.1kHz
+https://www.mi.t.u-tokyo.ac.jp/assets/publication/LEARNING_ENVIRONMENTAL_SOUNDS_WITH_END-TO-END_CONVOLUTIONAL_NEURAL_NETWORK.pdf
+When combined with log-mel, gives 6.5% improvement.
+
+
+Learned CNN frontend outputs 40x150 feature map.
+Tests different filter sizes for low level features. For 44.1kHz.
+Find 8 long performs best. With 2 conv layers.
 ! graphs showing frequency response of the learned layers.
 When filter indexes are sorted, has similar shape to mel-scale.
+
+On ESC-50. Input lengths of 1-2.5 seconds perform similarly.
+
+logmel only. 58.9%
+logmel,logmel-delta. 66.5%
+
+EnvNet raw. 64%
+EnvNet logmel,raw. 69.3%
+EnvNet logmel,logmeldelta,raw. 71%
 
 Uses a 1 second window. Randomly chosen at training time.
 Longer clips are classified by probabalistic voting over windows. 0.2second stride 
 
-### EnvNet2
+### Learning from Between-class Examples for Deep Sound Recognition
+https://openreview.net/forum?id=B1Gi6LeRZ
+Feb 2018.
+
+EnvNet-v2 is like EnvNet but with
+44.1 kHz instead of 16kHz,
+13 layers instead of 7.
+
+Using between-class learning and strong augmentation, got
+84.9% on ESC-50, 91.4% on ESC-10, 78.3% on Urbansound8k 
+
+### Very deep convolutional neural networks for raw waveforms
+
+Evaluated on UrbanSound8k.
+Uses 8kHz sample rate.
+
+ResNet type architecture.
+Testing 3-34 layers.
+M=18 layers performed best. 71%. 3.7M parameters
+M5-big 63.30%, 2.2M parameters.
+
+
+Reproduction and Keras implemention
+https://github.com/philipperemy/very-deep-convnets-raw-waveforms
+! "Going really deep does not seem to help much on this dataset. We clearly overfit very easily"
+
+
+### Multi-Channel Convolutional Neural Networks with Multi-Level Feature Fusion for Environmental Sound Classification
+January 2019.
+https://www.researchgate.net/publication/329569964_Multi-channel_Convolutional_Neural_Networks_with_Multi-level_Feature_Fusion_for_Environmental_Sound_Classification_25th_International_Conference_MMM_2019_Thessaloniki_Greece_January_8-11_2019_Proceedi
+
+MC-DCNN.
+Stacking 1D layers with very small filters (except first layer).
+Multi-level fusion. Multiple CNN heads at different resolutions, features are concatenated.
+Fully convolutional, using 1D CNN backend with global-average-pooking.
+
+Number of parameters ?
+
+! Table 5 has good overview of performance, relative to other models.
+On raw audio showing performance similar to M18,EnvNet2
+Urbansound8k 73.6%. ESC-50 71.1±0.8  ESC-10 84.1±0.7
+
+Fusion with 3 heads performs better.
 
 
 
