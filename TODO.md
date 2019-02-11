@@ -13,6 +13,10 @@ Speech Command dataset
 
 * Send --preprocess=logmel patch as PR to TensorFlow
 
+Urbanosound/ESC-50/ESC-10
+
+* Check for papers on embedded/microcontroller
+
 Experiments
 
 - Try to run 1D CNN on STM32 (AclNet LL), check performance

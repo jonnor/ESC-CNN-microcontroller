@@ -259,16 +259,25 @@ Otherwise will get inflated scores, due to related samples being mixed.
 
 Deep Convolutional Neural Network with Mixup for Environmental Sound Classification
 https://link.springer.com/chapter/10.1007/978-3-030-03335-4_31
-November, 2018
-
+November, 2018.
 83.7% on UrbanSound8k.
 Uses mixup and data augmentation. 5% increase in perf
 1-D convolutions in some places instead of 3x3.
 
-Detection of Anomalous Noise Events on Low-Capacity Acoustic Nodes
-for Dynamic Road Traffic Noise Mapping within an Hybrid WASN
-https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5948866/
+Deep Convolutional Neural Networks and Data Augmentation for Environmental Sound Classification
+Justin Salamon and Juan Pablo Bello.
+November 2016.
+SB-CNN. 73% without augmentation, 79% with data augmentation.
+3-layer convolutional, using 5x5 conv and max pooling.
+References PiczakCNN and SKM.
+? Baseline candidate
 
+Keras implementation
+https://gist.github.com/jaron/5b17c9f37f351780744aefc74f93d3ae
+
+* LEARNING FILTER BANKS USING DEEP LEARNING FOR ACOUSTIC SIGNALS. Shuhui Qu.
+Based on the procedure of log Mel-filter banks, we design a filter bank learning layer.
+Urbansound8K dataset, the experience guided learning leads to a 2% accuracy improvement.
 
 #### Environmental sound classification with dilated convolutions
 https://www.sciencedirect.com/science/article/pii/S0003682X18306121
