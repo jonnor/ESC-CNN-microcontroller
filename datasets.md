@@ -277,6 +277,32 @@ Reproduction and Keras implemention
 https://github.com/philipperemy/very-deep-convnets-raw-waveforms
 ! "Going really deep does not seem to help much on this dataset. We clearly overfit very easily"
 
+### Audio representation for environmental sound classification using convolutional neural networks
+https://lup.lub.lu.se/student-papers/search/publication/8964345
+2018.
+Master thesis. 66 pages total.
+30 pages theory, 6+14 pages on experiment.
+
+Used SBCNN as the base model. "for promise in embedded systems"
+spectrograms as base feature.
+Tried mel and linear spectrograms.
+Tried downsampling datarate.
+
+Used mean-normalization per patch.
+Used 128 mel-frequency bands.
+
+Evaluated on ESC-50.
+Best model mel-spectrogram. Table 4.1
+M 2048 75 44.1 top1=74.70% 88.35%
+
+75% overlap better than 50%.
+.. Down to 66% with 32/16kHz sample rate.
+! did not change N_fft with different frequencies, so temporal resolution differs also
+
+Future work.
+Raw audio as input feature.
+Number of mel-specrogram points.
+Different filterbanks.
 
 ### Multi-Channel Convolutional Neural Networks with Multi-Level Feature Fusion for Environmental Sound Classification
 January 2019.

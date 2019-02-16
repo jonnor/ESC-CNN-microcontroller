@@ -261,3 +261,23 @@ Because smaller dimensions condenses value space.
 When using multi-objective optimization, maximize the number of features.
 
 What about greedy algorithms with random restarts/jumps?
+
+
+
+### Automatic Environmental Sound Recognition: Performance versus Computational Cost
+2016.
+
+Intended target platform ARM Cortex M4F.
+Compares performance of different classifiers on ESC task, using different classifiers.
+MFCC input. 13 bands, with deltas.
+GMM,SVM,k-NN.
+
+! no CNNs present
+! only theoretical N-operations shown, not actual runtime
+
+Evaluated on Baby Cry and Smoke Alarm datasets. Binary classification tasks.
+DNNs gave best performance, and perf/computation.
+
+! gives adds/multiplies formulas for each classifier type
+
+
