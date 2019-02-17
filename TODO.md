@@ -11,9 +11,7 @@ Misc
 
 Urbansound8k
 
-- Calculate predictions on multiple samples
 - Try multi-instance learning?
-- Test SB-CNN model
 - Test Pizcak
 * Try to run FastGRNN
 - Test with data augmentations

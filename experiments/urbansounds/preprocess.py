@@ -101,7 +101,22 @@ def precompute(samples, settings, out_dir, n_jobs=8, verbose=1, force=False):
 
 
 def main():
-    pass
+    
+    settings = dict(
+        samplerate=16000,
+        n_mels=32,
+        fmin=0,
+        fmax=8000,
+        n_fft=512,
+        hop_length=256,
+        augmentations=5,
+    )
+
+    dir = './aug'
+    data = urbansound8k.load_dataset()
+
+    precompute(data, settings, out_dir=dir, verbose=2, force=False, n_jobs=8)
+
 
 if __name__ == '__main__':
     main()

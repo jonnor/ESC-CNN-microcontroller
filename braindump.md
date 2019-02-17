@@ -30,23 +30,33 @@ https://stackoverflow.com/questions/44466066/how-can-i-convert-a-trained-tensorf
 
 ### Urbansound8k
 
-With Dilated model.
+### Dilated model.
 Reaching 64%-69% val accuracy on 35k samples, with 32,32,64,64 kernels.
 Significantly higher than train, indicates dropout is working well?
 But after epoch 3/4 val_loss starts going higher than acc, sign of overfitting.
 Due to overcapacity?
 
+Training about 7 minute per epoch of 35k samples.
+
 32,32,32,32. Also seems to start overfitting after 68% accuracy at epoch 5, but a bit less severe.
 Combined val accuracy at 65%. Test accuracy at 57% :(
 Almost all mis-classifications are into the 'drilling' class. Unknown why??
 
+! warning, the windowing function was changed between train and test...
+
+#### SB-CNN
+Trains much faster than Dilated. Approx 1 minute per epoch of 35k samples.
+First version seems to peak at 60% validation during train.
+Afterwards windowed validation is up to 63% and test is 65/67%. 
+More resonable confusion matrix than Dilated, less being classified as Drilling,
+but still more on testing set versus training set.
+
+With augmentations, seems to also peak at 59.5% validation during train.
+Testing accuracy also does not improve. Overregularized?
 
 
-Try fewer layers?
-Try smaller field of view in time?
-Try increasing fmin?
 
-Validation.
+#### Validation.
 
 Worker setup time. 5 minutes
 Preprocessing 15 minutes.
