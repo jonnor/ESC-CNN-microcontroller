@@ -11,10 +11,10 @@ Misc
 
 Urbansound8k
 
-- Try multi-instance learning?
 - Test Pizcak
+- Test DenseNet
 * Try to run FastGRNN
-- Test with data augmentations
+- Get data augmentations to work
 - Test shorter fields of view
 * Estimate multiply-adds for existing models
 
@@ -36,7 +36,9 @@ Verification methodology proposal
 
 ## Done
 
-- Test a model for Urbansound8k
+- Tested multiple-instance learning for Urbansound8k
+- Test Dilated CNN for Urbansound8k
+- Test a SB-CNN model for Urbansound8k
 - Test a trivial audio custom model with SMT32CubeAI.
 First crack detection.
 9000 MACC, 2 ms classifier. 8 frames, under 15 ms log-mel preprocessing.

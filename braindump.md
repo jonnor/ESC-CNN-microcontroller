@@ -62,15 +62,27 @@ Quite fast. 1 minute per epoch.
 So when a lot of learning happens within an epoch, val_acc will be higher
 ! calling fit_generator() or model.compile() does not reset training!
 
+When using GlobalMeanPooling
 With batchsize=10, starts overfitting at 30% val
 With batchsize=25, starts overfitting at 35% val
 With batchsize=50, seems to start overfitting at 45%
 With batchsize=100, seems to start overfitting at 47%
 
+When using GlobalMaxPooling
+With batchsize=100, hit 61% val_acc.
+Progress seems a bit noisy, often overfitting with val_acc near 50%
+Struggling a lot with children playing and street music
+
 Ideas for trainingset expansion techniques for MIM?
 Swap windows internally in sample. No change with GlobalAveragePooling?
 Replace window with one from another same-class samples
 Take a window from sample of same class, mix it into our window? 
+
+"Adaptive pooling operators for weakly labeled sound event detection". 2018
+Proposes auto-pool, mixing min/max/average pooling with learned parameters.
+But still has a hyperparamter lambda that must be tuned.
+Evaluted on URBAN-SED, a Sound Event Detection dataset based on Urbansound8k.
+Said to apply generally to MIM problems.
 
 #### Validation.
 
