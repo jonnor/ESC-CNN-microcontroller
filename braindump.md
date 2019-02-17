@@ -55,6 +55,22 @@ With augmentations, seems to also peak at 59.5% validation during train.
 Testing accuracy also does not improve. Overregularized?
 
 
+#### Multiple instance on SB-CNN
+Quite fast. 1 minute per epoch.
+
+! the train acc is average of all batches in epoch.
+So when a lot of learning happens within an epoch, val_acc will be higher
+! calling fit_generator() or model.compile() does not reset training!
+
+With batchsize=10, starts overfitting at 30% val
+With batchsize=25, starts overfitting at 35% val
+With batchsize=50, seems to start overfitting at 45%
+With batchsize=100, seems to start overfitting at 47%
+
+Ideas for trainingset expansion techniques for MIM?
+Swap windows internally in sample. No change with GlobalAveragePooling?
+Replace window with one from another same-class samples
+Take a window from sample of same class, mix it into our window? 
 
 #### Validation.
 
