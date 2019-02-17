@@ -100,4 +100,8 @@ def precompute(samples, settings, out_dir, n_jobs=8, verbose=1, force=False):
     feature_files = joblib.Parallel(n_jobs=n_jobs, verbose=verbose)(jobs)
 
 
+def main():
+    pass
 
+if __name__ == '__main__':
+    main()

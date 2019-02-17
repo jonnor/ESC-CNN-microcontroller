@@ -1,7 +1,8 @@
 
 
 # NOTE: log-melspectrogram and delta log-melspec
-def build_model(bands=60, frames=41, channels=2, n_labels=10, dropout=0.5):
+def build_model(bands=60, frames=41, channels=2, n_labels=10,
+                fc=5000, dropout=0.5):
 
     """
     Implements the short-segment CNN from
@@ -19,14 +20,14 @@ def build_model(bands=60, frames=41, channels=2, n_labels=10, dropout=0.5):
     input_shape = (bands, frames, channels)
 
     model = Sequential([
-        Convolution2D(80, (57,6), strides=(1,1), input_shape=input_shape),
+        Convolution2D(80, (bands-3,6), strides=(1,1), input_shape=input_shape),
         MaxPooling2D((4,3), strides=(1,3)),
         Convolution2D(80, (1,3)),
         MaxPooling2D((1,3), strides=(1,3)),
         #Flatten(),
-        Dense(5000, activation='relu'),
+        Dense(fc, activation='relu'),
         Dropout(dropout),
-        Dense(5000, activation='relu'),
+        Dense(fc, activation='relu'),
         Dropout(dropout),
         Dense(n_labels, activation='softmax'),
     ])

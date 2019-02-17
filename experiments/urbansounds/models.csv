@@ -1,4 +1,5 @@
 name,input,accuracy,parameters,macc,reference
+SBCNN,logmel,0.72,56700
 SKM,logmel,0.72,2100000,,
 PiczakCNN,logmel,0.72,25000000,,
 Dilated,logmel,0.78,,

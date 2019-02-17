@@ -9,16 +9,20 @@ Misc
 - Image of overall pipeline
 - Project image, title page
 
-Urbansound/ESC-50/ESC-10
+Urbansound8k
 
-* Estimate parameters for existing models, make table
+- Calculate predictions on multiple samples
+- Try multi-instance learning?
+- Test SB-CNN model
+- Test Pizcak
+* Try to run FastGRNN
+- Test with data augmentations
+- Test shorter fields of view
 * Estimate multiply-adds for existing models
 
-Experiments
+ESC-50/ESC-10
 
-- Try to run 1D CNN on STM32 (AclNet LL?), check performance
-* Try to run FastGRNN
-* Test LIME explainer on a strong model
+- Download dataset, setup pipeline
 
 Run CNN model on microcontroller
 
@@ -34,6 +38,7 @@ Verification methodology proposal
 
 ## Done
 
+- Test a model for Urbansound8k
 - Test a trivial audio custom model with SMT32CubeAI.
 First crack detection.
 9000 MACC, 2 ms classifier. 8 frames, under 15 ms log-mel preprocessing.
@@ -59,8 +64,5 @@ Built-in example also had BT audio out (but locked at 8kHz?)
 
 ## Status
 
-TODO.
 
-- List of datasets, and baseline model performance
-- ?? did anyone run Urbansound/ESC on microcontroller
 

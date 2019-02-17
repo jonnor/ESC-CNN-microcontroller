@@ -28,6 +28,42 @@ Converting Tensorflow model to Keras.
 Need to manually write Keras model, and the load weights.
 https://stackoverflow.com/questions/44466066/how-can-i-convert-a-trained-tensorflow-model-to-keras/53638524#53638524
 
+### Urbansound8k
+
+With Dilated model.
+Reaching 64%-69% val accuracy on 35k samples, with 32,32,64,64 kernels.
+Significantly higher than train, indicates dropout is working well?
+But after epoch 3/4 val_loss starts going higher than acc, sign of overfitting.
+Due to overcapacity?
+
+32,32,32,32. Also seems to start overfitting after 68% accuracy at epoch 5, but a bit less severe.
+Combined val accuracy at 65%. Test accuracy at 57% :(
+Almost all mis-classifications are into the 'drilling' class. Unknown why??
+
+
+
+Try fewer layers?
+Try smaller field of view in time?
+Try increasing fmin?
+
+Validation.
+
+Worker setup time. 5 minutes
+Preprocessing 15 minutes.
+Time per epoch. 10 minutes. 10 epochs++, 100 minutes
+Folds. 10x folds.
+Est: 10x120 minutes, 20 hours per model...
+
+Job inputs.
+Settings.
+Fold number.
+
+Job outputs.
+Best trained model. HDF5
+Predictions (probabilities) for all samples using best model.
+
+
+
 ### Speech commands
 
 Reproducing existing TensorFlow tutorials.
@@ -280,4 +316,12 @@ DNNs gave best performance, and perf/computation.
 
 ! gives adds/multiplies formulas for each classifier type
 
+### Design aspects of acoustic sensor networks for environmental noise monitoring
+September 2016.
+https://www.sciencedirect.com/science/article/pii/S0003682X16300627
 
+Categorizes ESC sensors into 4 categories,
+ ased on Hardware Costs, Scalability, Flexibility, Accuracy.
+
+Evaluated different usecases.
+Noise annoyance, Illegal firework detection/localization, Noise reason monitoring for tram passings. 

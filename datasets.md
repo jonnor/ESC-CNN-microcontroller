@@ -376,7 +376,10 @@ https://karol.piczak.com/papers/Piczak2015-ESC-ConvNet.pdf
 2015.
 PiczakCNN
 Tested on Urbansound, ESC-10 and ESC-50.
+22050Hz sample rate, 1024 window, 512 hop, 60 mels
 5 variation of models. Baseline, short/long segments, majority/probability voting.
+Short segments: 41 frames, approx 950 ms.
+Long segments: 101 frames, approx 2.3 seconds.
 Average accuracy from 69% to 72%. Best model, LP long+probability.
 Parameters not specified. Estimated 25M ! (almost all from 5000,5000 FC layers) 
 
@@ -437,6 +440,11 @@ References multiple other lightweight ESC models.
 ?? Claims DenseNet performs well at 390.3KB size. But their reference does not support this.
 
 
+## YorNoise
+Dataset from York with "traffic" and "rail" classes.
+Same structure as Urbansoun8k dataset.
+1527 samples a 4 seconds. Split into 10 folds.
+https://github.com/fadymedhat/YorNoise
 
 ## DCASE2018 Task 2, General Purpose Audio Tagging
 Task: Acoustic event tagging.
