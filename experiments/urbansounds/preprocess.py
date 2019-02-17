@@ -27,7 +27,7 @@ def test_silence_feature():
     numpy.testing.assert_equal(f, silent_f)
 
 
-def feature_path(sample, out_folder):
+def feature_path(sample, out_folder, augmentation=None):
     path = urbansound8k.sample_path(sample)
     tokens = path.split(os.sep)
     filename = tokens[-1]
@@ -41,8 +41,8 @@ def settings_id(settings, feature='feature'):
     settings_str = ','.join([ "{}={}".format(k, str(settings[k])) for k in keys ])
     return feature + ':' + settings_str
 
-def compute_mels(filepath, settings):
-    y, sr = librosa.load(filepath, sr=settings['samplerate'])
+def compute_mels(y, settings):
+    sr = settings['samplerate']
     from librosa.feature import melspectrogram 
     mels = melspectrogram(y, sr=sr,
                          n_mels=settings['n_mels'],
@@ -51,6 +51,19 @@ def compute_mels(filepath, settings):
                          fmin=settings['fmin'],
                          fmax=settings['fmax'])
     return mels
+
+# SalomonBello2016 experienced that only pitch shifts helped all classes
+# Piczak2015 on the used class-dependent time-shift and pitch-shift
+# https://github.com/karoldvl/paper-2015-esc-convnet/blob/master/Code/_Datasets/Setup.ipynb
+def augment(audio, sr,
+            pitch_shift=(-3, 3),
+            time_stretch=(0.9, 1.1),):
+    
+    stretch = numpy.random.uniform(time_stretch[0], time_stretch[1]) 
+    pitch = numpy.random.randint(pitch_shift[0], pitch_shift[1])
+    aug = librosa.effects.time_stretch(librosa.effects.pitch_shift(audio, sr, pitch), stretch)
+
+    return aug
 
 def precompute(samples, settings, out_dir, n_jobs=8, verbose=1, force=False):
     out_folder = os.path.join(out_dir, settings_id(settings, feature='mels'))
@@ -61,8 +74,16 @@ def precompute(samples, settings, out_dir, n_jobs=8, verbose=1, force=False):
         if os.path.exists(outp) and not force:
             return outp
 
-        f = compute_mels(inp, settings)
+        sr = sr=settings['samplerate']
+        y, sr = librosa.load(inp, sr=sr)
+        f = compute_mels(y, settings)
         numpy.savez(outp, f)
+
+        for aug in range(settings['augmentations']):
+            f = compute_mels(augment(y, sr=sr), settings)
+            p = outp.replace('.npz', '.aug{}.npz'.format(aug))
+            numpy.savez(p, f)
+
         return outp
     
     def job_spec(sample):

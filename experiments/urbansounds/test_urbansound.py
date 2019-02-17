@@ -14,6 +14,7 @@ def test_precompute():
         fmax=8000,
         n_fft=512,
         hop_length=256,
+        augmentations=1,
     )
 
     dir = './pre2'
