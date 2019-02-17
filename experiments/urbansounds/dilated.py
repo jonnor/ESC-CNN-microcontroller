@@ -1,7 +1,7 @@
 
 def build_model(bands=60, frames=41, channels=2,
                 dilation=(2,2), kernel=(3,3), n_labels=10, dropout=0.5,
-                kernels=16, kernel_growth=1.5):
+                kernels=[32, 32, 64, 64]):
     """
     Environmental sound classification with dilated convolutions
 
@@ -16,11 +16,14 @@ def build_model(bands=60, frames=41, channels=2,
     input_shape = (bands, frames, channels)
 
     # XXX: number of kernels in original paper is unknown
-    model = Sequential([
-        Convolution2D(int(kernels * kernel_growth**0), kernel, input_shape=input_shape, activation='relu'),
-        Convolution2D(int(kernels * kernel_growth**1), kernel, dilation_rate=dilation, activation='relu'),
-        Convolution2D(int(kernels * kernel_growth**2), kernel, dilation_rate=dilation, activation='relu'),
-        Convolution2D(int(kernels * kernel_growth**3), kernel, dilation_rate=dilation, activation='relu'),
+    conv = [
+        Convolution2D(kernels[0], kernel, input_shape=input_shape, activation='relu')
+    ]
+    for k in kernels[1:]:
+        c = Convolution2D(k, kernel, dilation_rate=dilation, activation='relu')
+        conv.append(c)
+
+    model = Sequential(conv + [
         GlobalAveragePooling2D(),
         Dropout(dropout),
         Dense(n_labels, activation='softmax'),

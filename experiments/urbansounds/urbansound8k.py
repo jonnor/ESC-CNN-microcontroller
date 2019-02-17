@@ -6,6 +6,20 @@ here = os.path.dirname(__file__)
 
 default_path = os.path.join(here, '../../data/UrbanSound8K/')
 
+classes = {
+    'car_horn': 1,
+    'dog_bark': 3,
+    'children_playing': 2,
+    'engine_idling': 5,
+    'street_music': 9,
+    'drilling': 4,
+    'air_conditioner': 0,
+    'gun_shot': 6,
+    'siren': 8,
+    'jackhammer': 7
+}
+classnames = [ ni[0] for ni in sorted(classes.items(), key=lambda kv: kv[1]) ]
+
 def load_dataset(path = None):
     if path is None:
         path = default_path
