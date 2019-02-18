@@ -11,8 +11,11 @@ Misc
 
 Urbansound8k
 
+- Do all folds and collect results
+- Test 44.1kHz, 60 mels
+- Try remove silent frames. And frames with zero padding?
 - Test Pizcak
-- Test DenseNet
+- Test FC version of DenseNet
 * Try to run FastGRNN
 - Get data augmentations to work
 - Test shorter fields of view
@@ -36,6 +39,8 @@ Verification methodology proposal
 
 ## Done
 
+- Sent email for info from dilated conv authors 
+- Sent email for info from LD-CNN authors
 - Tested multiple-instance learning for Urbansound8k
 - Test Dilated CNN for Urbansound8k
 - Test a SB-CNN model for Urbansound8k

@@ -62,7 +62,7 @@ Quite fast. 1 minute per epoch.
 So when a lot of learning happens within an epoch, val_acc will be higher
 ! calling fit_generator() or model.compile() does not reset training!
 
-When using GlobalMeanPooling
+When using GlobalMeanPooling and default RMSprop
 With batchsize=10, starts overfitting at 30% val
 With batchsize=25, starts overfitting at 35% val
 With batchsize=50, seems to start overfitting at 45%
@@ -83,6 +83,30 @@ Proposes auto-pool, mixing min/max/average pooling with learned parameters.
 But still has a hyperparamter lambda that must be tuned.
 Evaluted on URBAN-SED, a Sound Event Detection dataset based on Urbansound8k.
 Said to apply generally to MIM problems.
+
+#### DenseNet
+
+dropout=0.0, depth=10, block=3, growth=12, pooling='avg' (45k parameters)
+seems to reach around 65% on validation during training.
+However is overfitting, large gap to train loss.
+
+Takes almost 10 minutes per epoch for 20k samples
+
+growth=10 makes val_acc drop to 25% !!
+dropout=0.5 makes drop to 50% val_acc, still overfitting ??
+growth=16 also seems to overfit after 1 epoch. 50% val
+
+Probably this network is way to deep for our dataset.
+
+With depth=4, block=3 trains fast. 1 min per epoch.
+But seems hard to get val_acc over 54%
+!! when depth=4, dropouts are not present?
+
+With depth=7,blocks=2,dropout=0.5 trains to 60% val_acc
+pooling='avg', dropout=0.5, growth=30, reduction=0.5
+trains to 62% val_acc with 0.0001 learning rate.
+Does not look to overfit, but still only did 55% on testset.
+A lot of misclassifications into children_playing 
 
 #### Validation.
 
