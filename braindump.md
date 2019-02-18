@@ -44,6 +44,14 @@ Almost all mis-classifications are into the 'drilling' class. Unknown why??
 
 ! warning, the windowing function was changed between train and test...
 
+dilated32
+
+  MACC / frame: 38 844 758
+  ROM size:     110.91 KBytes
+  RAM size:     477.00 KBytes (Minimum: 477.00 KBytes)
+
+! did not train correctly on Google Colab?
+
 #### SB-CNN
 Trains much faster than Dilated. Approx 1 minute per epoch of 35k samples.
 First version seems to peak at 60% validation during train.
@@ -54,6 +62,12 @@ but still more on testing set versus training set.
 With augmentations, seems to also peak at 59.5% validation during train.
 Testing accuracy also does not improve. Overregularized?
 
+  MACC / frame: 3 199 214
+  ROM size:     197.60 KBytes
+  RAM size:     27.29 KBytes (Minimum: 27.29 KBytes)
+
+ROM and RAM is OK.
+A lot of MACCs... Might be approx 0.5 second inference time?
 
 #### Multiple instance on SB-CNN
 Quite fast. 1 minute per epoch.
@@ -107,6 +121,9 @@ pooling='avg', dropout=0.5, growth=30, reduction=0.5
 trains to 62% val_acc with 0.0001 learning rate.
 Does not look to overfit, but still only did 55% on testset.
 A lot of misclassifications into children_playing 
+
+!!! DenseNet models faile to validate in STM32CubeMXAI.
+No explanation why 
 
 #### Validation.
 

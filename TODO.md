@@ -15,11 +15,14 @@ Urbansound8k
 - Test 44.1kHz, 60 mels
 - Try remove silent frames. And frames with zero padding?
 - Test Pizcak
-- Test FC version of DenseNet
-* Try to run FastGRNN
+- Test FC version of DenseNet, try load in STM32AI
+- Try to convert FastGRNN to Keras and load in STM32AI
+https://github.com/Microsoft/MMdnn
+* Try to run FastGRNN on Urbansound8k
 - Get data augmentations to work
-- Test shorter fields of view
+- Shorter fields of view. Do they save cpu/mem?
 * Estimate multiply-adds for existing models
+
 
 ESC-50/ESC-10
 
@@ -39,6 +42,8 @@ Verification methodology proposal
 
 ## Done
 
+- Ran FastGRNN example USPS dataset
+- Tested DenseNet for Urbansound8k
 - Sent email for info from dilated conv authors 
 - Sent email for info from LD-CNN authors
 - Tested multiple-instance learning for Urbansound8k
