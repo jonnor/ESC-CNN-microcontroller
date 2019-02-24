@@ -4,6 +4,13 @@
 
 ## Phase 2: Experimentation
 
+Writing
+
+- Outline sections for introduction
+- Outline sections for methods
+- Outline sections for materials
+- Setup/generate Table of existing methods
+
 Misc
 
 - Image of overall pipeline
@@ -12,17 +19,17 @@ Misc
 Urbansound8k
 
 - Do all folds and collect results
-- Test 44.1kHz, 60 mels
+- Test 44.1kHz, 128 mels
+- Use dataset oversampling as in SB-CNN. 3 seconds with random starts
+- Pick model based on windowed validation performance. 50% overlap?
 - Try remove silent frames. And frames with zero padding?
-- Test Pizcak
-- Test FC version of DenseNet, try load in STM32AI
 - Try to convert FastGRNN to Keras and load in STM32AI
 https://github.com/Microsoft/MMdnn
-* Try to run FastGRNN on Urbansound8k
 - Get data augmentations to work
 - Shorter fields of view. Do they save cpu/mem?
 * Estimate multiply-adds for existing models
-
+* Try to run FastGRNN on Urbansound8k
+- Test Pizcak
 
 ESC-50/ESC-10
 
@@ -30,10 +37,10 @@ ESC-50/ESC-10
 
 Run CNN model on microcontroller
 
-- Test USB audio input
-- Test measuring current with ST board
 - STM32AI: Unhardcode FFT size
 - STM32AI: Support window overlap
+- Test USB audio input
+- Test measuring current with ST board
 
 Verification methodology proposal
 

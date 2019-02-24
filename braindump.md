@@ -142,6 +142,27 @@ Best trained model. HDF5
 Predictions (probabilities) for all samples using best model.
 
 
+One-time setup
+
+    gcloud config set project masterthesis-231919
+    gcloud config set compute/zone europe-north1-a
+
+    gcloud auth application-default login
+
+Mount bucket
+
+
+Create Kubernetes cluster
+
+    # default VMs
+    gcloud container clusters create cluster
+    gcloud container clusters get-credentials cluster
+    kubectl
+    
+
+Setup gcloud bucket in Kubernetes
+
+    https://github.com/maciekrb/gcs-fuse-sample
 
 ### Speech commands
 
