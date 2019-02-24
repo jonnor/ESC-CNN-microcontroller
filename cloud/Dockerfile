@@ -1,4 +1,4 @@
-FROM debian:stretch-slim
+FROM python:slim-stretch
 ENV GCSFUSE_REPO gcsfuse-stretch
 
 RUN apt-get update && apt-get install --yes --no-install-recommends \
@@ -11,6 +11,19 @@ RUN apt-get update && apt-get install --yes --no-install-recommends \
   && apt-get update \
   && apt-get install --yes gcsfuse \
   && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 
-
 RUN mkdir /mnt/bucket
+
+RUN \
+  apt-get update && \
+  apt-get install -y python python-dev python-pip python-virtualenv && \
+rm -rf /var/lib/apt/lists/*
+
+
+WORKDIR /usr/src/app
+
+COPY ./requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY ./experiments ./
+
 CMD ["sleep", "3600"]
