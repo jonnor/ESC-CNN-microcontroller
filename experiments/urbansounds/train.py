@@ -32,9 +32,14 @@ def maybe_download_features(settings, workdir):
     feature_zip = feature_dir + '.zip'
     feature_url = features_url(settings)
 
+    last_progress = None
     def download_progress(count, blocksize, totalsize):
+        nonlocal last_progress
+
         p = int(count * blocksize * 100 / totalsize)
-        print('{}%'.format(p))
+        if p != last_progress:
+            print('\r{}%'.format(p), end='\r')
+            last_progress = p
 
     if not os.path.exists(feature_dir):
         
@@ -301,6 +306,8 @@ def main():
     fold = args['fold']
 
     os.makedirs(output_dir)
+    if not os.path.exists(feature_dir):
+        os.makedirs(feature_dir)
 
     # model settings
     # TODO: support specifying model on cmdline

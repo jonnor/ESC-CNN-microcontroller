@@ -1,5 +1,7 @@
 
 import os.path
+import urllib.request
+
 import pandas
 
 here = os.path.dirname(__file__)
@@ -24,7 +26,11 @@ def load_dataset(path = None):
     if path is None:
         path = default_path
 
+    u = 'https://storage.googleapis.com/urbansound8k/UrbanSound8K.csv'
     metadata_path = os.path.join(path, 'metadata/UrbanSound8K.csv')
+    if not os.path.exists(metadata_path):
+        urllib.request.urlretrieve(u, metadata_path)
+
     samples = pandas.read_csv(metadata_path)
     return samples
 
