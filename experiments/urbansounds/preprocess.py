@@ -12,19 +12,6 @@ def feature_extract(y, sr, n_mels=32, n_fft=512, hop_length=256):
     mels = librosa.feature.melspectrogram(y, n_mels=n_mels, n_fft=n_fft, hop_length=hop_length)
     log_mels = librosa.core.power_to_db(mels, top_db=80, ref=numpy.max)
     return log_mels
-    
-def silence_feature(bands, length):
-    return numpy.full((bands, length), -0)
-    
-def test_silence_feature():
-    sr = 16000
-    mels = 32
-    
-    length = int(0.1*sr)
-    silence = numpy.zeros(length) + numpy.random.normal(0.0, 1e-6, size=length)
-    f = feature_extract(silence, sr, n_mels=mels)
-    silent_f = silence_feature(mels, f.shape[1])
-    numpy.testing.assert_equal(f, silent_f)
 
 
 def feature_path(sample, out_folder, augmentation=None):
@@ -36,8 +23,10 @@ def feature_path(sample, out_folder, augmentation=None):
     return os.path.join(out_fold, filename)
 
 
-def settings_id(settings, feature='feature'):
-    keys = sorted(settings.keys())
+def settings_id(settings):
+    keys = sorted([ k for k in settings.keys() if k != 'feature' ])
+    feature = settings['feature']
+
     settings_str = ','.join([ "{}={}".format(k, str(settings[k])) for k in keys ])
     return feature + ':' + settings_str
 
@@ -66,7 +55,7 @@ def augment(audio, sr,
     return aug
 
 def precompute(samples, settings, out_dir, n_jobs=8, verbose=1, force=False):
-    out_folder = os.path.join(out_dir, settings_id(settings, feature='mels'))
+    out_folder = os.path.join(out_dir, settings_id(settings))
     if not os.path.exists(out_folder):
         os.makedirs(out_folder)
 
@@ -100,17 +89,20 @@ def precompute(samples, settings, out_dir, n_jobs=8, verbose=1, force=False):
     feature_files = joblib.Parallel(n_jobs=n_jobs, verbose=verbose)(jobs)
 
 
+sbcnn = dict(
+    feature='mels',
+    samplerate=44100,
+    n_mels=128,
+    fmin=0,
+    fmax=22050,
+    n_fft=1024,
+    hop_length=1024,
+    augmentations=5,
+)
+
 def main():
     
-    settings = dict(
-        samplerate=16000,
-        n_mels=32,
-        fmin=0,
-        fmax=8000,
-        n_fft=512,
-        hop_length=256,
-        augmentations=5,
-    )
+    settings = sbcnn
 
     dir = './aug'
     data = urbansound8k.load_dataset()

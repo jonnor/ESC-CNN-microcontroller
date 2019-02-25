@@ -8,6 +8,7 @@ import urbansound8k
 def test_precompute():
 
     settings = dict(
+        feature='mels',
         samplerate=16000,
         n_mels=32,
         fmin=0,
@@ -23,7 +24,7 @@ def test_precompute():
 
     data = urbansound8k.load_dataset()
 
-    d = os.path.join(dir, preprocess.settings_id(settings, feature='mels'))
+    d = os.path.join(dir, preprocess.settings_id(settings))
     expect_path = preprocess.feature_path(data.iloc[0], d)    
     assert not os.path.exists(expect_path), expect_path
 
