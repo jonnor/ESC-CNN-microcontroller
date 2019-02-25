@@ -155,14 +155,30 @@ Mount bucket
 Create Kubernetes cluster
 
     # default VMs
-    gcloud container clusters create cluster
+    gcloud container clusters create cluster --scopes storage-full --machine-type n1-standard-1 --num-nodes 3
+
     gcloud container clusters get-credentials cluster
     kubectl
     
-
 Setup gcloud bucket in Kubernetes
 
     https://github.com/maciekrb/gcs-fuse-sample
+
+Unpacking a zip of files to GCS bucket mounted with FUSE was incredibly slow.
+Over 1 second per file, average 100kB size.
+
+Accessing files in the mount seems better, under 100ms to read file.
+But local access is sub 1ms.
+
+rsync from GCS is 80MB/s for large files.
+Maybe zip + streaming unpacking is way to go?
+Should get feature-set with 5 augmentations down to 2-3 minutes bootstrapping.
+
+ZIP cannot generally be unzipped in streaming fashion.
+tar.xz archives on the other hand can, using bsdtar
+
+A single .npz file with all the features would avoid zipping.
+But needs a transformation from when preprocessing anyway. 
 
 ### Speech commands
 
