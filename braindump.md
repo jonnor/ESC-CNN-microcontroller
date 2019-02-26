@@ -180,6 +180,8 @@ tar.xz archives on the other hand can, using bsdtar
 A single .npz file with all the features would avoid zipping.
 But needs a transformation from when preprocessing anyway. 
 
+    python3 train.py --samplerate 44100 --fmax 22050 --hop_length 1024 --n_mels 128 --n_fft 1024 --train_samples=12000 --val_samples=1500 --out /mnt/bucket/jobs/
+
 ### Speech commands
 
 Reproducing existing TensorFlow tutorials.

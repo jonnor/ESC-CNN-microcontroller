@@ -329,6 +329,10 @@ def main():
     maybe_download_features(feature_settings, feature_dir)
 
     # TODO: allow specifying dataset on commandline
+    dataset_path = 'data/UrbanSound8K/'
+    if not os.path.exists(os.path.join(dataset_path, 'metadata')):
+        os.makedirs(os.path.join(dataset_path, 'metadata'))
+    urbansound8k.default_path = dataset_path
     data = urbansound8k.load_dataset()
     folds, test = urbansound8k.folds(data)
 

@@ -5,3 +5,4 @@ fmax: 8000
 n_fft: 512
 hop_length: 256
 augmentations: 5
+batch: 100

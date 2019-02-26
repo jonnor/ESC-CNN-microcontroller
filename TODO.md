@@ -19,6 +19,7 @@ Misc
 Urbansound8k
 
 - Do all folds and collect results
+- Try run preprocessing on cloud
 - Test 44.1kHz, 128 mels
 - Use dataset oversampling as in SB-CNN. 3 seconds with random starts
 - Pick model based on windowed validation performance. 50% overlap?
