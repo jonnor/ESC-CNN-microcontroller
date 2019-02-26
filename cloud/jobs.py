@@ -36,6 +36,9 @@ spec:
           preStop:
             exec:
               command: ["fusermount", "-u", {mountpoint}]
+        resources:
+          requests:
+            cpu: "1.3"
       restartPolicy: Never
 """
 
@@ -86,7 +89,7 @@ def main():
     # FIXME: support commandline arguments
     f = 'cloud/experiment.yaml'
     out = 'cloud/jobs/foo'
-    image = 'gcr.io/masterthesis-231919/base:5'
+    image = 'gcr.io/masterthesis-231919/base:6'
     bucket = "jonnor-micro-esc"
     name = 'sbcnn.orig'
 

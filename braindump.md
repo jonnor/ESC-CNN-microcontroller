@@ -148,17 +148,6 @@ One-time setup
     gcloud config set compute/zone europe-north1-a
 
     gcloud auth application-default login
-
-Mount bucket
-
-
-Create Kubernetes cluster
-
-    # default VMs
-    gcloud container clusters create cluster --scopes storage-full --machine-type n1-standard-1 --num-nodes 3
-
-    gcloud container clusters get-credentials cluster
-    kubectl
     
 Setup gcloud bucket in Kubernetes
 
@@ -181,6 +170,35 @@ A single .npz file with all the features would avoid zipping.
 But needs a transformation from when preprocessing anyway. 
 
     python3 train.py --samplerate 44100 --fmax 22050 --hop_length 1024 --n_mels 128 --n_fft 1024 --train_samples=12000 --val_samples=1500 --out /mnt/bucket/jobs/
+
+Create Kubernetes cluster
+
+    gcloud container clusters create cluster --scopes storage-full --machine-type n1-highcpu-2 --num-nodes 10 \
+        --create-subnetwork name=my-subnet-0 \
+        --enable-ip-alias \
+        --enable-private-nodes \
+        --master-ipv4-cidr 172.16.0.0/28 \
+        --no-enable-basic-auth \
+        --no-issue-client-certificate \
+        --no-enable-master-authorized-networks
+
+    gcloud container clusters get-credentials cluster
+    kubectl get nodes
+
+Build Docker images and push to GKE
+
+    export PROJECT_ID="$(gcloud config get-value project -q)"
+    docker build -t gcr.io/${PROJECT_ID}/base:5 -f cloud/Dockerfile .
+    docker push gcr.io/${PROJECT_ID}/base
+
+Generate Kubernetes jobs and start them
+
+    python3 cloud/jobs.py
+    kubectl create -f cloud/jobs/foo/
+
+Delete jobs
+
+    kubectl delete jobs `kubectl get jobs -o custom-columns=:.metadata.name`
 
 ### Speech commands
 

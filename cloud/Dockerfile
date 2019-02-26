@@ -1,4 +1,4 @@
-FROM python:slim-stretch
+FROM python:3.6-slim-stretch
 ENV GCSFUSE_REPO gcsfuse-stretch
 
 RUN apt-get update && apt-get install --yes --no-install-recommends \
