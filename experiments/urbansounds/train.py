@@ -256,7 +256,7 @@ default_feature_settings = dict(
 default_training_settings = dict(
     epochs=50,
     batch=50,
-    train_samples=37000,
+    train_samples=36000,
     val_samples=3000,
 )
 
@@ -335,6 +335,7 @@ def main():
     urbansound8k.default_path = dataset_path
     data = urbansound8k.load_dataset()
     folds, test = urbansound8k.folds(data)
+    assert len(folds) == 9
 
     def load(sample):
         return load_sample(sample, feature_settings, feature_dir=feature_dir)
