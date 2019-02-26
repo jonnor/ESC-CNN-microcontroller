@@ -188,6 +188,13 @@ default_training_settings = dict(
     augment=0,
 )
 
+default_model_settings = dict(
+    model='sbcnn',
+    kernel='3x3',
+    pool='3x3',
+    frames=72,
+)
+
 def parse(args):
 
     import argparse
@@ -216,9 +223,29 @@ def parse(args):
         t = int
         a('--{}'.format(k), type=t, default=v, help='default: %(default)s')
 
+    # Expose model settings
+    for k, v in default_model_settings.items():
+        t = str if k != 'frames' else int
+        a('--{}'.format(k), type=t, default=v, help='default: %(default)s')
+
     parsed = parser.parse_args(args)
 
     return parsed
+
+def parse_dimensions(s):
+    pieces = s.split('x')
+    return tuple( int(d) for d in pieces )    
+
+def test_parse_dimensions():
+    valid_examples = [
+        ('3x3', (3,3)),
+        ('4x2', (4,2))
+    ]
+    for inp, expect in valid_examples:
+        out = parse_dimensions(inp)
+        assert out == expect, (out, '!=', expect) 
+
+test_parse_dimensions()
 
 
 # TODO: set up logging module to write to a file in output dir, synced periodically
@@ -238,11 +265,9 @@ def main():
         os.makedirs(feature_dir)
 
     # model settings
-    # TODO: support specifying model on cmdline
-    model_settings = dict(
-        model='sbcnn',
-        frames=72,
-    )
+    model_settings = {}
+    for k in default_model_settings.keys():
+        model_settings[k] = args[k]
 
     # feature settings
     feature_settings = {}
@@ -272,8 +297,11 @@ def main():
         return d
 
     def build_model():
-        m = sbcnn.build_model(bands=feature_settings['n_mels'],
-                    frames=model_settings['frames'], channels=1, pool=(3,3))
+        m = sbcnn.build_model(bands=feature_settings['n_mels'], channels=1,
+                    frames=model_settings['frames'],
+                    pool=parse_dimensions(model_settings['pool']),
+                    kernel=parse_dimensions(model_settings['kernel']),
+                    )
         return m
 
     settings = {

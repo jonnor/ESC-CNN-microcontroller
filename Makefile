@@ -4,7 +4,7 @@ all: report speechcommands
 speechcommands:
 	cd experiments/speechcommands && python3 train.py --data_dir=../../data/speech_dataset/ --train_dir=./train --how_many_training_steps=1,1
 
-
+# https://storage.googleapis.com/urbansound8k/UrbanSound8K.tar.gz
 # https://serv.cusp.nyu.edu/files/jsalamon/datasets/UrbanSound8K.tar.gz
 urbansound:
 	cd data/ && wget https://zenodo.org/record/1203745/files/UrbanSound8K.tar.gz

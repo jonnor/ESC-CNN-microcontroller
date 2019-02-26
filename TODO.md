@@ -19,7 +19,7 @@ Misc
 Urbansound8k
 
 - Try run preprocessing on cloud
-- Test SBCNN 44.1kHz, 128 mels
+- Test SBCNN 44.1kHz, 128 mels. With 3 second window (original) and 1 second window (reduced)
 - Windowed validation performance is lower than without??
 But test set seems OK??
 Why? Make sure not too much zero-pad

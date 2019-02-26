@@ -11,13 +11,13 @@ template = """
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: microesc-{kind}-{name}
+  name: mesc-{kind}-{name}
   labels:
     jobgroup: microesc-{kind}
 spec:
   template:
     metadata:
-      name: microesc-{kind}
+      name: mesc-{kind}
       labels:
         jobgroup: microesc-{kind}
     spec:
@@ -97,7 +97,7 @@ def parse(args):
 
     a('--bucket', type=str, default='jonnor-micro-esc',
         help='GCS bucket to write to. Default: %(default)s')
-    a('--image', type=str, default='gcr.io/masterthesis-231919/base:8',
+    a('--image', type=str, default='gcr.io/masterthesis-231919/base:9',
         help='Docker image to use')
     
     parsed = parser.parse_args(args)
@@ -116,8 +116,8 @@ def main():
 
     out = os.path.join(parsed.out_dir, name)
 
-    t = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M') 
-    u = str(uuid.uuid4())[0:8]
+    t = datetime.datetime.now().strftime('%Y%m%d-%H%M') 
+    u = str(uuid.uuid4())[0:4]
     identifier = "-".join([name, t, u])
 
     if not os.path.exists(out):
