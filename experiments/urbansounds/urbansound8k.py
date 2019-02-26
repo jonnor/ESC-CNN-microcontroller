@@ -1,6 +1,7 @@
 
 import os.path
 import urllib.request
+import tarfile
 
 import pandas
 
@@ -21,6 +22,43 @@ classes = {
     'jackhammer': 7
 }
 classnames = [ ni[0] for ni in sorted(classes.items(), key=lambda kv: kv[1]) ]
+
+download_urls = [
+    'https://storage.googleapis.com/urbansound8k/UrbanSound8K.tar.gz',
+	'https://zenodo.org/record/1203745/files/UrbanSound8K.tar.gz',
+    'https://serv.cusp.nyu.edu/files/jsalamon/datasets/UrbanSound8K.tar.gz',
+] 
+def maybe_download_dataset(workdir = None):
+
+    if not os.path.exists(workdir):
+        os.makedirs(workdir)
+
+    dir_path = os.path.join(workdir, 'UrbanSound8K')
+    archive_path = dir_path+'.tar.gz'
+
+    last_progress = None
+    def download_progress(count, blocksize, totalsize):
+        nonlocal last_progress
+
+        p = int(count * blocksize * 100 / totalsize)
+        if p != last_progress:
+            print('\r{}%'.format(p), end='\r')
+            last_progress = p
+
+    if not os.path.exists(dir_path):
+        
+        if not os.path.exists(archive_path):
+            u = download_urls[0]
+            print('Downloading...', u)
+            urllib.request.urlretrieve(u, archive_path, reporthook=download_progress)
+
+        print('Extracting...', archive_path)
+        # Note: .zip file is kept around
+        with tarfile.open(archive_path, "r:gz") as archive:
+            archive.extractall(workdir)
+
+    return dir_path
+
 
 def load_dataset(path = None):
     if path is None:

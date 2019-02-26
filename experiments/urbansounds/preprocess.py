@@ -8,6 +8,7 @@ import joblib
 
 import urbansound8k
 
+
 def feature_extract(y, sr, n_mels=32, n_fft=512, hop_length=256):
     mels = librosa.feature.melspectrogram(y, n_mels=n_mels, n_fft=n_fft, hop_length=hop_length)
     log_mels = librosa.core.power_to_db(mels, top_db=80, ref=numpy.max)
@@ -92,12 +93,12 @@ def precompute(samples, settings, out_dir, n_jobs=8, verbose=1, force=False):
 sbcnn = dict(
     feature='mels',
     samplerate=44100,
-    n_mels=128,
+    n_mels=30,
     fmin=0,
-    fmax=22050,
-    n_fft=1024,
-    hop_length=1024,
-    augmentations=5,
+    fmax=8000,
+    n_fft=512,
+    hop_length=256,
+    augmentations=0,
 )
 
 
@@ -106,6 +107,10 @@ def main():
     settings = sbcnn
 
     dir = './aug'
+    data_path = 'data'
+    urbansound8k.default_path = os.path.join(data_path, 'UrbanSound8K')
+    urbansound8k.maybe_download_dataset(data_path)
+
     data = urbansound8k.load_dataset()
 
     precompute(data, settings, out_dir=dir, verbose=2, force=False, n_jobs=8)
