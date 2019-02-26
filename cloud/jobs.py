@@ -2,6 +2,7 @@
 import os.path
 import uuid
 import datetime
+import sys
 
 import yaml
 
@@ -64,9 +65,7 @@ def render_job(image, script, options, mountpoint, bucket):
     s = template.format(**p)
     return s
 
-def generate_train_jobs(experiment_file, jobs_dir, image, name, out_dir, mountpoint, bucket):
-    with open(experiment_file, 'r') as config_file:
-        settings = yaml.load(config_file.read())
+def generate_train_jobs(settings, jobs_dir, image, name, out_dir, mountpoint, bucket):
 
     folds = list(range(0, 9))
 
@@ -83,19 +82,39 @@ def generate_train_jobs(experiment_file, jobs_dir, image, name, out_dir, mountpo
         with open(out_path, 'w') as out:
             out.write(s)
 
+def parse(args):
+
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Train a model')
+
+    a = parser.add_argument
+
+    a('--experiment', dest='experiment', default='',
+        help='%(default)s')
+    a('--out', dest='out_dir', default='cloud/jobs',
+        help='%(default)s')
+
+    a('--bucket', type=str, default='jonnor-micro-esc',
+        help='GCS bucket to write to. Default: %(default)s')
+    a('--image', type=str, default='gcr.io/masterthesis-231919/base:8',
+        help='Docker image to use')
+    
+    parsed = parser.parse_args(args)
+
+    return parsed
 
 def main():
-
-    # FIXME: support commandline arguments
-    f = 'cloud/experiment.yaml'
-    out = 'cloud/jobs/foo'
-    image = 'gcr.io/masterthesis-231919/base:6'
-    bucket = "jonnor-micro-esc"
-    name = 'sbcnn.orig'
+    parsed = parse(sys.argv[1:])
 
     mountpoint = '/mnt/bucket'
     out_dir = mountpoint+'/jobs'
 
+    with open(parsed.experiment, 'r') as config_file:
+        settings = yaml.load(config_file.read())    
+        name = settings['name']
+
+    out = os.path.join(parsed.out_dir, name)
 
     t = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M') 
     u = str(uuid.uuid4())[0:8]
@@ -104,7 +123,9 @@ def main():
     if not os.path.exists(out):
         os.makedirs(out)
 
-    generate_train_jobs(f, out, image, identifier, out_dir, mountpoint, bucket)
+    generate_train_jobs(settings, out, parsed.image,
+                    identifier, out_dir, mountpoint, parsed.bucket)
+    print('wrote to', out)
 
 
 if __name__ == '__main__':
