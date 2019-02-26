@@ -55,31 +55,43 @@ def maybe_download_features(settings, workdir):
 
     return feature_dir
 
-def load_sample(sample, settings, feature_dir, window_frames=72):
+
+def load_sample(sample, settings, feature_dir, window_frames,
+                start_time=None, augment=None):
     n_mels = settings['n_mels']
     sample_rate = settings['samplerate']
     hop_length = settings['hop_length']
-    
-    # Load precomputed features
+
     aug = None
-    if hasattr(sample, 'augmentation'):
-        aug = sample.augmentation
+    if augment is not None and settings['augmentations'] > 0:
+        aug = numpy.random.randint(-1, settings['augmentations'])
+        if aug == -1:
+            aug = None
+
+    # Load precomputed features
     folder = os.path.join(feature_dir, preprocess.settings_id(settings))
     path = preprocess.feature_path(sample, out_folder=folder, augmentation=aug)
     mels = numpy.load(path)['arr_0']
     assert mels.shape[0] == n_mels, mels.shape
     
-    # Cut out the relevant part
-    start = int(sample.start * (sample_rate / hop_length))
-    end = int(sample.end * (sample_rate / hop_length))
-    d = (sample.end-sample.start)
-    mels = mels[:, start:end]
-    #assert mels.shape[1] > 0, (sample)
+    if start_time is None:
+        # Sample a window in time randomly
+        min_start = max(0, mels.shape[1]-window_frames)
+        if min_start == 0:
+            start = 0
+        else:
+            start = numpy.random.randint(0, min_start)
+    else:
+        start = int(start_time * (sample_rate / hop_length))
 
+    end = start + window_frames
+    mels = mels[:, start:end]
+
+    # Normalize the window
     if mels.shape[1] > 0:
         mels = librosa.core.power_to_db(mels, top_db=80, ref=numpy.max)
-    
-    # zero-pad window to standard length
+
+    # Pad to standard size
     if window_frames is None:
         padded = mels
     else:
@@ -101,98 +113,29 @@ def dataframe_generator(X, Y, loader, batchsize=10, n_classes=10):
     """
         
     assert len(X) == len(Y), 'X and Y must be equal length'
-    assert len(X) % batchsize == 0, 'input length must be divisible by @batchsize'
-        
-    sample_idx = 0
-    while True:
-        batch_data = []
-        batch_labels = []
 
-        if sample_idx >= len(X):
-            sample_idx = 0
-        
-        while len(batch_data) < batchsize:
-            data = loader(X.iloc[sample_idx])  
-            y = Y.iloc[sample_idx]
-            y = keras.utils.to_categorical(y, num_classes=n_classes)
-            batch_data.append(data)
-            batch_labels.append(y)
-            sample_idx += 1
-            
-        batch = (numpy.stack(batch_data), numpy.stack(batch_labels))
+    while True:
+        idx = numpy.random.choice(len(X), size=batchsize, replace=False)
+        rows = X.iloc[idx, :].iterrows()
+        data = [ loader(d) for _, d in rows ]
+        y = Y.iloc[idx]
+        y = keras.utils.to_categorical(y, num_classes=n_classes)
+        batch = (numpy.array(data), numpy.array(y))
         yield batch
+
+
 
 def sample_windows(length, frame_samples, window_frames, overlap=0.5):
     """Split @samples into a number of windows of samples
     with length @frame_samples * @window_frames
     """
 
-    # PicakCNN used 950ms, 41 frames for short-frame variant. 50% overlap
     ws = frame_samples * window_frames
     start = 0
     while start < length:
         end = min(start + ws, length)
         yield start, end
         start += (ws * (1-overlap))
-
-def test_windows_shorter_than_window():
-    frame_samples=256
-    window_frames=64
-    fs=16000
-    length = 0.4*fs
-    w = list(sample_windows(int(length), frame_samples, window_frames))
-    assert len(w) == 1, len(w)
-    assert w[-1][1] == length
-
-def test_window_typical():
-    frame_samples=256
-    window_frames=64
-    fs=16000
-    length = 4.0*fs
-    w = list(sample_windows(int(length), frame_samples, window_frames))
-    assert len(w) == 8, len(w) 
-    assert w[-1][1] == length
-
-test_windows_shorter_than_window()
-test_window_typical() 
-
-def expand_training_set(samples, frame_samples, window_frames,
-                        sample_rate=16000, cut_length=1.0, augmentations=0):
-    chunks = {
-        'slice_file_name': [],
-        'fold': [],
-        'classID': [],
-        'start': [],
-        'end': [],
-        'augmentation': [],
-    }
-    
-    for (index, sample) in samples.iterrows():
-        duration = sample.end - sample.start
-        length = int(sample_rate * duration)
-        
-        for aug in range(-1, augmentations):
-        
-            for win in sample_windows(length, frame_samples, window_frames):
-                start, end = win
-                chunks['slice_file_name'].append(sample.slice_file_name)
-                chunks['fold'].append(sample.fold)
-                # to assume class is same as that of parent sample maybe a bit optimistic
-                # not certain that every chunk has content representative of class
-                # alternative would be multi-instance learning
-                chunks['classID'].append(sample.classID) 
-                chunks['start'].append(start/sample_rate)
-                chunks['end'].append(end/sample_rate)
-                chunks['augmentation'].append(None if aug == -1 else aug)
-            
-    df = pandas.DataFrame(chunks)
-    
-    if cut_length:
-        w = (df.end-df.start > cut_length)
-        cleaned = df[w]
-        print('cutting {} samples shorter than {} seconds'.format(len(df) - len(cleaned), cut_length))
-    
-    return cleaned
 
 
 def train_model(out_dir, fold, builder, loader,
@@ -206,29 +149,22 @@ def train_model(out_dir, fold, builder, loader,
                   optimizer=keras.optimizers.RMSprop(lr=learning_rate),
                   metrics=['accuracy'])
 
-    train = expand_training_set(fold[0], frame_samples=frame_samples, window_frames=window_frames,
-                                augmentations=0)
-    val = expand_training_set(fold[1], frame_samples=frame_samples, window_frames=window_frames)
-
-    print('dataset', train.shape, val.shape)
-
-    train = train.sample(train_samples, replace=False, random_state=seed)
-    val = val.sample(val_samples, replace=False, random_state=seed)
 
     model_path = os.path.join(out_dir, 'e{epoch:02d}-v{val_loss:.2f}.t{loss:.2f}.model.hdf5')
     checkpoint = keras.callbacks.ModelCheckpoint(model_path, monitor='val_acc', mode='max',
                                          period=1, verbose=1, save_best_only=False)
     callbacks_list = [checkpoint]
 
+    train, val = fold
     train_gen = dataframe_generator(train, train.classID, loader=loader, batchsize=batch_size)
     val_gen = dataframe_generator(val, val.classID, loader=loader, batchsize=batch_size)
 
     hist = model.fit_generator(train_gen, validation_data=val_gen,
-                        steps_per_epoch=math.ceil(len(train)/batch_size),
-                        validation_steps=math.ceil(len(val)/batch_size),
+                        steps_per_epoch=math.ceil(train_samples/batch_size),
+                        validation_steps=math.ceil(val_samples/batch_size),
                         callbacks=callbacks_list,
                         epochs=epochs, verbose=1)
-    
+
     df = history_dataframe(hist)
     history_path = os.path.join(out_dir, 'history.csv')
     df.to_csv(history_path)
@@ -249,6 +185,7 @@ default_training_settings = dict(
     batch=50,
     train_samples=36000,
     val_samples=3000,
+    augment=0,
 )
 
 def parse(args):
@@ -329,7 +266,10 @@ def main():
     assert len(folds) == 9
 
     def load(sample):
-        return load_sample(sample, feature_settings, feature_dir=feature_dir)
+        d = load_sample(sample, feature_settings, feature_dir=feature_dir,
+                        window_frames=model_settings['frames'],
+                        augment=train_settings['augment'] != 0)
+        return d
 
     def build_model():
         m = sbcnn.build_model(bands=feature_settings['n_mels'],

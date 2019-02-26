@@ -18,11 +18,11 @@ Misc
 
 Urbansound8k
 
-- Do all folds and collect results
 - Try run preprocessing on cloud
-- Test 44.1kHz, 128 mels
-- Use dataset oversampling as in SB-CNN. 3 seconds with random starts
-- Pick model based on windowed validation performance. 50% overlap?
+- Test SBCNN 44.1kHz, 128 mels
+- Windowed validation performance is lower than without??
+But test set seems OK??
+Why? Make sure not too much zero-pad
 - Try remove silent frames. And frames with zero padding?
 - Try to convert FastGRNN to Keras and load in STM32AI
 https://github.com/Microsoft/MMdnn

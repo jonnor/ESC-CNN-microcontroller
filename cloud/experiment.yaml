@@ -7,3 +7,4 @@ hop_length: 256
 augmentations: 5
 batch: 100
 train_samples: 36000
+augment: 0

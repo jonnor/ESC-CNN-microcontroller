@@ -164,12 +164,18 @@ Maybe zip + streaming unpacking is way to go?
 Should get feature-set with 5 augmentations down to 2-3 minutes bootstrapping.
 
 ZIP cannot generally be unzipped in streaming fashion.
-tar.xz archives on the other hand can, using bsdtar
+tar.xz archives on the other hand can?
 
 A single .npz file with all the features would avoid zipping.
-But needs a transformation from when preprocessing anyway. 
+But needs a transformation from when preprocessing anyway.
 
-    python3 train.py --samplerate 44100 --fmax 22050 --hop_length 1024 --n_mels 128 --n_fft 1024 --train_samples=12000 --val_samples=1500 --out /mnt/bucket/jobs/
+With n1-highcpu-2, SB-CNN on 32mels, 16kHz, 1 sec window takes approx 2min per batch of 100 samples.
+2 hours total for 50 epochs.
+
+## Run experiments using Kubernetes and Google Cloud
+
+Create project.
+Install google-cloud-sdk and kubectl.
 
 Create Kubernetes cluster
 

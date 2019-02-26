@@ -22,6 +22,9 @@ def feature_path(sample, out_folder, augmentation=None):
     tokens = path.split(os.sep)
     filename = tokens[-1]
     filename = filename.replace('.wav', '.npz')
+    if augmentation is not None:
+        filename = filename.replace('.npz', '.aug{}.npz'.format(augmentation))
+
     out_fold = os.path.join(out_folder, tokens[-2])
     return os.path.join(out_fold, filename)
 
