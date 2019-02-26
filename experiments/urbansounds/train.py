@@ -13,6 +13,7 @@ import numpy
 import keras
 import librosa
 
+import features
 import preprocess
 import urbansound8k
 import sbcnn
@@ -242,16 +243,6 @@ def history_dataframe(h):
     df = pandas.DataFrame(data)
     return df
 
-default_feature_settings = dict(
-    feature='mels',
-    samplerate=16000,
-    n_mels=32,
-    fmin=0,
-    fmax=8000,
-    n_fft=512,
-    hop_length=256,
-    augmentations=5,
-)
 
 default_training_settings = dict(
     epochs=50,
@@ -279,7 +270,7 @@ def parse(args):
         help='')
 
     # Expose feature settings
-    for k, v in default_feature_settings.items():
+    for k, v in features.default_settings.items():
         t = int if k != 'feature' else str
         a('--{}'.format(k), type=t, default=v, help='default: %(default)s')
 
@@ -318,7 +309,7 @@ def main():
 
     # feature settings
     feature_settings = {}
-    for k in default_feature_settings.keys():
+    for k in features.default_settings.keys():
         feature_settings[k] = args[k]
 
     # training settings

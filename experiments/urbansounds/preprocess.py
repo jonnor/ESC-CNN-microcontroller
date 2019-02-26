@@ -1,13 +1,15 @@
 
 import os.path
 import math
+import shutil
+import sys
 
 import librosa
 import numpy
 import joblib
 
 import urbansound8k
-
+import features
 
 def feature_extract(y, sr, n_mels=32, n_fft=512, hop_length=256):
     mels = librosa.feature.melspectrogram(y, n_mels=n_mels, n_fft=n_fft, hop_length=hop_length)
@@ -101,19 +103,58 @@ sbcnn = dict(
     augmentations=0,
 )
 
+def parse(args):
+
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Preprocess audio into features')
+
+    a = parser.add_argument
+
+    a('--data', dest='data_dir', default='./data',
+        help='%(default)s')
+    a('--out', dest='out_dir', default='./features',
+        help='%(default)s')
+
+    a('--archive', dest='archive_dir', default='',
+        help='%(default)s')
+
+    a('--jobs', type=int, default=8,
+        help='Number of parallel jobs')
+
+    # Expose feature settings
+    for k, v in features.default_settings.items():
+        t = int if k != 'feature' else str
+        a('--{}'.format(k), type=t, default=v, help='default: %(default)s')
+
+    parsed = parser.parse_args(args)
+
+    return parsed
 
 def main():
     
-    settings = sbcnn
+    args = parse(sys.argv[1:])
 
-    dir = './aug'
-    data_path = 'data'
+    feature_settings = {}
+    for k in features.default_settings.keys():
+        feature_settings[k] = args.__dict__[k]
+
+    out_dir = args.out_dir
+    data_path = args.data_dir
+    archive = args.archive_dir
+
     urbansound8k.default_path = os.path.join(data_path, 'UrbanSound8K')
     urbansound8k.maybe_download_dataset(data_path)
 
     data = urbansound8k.load_dataset()
 
-    precompute(data, settings, out_dir=dir, verbose=2, force=False, n_jobs=8)
+    id = settings_id(feature_settings)
+    precompute(data, feature_settings, out_dir=out_dir, verbose=2, force=False, n_jobs=args.jobs)
+    if archive:
+        features_path = os.path.join(out_dir, id)
+        archive_path = os.path.join(archive, id)
+        print('Archiving as {}.zip'.format(archive_path)) 
+        shutil.make_archive(archive_path, 'zip', features_path) 
 
 
 if __name__ == '__main__':
