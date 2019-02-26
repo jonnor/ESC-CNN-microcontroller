@@ -214,7 +214,7 @@ def train_model(out_dir, fold, builder, loader,
     train = train.sample(train_samples, replace=False, random_state=seed)
     val = val.sample(val_samples, replace=False, random_state=seed)
 
-    model_path = os.path.join(out_dir, 'e{epoch:02d}-v{val_loss:.2f}.model.hdf5')
+    model_path = os.path.join(out_dir, 'e{epoch:02d}-v{val_loss:.2f}.t{loss:.2f}.model.hdf5')
     checkpoint = keras.callbacks.ModelCheckpoint(model_path, monitor='val_acc', mode='max',
                                          period=1, verbose=1, save_best_only=False)
     callbacks_list = [checkpoint]
