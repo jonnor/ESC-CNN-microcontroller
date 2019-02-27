@@ -7,8 +7,10 @@ n_fft: 1024
 hop_length: 1024
 augmentations: 5
 kernel: 5x5
+pool: 4x2
 frames: 128
-batch: 100
-train_samples: 100000
+batch: 50
+epochs: 20
+train_samples: 50000
 val_samples: 5000
-augment: 0
+augment: 1

@@ -7,6 +7,7 @@ import math
 import sys
 import uuid
 import json
+import functools
 
 import pandas
 import numpy
@@ -138,7 +139,8 @@ def sample_windows(length, frame_samples, window_frames, overlap=0.5):
         start += (ws * (1-overlap))
 
 
-def train_model(out_dir, fold, builder, loader,
+def train_model(out_dir, fold, builder,
+                loader, val_loader,
                 frame_samples, window_frames,
                 train_samples=12000, val_samples=3000,
                 batch_size=200, epochs=50, seed=1, learning_rate=3e-4):
@@ -157,7 +159,7 @@ def train_model(out_dir, fold, builder, loader,
 
     train, val = fold
     train_gen = dataframe_generator(train, train.classID, loader=loader, batchsize=batch_size)
-    val_gen = dataframe_generator(val, val.classID, loader=loader, batchsize=batch_size)
+    val_gen = dataframe_generator(val, val.classID, loader=val_loader, batchsize=batch_size)
 
     hist = model.fit_generator(train_gen, validation_data=val_gen,
                         steps_per_epoch=math.ceil(train_samples/batch_size),
@@ -260,7 +262,9 @@ def main():
     output_dir = os.path.join(args['out_dir'], name)
     fold = args['fold']
 
-    os.makedirs(output_dir)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
     if not os.path.exists(feature_dir):
         os.makedirs(feature_dir)
 
@@ -290,10 +294,11 @@ def main():
     folds, test = urbansound8k.folds(data)
     assert len(folds) == 9
 
-    def load(sample):
+    def load(sample, validation):
+        augment = not validation and train_settings['augment'] != 0
         d = load_sample(sample, feature_settings, feature_dir=feature_dir,
                         window_frames=model_settings['frames'],
-                        augment=train_settings['augment'] != 0)
+                        augment=augment)
         return d
 
     def build_model():
@@ -314,7 +319,9 @@ def main():
     print('Settings', json.dumps(settings))
 
     h = train_model(output_dir, folds[fold],
-                      builder=build_model, loader=load,
+                      builder=build_model,
+                      loader=functools.partial(load, validation=False),
+                      val_loader=functools.partial(load, validation=True),
                       frame_samples=feature_settings['hop_length'],
                       window_frames=model_settings['frames'],
                       epochs=train_settings['epochs'],
