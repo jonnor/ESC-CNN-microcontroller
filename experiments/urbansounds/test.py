@@ -15,35 +15,42 @@ import preprocess
 import features
 import train
 
-def predict_windowed(settings, model, samples, loader, window_frames, method='mean', overlap=0.5):
+Sample = collections.namedtuple('Sample', 'start end fold slice_file_name')
+
+def load_windows(sample, settings, loader, window_frames, overlap):
     sample_rate = settings['samplerate']
-    Sample = collections.namedtuple('Sample', 'start end fold slice_file_name')
     frame_samples = settings['hop_length']
+
+    windows = []
+
+    duration = sample.end - sample.start
+    length = int(sample_rate * duration)
+
+    for win in train.sample_windows(length, frame_samples, window_frames, overlap=overlap):
+        chunk = Sample(start=win[0]/sample_rate,
+                       end=win[1]/sample_rate,
+                       fold=sample.fold,
+                       slice_file_name=sample.slice_file_name)    
+        d = loader(chunk)
+        windows.append(d)
+
+    return windows
+
+def predict_voted(settings, model, samples, loader, window_frames, method='mean', overlap=0.5):
 
     out = []
     for _, sample in samples.iterrows():
-        duration = sample.end - sample.start
-        length = int(sample_rate * duration)
-        windows = []
-        
-        for win in train.sample_windows(length, frame_samples, window_frames, overlap=overlap):
-            chunk = Sample(start=win[0]/sample_rate,
-                           end=win[1]/sample_rate,
-                           fold=sample.fold,
-                           slice_file_name=sample.slice_file_name)    
-            d = loader(chunk)
-            windows.append(d)
-
+        windows = load_windows(sample, settings, loader, window_frames, overlap=overlap)
         inputs = numpy.stack(windows)
-        predictions = model.predict(inputs)
 
+        predictions = model.predict(inputs)
         if method == 'mean':
             p = numpy.mean(predictions, axis=0)
             assert len(p) == 10
             out.append(p)
         elif method == 'majority':
             votes = numpy.argmax(predictions, axis=1)
-            p = numpy.bincount(votes)
+            p = numpy.bincount(votes) / len(votes)
             out.append(p)
 
     ret = numpy.stack(out)
@@ -99,43 +106,32 @@ def pick_best(history, n_best=1):
     # best_by_loss.plot(y='val_acc', kind='bar', subplots=True)
 
 
-def score_folds(models, folds, test, predictor, top_k=3, overlap=0.5):
+def evaluate(models, folds, test, predictor):
 
-    val_acc_top = []
-    test_acc_top = []
-    scores = {
-        'val_acc_win': [],
-        'test_acc': [],
-    }
+    val_scores = []
+    test_scores = []
 
     def score(model, data):
-        y_true = keras.utils.to_categorical(data.classID)
-        y_pred = predictor(model, data)
-
-        #confusion = sklearn.metrics.confusion_matrix(y_true, y_pred)
-
-        acc = numpy.array(keras.metrics.categorical_accuracy(y_pred, y_true))
-        top = numpy.array(keras.metrics.top_k_categorical_accuracy(y_pred, y_true, k=top_k))
-        return acc, top
+        y_true = data.classID
+        p = predictor(model, data)
+        y_pred = numpy.argmax(p, axis=1)
+        # other metrics can be derived from confusion matrix
+        confusion = sklearn.metrics.confusion_matrix(y_true, y_pred)
+        return confusion
 
     # validation
     for i, m in enumerate(models):
         validation_fold = folds[i][1]
-        acc, top = score(m, validation_fold)
-        val_acc_top.append(top)
-        scores['val_acc_win'].append(acc)
+        s = score(m, validation_fold)
+        val_scores.append(s)
 
     # test
     for i, m in enumerate(models):
-        acc, top = score(m, test)
-        test_acc_top.append(top)
-        scores['test_acc'].append(acc)
+        s = score(m, test)
+        test_scores.append(s)
+        
 
-
-    scores['val_acc_top{}_win'.format(top_k)] = val_acc_top
-    scores['test_acc_top{}'.format(top_k)] = test_acc_top
-    
-    return pandas.DataFrame(scores)
+    return val_scores, test_scores
 
 
 def test_predict_windowed():
@@ -227,15 +223,13 @@ def main():
         return train.load_sample(sample, settings, window_frames=frames, feature_dir=args.features_dir)
 
     def predict(model, data):
-        return predict_windowed(settings, model, data, loader=load_sample, window_frames=frames, method='mean', overlap=0.5)
+        return predict_voted(settings, model, data, loader=load_sample, window_frames=frames, method='mean', overlap=0.5)
 
-    # TODO: should we use confusion matrix instead? Can derive all other stats from that?
-
-    scores = score_folds(models, folds, test, predictor=predict, top_k=3)
+    val, test = evaluate(models, folds, test, predictor=predict)
 
     # FIXME: put experiment name into filename
-    results_path = os.path.join(args.out_dir, 'results.csv')
-    scores.to_csv(results_path)
+    results_path = os.path.join(args.out_dir, 'confusion.npz')
+    numpy.savez(results_path, val=val, test=test)
 
     print('Wrote to', results_path)
 
