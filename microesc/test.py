@@ -10,7 +10,7 @@ import pandas
 import numpy
 import keras.metrics
 
-from . import urbansound8k, preprocess, features, train
+from . import urbansound8k, features, common
 
 Sample = collections.namedtuple('Sample', 'start end fold slice_file_name')
 
@@ -23,7 +23,7 @@ def load_windows(sample, settings, loader, window_frames, overlap):
     duration = sample.end - sample.start
     length = int(sample_rate * duration)
 
-    for win in train.sample_windows(length, frame_samples, window_frames, overlap=overlap):
+    for win in features.sample_windows(length, frame_samples, window_frames, overlap=overlap):
         chunk = Sample(start=win[0]/sample_rate,
                        end=win[1]/sample_rate,
                        fold=sample.fold,
@@ -148,7 +148,7 @@ def test_predict_windowed():
     )
 
     def load_sample32(sample):
-        return train.load_sample(sample, sbcnn16k32_settings, window_frames=72, feature_dir='../../scratch/aug')
+        return features.load_sample(sample, sbcnn16k32_settings, window_frames=72, feature_dir='../../scratch/aug')
 
     mean_m = predict_windowed(sbcnn16k32_settings, model, t, loader=load_sample32, method='mean')
     accuracy_score(t.classID, mean_m)
@@ -158,20 +158,12 @@ def parse(args):
     import argparse
 
     parser = argparse.ArgumentParser(description='Test trained models')
-
     a = parser.add_argument
 
-    a('--jobs', dest='jobs_dir', default='./jobs',
-        help='%(default)s')
-    a('--out', dest='out_dir', default='./results',
-        help='%(default)s')
-    a('--features', dest='features_dir', default='./features',
-        help='%(default)s')
+    common.add_arguments(parser)
 
-
-    a('--experiment', dest='experiment', default='',
+    a('--out', dest='results_dir', default='./data/results',
         help='%(default)s')
-
 
 
     parsed = parser.parse_args(args)
@@ -182,50 +174,37 @@ def main():
     
     args = parse(sys.argv[1:])
 
-    if not os.path.exists(args.out_dir):
-        os.makedirs(args.out_dir)
+    out_dir = os.path.join(args.results_dir, args.experiment)
 
-    history = load_history(args.jobs_dir, args.experiment)
-    best = pick_best(history)
+    common.ensure_directories(out_dir)
 
-
-    data_path = './data'
-    urbansound8k.default_path = os.path.join(data_path, 'UrbanSound8K')
-    urbansound8k.maybe_download_dataset(data_path)
+    urbansound8k.maybe_download_dataset(args.datasets_dir)
     data = urbansound8k.load_dataset()
-
     folds, test = urbansound8k.folds(data)
+    settings = common.load_experiment(args.experiments_dir, args.experiment)
+    frames = settings['frames']
+    voting = settings['voting']
+    overlap = settings['voting_overlap']
+    settings = features.settings(settings)
+
+    def load_sample(sample):
+        return features.load_sample(sample, settings,
+                    window_frames=frames, feature_dir=args.features_dir)
+
+    def predict(model, data):
+        return predict_voted(settings, model, data, loader=load_sample,
+                             window_frames=frames, method=voting, overlap=overlap)
+
+    history = load_history(args.models_dir, args.experiment)
+    best = pick_best(history)
 
     print('Loading models...')
     models = best['model'].apply(lambda p: keras.models.load_model(p))
 
     print('Testing models...')
-
-    sbcnn16k32_settings = dict(
-        feature='mels',
-        samplerate=16000,
-        n_mels=30,
-        fmin=0,
-        fmax=8000,
-        n_fft=512,
-        hop_length=256,
-        augmentations=0,
-    )
-
-    frames=72
-
-    settings = sbcnn16k32_settings
-    def load_sample(sample):
-        # FIXME: unhardcode
-        return train.load_sample(sample, settings, window_frames=frames, feature_dir=args.features_dir)
-
-    def predict(model, data):
-        return predict_voted(settings, model, data, loader=load_sample, window_frames=frames, method='mean', overlap=0.5)
-
     val, test = evaluate(models, folds, test, predictor=predict)
 
-    # FIXME: put experiment name into filename
-    results_path = os.path.join(args.out_dir, 'confusion.npz')
+    results_path = os.path.join(out_dir, 'confusion.npz')
     numpy.savez(results_path, val=val, test=test)
 
     print('Wrote to', results_path)

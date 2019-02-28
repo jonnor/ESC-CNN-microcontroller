@@ -28,7 +28,7 @@ download_urls = [
 	'https://zenodo.org/record/1203745/files/UrbanSound8K.tar.gz',
     'https://serv.cusp.nyu.edu/files/jsalamon/datasets/UrbanSound8K.tar.gz',
 ] 
-def maybe_download_dataset(workdir = None):
+def maybe_download_dataset(workdir):
 
     if not os.path.exists(workdir):
         os.makedirs(workdir)
@@ -46,7 +46,8 @@ def maybe_download_dataset(workdir = None):
             last_progress = p
 
     if not os.path.exists(dir_path):
-        
+        print('Could not find', dir_path)        
+
         if not os.path.exists(archive_path):
             u = download_urls[0]
             print('Downloading...', u)
@@ -60,14 +61,8 @@ def maybe_download_dataset(workdir = None):
     return dir_path
 
 
-def load_dataset(path = None):
-    if path is None:
-        path = default_path
-
-    u = 'https://storage.googleapis.com/urbansound8k/UrbanSound8K.csv'
-    metadata_path = os.path.join(path, 'metadata/UrbanSound8K.csv')
-    if not os.path.exists(metadata_path):
-        urllib.request.urlretrieve(u, metadata_path)
+def load_dataset():
+    metadata_path = os.path.join(here, 'datasets/UrbanSound8K.csv')
 
     samples = pandas.read_csv(metadata_path)
     return samples

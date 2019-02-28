@@ -4,7 +4,7 @@ import uuid
 import datetime
 import sys
 
-import yaml
+from . import common
 
 
 template = """
@@ -88,15 +88,17 @@ def parse(args):
 
     parser = argparse.ArgumentParser(description='Train a model')
 
+    common.add_arguments(parser)
+
     a = parser.add_argument
 
-    a('--experiment', dest='experiment', default='',
-        help='%(default)s')
-    a('--out', dest='out_dir', default='cloud/jobs',
+
+    a('--jobs', dest='jobs_dir', default='cloud/jobs',
         help='%(default)s')
 
     a('--bucket', type=str, default='jonnor-micro-esc',
         help='GCS bucket to write to. Default: %(default)s')
+
     a('--image', type=str, default='gcr.io/masterthesis-231919/base:12',
         help='Docker image to use')
     
@@ -108,13 +110,11 @@ def main():
     parsed = parse(sys.argv[1:])
 
     mountpoint = '/mnt/bucket'
-    out_dir = mountpoint+'/jobs'
+    storage_dir = mountpoint+'/jobs'
 
-    with open(parsed.experiment, 'r') as config_file:
-        settings = yaml.load(config_file.read())    
-        name = settings['name']
+    settings = common.load_experiment(args.experiments_dir, name)
 
-    out = os.path.join(parsed.out_dir, name)
+    out = os.path.join(parsed.jobs_dir, name)
 
     t = datetime.datetime.now().strftime('%Y%m%d-%H%M') 
     u = str(uuid.uuid4())[0:4]
@@ -123,8 +123,8 @@ def main():
     if not os.path.exists(out):
         os.makedirs(out)
 
-    generate_train_jobs(settings, out, parsed.image,
-                    identifier, out_dir, mountpoint, parsed.bucket)
+    generate_train_jobs(settings, jobs_dir, parsed.image,
+                    identifier, storage_dir, mountpoint, parsed.bucket)
     print('wrote to', out)
 
 

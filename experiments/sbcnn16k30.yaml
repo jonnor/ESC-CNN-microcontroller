@@ -1,12 +1,15 @@
-name: 'sbcnn16k30'
+feature: 'mels'
 samplerate: 16000
 n_mels: 30
 fmin: 0
 fmax: 8000
 n_fft: 512
 hop_length: 256
+frames: 72
 augmentations: 0
 batch: 100
 train_samples: 50000
 val_samples: 5000
 augment: 0
+voting: 'mean'
+voting_overlap: 0.5

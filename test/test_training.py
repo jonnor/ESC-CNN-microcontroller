@@ -4,7 +4,7 @@ import itertools
 import pandas
 import numpy
 
-import train
+import train, features
 import urbansound8k
 
 def test_generator_fake_loader():
@@ -44,7 +44,7 @@ def test_windows_shorter_than_window():
     window_frames=64
     fs=16000
     length = 0.4*fs
-    w = list(train.sample_windows(int(length), frame_samples, window_frames))
+    w = list(features.sample_windows(int(length), frame_samples, window_frames))
     assert len(w) == 1, len(w)
     assert w[-1][1] == length
 
@@ -53,6 +53,6 @@ def test_window_typical():
     window_frames=64
     fs=16000
     length = 4.0*fs
-    w = list(train.sample_windows(int(length), frame_samples, window_frames))
+    w = list(features.sample_windows(int(length), frame_samples, window_frames))
     assert len(w) == 8, len(w) 
     assert w[-1][1] == length
