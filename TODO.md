@@ -19,10 +19,9 @@ Misc
 Urbansound8k
 
 - Try run preprocessing on cloud
+- ! Figure out why SB-CNN baseline score is not reproduced
 - Test SBCNN 44.1kHz, 128 mels. With 3 second window (original) and 1 second window (reduced)
-- Windowed validation performance is lower than without??
-But test set seems OK??
-Why? Make sure not too much zero-pad
+- Preprocess 44.1kHz, 64 mels and 32 mels.
 - Try remove silent frames. And frames with zero padding?
 - Try to convert FastGRNN to Keras and load in STM32AI
 https://github.com/Microsoft/MMdnn
@@ -30,7 +29,16 @@ https://github.com/Microsoft/MMdnn
 - Shorter fields of view. Do they save cpu/mem?
 * Estimate multiply-adds for existing models
 * Try to run FastGRNN on Urbansound8k
-- Test Pizcak
+
+Restructure
+
+- Remove unused Speech command experiment
+- Move Python code into `microesc` module
+- Move report into dedicated dir
+- Use a dedicated "data/" dir for all forms of data
+- Pass experiment settings using a file instead of stdin
+- Use experiment filename as name
+- Check in results files into git
 
 ESC-50/ESC-10
 

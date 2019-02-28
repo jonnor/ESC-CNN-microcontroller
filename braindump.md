@@ -172,6 +172,41 @@ But needs a transformation from when preprocessing anyway.
 With n1-highcpu-2, SB-CNN on 32mels, 16kHz, 1 sec window takes approx 2min per batch of 100 samples.
 2 hours total for 50 epochs.
 
+SB-CNN 32mel 16kHz 1 sec 50% vote overlap had much lower validation performance than testset.
+Across most folds.
+
+SB-CNN 128mel 3 sec 16kHz 50% vote overlap on the other hand was very similar, as expected.
+
+
+### Simpler classes
+
+Attempt at narrower taxonomy.
+Note, different from Urbansound taxonomy.
+
+Social activity
+9      street_music
+2  children_playing
+3          dog_bark
+
+Construction
+    drilling
+    jackhammer
+
+Domestic machines
+0   air_conditioner
+
+Road_noise
+5     engine_idling
+1          car_horn
+
+Alarm
+8             siren
+
+Danger
+6          gun_shot
+        "explosion"
+
+
 ## Run experiments using Kubernetes and Google Cloud
 
 Create project.

@@ -2,7 +2,7 @@
 \newpage
 # Introduction
 
-# Materials
+Privacy, GDPR
 
 ## Environmental noise
 Noise is unwanted sound. Environmental noise is the summary of noise pollution from outside,
@@ -73,6 +73,10 @@ According to a report done on behalf of the European Commision[@RVIMTransportati
 and "the number of cases of premature mortality due to these diseases as a result of noise exposure is about 10 thousand per year.",
 and "An estimated 8 million people experience sleep disturbance due to transportation noise and about 4 million perceive this as severe".
 
+## Urban noise
+
+    TODO: reference existing research / groups / project / locations
+
 
 ## Noise measurements
 
@@ -104,8 +108,9 @@ For machine learning, it must be exist in a digital representation.
 The acoustic data is converted to analog electric signals by a microphone and
 then digitized using an Analog-to-Digital-Converter (ADC).
 
-![From acoustical sound to digital and back. Source: [@ProcessingTutorial]](./images/digital-sound-processingorg.png)
+    TODO: IMAGE, replace with own work
 
+![From acoustical sound to digital and back. Source: [@ProcessingTutorial]](./images/digital-sound-processingorg.png)
 
 In the digitization process, the signal is quantized in time at a certain sampling frequency,
 and the amplitude quantized at a certain bitdepth.
@@ -183,6 +188,8 @@ Therefore the frame length must be set long enough to contain enough relevant in
 but not so long that temporal variations disappear. For speech, a typical choice of frame length is 25ms.
 Similar frame lengths are often adopted for acoustic events, unless there are specific concerns.
 
+    TODO: IMAGE, replace with own work
+
 ![Computing frames from an audio signal, using windows functions. Based on image by [@AudioFraming]](./images/frames.png)
 
 Frames often use overlapping samples at the start and end.
@@ -202,6 +209,8 @@ All these have filters spacing that increase with frequency, mimicking the human
 
 A spectrogram processed with triangular filters evenly spaced on the Mel scale is called a Mel-spectrogram.
 
+    TODO: IMAGE, replace with own work
+
 ![Mel-spaced filterbank. Filters are set to to be unity-height. Mel-filters using unit-area filters also exist. Source: [@SpeechProcessingTutorial]](./images/mel-filterbanks-20.png)
 
 ![Mel-spectrogram of birdsong. The birdsong is clearly visible as up and down chirps at 3kHz and higher](./images/bird_clear_melspec.png)
@@ -216,13 +225,67 @@ But kernels kernel can be seen as parametric local feature detector can express 
 patterns, like a upward or downward diagonal from a bird chirp when applied to a spectrogram.
 Using a set of kernels in combination can detect many pattern variations.
 
+    TODO: IMAGE, replace with own work
+
 ![Convolution kernel as edge detector, applied to image. Source: [@UnderstandingConvolution]](./images/convolution.png)
 
 ## Convolutional Neural Network
 
 
+    TODO: reference CNNs as state-of-the-art in
+
+
+## Wireless Sensor Networks
+
+
+## Microcontrollers
+
+    TODO: write 
+
+STM32 AI
+
+
+\newpage
+# Materials
+
+## Hardware platform
+
+    Key specifications.
+    ARM Cortex M4F
+    80 Mhz
+
+    STM32AI
+    SensorTile
+
+
+## Datasets
+
+Urbansound taxonomy and Urbansound8K dataset[@UrbanSound8k].
+
+The taxonomy was based on analysis of noise complaints in New York city between 2010 and 2014.
+
+    TODO: describe dataset collection. Where/how??
+
+
+The dataset consists of  of 10 different classes.
+
+\input{report/pyincludes/urbansound8k-classes.tex}
+
+    TODO: IMAGE with representative spectrogram for each of the classes
+
+The dataset comes pre-arranged into 10 folds.
+As recommended by the authors we fold 10 as the test set.
+This allows comparison with existing results in literature that do the same.
+
+
+
+    TODO: Use and describe ESC-50 dataset
+
+
 \newpage
 # Methods
+
+SB-CNN
 
 \newpage
 # Results
