@@ -30,9 +30,6 @@ https://github.com/Microsoft/MMdnn
 
 Restructure
 
-- Remove unused Speech command experiment
-- Move Python code into `microesc` module
-- Move report into dedicated dir
 - Use a dedicated "data/" dir for all forms of data
 - Pass experiment settings using a file instead of stdin
 - Use experiment filename as the name

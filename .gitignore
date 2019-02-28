@@ -1,8 +1,7 @@
 .~lock*
 *.pyc
-merged.pdf
-report.pdf
-summary.pdf
+report/merged.pdf
+report/report.pdf
+report/summary.pdf
 data/
-experiments/speechcommands/train/
 .ipynb_checkpoints/
