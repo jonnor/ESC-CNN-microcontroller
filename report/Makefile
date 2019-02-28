@@ -3,8 +3,8 @@ all: report
 
 report: merged.pdf
 
-pyincludes/%.tex: report/pyincludes/%.py
-	PYTHONPATH=experiments/urbansounds python3 $< > $@
+pyincludes/%.tex: pyincludes/%.py
+	PYTHONPATH=../ python3 $< > $@
 
 includes: pyincludes/urbansound8k-classes.tex
 

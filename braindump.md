@@ -207,39 +207,6 @@ Danger
         "explosion"
 
 
-## Run experiments using Kubernetes and Google Cloud
-
-Create project.
-Install google-cloud-sdk and kubectl.
-
-Create Kubernetes cluster
-
-    gcloud container clusters create cluster --scopes storage-full --machine-type n1-highcpu-2 --num-nodes 10 \
-        --create-subnetwork name=my-subnet-0 \
-        --enable-ip-alias \
-        --enable-private-nodes \
-        --master-ipv4-cidr 172.16.0.0/28 \
-        --no-enable-basic-auth \
-        --no-issue-client-certificate \
-        --no-enable-master-authorized-networks
-
-    gcloud container clusters get-credentials cluster
-    kubectl get nodes
-
-Build Docker images and push to GKE
-
-    export PROJECT_ID="$(gcloud config get-value project -q)"
-    docker build -t gcr.io/${PROJECT_ID}/base:5 -f cloud/Dockerfile .
-    docker push gcr.io/${PROJECT_ID}/base
-
-Generate Kubernetes jobs and start them
-
-    python3 cloud/jobs.py
-    kubectl create -f cloud/jobs/foo/
-
-Delete jobs
-
-    kubectl delete jobs `kubectl get jobs -o custom-columns=:.metadata.name`
 
 ### Speech commands
 

@@ -28,6 +28,8 @@ WORKDIR /usr/src/app
 COPY ./requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./experiments ./
+COPY ./*.py ./
+COPY ./microesc /usr/src/app/microesc
+COPY ./experiments /usr/src/app/microesc
 
 CMD ["sleep", "3600"]
