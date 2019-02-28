@@ -14,10 +14,8 @@ import numpy
 import keras
 import librosa
 
-import features
-import preprocess
-import urbansound8k
-import sbcnn
+from . import features, preprocess, urbansound8k
+from .models import sbcnn
 
 default_base_url = 'https://storage.googleapis.com/urbansound8k'
 

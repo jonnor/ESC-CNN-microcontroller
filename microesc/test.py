@@ -10,10 +10,7 @@ import pandas
 import numpy
 import keras.metrics
 
-import urbansound8k
-import preprocess
-import features
-import train
+from . import urbansound8k, preprocess, features, train
 
 Sample = collections.namedtuple('Sample', 'start end fold slice_file_name')
 
@@ -192,7 +189,7 @@ def main():
     best = pick_best(history)
 
 
-    data_path = '../../data'
+    data_path = './data'
     urbansound8k.default_path = os.path.join(data_path, 'UrbanSound8K')
     urbansound8k.maybe_download_dataset(data_path)
     data = urbansound8k.load_dataset()

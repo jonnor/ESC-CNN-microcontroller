@@ -8,8 +8,8 @@ import librosa
 import numpy
 import joblib
 
-import urbansound8k
-import features
+from . import urbansound8k, features
+
 
 def feature_extract(y, sr, n_mels=32, n_fft=512, hop_length=256):
     mels = librosa.feature.melspectrogram(y, n_mels=n_mels, n_fft=n_fft, hop_length=hop_length)
