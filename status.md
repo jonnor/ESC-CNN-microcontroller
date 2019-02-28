@@ -15,7 +15,7 @@ Summary
 - Experimentation going a bit slow
 
 
-## Tasks for Feburary 07
+## Tasks for Feburary 21
 
 - Explore hypotheses
 - Choose promising models
@@ -94,7 +94,7 @@ Best model: N/A
 ## Tasks for March 7
 
 - Write methods
-- Finish writing background
+- Finish writing introduction
 - Fix/add data augmentation
 - Setup validation pipeline
 

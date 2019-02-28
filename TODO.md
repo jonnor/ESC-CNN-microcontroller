@@ -2,30 +2,28 @@
 
 ## TODO
 
-## Phase 2: Experimentation
 
-Writing
+Report
 
 - Outline sections for introduction
 - Outline sections for methods
 - Outline sections for materials
+- Finish draft methods. Ask for feedback OK
 - Setup/generate Table of existing methods
 
-Misc
+Model performance
 
-- Image of overall pipeline
-- Project image, title page
-
-Urbansound8k
-
-- Try run preprocessing on cloud
 - ! Figure out why SB-CNN baseline score is not reproduced
-- Test SBCNN 44.1kHz, 128 mels. With 3 second window (original) and 1 second window (reduced)
+- Check windowing functions, esp last frame and padding
+- Check data augmentations
+
+More experiments
+
 - Preprocess 44.1kHz, 64 mels and 32 mels.
-- Try remove silent frames. And frames with zero padding?
+
 - Try to convert FastGRNN to Keras and load in STM32AI
 https://github.com/Microsoft/MMdnn
-- Get data augmentations to work
+
 - Shorter fields of view. Do they save cpu/mem?
 * Estimate multiply-adds for existing models
 * Try to run FastGRNN on Urbansound8k
@@ -37,12 +35,8 @@ Restructure
 - Move report into dedicated dir
 - Use a dedicated "data/" dir for all forms of data
 - Pass experiment settings using a file instead of stdin
-- Use experiment filename as name
+- Use experiment filename as the name
 - Check in results files into git
-
-ESC-50/ESC-10
-
-- Download dataset, setup pipeline
 
 Run CNN model on microcontroller
 
@@ -51,10 +45,19 @@ Run CNN model on microcontroller
 - Test USB audio input
 - Test measuring current with ST board
 
-Verification methodology proposal
+Reproducability
 
-- Write it
-- Ask Oliver/Kristian for feedback
+- Try run preprocessing on cloud
+
+ESC-50/ESC-10
+
+- Download dataset, setup pipeline
+
+Dissemination
+
+- Image of overall pipeline
+- Project image, title page
+
 
 ## Done
 
@@ -89,6 +92,7 @@ Built-in example also had BT audio out (but locked at 8kHz?)
 
 
 ## Status
+
 
 
 
