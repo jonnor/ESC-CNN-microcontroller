@@ -7,9 +7,10 @@ n_fft: 512
 hop_length: 256
 frames: 72
 augmentations: 5
-batch: 100
+batch: 50
 train_samples: 50000
 val_samples: 5000
 augment: 1
+epochs: 30
 voting: 'mean'
 voting_overlap: 0.5
