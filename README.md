@@ -17,6 +17,24 @@
 * [emlearn](https://github.com/jonnor/emlearn) - Machine Learning inference engine for Microcontrollers and Embedded Systems
 
 
+## Run experiments locally
+
+Install dependencies
+
+    pip install -r requirements.txt
+
+Preprocess audio files into features
+
+    python3 preprocess.py
+
+Train the models
+
+    python3 train.py
+
+Evaluate the resulting models
+
+    python3 test.py
+
 
 ## Run experiments using Docker, Kubernetes and Google Cloud
 
@@ -45,7 +63,7 @@ Create Kubernetes cluster
 Build Docker images and push to GKE
 
     export PROJECT_ID="$(gcloud config get-value project -q)"
-    docker build -t gcr.io/${PROJECT_ID}/base:5 -f Dockerfile .
+    docker build -t gcr.io/${PROJECT_ID}/base:15 -f Dockerfile .
     docker push gcr.io/${PROJECT_ID}/base
 
 Generate Kubernetes jobs and start them

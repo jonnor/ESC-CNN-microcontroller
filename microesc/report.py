@@ -33,13 +33,12 @@ def cm_accuracy(cm):
     total = numpy.sum(numpy.sum(cm, axis=1))
     return correct/total
 
+
+
 def main():
 
     cm = numpy.load('results/confusion.npz')
-
-    print(list(cm.keys()))
-
-    val, test = cm['val'], cm['test']
+    vals, tests = cm['val'], cm['test']
 
     print('v', val.shape, test.shape)
 

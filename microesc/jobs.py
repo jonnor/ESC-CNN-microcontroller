@@ -17,7 +17,7 @@ metadata:
 spec:
   template:
     metadata:
-      name: mesc-{kind}
+      name: microesc-{kind}
       labels:
         jobgroup: microesc-{kind}
     spec:
@@ -48,16 +48,16 @@ def array_str(a):
     m  = ', '.join([ '"{}"'.format(p) for p in a ])
     return '[ {} ]'.format(m)
 
-def render_job(image, script, options, mountpoint, bucket):
-    cmd = ["python3", "urbansounds/{}.py".format(script) ]
+def render_job(image, script, args, mountpoint, bucket):
+    cmd = ["python3", "{}.py".format(script) ]
 
-    for k, v in options.items():
+    for k, v in args.items():
         cmd += [ '--{}'.format(k), str(v) ]
 
     p = dict(
         image=image,
         kind=script,
-        name=options['name'],
+        name=args['name'],
         command=array_str(cmd),
         bucket=bucket,
         mountpoint=mountpoint,
@@ -68,14 +68,15 @@ def render_job(image, script, options, mountpoint, bucket):
 def generate_train_jobs(settings, jobs_dir, image, name, out_dir, mountpoint, bucket):
 
     folds = list(range(0, 9))
-
-    settings['out'] = out_dir    
+  
     for fold in folds:
-        options = settings.copy()
-        options['fold'] = fold
-        options['name'] = "{}-fold{}".format(name, options['fold']) 
+        args = {
+            'models': out_dir,
+            'fold': fold,
+            'name': name,
+        }
 
-        s = render_job(image, 'train', options, mountpoint, bucket)
+        s = render_job(image, 'train', args, mountpoint, bucket)
 
         job_filename = "train-{}.yaml".format(fold)
         out_path = os.path.join(jobs_dir, job_filename)
@@ -86,20 +87,20 @@ def parse(args):
 
     import argparse
 
-    parser = argparse.ArgumentParser(description='Train a model')
+    parser = argparse.ArgumentParser(description='Generate jobs')
 
     common.add_arguments(parser)
 
     a = parser.add_argument
 
 
-    a('--jobs', dest='jobs_dir', default='cloud/jobs',
+    a('--jobs', dest='jobs_dir', default='./data/jobs',
         help='%(default)s')
 
     a('--bucket', type=str, default='jonnor-micro-esc',
         help='GCS bucket to write to. Default: %(default)s')
 
-    a('--image', type=str, default='gcr.io/masterthesis-231919/base:12',
+    a('--image', type=str, default='gcr.io/masterthesis-231919/base:16',
         help='Docker image to use')
     
     parsed = parser.parse_args(args)
@@ -107,26 +108,23 @@ def parse(args):
     return parsed
 
 def main():
-    parsed = parse(sys.argv[1:])
+    args = parse(sys.argv[1:])
 
     mountpoint = '/mnt/bucket'
-    storage_dir = mountpoint+'/jobs'
+    storage_dir = mountpoint+'/models'
 
+    name = args.experiment
     settings = common.load_experiment(args.experiments_dir, name)
 
-    out = os.path.join(parsed.jobs_dir, name)
+    out = os.path.join(args.jobs_dir, name)
+    common.ensure_directories(out)
 
     t = datetime.datetime.now().strftime('%Y%m%d-%H%M') 
     u = str(uuid.uuid4())[0:4]
     identifier = "-".join([name, t, u])
 
-    if not os.path.exists(out):
-        os.makedirs(out)
-
-    generate_train_jobs(settings, jobs_dir, parsed.image,
-                    identifier, storage_dir, mountpoint, parsed.bucket)
+    generate_train_jobs(settings, out, args.image,
+                    identifier, storage_dir, mountpoint, args.bucket)
     print('wrote to', out)
 
 
-if __name__ == '__main__':
-    main()

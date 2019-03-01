@@ -8,6 +8,7 @@ import sys
 import uuid
 import json
 import functools
+import datetime
 
 import pandas
 import numpy
@@ -104,6 +105,9 @@ def parse(args):
     a('--fold', type=int, default=0,
         help='')
 
+    a('--name', type=str, default='',
+        help='')
+
     parsed = parser.parse_args(args)
 
     return parsed
@@ -144,7 +148,9 @@ def load_model_settings(args):
 def settings(args):
     train_settings = {}
     for k in default_training_settings.keys():
-        train_settings[k] = args.get(k, default_training_settings[k])
+        v = args.get(k, default_training_settings[k])
+        print('v', k, v, args.get(k))
+        train_settings[k] = v
     return train_settings
 
 
@@ -157,15 +163,25 @@ def main():
     # experiment settings
     feature_dir = args['features_dir']
     name = args['experiment']
-    output_dir = os.path.join(args['models_dir'], name)
+
     fold = args['fold']
+
+    if args['name']:
+        name = args['name']
+    else:
+        t = datetime.datetime.now().strftime('%Y%m%d-%H%M') 
+        u = str(uuid.uuid4())[0:4]
+        name = "-".join([name, t, u, 'fold{}'.format(fold)])
+
+    output_dir = os.path.join(args['models_dir'], name)
 
     common.ensure_directories(output_dir, feature_dir)
 
     # model settings
-    feature_settings = features.settings(args)
-    train_settings = settings(args)
-    model_settings = load_model_settings(args)
+    exsettings = common.load_experiment(args['experiments_dir'], args['experiment'])
+    feature_settings = features.settings(exsettings)
+    train_settings = settings(exsettings)
+    model_settings = load_model_settings(exsettings)
 
     features.maybe_download(feature_settings, feature_dir)
 

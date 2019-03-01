@@ -5,6 +5,8 @@
 
 Report
 
+- Include results into report. Boxplot, table with average perf
+- Check in results files into git
 - Outline sections for introduction
 - Outline sections for methods
 - Outline sections for materials
@@ -14,8 +16,9 @@ Report
 Model performance
 
 - ! Figure out why SB-CNN baseline score is not reproduced
+- Check feature preprocessing. Missing standardization?
 - Check windowing functions, esp last frame and padding
-- Check data augmentations
+- Check data augmentations working
 
 More experiments
 
@@ -28,12 +31,10 @@ https://github.com/Microsoft/MMdnn
 * Estimate multiply-adds for existing models
 * Try to run FastGRNN on Urbansound8k
 
-Restructure
+Code quality
 
-- Use a dedicated "data/" dir for all forms of data
-- Pass experiment settings using a file instead of stdin
-- Use experiment filename as the name
-- Check in results files into git
+- Fix tests and Travis CI build
+- Add end2end test
 
 Run CNN model on microcontroller
 
