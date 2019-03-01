@@ -189,9 +189,33 @@ def main():
     folds, test = urbansound8k.folds(data)
     assert len(folds) == 9
 
+    folder = os.path.join(feature_dir, features.settings_id(feature_settings))
+
+    preloaded = {}
+    for _, sample in data[data.fold != 10].iterrows():
+        for aug in range(-1, exsettings['augmentations']):
+            k = (sample.fold, sample.slice_file_name, aug)
+            if aug == -1:
+                aug = None
+            path = features.feature_path(sample, out_folder=folder, augmentation=aug)
+            #print(k, path)
+            preloaded[k] = numpy.load(path)['arr_0']
+
+    print('preloaded', len(preloaded.keys()))
+
+
+    def load_file(sample, aug):
+        #path = features.feature_path(sample, out_folder=folder, augmentation=aug)
+        #mels = numpy.load(path)['arr_0']
+        if aug is None:
+            aug = -1
+        k = (sample.fold, sample.slice_file_name, aug)
+        mels = preloaded[k]
+        return mels
+
     def load(sample, validation):
         augment = not validation and train_settings['augment'] != 0
-        d = features.load_sample(sample, feature_settings, feature_dir=feature_dir,
+        d = features.load_sample(sample, feature_settings, loader=load_file,
                         window_frames=model_settings['frames'],
                         augment=augment)
         return d
