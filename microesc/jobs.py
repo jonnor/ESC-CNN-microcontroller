@@ -105,7 +105,7 @@ def parse(args):
     a('--bucket', type=str, default='jonnor-micro-esc',
         help='GCS bucket to write to. Default: %(default)s')
 
-    a('--image', type=str, default='gcr.io/masterthesis-231919/base:16',
+    a('--image', type=str, default='gcr.io/masterthesis-231919/base:18',
         help='Docker image to use')
     
     parsed = parser.parse_args(args)

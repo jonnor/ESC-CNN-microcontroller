@@ -1,8 +1,6 @@
 
 
-import urllib.request
 import os.path
-import zipfile
 import math
 import sys
 import uuid

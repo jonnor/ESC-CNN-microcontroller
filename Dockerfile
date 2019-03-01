@@ -30,6 +30,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ./*.py ./
 COPY ./microesc /usr/src/app/microesc
-COPY ./experiments /usr/src/app/microesc
+COPY ./experiments /usr/src/app/experiments
 
 CMD ["sleep", "3600"]
