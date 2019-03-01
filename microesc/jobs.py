@@ -65,15 +65,20 @@ def render_job(image, script, args, mountpoint, bucket):
     s = template.format(**p)
     return s
 
-def generate_train_jobs(settings, jobs_dir, image, name, out_dir, mountpoint, bucket):
+def generate_train_jobs(settings, jobs_dir, image, experiment, out_dir, mountpoint, bucket):
+
+    t = datetime.datetime.now().strftime('%Y%m%d-%H%M') 
+    u = str(uuid.uuid4())[0:4]
+    name = "-".join([experiment, t, u])
 
     folds = list(range(0, 9))
   
     for fold in folds:
         args = {
+            'experiment': experiment,
             'models': out_dir,
             'fold': fold,
-            'name': name,
+            'name': name+'-fold{}'.format(fold),
         }
 
         s = render_job(image, 'train', args, mountpoint, bucket)
@@ -119,12 +124,7 @@ def main():
     out = os.path.join(args.jobs_dir, name)
     common.ensure_directories(out)
 
-    t = datetime.datetime.now().strftime('%Y%m%d-%H%M') 
-    u = str(uuid.uuid4())[0:4]
-    identifier = "-".join([name, t, u])
-
-    generate_train_jobs(settings, out, args.image,
-                    identifier, storage_dir, mountpoint, args.bucket)
+    generate_train_jobs(settings, out, args.image, name, storage_dir, mountpoint, args.bucket)
     print('wrote to', out)
 
 
