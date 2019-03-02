@@ -7,7 +7,8 @@ n_fft: 512
 hop_length: 256
 frames: 72
 augmentations: 0
-batch: 100
+batch: 50
+epochs: 30
 train_samples: 50000
 val_samples: 5000
 augment: 0
