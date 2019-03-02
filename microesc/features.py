@@ -114,7 +114,7 @@ def maybe_download(settings, workdir):
 
 
 def load_sample(sample, settings, feature_dir, window_frames,
-                start_time=None, augment=None):
+                start_time=None, augment=None, normalize='meanstd'):
     n_mels = settings['n_mels']
     sample_rate = settings['samplerate']
     hop_length = settings['hop_length']
@@ -145,8 +145,12 @@ def load_sample(sample, settings, feature_dir, window_frames,
     mels = mels[:, start:end]
 
     # Normalize the window
-    if mels.shape[1] > 0:
+    if normalize == 'max':
         mels = librosa.core.power_to_db(mels, top_db=80, ref=numpy.max)
+    elif normalize == 'meanstd':
+        mels = librosa.core.power_to_db(mels, top_db=80)
+        mels -= numpy.mean(mels)
+        mels /= numpy.std(mels)
 
     # Pad to standard size
     if window_frames is None:

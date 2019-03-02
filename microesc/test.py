@@ -164,6 +164,8 @@ def parse(args):
 
     a('--run', dest='run', default='',
         help='%(default)s')
+    a('--model', dest='model', default='',
+        help='%(default)s')
 
     a('--out', dest='results_dir', default='./data/results',
         help='%(default)s')
@@ -200,8 +202,12 @@ def main():
         return predict_voted(settings, model, data, loader=load_sample,
                              window_frames=frames, method=voting, overlap=overlap)
 
-    history = load_history(args.models_dir, args.run)
-    best = pick_best(history)
+    if args.model:
+        best = pandas.DataFrame({ 'model': [  args.model ] * 9})
+        print('Warning: Single model, val_acc will not be accurate since folds have not been held out')
+    else:
+        history = load_history(args.models_dir, args.run)
+        best = pick_best(history)
 
     print('Loading models...')
     models = best['model'].apply(lambda p: keras.models.load_model(p))

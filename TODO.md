@@ -13,14 +13,17 @@ Report
 - Finish draft methods. Ask for feedback OK
 - Setup/generate Table of existing methods
 
-Model performance
+Figure out why SB-CNN baseline score is not reproduced
 
-- ! Figure out why SB-CNN baseline score is not reproduced
 - Check feature preprocessing. Missing standardization?
+- Check post SB-CNN papers for training details
+- Try different optimizer. SDG
 - Check windowing functions, esp last frame and padding
 - Check data augmentations working
 ! `sbcnn16k32aug` did (little bit) worse than `sbcnn16k30`
 Are we picking the models in a good way?
+
+- train.py: Write history.csv file incrementally, for each epoch 
 
 More experiments
 
