@@ -185,6 +185,24 @@ Quick test on SB-CNN16k 30mels, fold0, validation
 0.5, acc 0.6746849942726232
 0.9, acc 0.6758304696449027
 
+### Model choosing
+
+With SGD (default options).
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model data/models/sbcnn16k30-20190302-1737-5c84-fold0/e11-v1.34.t1.63.model.hdf5 
+acc 0.718213058419244
+train val_acc: 0.6432
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model data/models/sbcnn16k30-20190302-1737-5c84-fold0/e17-v1.27.t1.50.model.hdf5
+acc 0.6849942726231386
+train val_acc: 0.6192
+
+! better val_loss, but poorer prediction on whole set!
+Need to go make model selection on windowed performance 
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model data/models/sbcnn16k30-20190302-1737-5c84-fold0/e23-v1.34.t1.42.model.hdf5 
+acc 0.6643757159221076
+train val_acc: 0.6134
+
 ### STM32Ai
 
 arm_rfft_fast_init_f32 called for every column
