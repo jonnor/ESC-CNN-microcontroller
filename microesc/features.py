@@ -130,7 +130,7 @@ def load_sample(sample, settings, feature_dir, window_frames,
     path = feature_path(sample, out_folder=folder, augmentation=aug)
     mels = numpy.load(path)['arr_0']
     assert mels.shape[0] == n_mels, mels.shape
-    
+
     if start_time is None:
         # Sample a window in time randomly
         min_start = max(0, mels.shape[1]-window_frames)
@@ -145,12 +145,15 @@ def load_sample(sample, settings, feature_dir, window_frames,
     mels = mels[:, start:end]
 
     # Normalize the window
-    if normalize == 'max':
-        mels = librosa.core.power_to_db(mels, top_db=80, ref=numpy.max)
-    elif normalize == 'meanstd':
-        mels = librosa.core.power_to_db(mels, top_db=80)
-        mels -= numpy.mean(mels)
-        mels /= numpy.std(mels)
+    if mels.shape[1] > 0:
+        if normalize == 'max':
+            mels = librosa.core.power_to_db(mels, top_db=80, ref=numpy.max)
+        elif normalize == 'meanstd':
+            mels = librosa.core.power_to_db(mels, top_db=80)
+            mels -= numpy.mean(mels)
+            mels /= ( numpy.std(mels) + 1e-9)
+    else:
+        print('Warning: Sample {} with start {} has 0 length'.format(sample, start_time))
 
     # Pad to standard size
     if window_frames is None:

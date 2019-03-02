@@ -55,6 +55,13 @@ def parse(args):
 
     return parsed
 
+def print_accuracies(accs, title):
+
+    m = numpy.mean(accs)
+    s = numpy.std(accs)
+    print('{} | mean: {:.3f}, std: {:.3f}'.format(title, m, s))
+    [ print("{:.3f}".format(v), end=',') for v in accs ]
+    print('\n')
 
 def main():
 
@@ -67,16 +74,18 @@ def main():
     classnames = urbansound8k.classnames
     val_fig = plot_confusion(100*numpy.mean(val, axis=0), classnames, normalize=True)
     test_fig = plot_confusion(100*numpy.mean(test, axis=0), classnames, normalize=True) 
-
-    c_acc = cm_class_accuracy(numpy.mean(val, axis=0))
-    print('test_acc', numpy.mean(c_acc), c_acc) 
-
-    folds_acc = [ cm_accuracy(val[f]) for f in range(0, len(val)) ]
-
-    print('val_acc', numpy.mean(folds_acc), folds_acc)
-
     val_fig.savefig('val.cm.png')
     test_fig.savefig('test.cm.png')
+
+    c_acc = cm_class_accuracy(numpy.mean(val, axis=0))
+    print_accuracies(c_acc, 'class_acc')
+
+    folds_acc = [ cm_accuracy(val[f]) for f in range(0, len(val)) ]
+    print_accuracies(folds_acc, 'val_acc')
+
+    tests_acc = [ cm_accuracy(test[f]) for f in range(0, len(test)) ]
+    print_accuracies(tests_acc, 'test_acc') 
+
 
     print('wrote')
 

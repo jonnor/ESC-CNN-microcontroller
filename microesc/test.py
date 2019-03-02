@@ -47,7 +47,7 @@ def predict_voted(settings, model, samples, loader, window_frames, method='mean'
             out.append(p)
         elif method == 'majority':
             votes = numpy.argmax(predictions, axis=1)
-            p = numpy.bincount(votes) / len(votes)
+            p = numpy.bincount(votes, minlength=10) / len(votes)
             out.append(p)
 
     ret = numpy.stack(out)
@@ -113,6 +113,8 @@ def evaluate(models, folds, test, predictor):
         p = predictor(model, data)
         y_pred = numpy.argmax(p, axis=1)
         # other metrics can be derived from confusion matrix
+        acc = sklearn.metrics.accuracy_score(y_true, y_pred)
+        print('acc', acc)
         confusion = sklearn.metrics.confusion_matrix(y_true, y_pred)
         return confusion
 
@@ -194,8 +196,17 @@ def main():
     overlap = settings['voting_overlap']
     settings = features.settings(settings)
 
+
+    all_folds = pandas.concat([f[0] for f in folds])
+    train_files = set(all_folds.slice_file_name.unique())
+    test_files = set(test.slice_file_name.unique())
+    assert len(train_files) > 7000
+    assert len(test_files) > 700
+    common_files = train_files.intersection(test_files)
+    assert len(common_files) == 0
+
     def load_sample(sample):
-        return features.load_sample(sample, settings,
+        return features.load_sample(sample, settings, start_time=sample.start,
                     window_frames=frames, feature_dir=args.features_dir)
 
     def predict(model, data):

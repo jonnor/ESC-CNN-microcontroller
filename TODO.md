@@ -21,7 +21,16 @@ Figure out why SB-CNN baseline score is not reproduced
 - Check windowing functions, esp last frame and padding
 - Check data augmentations working
 ! `sbcnn16k32aug` did (little bit) worse than `sbcnn16k30`
+
 Are we picking the models in a good way?
+
+! With windowed prediction, out-of-fold versus in-fold is quite different. Suggests overfitting?
+Maybe picking models based on windowed performance can overcome this. As done in SB-CNN
+acc 0.6712485681557846
+acc 0.8524774774774775
+
+! when running same model in test, reqults vary by several % points..
+
 
 - train.py: Write history.csv file incrementally, for each epoch 
 

@@ -178,6 +178,13 @@ Across most folds.
 SB-CNN 128mel 3 sec 16kHz 50% vote overlap on the other hand was very similar, as expected.
 
 
+### Effects of different overlap in voting
+
+Quick test on SB-CNN16k 30mels, fold0, validation
+0.1, acc 0.6666666666666666
+0.5, acc 0.6746849942726232
+0.9, acc 0.6758304696449027
+
 ### STM32Ai
 
 arm_rfft_fast_init_f32 called for every column
@@ -189,6 +196,8 @@ Reason: The function does not compute the twiddle factors, just set up pointer t
 
 Missing function for window functions.
 https://github.com/ARM-software/CMSIS_5/issues/217
+
+
 
 
 
