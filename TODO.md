@@ -19,14 +19,14 @@ Model performance
 - Check feature preprocessing. Missing standardization?
 - Check windowing functions, esp last frame and padding
 - Check data augmentations working
+! `sbcnn16k32aug` did (little bit) worse than `sbcnn16k30`
+Are we picking the models in a good way?
 
 More experiments
 
 - Preprocess 44.1kHz, 64 mels and 32 mels.
-
 - Try to convert FastGRNN to Keras and load in STM32AI
 https://github.com/Microsoft/MMdnn
-
 - Shorter fields of view. Do they save cpu/mem?
 * Estimate multiply-adds for existing models
 * Try to run FastGRNN on Urbansound8k
@@ -38,8 +38,10 @@ Code quality
 
 Run CNN model on microcontroller
 
-- STM32AI: Unhardcode FFT size
-- STM32AI: Support window overlap
+- STM32AI: Test different FFT/mel sizes
+- STM32AI: Support window overlap?
+- STM32AI: Report/fix melspec preprocessing bug
+https://community.st.com/s/topic/0TO0X0000003iUqWAI/stm32-machine-learning-ai
 - Test USB audio input
 - Test measuring current with ST board
 
@@ -59,6 +61,11 @@ Dissemination
 
 ## Done
 
+- STM32AI. Made tool for updating window functions.
+https://github.com/jonnor/emlearn/blob/master/examples/window-function.py
+- Test 16k30 SB-CNN model.
+No compression. 3168k MACC CNN. 200kB flash, 27kB RAM. 396-367 ms
+4 bit compression. 144kB flash, 398ms. Approx 8M MACCS/second
 - Ran FastGRNN example USPS dataset
 - Tested DenseNet for Urbansound8k
 - Sent email for info from dilated conv authors 
@@ -69,6 +76,7 @@ Dissemination
 - Test a trivial audio custom model with SMT32CubeAI.
 First crack detection.
 9000 MACC, 2 ms classifier. 8 frames, under 15 ms log-mel preprocessing.
+Approx 4M MACCS/second.
 - Test CNN performance on STM32AI. 80Mhz.
 float32 1024bin FFT,30mels,32frames log-mel preprocessing under 68ms.
 float32 517k MACC CNN classification 78ms. Approx 6M MACCS/second.

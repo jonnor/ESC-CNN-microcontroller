@@ -178,6 +178,20 @@ Across most folds.
 SB-CNN 128mel 3 sec 16kHz 50% vote overlap on the other hand was very similar, as expected.
 
 
+### STM32Ai
+
+arm_rfft_fast_init_f32 called for every column
+
+Preprocessing. 1024 FFT. 30 mels. 8 cols.
+Before. MelColumn 8/16 ms. Approx 1-2 ms per col
+After. Same!.
+Reason: The function does not compute the twiddle factors, just set up pointer to pregenerated table
+
+Missing function for window functions.
+https://github.com/ARM-software/CMSIS_5/issues/217
+
+
+
 ### Simpler classes
 
 Attempt at narrower taxonomy.

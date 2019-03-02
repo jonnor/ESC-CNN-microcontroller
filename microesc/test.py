@@ -162,6 +162,9 @@ def parse(args):
 
     common.add_arguments(parser)
 
+    a('--run', dest='run', default='',
+        help='%(default)s')
+
     a('--out', dest='results_dir', default='./data/results',
         help='%(default)s')
 
@@ -173,6 +176,8 @@ def parse(args):
 def main():
     
     args = parse(sys.argv[1:])
+    if not args.run:
+        args.run = args.experiment
 
     out_dir = os.path.join(args.results_dir, args.experiment)
 
@@ -195,7 +200,7 @@ def main():
         return predict_voted(settings, model, data, loader=load_sample,
                              window_frames=frames, method=voting, overlap=overlap)
 
-    history = load_history(args.models_dir, args.experiment)
+    history = load_history(args.models_dir, args.run)
     best = pick_best(history)
 
     print('Loading models...')

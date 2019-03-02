@@ -1,9 +1,14 @@
 
-import numpy
-import urbansound8k
+import os.path
+import sys
 
+import numpy
 import seaborn as sns
 import matplotlib.pyplot as plt     
+
+#from . import common
+import urbansound8k
+import common
 
 def plot_confusion(cm, classnames, normalize=False):
 
@@ -33,25 +38,42 @@ def cm_accuracy(cm):
     total = numpy.sum(numpy.sum(cm, axis=1))
     return correct/total
 
+def parse(args):
+
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Test trained models')
+    a = parser.add_argument
+
+    common.add_arguments(parser)
+
+    a('--out', dest='results_dir', default='./data/results',
+        help='%(default)s')
+
+
+    parsed = parser.parse_args(args)
+
+    return parsed
 
 
 def main():
 
-    cm = numpy.load('results/confusion.npz')
-    vals, tests = cm['val'], cm['test']
+    args = parse(None)
 
-    print('v', val.shape, test.shape)
+    cm = numpy.load(os.path.join(args.results_dir, '{}'.format(args.experiment), 'confusion.npz'))
+    val, test = cm['val'], cm['test']
+
 
     classnames = urbansound8k.classnames
     val_fig = plot_confusion(100*numpy.mean(val, axis=0), classnames, normalize=True)
     test_fig = plot_confusion(100*numpy.mean(test, axis=0), classnames, normalize=True) 
 
     c_acc = cm_class_accuracy(numpy.mean(val, axis=0))
-    print(c_acc, numpy.mean(c_acc)) 
+    print('test_acc', numpy.mean(c_acc), c_acc) 
 
     folds_acc = [ cm_accuracy(val[f]) for f in range(0, len(val)) ]
 
-    print('acc', folds_acc, numpy.mean(folds_acc))
+    print('val_acc', numpy.mean(folds_acc), folds_acc)
 
     val_fig.savefig('val.cm.png')
     test_fig.savefig('test.cm.png')
