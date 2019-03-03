@@ -3,6 +3,11 @@
 # Introduction
 
 Privacy, GDPR
+Wireless Sensor Networks
+
+Supervised machine learning
+Neural Networks
+Convolutional Nets
 
 ## Environmental noise
 Noise is unwanted sound. Environmental noise is the summary of noise pollution from outside,

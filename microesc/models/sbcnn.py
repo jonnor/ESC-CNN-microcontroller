@@ -7,7 +7,7 @@ from keras.layers import Convolution2D, MaxPooling2D
 from keras.regularizers import l2
 
 
-def build_model(frames=41, bands=60, channels=1, num_labels=10, kernel=(3,3), pool=(4,2)):
+def build_model(frames=41, bands=60, channels=1, num_labels=10, kernel=(3,3), pool=(4,2), dropout=0.5):
     """
     Implements SB-CNN model from
     Deep Convolutional Neural Networks and Data Augmentation for Environmental Sound Classification
@@ -43,12 +43,12 @@ def build_model(frames=41, bands=60, channels=1, num_labels=10, kernel=(3,3), po
     # Layer 4 - a fully connected NN layer of 64 hidden units, L2 penalty of 0.001
     model.add(Dense(64, kernel_regularizer=l2(0.001)))
     model.add(Activation('relu'))
-    model.add(Dropout(0.5))
+    model.add(Dropout(dropout))
 
     # Layer 5 - an output layer with one output unit per class, with L2 penalty, 
     # followed by a softmax activation function
     model.add(Dense(num_labels, kernel_regularizer=l2(0.001)))
-    model.add(Dropout(0.5))
+    model.add(Dropout(dropout))
     model.add(Activation('softmax'))
 
     return model

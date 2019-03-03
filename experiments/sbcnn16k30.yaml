@@ -9,7 +9,7 @@ frames: 72
 augmentations: 0
 batch: 50
 epochs: 30
-train_samples: 50000
+train_samples: 30000
 val_samples: 5000
 augment: 0
 voting: 'mean'

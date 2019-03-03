@@ -47,7 +47,7 @@ def train_model(out_dir, fold, builder,
 
     model = builder()
     model.compile(loss='categorical_crossentropy',
-                  optimizer=keras.optimizers.SGD(),
+                  optimizer=keras.optimizers.SGD(lr=0.001, momentum=0.95, nesterov=True),
                   metrics=['accuracy'])
 
 

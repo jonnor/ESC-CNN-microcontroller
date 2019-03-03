@@ -188,6 +188,7 @@ Quick test on SB-CNN16k 30mels, fold0, validation
 ### Model choosing
 
 With SGD (default options).
+
 [jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model data/models/sbcnn16k30-20190302-1737-5c84-fold0/e11-v1.34.t1.63.model.hdf5 
 acc 0.718213058419244
 train val_acc: 0.6432
@@ -202,6 +203,187 @@ Need to go make model selection on windowed performance
 [jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model data/models/sbcnn16k30-20190302-1737-5c84-fold0/e23-v1.34.t1.42.model.hdf5 
 acc 0.6643757159221076
 train val_acc: 0.6134
+
+Another run
+
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2115-8a3d-fold0/e14-v1.34.t1.70.model.hdf5 
+acc 0.6918671248568156
+val_acc 0.64
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2115-8a3d-fold0/e16-v1.35.t1.67.model.hdf5 
+acc 0.6827033218785796
+val_acc 0.617
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2115-8a3d-fold0/e18-v1.29.t1.63.model.hdf5 
+acc 0.6758304696449027
+val_acc 0.649
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2115-8a3d-fold0/e20-v1.28.t1.59.model.hdf5
+acc 0.693012600229095
+
+600/600 [==============================] - 47s 79ms/step - loss: 1.5868 - acc: 0.4394 - val_loss: 1.2534 - val_acc: 0.6504
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2115-8a3d-fold0/e21-v1.25.t1.59.model.hdf5 
+acc 0.7101947308132875
+val_acc 0.65
+
+
+
+With SGD(lr=0.1, decay=0.1/30)
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2158-bc8a-fold0/e16-v1.28.t1.53.model.hdf5 
+acc 0.6815578465063001
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2158-bc8a-fold0/e22-v1.29.t1.51.model.hdf5 
+acc 0.6884306987399771
+val_acc 0.624
+
+
+Another run
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2219-d651-fold0/e21-v1.30.t1.49.model.hdf5 
+acc 0.6506300114547537
+
+Very stable around val_loss 1.3 / val_acc 0.60. From epoch 7 - 30 almost
+
+
+With SGD(momentum=0.9, nesterov=True)
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model data/models/sbcnn16k30-20190302-1816-32d3-fold0/e02-v1.36.t1.69.model.hdf5
+acc 0.6334478808705613
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model data/models/sbcnn16k30-20190302-1816-32d3-fold0/e06-v1.32.t1.38.model.hdf5 
+acc 0.6827033218785796
+
+
+With SGD(momentum=0.9, nesterov=True) and reducing to 30k samples / epoch
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model data/models/sbcnn16k30-20190302-1828-e66d-fold0/e02-v1.43.t1.85.model.hdf5
+acc 0.7010309278350515
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model data/models/sbcnn16k30-20190302-1828-e66d-fold0/e03-v1.32.t1.71.model.hdf5 
+acc 0.6701030927835051
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model data/models/sbcnn16k30-20190302-1828-e66d-fold0/e06-v1.28.t1.51.model.hdf5
+acc 0.6964490263459335
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model data/models/sbcnn16k30-20190302-1828-e66d-fold0/e07-v1.28.t1.46.model.hdf5 
+acc 0.6941580756013745
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model data/models/sbcnn16k30-20190302-1828-e66d-fold0/e08-v1.20.t1.43.model.hdf5 
+acc 0.7353951890034365
+test_acc: 0.725
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model data/models/sbcnn16k30-20190302-1828-e66d-fold0/e10-v1.23.t1.38.model.hdf5 
+acc 0.7079037800687286
+
+From another run
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model data/models/sbcnn16k30-20190302-2003-8c69-fold0/e03-v1.35.t1.72.model.hdf5
+acc 0.6987399770904925
+val_acc 0.6396
+
+However 2 more times one failed to yield models significantly above val_acc 0.60
+
+Going up to batchsize=100 (from 50)
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2022-5e53-fold0/e05-v1.33.t1.63.model.hdf5 
+acc 0.6907216494845361
+valacc: 0.62
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2022-5e53-fold0/e10-v1.38.t1.42.model.hdf5 
+acc 0.6735395189003437
+
+But another time failed to find any above val_acc 0.60
+
+
+With SGD(lr=0.1, decay=0.1/(epochs*2), momentum=0.3, nesterov=True)
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2303-974b-fold0/e15-v1.30.t1.45.model.hdf5 
+acc 0.6849942726231386
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2303-974b-fold0/e16-v1.29.t1.44.model.hdf5 
+acc 0.6758304696449027
+val_acc 0.62
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2303-974b-fold0/e17-v1.32.t1.43.model.hdf5 
+acc 0.6781214203894617
+
+
+With SGD(lr=0.001, momentum=0.95, nesterov=True)
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2335-829b-fold0/e09-v1.32.t1.63.model.hdf5
+acc 0.7101947308132875
+val_acc 0.65
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2335-829b-fold0/e20-v1.30.t1.41.model.hdf5 
+acc 0.6517754868270332
+val_acc 0.61
+
+Another run
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2359-16a9-fold0/e10-v1.37.t1.63.model.hdf5 
+acc 0.6781214203894617
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2359-16a9-fold0/e20-v1.30.t1.42.model.hdf5 
+acc 0.6735395189003437
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2359-16a9-fold0/e22-v1.28.t1.39.model.hdf5 
+acc 0.6941580756013745
+val_acc 0.644
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2359-16a9-fold0/e26-v1.23.t1.35.model.hdf5 
+acc 0.6941580756013745
+val_acc 0.66
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2359-16a9-fold0/e29-v1.20.t1.34.model.hdf5 
+acc 0.6987399770904925
+val_acc 0.65
+
+With keras.optimizers.SGD(lr=0.001, momentum=0.90, nesterov=True)
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190303-0025-2398-fold0/e12-v1.38.t1.72.model.hdf5
+acc 0.6827033218785796
+
+
+
+With AdaDelta()
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2052-6d84-fold0/e03-v1.36.t1.61.model.hdf5
+acc 0.6769759450171822
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2057-57e0-fold0/e08-v1.33.t1.42.model.hdf5 
+acc 0.6792668957617412
+
+[jon@jon-thinkpad thesis]$ python3 test.py --experiment sbcnn16k30 --model ./data/models/sbcnn16k30-20190302-2057-57e0-fold0/e11-v1.35.t1.34.model.hdf5 
+acc 0.6632302405498282
+
+Avoids overfitting semi-well. Train/val scores get close and stay like that for 5 epochs.
+
+With AdaDelta and batch=40
+
+
+Seems reasonably easy to train to 0.60 window perf and 0.65 voted perf.
+Going to 0.64 window / 0.70 voted possible but unpredictable?
+
+Sensitive to hyperparameter changes...
+Do hyperparameter search? With goal of reaching 0.70 voted reliably
+Random sampling.
+At least over alpha
+Maybe batch size?
+Maybe also beta
+
+Good explanations of momentum in SGD. With visual+interactive plots, physical correspondence
+https://distill.pub/2017/momentum/
+
+> When the problem’s conditioning is poor, the optimal alpha α is approximately twice that of gradient descent,
+> and the momentum term is close to 1.
+? So set beta β as close to 1 as you can, and then find the highest alpha α which still converges.
+
+! With windowed prediction, out-of-fold versus in-fold is quite different. Suggests overfitting?
+acc 0.6712485681557846
+acc 0.8524774774774775
+
 
 ### STM32Ai
 

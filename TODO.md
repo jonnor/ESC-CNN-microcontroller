@@ -13,26 +13,18 @@ Report
 - Finish draft methods. Ask for feedback OK
 - Setup/generate Table of existing methods
 
-Figure out why SB-CNN baseline score is not reproduced
+Model performance
 
-- Check feature preprocessing. Missing standardization?
-- Check post SB-CNN papers for training details
-- Try different optimizer. SDG
+- Calculate and report voted performance during training
+- Write all settings/parameters to a file when ran
+- train.py: Write history.csv file incrementally, for each epoch 
+- Use best voted performance to pick model
+- Perform a hyperparameter search
+
 - Check windowing functions, esp last frame and padding
 - Check data augmentations working
 ! `sbcnn16k32aug` did (little bit) worse than `sbcnn16k30`
 
-Are we picking the models in a good way?
-
-! With windowed prediction, out-of-fold versus in-fold is quite different. Suggests overfitting?
-Maybe picking models based on windowed performance can overcome this. As done in SB-CNN
-acc 0.6712485681557846
-acc 0.8524774774774775
-
-! when running same model in test, reqults vary by several % points..
-
-
-- train.py: Write history.csv file incrementally, for each epoch 
 
 More experiments
 
