@@ -3,11 +3,11 @@
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
-from keras.layers import Convolution2D, MaxPooling2D
+from keras.layers import Convolution2D, MaxPooling2D, SeparableConv2D
 from keras.regularizers import l2
 
 
-def build_model(frames=41, bands=60, channels=1, num_labels=10, kernel=(3,3), pool=(4,2), dropout=0.5):
+def build_model(frames=128, bands=128, channels=1, num_labels=10, kernel=(5,5), pool=(4,2), dropout=0.5, depthwise_separable=False):
     """
     Implements SB-CNN model from
     Deep Convolutional Neural Networks and Data Augmentation for Environmental Sound Classification
@@ -20,6 +20,8 @@ def build_model(frames=41, bands=60, channels=1, num_labels=10, kernel=(3,3), po
 
     model = Sequential()
 
+    Conv2 = SeparableConv2D if depthwise_separable else Convolution2D
+
     # Layer 1 - 24 filters with a receptive field of (f,f), i.e. W has the shape (24,1,f,f). 
     # This is followed by (4,2) max-pooling over the last two dimensions and a ReLU activation function.
     model.add(Convolution2D(24, kernel, padding='same', input_shape=(bands, frames, channels)))
@@ -28,13 +30,13 @@ def build_model(frames=41, bands=60, channels=1, num_labels=10, kernel=(3,3), po
 
     # Layer 2 - 48 filters with a receptive field of (f,f), i.e. W has the shape (48,24,f,f). 
     # Like L1 this is followed by (4,2) max-pooling and a ReLU activation function.
-    model.add(Convolution2D(48, kernel, padding='same'))
+    model.add(Conv2(48, kernel, padding='same'))
     model.add(MaxPooling2D(pool_size=pool))
     model.add(Activation('relu'))
 
     # Layer 3 - 48 filters with a receptive field of (f,f), i.e. W has the shape (48, 48, f, f). 
     # This is followed by a ReLU but no pooling.
-    model.add(Convolution2D(48, kernel, padding='valid'))
+    model.add(Conv2(48, kernel, padding='valid'))
     model.add(Activation('relu'))
 
     # flatten output into a single dimension, let Keras do shape inference
@@ -54,9 +56,15 @@ def build_model(frames=41, bands=60, channels=1, num_labels=10, kernel=(3,3), po
     return model
 
 def main():
+    print('original')
     m = build_model()
-
     m.summary()
+
+    print('sbcnn16k30')
+    m = build_model(frames=72, bands=30, kernel=(3,3), pool=(3,3))
+    m.summary()
+
+
 
 if __name__ == '__main__':
     main()
