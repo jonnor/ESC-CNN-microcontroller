@@ -5,6 +5,7 @@
 import os.path
 import urllib.request
 import zipfile
+import collections
 
 import pandas
 import numpy
@@ -166,3 +167,52 @@ def load_sample(sample, settings, feature_dir, window_frames,
     # add channel dimension
     data = numpy.expand_dims(padded, -1)
     return data
+
+
+Sample = collections.namedtuple('Sample', 'start end fold slice_file_name')
+
+def load_windows(sample, settings, loader, overlap):
+    sample_rate = settings['samplerate']
+    frame_samples = settings['hop_length']
+    window_frames = settings['frames']
+
+    windows = []
+
+    duration = sample.end - sample.start
+    length = int(sample_rate * duration)
+
+    for win in sample_windows(length, frame_samples, window_frames, overlap=overlap):
+        chunk = Sample(start=win[0]/sample_rate,
+                       end=win[1]/sample_rate,
+                       fold=sample.fold,
+                       slice_file_name=sample.slice_file_name)    
+        d = loader(chunk)
+        windows.append(d)
+
+    return windows
+
+def predict_voted(settings, model, samples, loader, method='mean', overlap=0.5):
+
+    out = []
+    for _, sample in samples.iterrows():
+        windows = load_windows(sample, settings, loader, overlap=overlap)
+        inputs = numpy.stack(windows)
+
+        predictions = model.predict(inputs)
+        if method == 'mean':
+            p = numpy.mean(predictions, axis=0)
+            assert len(p) == 10
+            out.append(p)
+        elif method == 'majority':
+            votes = numpy.argmax(predictions, axis=1)
+            p = numpy.bincount(votes, minlength=10) / len(votes)
+            out.append(p)
+
+    ret = numpy.stack(out)
+    assert len(ret.shape) == 2, ret.shape
+    assert ret.shape[0] == len(out), ret.shape
+    assert ret.shape[1] == 10, ret.shape # classes
+
+    return ret
+
+

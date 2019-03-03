@@ -7,11 +7,13 @@ import uuid
 import json
 import functools
 import datetime
+import csv
 
 import pandas
 import numpy
 import keras
 import librosa
+import sklearn.metrics
 
 from . import features, urbansound8k, common
 from .models import sbcnn
@@ -38,28 +40,90 @@ def dataframe_generator(X, Y, loader, batchsize=10, n_classes=10):
         yield batch
 
 
+class LogCallback(keras.callbacks.Callback):
+    def __init__(self, log_path, score_epoch):
+        super().__init__()
+    
+        self.log_path = log_path
+        self.score = score_epoch   
+
+        self._log_file = None
+        self._csv_writer = None
+
+    def __del__(self):
+        if self._log_file:
+            self._log_file.close()
+       
+
+    def write_entry(self, epoch, data):
+        data = data.copy()
+
+        if not self._csv_writer:
+            # create writer when we know what fields
+            self._log_file = open(self.log_path, 'w')
+            fields = ['epoch'] + sorted(data.keys())
+            self._csv_writer = csv.DictWriter(self._log_file, fields)
+            self._csv_writer.writeheader()
+        
+        data['epoch'] = epoch
+        self._csv_writer.writerow(data)
+        self._log_file.flush() # ensure data hits disk
+
+    def on_epoch_end(self, epoch, logs):
+        logs = logs.copy()
+    
+        more = self.score() # uses current model
+        for k, v in more.items():
+            logs[k] = v
+
+        self.write_entry(epoch, logs)
+
+
+
+
 def train_model(out_dir, fold, builder,
-                loader, val_loader,
-                frame_samples, window_frames,
-                train_samples=12000, val_samples=3000,
-                batch_size=200, epochs=50, seed=1, learning_rate=3e-4):
+                loader, val_loader, settings, seed=1):
     """Train a single model"""    
+
+    frame_samples = settings['hop_length']
+    train_samples = settings['train_samples']
+    window_frames = settings['frames']
+    val_samples = settings['val_samples']
+    epochs = settings['epochs']
+    batch_size = settings['batch']
+    #learning_rate = settings['learning_rate']   
+
+    train, val = fold
+
+    def top3(y_true, y_pred):
+        return keras.metrics.top_k_categorical_accuracy(y_true, y_pred, k=3)
 
     model = builder()
     model.compile(loss='categorical_crossentropy',
                   optimizer=keras.optimizers.SGD(lr=0.001, momentum=0.95, nesterov=True),
                   metrics=['accuracy'])
 
-
     model_path = os.path.join(out_dir, 'e{epoch:02d}-v{val_loss:.2f}.t{loss:.2f}.model.hdf5')
     checkpoint = keras.callbacks.ModelCheckpoint(model_path, monitor='val_acc', mode='max',
                                          period=1, verbose=1, save_best_only=False)
-    callbacks_list = [checkpoint]
 
-    train, val = fold
+    def voted_score():
+        y_pred = features.predict_voted(settings, model, val,
+                                loader=val_loader, method='mean', overlap=0.5)
+        class_pred = numpy.argmax(y_pred, axis=1)
+        acc = sklearn.metrics.accuracy_score(val.classID, class_pred)
+        d = {
+            'voted_val_acc': acc,
+        }
+        return d
+    log_path = os.path.join(out_dir, 'train.csv')
+    log = LogCallback(log_path, voted_score)
+
+
     train_gen = dataframe_generator(train, train.classID, loader=loader, batchsize=batch_size)
     val_gen = dataframe_generator(val, val.classID, loader=val_loader, batchsize=batch_size)
 
+    callbacks_list = [checkpoint, log]
     hist = model.fit_generator(train_gen, validation_data=val_gen,
                         steps_per_epoch=math.ceil(train_samples/batch_size),
                         validation_steps=math.ceil(val_samples/batch_size),
@@ -147,7 +211,6 @@ def settings(args):
     train_settings = {}
     for k in default_training_settings.keys():
         v = args.get(k, default_training_settings[k])
-        print('v', k, v, args.get(k))
         train_settings[k] = v
     return train_settings
 
@@ -217,12 +280,7 @@ def main():
                       builder=build_model,
                       loader=functools.partial(load, validation=False),
                       val_loader=functools.partial(load, validation=True),
-                      frame_samples=feature_settings['hop_length'],
-                      window_frames=model_settings['frames'],
-                      epochs=train_settings['epochs'],
-                      train_samples=train_settings['train_samples'],
-                      val_samples=train_settings['val_samples'],
-                      batch_size=train_settings['batch'])
+                      settings=exsettings)
 
 
 

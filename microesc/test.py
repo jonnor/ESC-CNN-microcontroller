@@ -2,7 +2,6 @@
 import math
 import os.path
 import sys
-import collections
 
 import keras
 import sklearn
@@ -12,50 +11,6 @@ import keras.metrics
 
 from . import urbansound8k, features, common
 
-Sample = collections.namedtuple('Sample', 'start end fold slice_file_name')
-
-def load_windows(sample, settings, loader, window_frames, overlap):
-    sample_rate = settings['samplerate']
-    frame_samples = settings['hop_length']
-
-    windows = []
-
-    duration = sample.end - sample.start
-    length = int(sample_rate * duration)
-
-    for win in features.sample_windows(length, frame_samples, window_frames, overlap=overlap):
-        chunk = Sample(start=win[0]/sample_rate,
-                       end=win[1]/sample_rate,
-                       fold=sample.fold,
-                       slice_file_name=sample.slice_file_name)    
-        d = loader(chunk)
-        windows.append(d)
-
-    return windows
-
-def predict_voted(settings, model, samples, loader, window_frames, method='mean', overlap=0.5):
-
-    out = []
-    for _, sample in samples.iterrows():
-        windows = load_windows(sample, settings, loader, window_frames, overlap=overlap)
-        inputs = numpy.stack(windows)
-
-        predictions = model.predict(inputs)
-        if method == 'mean':
-            p = numpy.mean(predictions, axis=0)
-            assert len(p) == 10
-            out.append(p)
-        elif method == 'majority':
-            votes = numpy.argmax(predictions, axis=1)
-            p = numpy.bincount(votes, minlength=10) / len(votes)
-            out.append(p)
-
-    ret = numpy.stack(out)
-    assert len(ret.shape) == 2, ret.shape
-    assert ret.shape[0] == len(out), ret.shape
-    assert ret.shape[1] == 10, ret.shape # classes
-
-    return ret
 
 def load_history(jobs_dir, job_id):
 
@@ -133,28 +88,6 @@ def evaluate(models, folds, test, predictor):
     return val_scores, test_scores
 
 
-def test_predict_windowed():
-
-    from sklearn.metrics import accuracy_score
-    t = test[0:10]
-
-    sbcnn16k32_settings = dict(
-        feature='mels',
-        samplerate=16000,
-        n_mels=32,
-        fmin=0,
-        fmax=8000,
-        n_fft=512,
-        hop_length=256,
-        augmentations=5,
-    )
-
-    def load_sample32(sample):
-        return features.load_sample(sample, sbcnn16k32_settings, window_frames=72, feature_dir='../../scratch/aug')
-
-    mean_m = predict_windowed(sbcnn16k32_settings, model, t, loader=load_sample32, method='mean')
-    accuracy_score(t.classID, mean_m)
-
 def parse(args):
 
     import argparse
@@ -190,11 +123,11 @@ def main():
     urbansound8k.maybe_download_dataset(args.datasets_dir)
     data = urbansound8k.load_dataset()
     folds, test = urbansound8k.folds(data)
-    settings = common.load_experiment(args.experiments_dir, args.experiment)
-    frames = settings['frames']
-    voting = settings['voting']
-    overlap = settings['voting_overlap']
-    settings = features.settings(settings)
+    exsettings = common.load_experiment(args.experiments_dir, args.experiment)
+    frames = exsettings['frames']
+    voting = exsettings['voting']
+    overlap = exsettings['voting_overlap']
+    settings = features.settings(exsettings)
 
 
     all_folds = pandas.concat([f[0] for f in folds])
@@ -210,8 +143,8 @@ def main():
                     window_frames=frames, feature_dir=args.features_dir)
 
     def predict(model, data):
-        return predict_voted(settings, model, data, loader=load_sample,
-                             window_frames=frames, method=voting, overlap=overlap)
+        return features.predict_voted(exsettings, model, data, loader=load_sample,
+                                        method=voting, overlap=overlap)
 
     if args.model:
         best = pandas.DataFrame({ 'model': [  args.model ] * 9})

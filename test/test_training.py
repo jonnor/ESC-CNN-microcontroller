@@ -56,3 +56,26 @@ def test_window_typical():
     w = list(features.sample_windows(int(length), frame_samples, window_frames))
     assert len(w) == 8, len(w) 
     assert w[-1][1] == length
+
+
+def _test_predict_windowed():
+
+    t = test[0:10]
+
+    sbcnn16k32_settings = dict(
+        feature='mels',
+        samplerate=16000,
+        n_mels=32,
+        fmin=0,
+        fmax=8000,
+        n_fft=512,
+        hop_length=256,
+        augmentations=5,
+    )
+
+    def load_sample32(sample):
+        return features.load_sample(sample, sbcnn16k32_settings, window_frames=72, feature_dir='../../scratch/aug')
+
+    mean_m = features.predict_voted(sbcnn16k32_settings, model, t, loader=load_sample32, method='mean')
+
+
