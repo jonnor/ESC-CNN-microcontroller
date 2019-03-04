@@ -1,5 +1,5 @@
 
-def build_model(bands=60, frames=41, channels=2,
+def build_model(bands=64, frames=41, channels=2,
                 dilation=(2,2), kernel=(3,3), n_labels=10, dropout=0.5,
                 kernels=[32, 32, 64, 64]):
     """

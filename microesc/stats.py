@@ -6,7 +6,7 @@ import tensorflow as tf
 import numpy
 import keras.layers
 
-from models import sbcnn, speech
+from models import sbcnn, speech, dilated, skm, piczakcnn
 
 def fft_splitradix(N):
     return 4*N*math.log(N,2) - (6*N) + 8
@@ -77,33 +77,31 @@ def next_power_of_two(x):
 
 def logmel_raw_compare(sample_rate=44100, window_stride_ms=10):
 
-    window_length_ms = 2*window_stride_ms
-    fft_length = next_power_of_two((sample_rate * (window_length_ms)/1000))
-    n_frames = 1000/window_length_ms
-
     # XXX: analysis window overlap / voting not taken into account
-    frames = 72
-    bands = 30
-    input_shape = (bands, frames, 1)
-    def build_sbcnn():
-        net = sbcnn.build_model(frames=frames, bands=bands, kernel=(3,3), pool=(3,3), depthwise_separable=False)
-        return net
+    # FIXME: take length of frame (in seconds) into account
+
 
     def build_speech_tiny():
         return speech.build_tiny_conv(input_frames=frames, input_bins=bands, n_classes=10)
 
     models = {
-        'sbcnn': build_sbcnn,
-        'speech-tiny': build_speech_tiny,
+        'SB-CNN': (sbcnn.build_model, (128, 128, 1)),
+        'Piczak': (piczakcnn.build_model, (60, 41, 2)),
+        'SKM': (skm.build_model, (40,173,1)),
+        'DilaConv': (dilated.build_model, (64, 41, 2)),
+        #'speech-tiny': build_speech_tiny,
     }
 
-    model_stats = { name: analyze_model(build, input_shape, n_classes=10) for name, build in models.items() }
+    model_params = {}
+    model_stats = { name: analyze_model(build, shape, n_classes=10) for name, (build, shape) in models.items() }
     for name, stats in model_stats.items():
         flops, params = stats
 
         inference_flops = { name: v for name, v in flops.items() if not is_training_scope(name) }
         total_flops = sum(inference_flops.values()) 
         total_params = sum(params.values())
+
+        model_params[name] = total_params
 
         print(name)
         print('Total: {:.2f}M FLOPS, {:.2f}K params'.format(total_flops/1e6, total_params/1e3))
@@ -112,6 +110,7 @@ def logmel_raw_compare(sample_rate=44100, window_stride_ms=10):
         print('\n'.join([ "\t{}: {} params".format(name, v) for name, v in params.items()] ))
         print('\n')
 
+    print('p', model_params)
 
     #spec_flops = fft_splitradix(fft_length)*n_frames
     # TODO: take into account mel-filtering

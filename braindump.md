@@ -506,6 +506,32 @@ Approaches
 
 # Hypotheses
 
+### Stacked 1D  conv instead of 2D
+
+Hypothesis: Stacked 1D convolutions instead of 2D are more compute efficient
+
+Ideas:
+
+- Scattering transform might be good feature for 1D conv? Or MFCC.
+Melspectrogram might not be, since information spreads out over bands.
+
+Related:
+
+- DS-CNN for KWS by ARM had good results with depthwise-separable CNN (on MFCC).
+
+### Strided convolutions
+
+fstride-4 worked well on keyword spotting
+
+### Fully Convolutional
+
+Using Global Average Pooling instead of fully-connected
+
+### Dilated convolutions
+
+Problem: Does not load in STM32AI?
+
+
 ## Raw audio instead of spectrogram input
 
 Hypothesis: Using raw audio convolution filters instead of computing STFT/melspec/MFCC can save considerable compute
@@ -557,20 +583,10 @@ How to test
 
 - Use *LIME* to visualize existing networks to get some idea of possibility of reduction
 - Use *permutation feature importance* on spectrogram bins to quantify importance of each band
+- Make the STFT-mel filter trainable, with L1 regularization
 
 
-### Stacked 1D instead of 2D
 
-Hypothesis: Stacked 1D convolutions instead of 2D are more compute efficient
-
-Ideas:
-
-- Scattering transform might be good feature for 1D conv? Or MFCC.
-Melspectrogram might not be, since information spreads out over bands.
-
-Related:
-
-- DS-CNN for KWS by ARM had good results with depthwise-separable CNN (on MFCC).
 
 
 ## Other
@@ -596,6 +612,10 @@ Can a sparse FFT save time?
 Challenge: Interacts with model, especially convolution sizes
 
 
+Gammatone spectrograms are defined as linear filters
+Could be used to avoid FFT?
+Approximated with an IIR.
+https://github.com/detly/gammatone/blob/master/gammatone/gtgram.py
 
 
 ## Compute more efficiently

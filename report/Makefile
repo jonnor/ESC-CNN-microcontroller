@@ -6,7 +6,7 @@ report: merged.pdf
 pyincludes/%.tex: pyincludes/%.py
 	PYTHONPATH=../ python3 $< > $@
 
-includes: pyincludes/urbansound8k-classes.tex
+includes: pyincludes/urbansound8k-classes.tex pyincludes/microcontrollers.tex
 
 report.pdf: report.md includes
 	pandoc --bibliography=references.bib -V papersize:a4 -V geometry:margin=1.0in -V fontsize=12pt -H preamble.tex --toc -Vlof -s report.md -o report.pdf

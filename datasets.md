@@ -73,7 +73,7 @@ Relevant as examples of single-function systems, security
 Task: Keyword spotting / speech command
 
 
-DSCNN-L  [How to Achieve High-Accuracy Keyword Spotting on Cortex-M Processors](https://community.arm.com/processors/b/blog/posts/high-accuracy-keyword-spotting-on-cortex-m-processors)
+DSCNN-L [How to Achieve High-Accuracy Keyword Spotting on Cortex-M Processors](https://community.arm.com/processors/b/blog/posts/high-accuracy-keyword-spotting-on-cortex-m-processors)
 
 Very well explored.
 
@@ -176,17 +176,13 @@ Github repo has an excellent overview of attempted methods and their results.
 * Baseline MFCC-RF, 44.30%.
 * Over 20 CNN variations attempted.
 
-What resource-efficient methods exist?
-
-How would FastGRNN do on this dataset?
-How would FastGRNN do in combination with learned audio->2d features?
 
 #### AclNet: efficient end-to-end audio classification CNN
 https://arxiv.org/abs/1811.06669
 November, 2018
 
 Depthwise-Separable @44kHz. 81.75% accuracy, 155k parameters, 49M multiply-adds/second. 
-Standard Convolutio @44kHz, 82.20% accuracy, 84k parameters, 131 multiply-adds/second.
+Standard Convolutio @44kHz, 82.20% accuracy, 84k parameters, 131M multiply-adds/second.
 16kHz topped at 80.9%, just below human perf.
 ! 16kHz Standard Convolution not tested?
 Using data augmentation and mixup. 5% improvement. a=0.1/0.2 for mixup
@@ -225,42 +221,7 @@ Tests small,medium,large receptive field, and a model with all.
 Multi-scale outperforms single by 2-3% absolute.
 
 
-### Learning environmental sounds with end-to-end convolutional neural network
-EnvNet
 
-https://www.mi.t.u-tokyo.ac.jp/assets/publication/LEARNING_ENVIRONMENTAL_SOUNDS_WITH_END-TO-END_CONVOLUTIONAL_NEURAL_NETWORK.pdf
-When combined with log-mel, gives 6.5% improvement.
-
-
-Learned CNN frontend outputs 40x150 feature map.
-Tests different filter sizes for low level features. For 44.1kHz.
-Find 8 long performs best. With 2 conv layers.
-! graphs showing frequency response of the learned layers.
-When filter indexes are sorted, has similar shape to mel-scale.
-
-On ESC-50. Input lengths of 1-2.5 seconds perform similarly.
-
-logmel only. 58.9%
-logmel,logmel-delta. 66.5%
-
-EnvNet raw. 64%
-EnvNet logmel,raw. 69.3%
-EnvNet logmel,logmeldelta,raw. 71%
-
-Uses a 1 second window. Randomly chosen at training time.
-Longer clips are classified by probabalistic voting over windows. 0.2second stride 
-
-### Learning from Between-class Examples for Deep Sound Recognition
-https://openreview.net/forum?id=B1Gi6LeRZ
-Feb 2018.
-
-EnvNet-v2 is like EnvNet but with
-44.1 kHz instead of 16kHz,
-13 layers instead of 7.
-
-Without special learning, 69.1% on Urbansound8k
-Using between-class learning and strong augmentation, got
-84.9% on ESC-50, 91.4% on ESC-10, 78.3% on Urbansound8k 
 
 ### Very deep convolutional neural networks for raw waveforms
 
@@ -343,101 +304,17 @@ Relevant for environmental noise source prediction.
 ! recommendation. Use the predefined 10 folds and perform 10-fold (not 5-fold) cross validation.
 Otherwise will get inflated scores, due to related samples being mixed.
 
-### UNSUPERVISED FEATURE LEARNING FOR URBAN SOUND CLASSIFICATION
-2015.
 
-Using spherical-k-means to learn single layer of convolutions.
 
-Reaches 72% accuracy.
-log-melspectrogram input.
-Patches were 128 band tall. 8 frames long.
-k=2000
-128*8*2000 = 2.1M parameters
 
-### Deep Convolutional Neural Network with Mixup for Environmental Sound Classification
-https://link.springer.com/chapter/10.1007/978-3-030-03335-4_31
-November, 2018.
-83.7% on UrbanSound8k.
-Uses mixup and data augmentation. 5% increase in perf
-1-D convolutions in some places instead of 3x3.
+### LEARNING FILTER BANKS USING DEEP LEARNING FOR ACOUSTIC SIGNALS
+Shuhui Qu.
 
-### Deep Convolutional Neural Networks and Data Augmentation for Environmental Sound Classification
-Justin Salamon and Juan Pablo Bello.
-November 2016.
-https://arxiv.org/pdf/1608.04363.pdf
-SB-CNN. 73% without augmentation, 79% with data augmentation.
-3-layer convolutional, using 5x5 conv and max pooling.
-References models PiczakCNN 72% avg acc and SKM 72% avg acc. 
-? Baseline candidate.
-Parameters not specified. Estimated 444k
-
-### ENVIRONMENTAL SOUND CLASSIFICATION WITH CONVOLUTIONAL NEURAL NETWORKS
-https://karol.piczak.com/papers/Piczak2015-ESC-ConvNet.pdf
-2015.
-PiczakCNN
-Tested on Urbansound, ESC-10 and ESC-50.
-22050Hz sample rate, 1024 window, 512 hop, 60 mels
-5 variation of models. Baseline, short/long segments, majority/probability voting.
-Short segments: 41 frames, approx 950 ms.
-Long segments: 101 frames, approx 2.3 seconds.
-Average accuracy from 69% to 72%. Best model, LP long+probability.
-Parameters not specified. Estimated 25M ! (almost all from 5000,5000 FC layers) 
-
-### LEARNING FILTER BANKS USING DEEP LEARNING FOR ACOUSTIC SIGNALS. Shuhui Qu.
 Based on the procedure of log Mel-filter banks, we design a filter bank learning layer.
 Urbansound8K dataset, the experience guided learning leads to a 2% accuracy improvement.
 
-### WSN: COMPACT AND EFFICIENT NETWORKS WITH WEIGHT SAMPLING
-2018.
-CNN trained on raw audio.
-Compared on UrbanSound8k and ESC-50.
-70.5% average acc on UrbandSound8k.
-! evaluated on 5 folds? the dataset is pre-stratified with 10 folds, leakage can happen
-2 model variations evaluated, plus quantized versions.
-520K and 288K parameters.
-1.0e9 mult-adds.
-SoundNet used as baseline.
 
-SoundNet.
-Transfer learning
 
-### Listening to the World Improves Speech Command Recognition
-2017.
-
-Uses multi-resolution approach with dilated convolutions.
-4 different dilations.
-Using padding to keep them the same size, and stacking along channel dimension.
-Uses Urbansound8k -> Google Speech Command transfer learning.
-
-### Environmental sound classification with dilated convolutions
-https://www.sciencedirect.com/science/article/pii/S0003682X18306121
-December, 2018
-Dilated CNN achieves better results than that of CNN with max-pooling.
-About 4% on UrbanSound8K.
-! not compared with striding
-
-Dilated convolution increased receptive field without adding parameters.
-3x3 kernel with dilation rate 2 = 7x7 receptive field, dilation rate 3 = 11x11 receptive field
-! great images in the article.
-
-### Audio Event Classification using Deep Learning in an End-to-End Approach
-Jose Luis Diez Antich
-Explored end-2-end learning, using raw audio as input.
-Was unable to reach more than 62% average accuracy.
-? how many parameters
-
-### LD-CNN: A Lightweight Dilated Convolutional Neural Network for Environmental Sound Classification
-2018.
-http://web.pkusz.edu.cn/adsp/files/2015/10/ICPR_final.pdf
-
-Early layers use 1D stacked convolutions.
-
-Model size 2.05MB.
-79% Urbansound.
-66% ESC-50.
-
-References multiple other lightweight ESC models.
-?? Claims DenseNet performs well at 390.3KB size. But their reference does not support this.
 
 
 ## YorNoise

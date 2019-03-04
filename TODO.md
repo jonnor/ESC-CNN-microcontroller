@@ -13,32 +13,34 @@ Report
 - Finish draft methods. Ask for feedback OK
 - Setup/generate Table of existing methods
 
-Model performance
+Model evaluation
 
-- Calculate and report voted performance during training
 - Write all settings/parameters to a file when ran
-- train.py: Write history.csv file incrementally, for each epoch 
 - Use best voted performance to pick model
+- Flatten settings structure in train
+- Allow to specify hyperparameters on cmdline
 - Perform a hyperparameter search
-
+- Merge all experiments into single .csv file
 - Check windowing functions, esp last frame and padding
+- Setup GPU training. Preload feature files into memory?
 - Check data augmentations working
-! `sbcnn16k32aug` did (little bit) worse than `sbcnn16k30`
+Check the generated files wrt originals
+! Initially `sbcnn16k32aug` did (little bit) worse than `sbcnn16k30`.
+May require different hyperparameters?
 
 
-More experiments
+Experiments
 
+- Try depthwise-separable SB-CNN
+- Try Global fully convolutional
+- Try stacked 1D convolution in front 
 - Preprocess 44.1kHz, 64 mels and 32 mels.
-- Try to convert FastGRNN to Keras and load in STM32AI
-https://github.com/Microsoft/MMdnn
-- Shorter fields of view. Do they save cpu/mem?
-* Estimate multiply-adds for existing models
-* Try to run FastGRNN on Urbansound8k
+- Try Multiple Instance Learning again?
 
 Code quality
 
 - Fix tests and Travis CI build
-- Add end2end test
+- Add end2end tests
 
 Run CNN model on microcontroller
 

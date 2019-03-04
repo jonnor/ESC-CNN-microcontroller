@@ -234,20 +234,49 @@ Using a set of kernels in combination can detect many pattern variations.
 
 ![Convolution kernel as edge detector, applied to image. Source: [@UnderstandingConvolution]](./images/convolution.png)
 
+
 ## Convolutional Neural Network
 
 
     TODO: reference CNNs as state-of-the-art in
 
 
-## Wireless Sensor Networks
-
-
 ## Microcontrollers
 
     TODO: write 
 
+
+
+\begin{table}
+\input{pyincludes/microcontrollers.tex}
+\caption{Examples of available ARM microcontrollers and their characteristics}
+\label{table:microcontrollers}
+\end{table}
+
+Recommended prices from ST Microelectronics website, assuming 1-10k unit orders.
+
+Similar offerings are available from other manufacturers
+(Texas Instruments, Freescale, Atmel, Nordic Semiconductors, NXP).
+
+
 STM32 AI
+
+
+## Wireless Sensor Networks
+
+    TODO: write
+
+Continious monitoring.
+Low cost. Enables high density of sensor nodes
+
+Wireless connectivity
+Energy harvesting / battery operation
+
+On-edge processing
+Save energy, bandwidth
+Respect privacy
+
+    TODO: lead into our paper. MOTIVATION
 
 
 \newpage
@@ -255,15 +284,32 @@ STM32 AI
 
 ## Hardware platform
 
+    TODO: table with key specifications of microcontroller
+
     Key specifications.
     ARM Cortex M4F
     80 Mhz
 
+
+
+    TODO: set requirements for
+
+
+## Software
+
     STM32AI
     SensorTile
 
+Keras with Tensorflow
+librosa
+
+
+TODO: reference CMSIS-NN, ARM Keyword spotting 4x faster using fixed-point/SIMD.
 
 ## Datasets
+
+
+### Urbansound8K
 
 Urbansound taxonomy and Urbansound8K dataset[@UrbanSound8k].
 
@@ -274,7 +320,7 @@ The taxonomy was based on analysis of noise complaints in New York city between 
 
 The dataset consists of  of 10 different classes.
 
-\input{report/pyincludes/urbansound8k-classes.tex}
+\input{pyincludes/urbansound8k-classes.tex}
 
     TODO: IMAGE with representative spectrogram for each of the classes
 
@@ -283,20 +329,49 @@ As recommended by the authors we fold 10 as the test set.
 This allows comparison with existing results in literature that do the same.
 
 
+### ESC-50
 
     TODO: Use and describe ESC-50 dataset
+
+
+
 
 
 \newpage
 # Methods
 
+Preprocessing.
+
+Hyperparameter search
+
+Cross-validation
+
+
+## Baselines
+
 SB-CNN
+
+
+## Experiements
+
+Model variations
+
+Optimizer
+Hyperparameters
+
+Feature extraction settings
+
 
 \newpage
 # Results
 
+
+
+
 \newpage
 # Discussion
+
+
 
 \newpage
 # References
