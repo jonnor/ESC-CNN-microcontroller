@@ -151,14 +151,28 @@ time-stretching augmentation
 SDG 0.01 learning rate, 0.9 momentum
 mean voting between windows
 
-Early layers use 1D stacked convolutions.
-
 Model size 2.05MB.
 79% Urbansound.
 66% ESC-50.
 
-References multiple other lightweight ESC models.
-?? Claims DenseNet performs well at 390.3KB size. But their reference does not support this.
+Early layers use 1D stacked convolutions.
+Then dilated convolution in the middle.
+
+The first layer is nearly full height/frequency (57 of 60 bands),
+and processed with stride 1, giving 4 values out.
+Since each filter covers basically entire spectrum,
+this seems basically equivalent to having full-height frames, just 4x as many of them?
+The different filters will have to learn potentially the same patterns,
+just at different locations inside the kernel?
+Can one reduce the height to say half of band height, and use strides to get 4-8.
+Means combination of low + high frequency patterns will have be learned by later layers...
+
+`cnn-one-fstride4` in Google Keyword Spotting paper does essentially this.
+
+
+References multiple other lightweight ESC models testing.
+?? Claims DenseNet performs well at 390.3KB size.
+But their reference does not support this, it is just a general intro to DenseNet concept.
 
 
 ### WSN: COMPACT AND EFFICIENT NETWORKS WITH WEIGHT SAMPLING

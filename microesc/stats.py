@@ -6,7 +6,7 @@ import tensorflow as tf
 import numpy
 import keras.layers
 
-from models import sbcnn, speech, dilated, skm, piczakcnn
+from models import sbcnn, speech, dilated, skm, piczakcnn, dmix
 
 def fft_splitradix(N):
     return 4*N*math.log(N,2) - (6*N) + 8
@@ -92,9 +92,10 @@ def logmel_raw_compare(sample_rate=44100, window_stride_ms=10):
         'SB-CNN': (sbcnn.build_model, [(128, 128, 1)]),
         'Piczak': (piczakcnn.build_model, [(60, 41, 2)]),
         'SKM': (skm.build_model, [(40,173,1)]),
-        'DilaConv': (dilated.build_model, [(64, 41, 2)]),
-        #'D-CNN': (dilated.build_dcnn, (64, 41, 2)),
+        'DilaConv': (dilated.dilaconv, [(64, 41, 2)]),
+        'D-CNN': (dilated.dcnn, [(60, 31, 1), (60, 31, 1)]),
         'LD-CNN': (dilated.ldcnn, [(60, 31, 1), (60, 31, 1)]),
+        'Dmix-CNN': (dmix.build_model, [(128, 128, 2)]),
         #'speech-tiny': build_speech_tiny,
         'cnn-one-fstride4': (speech.build_one, [(40, 61, 1)]),
     }

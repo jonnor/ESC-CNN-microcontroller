@@ -530,6 +530,10 @@ Using Global Average Pooling instead of fully-connected
 
 ### Dilated convolutions
 
+LD-CNN with two heads fails in STM32AI.
+Probably multi-input is not implemented?
+Or one of the more rare operations, like Add
+
 LD-CNN with one head loads in STM32AI
 
 DilaConv also loads, though has way too much RAM/MACCS with 32,32,64,46 kernels.
