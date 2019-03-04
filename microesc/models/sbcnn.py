@@ -56,13 +56,15 @@ def build_model(frames=128, bands=128, channels=1, num_labels=10, kernel=(5,5), 
     return model
 
 def main():
-    print('original')
+    print('sbcnn.orig')
     m = build_model()
     m.summary()
+    m.save('sbcnn.orig.hdf5')
 
     print('sbcnn16k30')
     m = build_model(frames=72, bands=30, kernel=(3,3), pool=(3,3))
     m.summary()
+    m.save('sbcnn16k30.hdf5')
 
 
 

@@ -26,7 +26,7 @@ def is_training_scope(scope):
 # https://stackoverflow.com/questions/43490555/how-to-calculate-a-nets-flops-in-cnn
 # and https://stackoverflow.com/a/50680663/1967571
 # @build_func - function returning a Keras TensorFlow model
-def analyze_model(build_func, input_shape, n_classes):
+def analyze_model(build_func, input_shapes, n_classes):
 
     from tensorflow.python.framework import graph_util
     import tensorflow.python.framework.ops as ops
@@ -40,9 +40,12 @@ def analyze_model(build_func, input_shape, n_classes):
 
         base = build_func()
 
-        input_shape = [1] + list(input_shape)
-        inp = tf.placeholder(tf.float32, input_shape)
-        model = base(inp)
+        inputs = []
+        for shape in input_shapes:
+            input_shape = [1] + list(shape)
+            inp = tf.placeholder(tf.float32, input_shape)
+            inputs.append(inp)
+        model = base(inputs)
 
         # Get number of parameters
         opts = tf.profiler.ProfileOptionBuilder().trainable_variables_parameter() 
@@ -86,15 +89,18 @@ def logmel_raw_compare(sample_rate=44100, window_stride_ms=10):
 
     # TODO: output window size (ms), and input size (ms)
     models = {
-        'SB-CNN': (sbcnn.build_model, (128, 128, 1)),
-        'Piczak': (piczakcnn.build_model, (60, 41, 2)),
-        'SKM': (skm.build_model, (40,173,1)),
-        'DilaConv': (dilated.build_model, (64, 41, 2)),
+        'SB-CNN': (sbcnn.build_model, [(128, 128, 1)]),
+        'Piczak': (piczakcnn.build_model, [(60, 41, 2)]),
+        'SKM': (skm.build_model, [(40,173,1)]),
+        'DilaConv': (dilated.build_model, [(64, 41, 2)]),
+        #'D-CNN': (dilated.build_dcnn, (64, 41, 2)),
+        'LD-CNN': (dilated.ldcnn, [(60, 31, 1), (60, 31, 1)]),
         #'speech-tiny': build_speech_tiny,
-        'cnn-one-fstride4': (speech.build_one, (40, 61, 1)),
+        'cnn-one-fstride4': (speech.build_one, [(40, 61, 1)]),
     }
 
     model_params = {}
+    model_flops = {}
     model_stats = { name: analyze_model(build, shape, n_classes=10) for name, (build, shape) in models.items() }
     for name, stats in model_stats.items():
         flops, params = stats
@@ -104,6 +110,7 @@ def logmel_raw_compare(sample_rate=44100, window_stride_ms=10):
         total_params = sum(params.values())
 
         model_params[name] = total_params
+        model_flops[name] = total_flops
 
         print(name)
         print('Total: {:.2f}M FLOPS, {:.2f}K params'.format(total_flops/1e6, total_params/1e3))
@@ -113,6 +120,7 @@ def logmel_raw_compare(sample_rate=44100, window_stride_ms=10):
         print('\n')
 
     print('p', model_params)
+    print('f', model_flops)
 
     #spec_flops = fft_splitradix(fft_length)*n_frames
     # TODO: take into account mel-filtering

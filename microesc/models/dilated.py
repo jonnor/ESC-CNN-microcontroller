@@ -1,4 +1,71 @@
 
+def ldcnn_head(input, head_name, filters=80, L=57, W=6):
+    def n(base):
+        return base+'_'+head_name
+    
+    from keras.layers import Convolution2D, Flatten, MaxPooling2D
+
+    x = input
+    x = Convolution2D(filters, (L,1) , name=n('SFCL1'))(x)
+    x = Convolution2D(filters, (1,W), name=n('SFCL2'))(x)
+    x = MaxPooling2D(pool_size=(4,3), strides=(1,3), name=n('MPL1'))(x)
+    x = Convolution2D(filters, (1,3), dilation_rate=(2,2), name=n('DCL'))(x)
+    x = MaxPooling2D(pool_size=(1,3), strides=(1,3), name=n('MPL2'))(x)
+    x = Flatten(name=n('flatten'))(x)
+    return x
+
+
+def ldcnn(bands=60, frames=31, n_classes=10,
+            filters=80, L=57, W=6, fully_connected=5000):
+
+    """
+    LD-CNN: A Lightweight Dilated Convolutional Neural Network for Environmental Sound Classification
+    
+    http://epubs.surrey.ac.uk/849351/1/LD-CNN.pdf
+    """
+
+    from keras.models import Sequential, Model
+    from keras.layers import Dense, Dropout, Activation, Input, Concatenate
+    import keras.layers
+
+    input_shape = (bands, frames, 1)
+
+    def head(input, name):
+        return ldcnn_head(input, name, filters, L, W)
+
+    mel_input = Input(shape=input_shape, name='mel_input')
+    delta_input = Input(shape=input_shape, name='delta_input')
+    heads = [
+        head(mel_input, 'mel'),
+        head(delta_input, 'delta')
+    ]
+    m = keras.layers.add(heads, name='FSL')
+    m = Dense(fully_connected, activation='relu', name='FCL')(m)
+    m = Dense(n_classes, activation='softmax')(m)
+
+    model = Model([mel_input, delta_input], m)
+
+    return model
+
+def ldcnn_nodelta(bands=60, frames=31, n_classes=10,
+            filters=80, L=57, W=6, fully_connected=5000):
+    """Variation of LD-CNN with only mel input (no deltas)"""
+
+    from keras.models import Sequential, Model
+    from keras.layers import Dense, Dropout, Activation, Input, Concatenate
+
+    input_shape = (bands, frames, 2)
+    input = Input(shape=input_shape, name='mel_input')
+    m = ldcnn_head(input, 'mel', filters, L, W)
+    m = Dense(fully_connected, activation='relu', name='FCL')(m)
+    m = Dense(n_classes, activation='softmax')(m)
+
+    model = Model(input, m)
+    return model
+
+def build_dcnn():
+    pass
+
 def build_model(bands=64, frames=41, channels=2,
                 dilation=(2,2), kernel=(3,3), n_labels=10, dropout=0.5,
                 kernels=[32, 32, 64, 64]):
@@ -33,7 +100,15 @@ def build_model(bands=64, frames=41, channels=2,
 
 def main():
     m = build_model()
+    m.summary()
+    m.save('dilaconv.hdf5')
 
+    m = ldcnn()
+    m.save('ldcnn.hdf5')
+    m.summary()
+
+    m = ldcnn_nodelta()
+    m.save('ldcnn.nodelta.hdf5')
     m.summary()
 
 if __name__ == '__main__':

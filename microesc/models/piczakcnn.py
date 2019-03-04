@@ -37,6 +37,7 @@ def build_model(bands=60, frames=41, channels=2, n_labels=10,
 
 def main():
     m = build_model()
+    m.save('piczak.orig.hdf5')
 
     m.summary()
 

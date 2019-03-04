@@ -522,6 +522,7 @@ Related:
 ### Strided convolutions
 
 fstride-4 worked well on keyword spotting
+Could maybe be applied to LD-CNN?
 
 ### Fully Convolutional
 
@@ -529,7 +530,9 @@ Using Global Average Pooling instead of fully-connected
 
 ### Dilated convolutions
 
-Problem: Does not load in STM32AI?
+LD-CNN with one head loads in STM32AI
+
+DilaConv also loads, though has way too much RAM/MACCS with 32,32,64,46 kernels.
 
 
 ## Raw audio instead of spectrogram input

@@ -25,6 +25,7 @@ def build_model(bands=60, frames=41, channels=1, n_labels=10,
 
 def main():
     m = build_model()
+    m.save('densenet.hdf5')
 
     m.summary()
 
