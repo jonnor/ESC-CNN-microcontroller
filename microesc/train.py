@@ -109,12 +109,14 @@ def train_model(out_dir, fold, builder,
 
     def voted_score():
         y_pred = features.predict_voted(settings, model, val,
-                                loader=val_loader, method='mean', overlap=0.5)
+                        loader=val_loader, method=settings['voting'], overlap=settings['voting_overlap'])
         class_pred = numpy.argmax(y_pred, axis=1)
         acc = sklearn.metrics.accuracy_score(val.classID, class_pred)
         d = {
             'voted_val_acc': acc,
         }
+        for k, v in d.items():
+            print("{}: {:.4f}".format(k, v))
         return d
     log_path = os.path.join(out_dir, 'train.csv')
     log = LogCallback(log_path, voted_score)

@@ -33,11 +33,11 @@ def precompute(samples, settings, out_dir, n_jobs=8, verbose=1, force=False):
 
         sr = sr=settings['samplerate']
         y, sr = librosa.load(inp, sr=sr)
-        f = compute_mels(y, settings)
+        f = features.compute_mels(y, settings)
         numpy.savez(outp, f)
 
         for aug in range(settings['augmentations']):
-            f = compute_mels(augment(y, sr=sr), settings)
+            f = features.compute_mels(augment(y, sr=sr), settings)
             p = outp.replace('.npz', '.aug{}.npz'.format(aug))
             numpy.savez(p, f)
 
@@ -81,6 +81,7 @@ def main():
     args = parse(sys.argv[1:])
     archive = args.archive_dir
 
+    urbansound8k.default_path = os.path.join(args.datasets_dir, 'UrbanSound8K/')
     urbansound8k.maybe_download_dataset(args.datasets_dir)
     data = urbansound8k.load_dataset()
     settings = common.load_experiment(args.experiments_dir, args.experiment)
