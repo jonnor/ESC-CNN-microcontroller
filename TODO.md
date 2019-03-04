@@ -5,13 +5,14 @@
 
 Report
 
-- Include results into report. Boxplot, table with average perf
+- Include existing methods. Table + plot of complexity vs performance
+- Include results into report. Boxplot, table with average,std perf
 - Check in results files into git
 - Outline sections for introduction
 - Outline sections for methods
 - Outline sections for materials
 - Finish draft methods. Ask for feedback OK
-- Setup/generate Table of existing methods
+
 
 Model evaluation
 
