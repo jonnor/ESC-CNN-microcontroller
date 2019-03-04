@@ -19,6 +19,54 @@ def build_tiny_conv(input_frames, input_bins, n_classes=12, dropout=0.5):
     ])
     return model
 
+
+
+def build_one(frames=64, bands=40, n_classes=10, dropout=0.0, tstride = 1, fstride = 4):
+    """
+    Ported from Tensorflow examples. create_low_latency_conv
+
+    This is roughly the network labeled as 'cnn-one-fstride4' in the
+    'Convolutional Neural Networks for Small-footprint Keyword Spotting' paper:
+    http://www.isca-speech.org/archive/interspeech_2015/papers/i15_1478.pdf
+    """
+
+    from keras.layers import Conv2D, Dense, Dropout, Flatten
+
+
+    # In the paper there are some differences
+    # uses log-mel as input instead of MFCC
+    # uses 4 in stride for frequency
+    # has a linear bottleneck as second layer to reduce multiplications,
+    # instead of doing a single full-frequency convolution
+    # probably uses ReLu for the DNN layers?
+    # probably does not use ReLu for the conv layer?
+
+    # Note, in keyword spotting task tstride=2,4,8 performed well also
+    
+    conv_f = 8
+    conv_t = 32
+    kernels = 90
+    bottleneck = 32
+
+    input_shape = (frames, bands, 1)
+
+    model = keras.Sequential([
+        Conv2D(kernels, (conv_t, conv_f), strides=(tstride, fstride),
+                padding='valid', activation='relu', use_bias=True,
+                input_shape=input_shape),
+        Dense(bottleneck, activation=None, use_bias=True),
+        Dropout(dropout),
+        Dense(128, activation='relu', use_bias=True),
+        Dropout(dropout),
+        Dense(128, activation='relu', use_bias=True),
+        Dropout(dropout),
+        Dense(n_classes, activation='softmax', use_bias=True),
+    ])
+    return model
+
+
+
+
 def build_low_latency_conv(input_frames, input_bins, n_classes=12, dropout=0.5):
     """
     Ported from Tensorflow examples. create_low_latency_conv
@@ -84,14 +132,17 @@ def build_aclnet_lowlevel(input_samples, c1=32, s1=8, s2=4, input_tensor=None):
 
 
 def main():
-    m = build_low_latency_conv(98, 40)
+    m = build_low_latency_conv(41, 40)
     m.summary()
 
     m = build_tiny_conv(32, 40)
     m.summary()
 
-    m = build_aclnet_lowlevel(20480)
+    m = build_one()
     m.summary()
+
+    #m = build_aclnet_lowlevel(20480)
+    #m.summary()
 
 if __name__ == '__main__':
     main()

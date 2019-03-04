@@ -84,12 +84,14 @@ def logmel_raw_compare(sample_rate=44100, window_stride_ms=10):
     def build_speech_tiny():
         return speech.build_tiny_conv(input_frames=frames, input_bins=bands, n_classes=10)
 
+    # TODO: output window size (ms), and input size (ms)
     models = {
         'SB-CNN': (sbcnn.build_model, (128, 128, 1)),
         'Piczak': (piczakcnn.build_model, (60, 41, 2)),
         'SKM': (skm.build_model, (40,173,1)),
         'DilaConv': (dilated.build_model, (64, 41, 2)),
         #'speech-tiny': build_speech_tiny,
+        'cnn-one-fstride4': (speech.build_one, (40, 61, 1)),
     }
 
     model_params = {}

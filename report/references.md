@@ -180,3 +180,21 @@ Compared on UrbanSound8k and ESC-50.
 520K and 288K parameters.
 
 
+### Convolutional Neural Networks for Small-footprint Keyword Spotting 
+2015
+https://www.isca-speech.org/archive/interspeech_2015/papers/i15_1478.pdf
+
+Designs small CNNs
+Keeping number of multiples the same, at 500 M
+Number of params around 50-100k
+
+40 log-mel
+25 ms frames
+10 ms shift
+32 frame windows = 310 ms
+! 1 frame shifts = 96% overlap
+
+1 layer or 2 layer CNNs. Testing pooling and striding alternatives
+
+Getting very good results for striding in time and striding in frequency
+

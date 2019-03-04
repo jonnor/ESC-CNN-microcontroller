@@ -33,9 +33,8 @@ May require different hyperparameters?
 Experiments
 
 - Try depthwise-separable SB-CNN
-- Try Global fully convolutional
 - Try stacked 1D convolution in front 
-- Preprocess 44.1kHz, 64 mels and 32 mels.
+- Try global fully convolutional
 - Try Multiple Instance Learning again?
 
 Code quality

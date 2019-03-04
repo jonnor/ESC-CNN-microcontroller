@@ -112,6 +112,7 @@ Github repo has an excellent overview of attempted methods and their results.
 https://arxiv.org/abs/1811.06669
 November, 2018
 
+ESC-50
 Depthwise-Separable @44kHz. 81.75% accuracy, 155k parameters, 49M multiply-adds/second. 
 Standard Convolutio @44kHz, 82.20% accuracy, 84k parameters, 131M multiply-adds/second.
 16kHz topped at 80.9%, just below human perf.
@@ -185,10 +186,10 @@ Used 128 mel-frequency bands.
 
 Evaluated on ESC-50.
 Best model mel-spectrogram. Table 4.1
-M 2048 75 44.1 top1=74.70% 88.35%
+M 2048 75 44.1 top1=74.70% top3=88.35%
 
 75% overlap better than 50%.
-.. Down to 66% with 32/16kHz sample rate.
+.. Down to acc=66% with 32/16kHz sample rate.
 ! did not change N_fft with different frequencies, so temporal resolution differs also
 
 Future work.
@@ -209,7 +210,8 @@ Number of parameters ?
 
 ! Table 5 has good overview of performance, relative to other models.
 On raw audio showing performance similar to M18,EnvNet2
-Urbansound8k 73.6%. ESC-50 71.1±0.8  ESC-10 84.1±0.7
+Urbansound8k 73.6%.
+ESC-50 71.1±0.8  ESC-10 84.1±0.7
 
 Fusion with 3 heads performs better.
 
