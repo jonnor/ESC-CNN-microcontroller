@@ -5,9 +5,13 @@
 
 Report
 
-- Include existing methods. Table + plot of complexity vs performance
+- Include 1D CNN methods. Table + plot of complexity vs performance
 - Include results into report. Boxplot, table with average,std perf
 - Check in results files into git
+- Finish Urbansound8k section
+- Finish Hardware platform section
+- Finish Software platform section
+- Move some parts into dedicated Theory section?
 - Outline sections for introduction
 - Outline sections for methods
 - Outline sections for materials

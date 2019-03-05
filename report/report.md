@@ -2,12 +2,18 @@
 \newpage
 # Introduction
 
-Privacy, GDPR
+Noise
+Environmental noise
+Health problems
+Reduced value
+Regulations
+Noise assesment
+Challenges. Local problem, multiple sources, time-dependent
+Track noise level, identifying source, plan/take corrective action
 Wireless Sensor Networks
+Privacy, GDPR
 
-Supervised machine learning
-Neural Networks
-Convolutional Nets
+
 
 ## Environmental noise
 Noise is unwanted sound. Environmental noise is the summary of noise pollution from outside,
@@ -92,12 +98,6 @@ and at how many locations measurements are made.
 
 ![Norsonic Nor140 handheld acoustic measurement unit](./images/nor140.jpg)
 
-Specifically for workplace monitoring, and evaluating risk of hearing impairment
-noise dosimeters are also used. They are standardized in IEC 61252 Personal Sound Exposure Meters[@IECPersonalSoundExposureMeters].
-These are not used for evaluating environmental noise.
-
-![Cirrus Research DoseBadge5 noise dosimeter](./images/dosebadge5.jpg)
-
 With a continous noise monitoring station, measurement are be done automatically,
 giving very good coverage over time.
 Many such stations can be deployed to also give good spatial coverage,
@@ -106,28 +106,34 @@ operating together in a Wireless Sensor Network.
 ![CESVA TA120 noise monitoring station](./images/cesva-ta120.png)
 
 
-## Digital sound
+## Noise monitoring with Wireless Sensor Networks
 
-Physically, sound is a variation in pressure over time.
-For machine learning, it must be exist in a digital representation.
-The acoustic data is converted to analog electric signals by a microphone and
-then digitized using an Analog-to-Digital-Converter (ADC).
+    TODO: write
 
-    TODO: IMAGE, replace with own work
+Continious monitoring.
+Low cost. Enables high density of sensor nodes
 
-![From acoustical sound to digital and back. Source: [@ProcessingTutorial]](./images/digital-sound-processingorg.png)
+Wireless connectivity
+Energy harvesting / battery operation
 
-In the digitization process, the signal is quantized in time at a certain sampling frequency,
-and the amplitude quantized at a certain bitdepth.
-A typical sampling frequency is 44100 Hz, and bitdepth 16 bit. With these parameters,
-the acoustic sound can be reconstructed without perceivable differences by humans.
+On-edge processing
+Save energy, bandwidth
+Respect privacy
 
-Digital sound can be stored uncompressed (PCM .wav), using lossless compression (.flac)
-or using lossy compression (.mp3). Lossy compression removes information and may add artifacts,
-and is best avoided for machine learning tasks.
-Recordings can be multi-channel but for acoustic events
-single-channel (mono) data is still the most common.
+This motivates our research question:
 
+> Can we classify environmental sounds directly on the noise sensor,
+without requiring to transmit audio or features to a central system?
+
+
+# Background
+
+## Machine learning
+
+Supervised learning
+Training set
+Validation set
+Test set
 
 ## Classification
 
@@ -181,6 +187,27 @@ Under MIL input instances are grouped into a 'bag', and the label exists on the 
 instead of the individual instances.
 MIL formulations exist for many common machine learning algorithms.
 
+## Digital sound
+
+Physically, sound is a variation in pressure over time.
+For machine learning, it must be exist in a digital representation.
+The acoustic data is converted to analog electric signals by a microphone and
+then digitized using an Analog-to-Digital-Converter (ADC).
+
+    TODO: IMAGE, replace with own work
+
+![From acoustical sound to digital and back. Source: [@ProcessingTutorial]](./images/digital-sound-processingorg.png)
+
+In the digitization process, the signal is quantized in time at a certain sampling frequency,
+and the amplitude quantized at a certain bitdepth.
+A typical sampling frequency is 44100 Hz, and bitdepth 16 bit. With these parameters,
+the acoustic sound can be reconstructed without perceivable differences by humans.
+
+Digital sound can be stored uncompressed (PCM .wav), using lossless compression (.flac)
+or using lossy compression (.mp3). Lossy compression removes information and may add artifacts,
+and is best avoided for machine learning tasks.
+Recordings can be multi-channel but for acoustic events
+single-channel (mono) data is still the most common.
 
 ## Frames
 
@@ -203,11 +230,15 @@ The overlap can be specified as percentage of the frame length (overlap percenta
 or as a number of samples (hop length). Overlap can for instance be 50%.
 A window function is applied to ensure that the signal level stays constant also in overlapping sections.
 
-## Spectrograms
+## Short Time Fourier Transform
+
+## Spectrogram filterbanks
 
 A raw Short Time Fourier Transform can contain 1024 or more bins, often with strong correlation across multiple bins.
 To reduce dimensionality, the STFT spectrogram is often processed with a filter-bank of 40-128 frequency bands.
+
 Some filter-bank alternatives are 1/3 octave bands, the Bark scale, Constant-Q transform and the Mel scale.
+
 All these have filters spacing that increase with frequency, mimicking the human auditory system.
 
 ## Mel-spectrogram
@@ -222,7 +253,12 @@ A spectrogram processed with triangular filters evenly spaced on the Mel scale i
 
 A mel-spectrogram can still have significant correlation between bands.
 
-## Convolution
+
+## Convolutional Neural Network
+
+
+    TODO: reference CNNs as state-of-the-art in
+
 
 A convolution filter (also called kernel) allows to express many common transformations
 on 1d or 2d data, like edge detection (horizontal/vertical) or smoothening filters (median). 
@@ -235,17 +271,6 @@ Using a set of kernels in combination can detect many pattern variations.
 ![Convolution kernel as edge detector, applied to image. Source: [@UnderstandingConvolution]](./images/convolution.png)
 
 
-## Convolutional Neural Network
-
-
-    TODO: reference CNNs as state-of-the-art in
-
-## Machine learning
-
-Supervised learning
-Training set
-Validation set
-Test set
 
 ## Microcontrollers
 
@@ -272,21 +297,6 @@ Texas Instruments, Freescale, Atmel, Nordic Semiconductors, NXP.
     ARM Helium
 
 
-## Wireless Sensor Networks
-
-    TODO: write
-
-Continious monitoring.
-Low cost. Enables high density of sensor nodes
-
-Wireless connectivity
-Energy harvesting / battery operation
-
-On-edge processing
-Save energy, bandwidth
-Respect privacy
-
-    TODO: lead into our paper. MOTIVATION
 
 
 \newpage
