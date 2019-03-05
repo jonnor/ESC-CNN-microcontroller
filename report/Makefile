@@ -6,10 +6,19 @@ report: merged.pdf
 pyincludes/%.tex: pyincludes/%.py
 	PYTHONPATH=../ python3 $< > $@
 
-includes: pyincludes/urbansound8k-classes.tex pyincludes/microcontrollers.tex
+plots/%.tex: plot.py
+	PYTHONPATH=../ python3 plot.py $@
+
+plots/%.png: plot.py
+	PYTHONPATH=../ python3 plot.py $@
+
+includes: pyincludes/urbansound8k-classes.tex \
+    pyincludes/microcontrollers.tex \
+    plots/urbansound8k-existing-models-logmel.tex \
+    plots/urbansound8k-existing-models-logmel.png
 
 report.pdf: report.md includes
-	pandoc --bibliography=references.bib -V papersize:a4 -V geometry:margin=1.0in -V fontsize=12pt -H preamble.tex --toc -Vlof -s report.md -o report.pdf
+	pandoc --bibliography=references.bib -V papersize:a4 -V geometry:margin=1.0in -V fontsize=12pt -H preamble.tex --toc -Vlof -Vlot -s report.md -o report.pdf
 
 merged.pdf: report.pdf summary.pdf
 	gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress -sOutputFile=merged.pdf cover.pdf summary.pdf report.pdf end.pdf

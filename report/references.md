@@ -24,7 +24,9 @@ https://karol.piczak.com/papers/Piczak2015-ESC-ConvNet.pdf
 2015.
 PiczakCNN
 Tested on Urbansound, ESC-10 and ESC-50.
+
 22050Hz sample rate, 1024 window, 512 hop, 60 mels
+
 5 variation of models. Baseline, short/long segments, majority/probability voting.
 Short segments: 41 frames, approx 950 ms.
 Long segments: 101 frames, approx 2.3 seconds.
@@ -50,7 +52,9 @@ Uses stacked 1-D convolutions in some places
 (3,7), (3,5), (3,1), (3,1), (1,5), 
 
 log-melspectrogram, gammatone compared
+
 window size of 1024, hop length of 512 and 128 bands,128 frames (1.5sec)
+
 SGD with learning rate decay. Initial rate 0.1. Nesterov, 0.9 momentum
 Batch 200 samples randomly selected without replacement
 200/300 epochs training
@@ -102,6 +106,9 @@ Xiaohu Zhang, Yuexian Zou, Wei Shi
 2015
 
 D-CNN
+Same features as Piczak
+22050Hz sample rate, 1024 window, 512 hop
+31 frames for Urbansound8k
 
 81.9% accuracy on Urbansound8k
 ReLu 81.2%

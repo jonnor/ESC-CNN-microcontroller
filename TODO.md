@@ -27,7 +27,7 @@ Model evaluation
 - Check data augmentations working
 Check the generated files wrt originals
 ! Initially `sbcnn16k32aug` did (little bit) worse than `sbcnn16k30`.
-May require different hyperparameters?
+May require different hyperparameters? Maybe need to train for much longer?
 
 
 Experiments
@@ -44,6 +44,7 @@ Code quality
 
 Run CNN model on microcontroller
 
+- Run a LD-CNN-nodelta model on microcontroller. Try training for 16kHz, 30 mels?
 - STM32AI: Test different FFT/mel sizes
 - STM32AI: Support window overlap?
 - STM32AI: Report/fix melspec preprocessing bug

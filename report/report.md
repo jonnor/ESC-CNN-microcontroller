@@ -240,10 +240,20 @@ Using a set of kernels in combination can detect many pattern variations.
 
     TODO: reference CNNs as state-of-the-art in
 
+## Machine learning
+
+Supervised learning
+Training set
+Validation set
+Test set
 
 ## Microcontrollers
 
     TODO: write 
+    What are microcontrollers
+    Where are they used
+    Special considerations. Autonomous operation. Low power. Low cost.
+    Number of shipments anually
 
 
 
@@ -253,13 +263,13 @@ Using a set of kernels in combination can detect many pattern variations.
 \label{table:microcontrollers}
 \end{table}
 
-Recommended prices from ST Microelectronics website, assuming 1-10k unit orders.
+Recommended prices from ST Microelectronics website for 1-10k unit orders.
 
-Similar offerings are available from other manufacturers
-(Texas Instruments, Freescale, Atmel, Nordic Semiconductors, NXP).
+Similar offerings are available from other manufacturers such as
+Texas Instruments, Freescale, Atmel, Nordic Semiconductors, NXP.
 
-
-STM32 AI
+    TODO: mention possiblity of DNN accelerator in future
+    ARM Helium
 
 
 ## Wireless Sensor Networks
@@ -284,27 +294,81 @@ Respect privacy
 
 ## Hardware platform
 
-    TODO: table with key specifications of microcontroller
+As the microcontroller we have chosen the STM32L476 from STMicroelectronics.
+This is a mid-range device from ST32L4 series of ultra-low-power microcontroller.
+It has a ARM Cortex M4F running at 80MHz, with hardware floating-point unit (FPU)
+and DSP instructions. 
 
-    Key specifications.
-    ARM Cortex M4F
-    80 Mhz
+    TODO: reference datasheet
+
+It has 1024 kB of program memory (Flash), and 128 kB of RAM.
+Support audio input from a either analog microphone (using 12bit ADC),
+or a digital microphone (using the Serial Audio Interface in either I2S or PDM).
+
+It can also support audio input and output over USB.
+This allow to send audio data from a host computer,
+to verify that the audio classification system.
+
+Supports SD card. 
+Can be used to store recorded samples to build or extend a training set.
+
+The STM32L476 microcontroller is available on two different development kits,
+Nucleo STM32L476 and SensorTile.
+Nucleo contains the microcontroller and a ST-Link V2 programmer/debugger.
+The SensorTile module contains an microphone, accelerometer+gyroscope+compass+barometer,
+and a docking board include battery and SD-card holder.
 
 
-
-    TODO: set requirements for
-
+    TODO: include picture of SensorTile 
 
 ## Software
 
-    STM32AI
-    SensorTile
 
-Keras with Tensorflow
+The machine learning models are trained in Python using Keras with Tensorflow backend,
+To perform feature extraction 
+
 librosa
+
+    TODO: picture of training + deployment pipelines
+
+STM32CubeMx
+Function pack
+
+STM32AI
+
+All computations are done in single-precision float.
+
+Supports model compression by quantizing model weights.
+8x or 4x.
+Tool can perform basic validation of the compressed model. 
+
+Does not support multi-input models.
+
+    TODO: include screenshot of STM32AI
+
+
 
 
 TODO: reference CMSIS-NN, ARM Keyword spotting 4x faster using fixed-point/SIMD.
+
+## Model requirements
+
+Our machine learning algorithm must fit on the target device.
+By benchmarking 
+
+For RAM and . The remaining 
+
+
+|  Resource    | Maximum   | Desirable    |
+| -------      |:---------:|:------------:|
+| RAM usage    |   64 kB   | `< 32 kB`    |
+| Flash use    |   512 kB  | `< 256 kB`   |
+| CPU usage (MACCs/s)    |   4 M    | `< 0.5 M`    |
+
+Table: Summary of device contraints for machine learning model
+
+    TODO: describe benchmark used to reach MACC/s number
+
 
 ## Datasets
 
@@ -320,42 +384,53 @@ The taxonomy was based on analysis of noise complaints in New York city between 
 
 The dataset consists of  of 10 different classes.
 
+    TODO: include number of samples in each class in table?
+    
+\begin{table}
 \input{pyincludes/urbansound8k-classes.tex}
+\caption{Classes found in the Urbansound8k dataset}
+\label{table:urbansound8k-classes}
+\end{table}
+
 
     TODO: IMAGE with representative spectrogram for each of the classes
 
 The dataset comes pre-arranged into 10 folds.
-As recommended by the authors we fold 10 as the test set.
+
+As recommended by the Urbansound8k authors use we fold 10 as the test set.
 This allows comparison with existing results in literature that do the same.
-
-
-### ESC-50
-
-    TODO: Use and describe ESC-50 dataset
-
-
-
-
 
 \newpage
 # Methods
 
+
+## Existing models
+
+
+\begin{table}
+\input{plots/urbansound8k-existing-models-logmel.tex}
+\caption{Existing methods and their results on Urbansound8k}
+\label{table:urbansound8k-existing-models-logmel}
+\end{table}
+
+    FIXME: plot is clipping text at bottom and top, need more margins
+
+![Performance of existing CNN models using log-mel features on Urbansound8k dataset. Green region shows the region which satisfies our model requirements.](./plots/urbansound8k-existing-models-logmel.png)
+
+SB-CNN
+LD-CNN
+
+## Experimental Setup
+
 Preprocessing.
+Data augmentation
 
 Hyperparameter search
 
 Cross-validation
 
+Approach towards reaching goals
 
-## Existing methods
-
-
-    TODO: include table
-    TODO: plot versus
-
-
-
-## Experiements
 
 Model variations
 
@@ -368,12 +443,27 @@ Feature extraction settings
 \newpage
 # Results
 
-
+    TODO: boxplots of accuracy
 
 
 \newpage
 # Discussion
 
+would this be good enough to be useful for classifying noise assessment?
+might not be neccesary to go as fine-grained as 10 classes
+Road noise, people/social noise, construction noise.
+could this be done as post-processing on these 10 classes?
+
+
+class accuracies
+confusion 
+top3 performance
+
+Further work
+
+Use fixed-point / SIMD optimimized CNN implementation
+Using slightly bigger microcontroller.
+Able to double Flash. Up to 1024kB RAM, 8x. Approx 8x CPU.
 
 
 \newpage

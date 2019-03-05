@@ -1,0 +1,12 @@
+\begin{tabular}{lrlll}
+\toprule
+{} &  Accuracy (\%) & Multiply-Adds / second & Model parameters &                Data augmentation \\
+name         &               &                        &                  &                                  \\
+\midrule
+Dmix-CNN-mel &          82.6 &                   298M &            1180k &     pitchshift,timestretch,Mixup \\
+D-CNN        &          81.9 &                   458M &           33000k &                      timestretch \\
+SB-CNN       &          79.0 &                    25M &             432k &  pitchshift,timestretch,noisemix \\
+LD-CNN       &          79.0 &                    10M &             580k &                      timestretch \\
+PiczakCNN    &          75.0 &                    88M &           25534k &  pitchshift,timestretch,noisemix \\
+\bottomrule
+\end{tabular}
