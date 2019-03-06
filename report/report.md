@@ -237,7 +237,7 @@ A window function is applied to ensure that the signal level stays constant also
 A raw Short Time Fourier Transform can contain 1024 or more bins, often with strong correlation across multiple bins.
 To reduce dimensionality, the STFT spectrogram is often processed with a filter-bank of 40-128 frequency bands.
 
-Some filter-bank alternatives are 1/3 octave bands, the Bark scale, Constant-Q transform and the Mel scale.
+Some filter-bank alternatives are 1/3 octave bands, the Bark scale, Gammatone and the Mel scale.
 
 All these have filters spacing that increase with frequency, mimicking the human auditory system.
 
@@ -251,7 +251,7 @@ A spectrogram processed with triangular filters evenly spaced on the Mel scale i
 
 ![Mel-spectrogram of birdsong. The birdsong is clearly visible as up and down chirps at 3kHz and higher](./images/bird_clear_melspec.png)
 
-A mel-spectrogram can still have significant correlation between bands.
+
 
 
 ## Convolutional Neural Network
@@ -270,6 +270,11 @@ Using a set of kernels in combination can detect many pattern variations.
 
 ![Convolution kernel as edge detector, applied to image. Source: [@UnderstandingConvolution]](./images/convolution.png)
 
+## Windowed voting
+
+Mean
+Majority
+Overlap
 
 
 ## Microcontrollers
@@ -304,7 +309,7 @@ Texas Instruments, Freescale, Atmel, Nordic Semiconductors, NXP.
 
 ## Hardware platform
 
-As the microcontroller we have chosen the STM32L476 from STMicroelectronics.
+As the microcontroller we have chosen the STM32L476[@STM32L476] from STMicroelectronics.
 This is a mid-range device from ST32L4 series of ultra-low-power microcontroller.
 It has a ARM Cortex M4F running at 80MHz, with hardware floating-point unit (FPU)
 and DSP instructions. 
@@ -312,24 +317,34 @@ and DSP instructions.
     TODO: reference datasheet
 
 It has 1024 kB of program memory (Flash), and 128 kB of RAM.
-Support audio input from a either analog microphone (using 12bit ADC),
-or a digital microphone (using the Serial Audio Interface in either I2S or PDM).
+For audio input both analog microphone and and digital microphones (I2S/PDM) are supported.
 
-It can also support audio input and output over USB.
-This allow to send audio data from a host computer,
-to verify that the audio classification system.
+The microcontroller support audio input and output over USB.
+This allow to send audio data from a host computer
+to test that the audio classification system is working as intended.
 
-Supports SD card. 
-Can be used to store recorded samples to build or extend a training set.
+Supports SD card, which can be used to store recorded samples to build a dataset.
 
-The STM32L476 microcontroller is available on two different development kits,
-Nucleo STM32L476 and SensorTile.
-Nucleo contains the microcontroller and a ST-Link V2 programmer/debugger.
-The SensorTile module contains an microphone, accelerometer+gyroscope+compass+barometer,
-and a docking board include battery and SD-card holder.
+To develop for the STM32L476 microcontroller we selected the
+SensorTile development kit STEVAL-STLKT01V1[@STEVAL-STLKT01V1].
+The kit consists of a SensorTile module, an expansion board, and a portable docking board (not used).
 
+https://www.st.com/en/evaluation-tools/steval-stlkt01v1.html
 
     TODO: include picture of SensorTile 
+
+The SensorTile module contains in addition to the microcontroller a microphone,
+Bluetooth radio chip, and an Inertial Measurement Unit (accelerometer+gyroscope+compass+barometer).
+An expansion board allows to connect and power the microcontroller over USB.
+
+
+
+The ST-Link V2 from a Nucleo STM32L476 board is used to program and debug the device.
+
+
+
+    TODO: picture of development setup
+
 
 ## Software
 
@@ -380,19 +395,16 @@ Table: Summary of device contraints for machine learning model
     TODO: describe benchmark used to reach MACC/s number
 
 
-## Datasets
+\newpage
+## Urbansound8K dataset
 
-
-### Urbansound8K
-
-Urbansound taxonomy and Urbansound8K dataset[@UrbanSound8k].
-
-The taxonomy was based on analysis of noise complaints in New York city between 2010 and 2014.
-
-    TODO: describe dataset collection. Where/how??
-
-
-The dataset consists of  of 10 different classes.
+The Urbansound8K dataset[@UrbanSound8k] was collected in 2014
+based on selecting and manually labeling content from the Freesound[@Freesound] repository.
+The dataset contains 8732 labeled sound clips with a total duration of 8.75 hours.
+Most clips are 4 seconds long, but shorter clips also exist.
+10 different classes are present, as shown in table \ref{table:urbansound8k-classes}.
+The classes are a subset of those found in the Urbansound taxonomy,
+which was developed based on analysis of noise complaints in New York city between 2010 and 2014.
 
     TODO: include number of samples in each class in table?
     
@@ -402,13 +414,16 @@ The dataset consists of  of 10 different classes.
 \label{table:urbansound8k-classes}
 \end{table}
 
+![Spectrograms of sound clips from Urbansound8k dataset, selected for each class\label{urbansound8k-examples}](./plots/urbansound8k-examples.png)
 
-    TODO: IMAGE with representative spectrogram for each of the classes
+The target sound are rarely alone in the sound clip, and may not always be the most prominent.
+This makes Urbansound8k a relatively challenging dataset.
+In the spectrograms shown in figure \ref{urbansound8k-examples} sounds with clear occurences of the target sound were chosen.
 
-The dataset comes pre-arranged into 10 folds.
+The dataset comes pre-arranged into 10 folds. A single fold may contain multiple clips from the same source file,
+but the same source file is not repeated across folds.
+Authors recommend always using fold 10 as the test set, to allow easy comparison of results between experiments.
 
-As recommended by the Urbansound8k authors use we fold 10 as the test set.
-This allows comparison with existing results in literature that do the same.
 
 \newpage
 # Methods
@@ -416,6 +431,7 @@ This allows comparison with existing results in literature that do the same.
 
 ## Existing models
 
+    TODO: put both of these into one figure environment?
 
 \begin{table}
 \input{plots/urbansound8k-existing-models-logmel.tex}
@@ -426,6 +442,8 @@ This allows comparison with existing results in literature that do the same.
     FIXME: plot is clipping text at bottom and top, need more margins
 
 ![Performance of existing CNN models using log-mel features on Urbansound8k dataset. Green region shows the region which satisfies our model requirements.](./plots/urbansound8k-existing-models-logmel.png)
+
+
 
 SB-CNN
 LD-CNN

@@ -14,8 +14,10 @@ plots/%.png: plot.py
 
 includes: pyincludes/urbansound8k-classes.tex \
     pyincludes/microcontrollers.tex \
+    plots/urbansound8k-examples.png \
     plots/urbansound8k-existing-models-logmel.tex \
     plots/urbansound8k-existing-models-logmel.png
+
 
 report.pdf: report.md includes
 	pandoc --bibliography=references.bib -V papersize:a4 -V geometry:margin=1.0in -V fontsize=12pt -H preamble.tex --toc -Vlof -Vlot -s report.md -o report.pdf
