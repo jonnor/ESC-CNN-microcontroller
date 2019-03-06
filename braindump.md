@@ -360,7 +360,19 @@ acc 0.6632302405498282
 
 Avoids overfitting semi-well. Train/val scores get close and stay like that for 5 epochs.
 
-With AdaDelta and batch=40
+
+
+With SB-CNN on 20k, 60 mels. 200k parameters
+
+Epoch 00038: saving model to ./data/models/ldcnn20k60-20190306-1624-e15e-fold0/e38-v1.38.t1.63.model.hdf5
+voted_val_acc: 0.7113
+Epoch 39/50
+80/80 [==============================] - 30s 371ms/step - loss: 1.6213 - acc: 0.4241 - val_loss: 1.4305 - val_acc: 0.5880
+
+
+Under same circumstances seems to be really hard to get LD-CNN above 0.63
+
+
 
 
 Seems reasonably easy to train to 0.60 window perf and 0.65 voted perf.

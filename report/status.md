@@ -93,7 +93,7 @@ Best model: N/A
 
 ## Tasks for March 7
 
-- Write methods
+- Write methods??
 - Finish writing introduction
 - Fix/add data augmentation
 - Setup validation pipeline

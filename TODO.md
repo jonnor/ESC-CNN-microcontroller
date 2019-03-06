@@ -5,20 +5,21 @@ Where should review of existing methods go?
 
 What should go into methods, except for Experimental Setup?
 
+Is anything missing from Materials section?
+
 ## TODO
 
 
 Report
 
-- Fix reference style
-- Include results into report. Boxplot, table with average,std perf
 - Finish Hardware platform section
-- Include 1D CNN in methods. Table + plot of complexity vs performance
 - Finish Software platform section
-- Finish Existing methods
-- Outline sections for methods
-- Outline sections for materials
+- Finish introduction
 - Finish draft methods. Ask for feedback OK
+
+- Finish Existing methods
+
+- Include results into report. Boxplot, table with average,std perf
 
 
 Model evaluation

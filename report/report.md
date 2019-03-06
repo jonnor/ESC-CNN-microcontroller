@@ -328,39 +328,27 @@ Texas Instruments, Freescale, Atmel, Nordic Semiconductors, NXP.
 As the microcontroller we have chosen the STM32L476[@STM32L476] from STMicroelectronics.
 This is a mid-range device from ST32L4 series of ultra-low-power microcontroller.
 It has a ARM Cortex M4F running at 80MHz, with hardware floating-point unit (FPU)
-and DSP instructions. 
+and DSP instructions. It has 1024 kB of program memory (Flash), and 128 kB of RAM.
 
-    TODO: reference datasheet
-
-It has 1024 kB of program memory (Flash), and 128 kB of RAM.
 For audio input both analog microphone and and digital microphones (I2S/PDM) are supported.
-
-The microcontroller support audio input and output over USB.
+The microcontroller can also send and receive audio over USB.
 This allow to send audio data from a host computer
 to test that the audio classification system is working as intended.
-
-Supports SD card, which can be used to store recorded samples to build a dataset.
+An SD card interface can be used to store recorded samples to collect a dataset.
 
 To develop for the STM32L476 microcontroller we selected the
 SensorTile development kit STEVAL-STLKT01V1[@STEVAL-STLKT01V1].
 The kit consists of a SensorTile module, an expansion board, and a portable docking board (not used).
 
-https://www.st.com/en/evaluation-tools/steval-stlkt01v1.html
+![SensorTile module with functional blocks indicated. Module size is 13.5x13.5mm\label{sensortile-annotated}](./img/sensortile-annotated.jpg)
 
-    TODO: include picture of SensorTile 
-
-The SensorTile module contains in addition to the microcontroller a microphone,
-Bluetooth radio chip, and an Inertial Measurement Unit (accelerometer+gyroscope+compass+barometer).
+The SensorTile module (see figure \ref{sensortile-annotated}) contains in addition to the microcontroller: a microphone,
+Bluetooth radio chip, and an Inertial Measurement Unit (accelerometer+gyroscope+compass).
 An expansion board allows to connect and power the microcontroller over USB.
-
-
-
 The ST-Link V2 from a Nucleo STM32L476 board is used to program and debug the device.
+The entire setup can be seen in figure \ref{sensortile-devkit}.
 
-
-
-    TODO: picture of development setup
-
+![Development setup of SensorTile kit\label{sensortile-devkit}](./img/sensortile-devkit.jpg)
 
 ## Software
 
@@ -368,7 +356,7 @@ The ST-Link V2 from a Nucleo STM32L476 board is used to program and debug the de
 The machine learning models are trained in Python using Keras with Tensorflow backend,
 To perform feature extraction 
 
-librosa
+librosa[@librosa]
 
     TODO: picture of training + deployment pipelines
 
@@ -396,6 +384,8 @@ TODO: reference CMSIS-NN, ARM Keyword spotting 4x faster using fixed-point/SIMD.
 
 Our machine learning algorithm must fit on the target device.
 By benchmarking 
+
+    TODO: move to methods section?
 
 For RAM and . The remaining 
 
@@ -458,6 +448,8 @@ Authors recommend always using fold 10 as the test set, to allow easy comparison
 
 ![Performance of existing CNN models using log-mel features on Urbansound8k dataset. Green region shows the region which satisfies our model requirements.](./plots/urbansound8k-existing-models-logmel.png)
 
+
+    TODO: refer
 
 
 SB-CNN
