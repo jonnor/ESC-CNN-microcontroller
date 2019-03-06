@@ -1,0 +1,15 @@
+samplerate: 22050
+n_mels: 60
+fmin: 0
+fmax: 11025
+n_fft: 1024
+hop_length: 512
+augmentations: 0
+frames: 31
+batch: 200
+epochs: 20
+train_samples: 16000
+val_samples: 5000
+augment: 0
+voting: 'mean'
+voting_overlap: 0.5

@@ -10,7 +10,9 @@ Regulations
 Noise assesment
 Challenges. Local problem, multiple sources, time-dependent
 Track noise level, identifying source, plan/take corrective action
+Smart-city concept, data-driven
 Wireless Sensor Networks
+Existing projects
 Privacy, GDPR
 
 
@@ -105,6 +107,9 @@ operating together in a Wireless Sensor Network.
 
 ![CESVA TA120 noise monitoring station](./images/cesva-ta120.png)
 
+## Existing projects
+
+
 
 ## Noise monitoring with Wireless Sensor Networks
 
@@ -126,6 +131,8 @@ This motivates our research question:
 without requiring to transmit audio or features to a central system?
 
 
+
+
 # Background
 
 ## Machine learning
@@ -134,6 +141,15 @@ Supervised learning
 Training set
 Validation set
 Test set
+Cross-fold validation
+
+
+## Data augmentation
+
+Data augmentation
+Pitchshift,timestretch
+Mixup,between-class
+
 
 ## Classification
 
@@ -405,10 +421,9 @@ Most clips are 4 seconds long, but shorter clips also exist.
 10 different classes are present, as shown in table \ref{table:urbansound8k-classes}.
 The classes are a subset of those found in the Urbansound taxonomy,
 which was developed based on analysis of noise complaints in New York city between 2010 and 2014.
-
-    TODO: include number of samples in each class in table?
     
 \begin{table}
+\centering
 \input{pyincludes/urbansound8k-classes.tex}
 \caption{Classes found in the Urbansound8k dataset}
 \label{table:urbansound8k-classes}
@@ -416,12 +431,12 @@ which was developed based on analysis of noise complaints in New York city betwe
 
 ![Spectrograms of sound clips from Urbansound8k dataset, selected for each class\label{urbansound8k-examples}](./plots/urbansound8k-examples.png)
 
-The target sound are rarely alone in the sound clip, and may not always be the most prominent.
+The target sound is rarely alone in the sound clip, and may be in the background, partially obscured by sounds outside the available classes.
 This makes Urbansound8k a relatively challenging dataset.
-In the spectrograms shown in figure \ref{urbansound8k-examples} sounds with clear occurences of the target sound were chosen.
+For figure \ref{urbansound8k-examples} sounds with clear occurences of the target sound were chosen.
 
 The dataset comes pre-arranged into 10 folds. A single fold may contain multiple clips from the same source file,
-but the same source file is not repeated across folds.
+but the same source file is not used in multiple folds to prevent data leakage.
 Authors recommend always using fold 10 as the test set, to allow easy comparison of results between experiments.
 
 
@@ -478,9 +493,12 @@ Feature extraction settings
 # Discussion
 
 would this be good enough to be useful for classifying noise assessment?
+
 might not be neccesary to go as fine-grained as 10 classes
 Road noise, people/social noise, construction noise.
 could this be done as post-processing on these 10 classes?
+
+could do only the `foreground` classes. Since the predominant sound
 
 
 class accuracies

@@ -1,24 +1,32 @@
 
+## Questions
+
+Where should review of existing methods go?
+
+What should go into methods, except for Experimental Setup?
 
 ## TODO
 
 
 Report
 
-- Include 1D CNN methods. Table + plot of complexity vs performance
+- Fix reference style
 - Include results into report. Boxplot, table with average,std perf
-- Check in results files into git
-- Finish Urbansound8k section
 - Finish Hardware platform section
+- Include 1D CNN in methods. Table + plot of complexity vs performance
 - Finish Software platform section
-- Move some parts into dedicated Theory section?
-- Outline sections for introduction
+- Finish Existing methods
 - Outline sections for methods
 - Outline sections for materials
 - Finish draft methods. Ask for feedback OK
 
 
 Model evaluation
+
+- Check data augmentations working
+Check the generated files wrt originals
+! Initially `sbcnn16k32aug` did (little bit) worse than `sbcnn16k30`.
+May require different hyperparameters? Maybe need to train for much longer?
 
 - Write all settings/parameters to a file when ran
 - Use best voted performance to pick model
@@ -28,18 +36,16 @@ Model evaluation
 - Merge all experiments into single .csv file
 - Check windowing functions, esp last frame and padding
 - Setup GPU training. Preload feature files into memory?
-- Check data augmentations working
-Check the generated files wrt originals
-! Initially `sbcnn16k32aug` did (little bit) worse than `sbcnn16k30`.
-May require different hyperparameters? Maybe need to train for much longer?
 
 
 Experiments
 
+- Try lower number of mels
+- Try longer time periods
+- Try different voting overlaps
 - Try depthwise-separable SB-CNN
 - Try stacked 1D convolution in front 
 - Try global fully convolutional
-- Try Multiple Instance Learning again?
 
 Code quality
 

@@ -16,7 +16,7 @@ import librosa
 import sklearn.metrics
 
 from . import features, urbansound8k, common
-from .models import sbcnn
+from .models import sbcnn, dilated
 
 
 def dataframe_generator(X, Y, loader, batchsize=10, n_classes=10):
@@ -100,7 +100,7 @@ def train_model(out_dir, fold, builder,
 
     model = builder()
     model.compile(loss='categorical_crossentropy',
-                  optimizer=keras.optimizers.SGD(lr=0.001, momentum=0.95, nesterov=True),
+                  optimizer=keras.optimizers.SGD(lr=0.01, momentum=0.9, nesterov=True),
                   metrics=['accuracy'])
 
     model_path = os.path.join(out_dir, 'e{epoch:02d}-v{val_loss:.2f}.t{loss:.2f}.model.hdf5')
@@ -217,6 +217,19 @@ def settings(args):
     return train_settings
 
 
+def ldcnn(settings):
+    m = dilated.ldcnn_nodelta(frames=settings['frames'], bands=settings['n_mels'], 
+                            filters=80, L=57, W=6, fully_connected=5000)
+    return m
+
+def sbcnn(settings):
+    m = sbcnn.build_model(bands=feature_settings['n_mels'], channels=1,
+                    frames=model_settings['frames'],
+                    pool=model_settings['pool'],
+                    kernel=model_settings['kernel'],
+                    )
+    return m
+
 
 def main():
 
@@ -262,11 +275,11 @@ def main():
         return d
 
     def build_model():
-        m = sbcnn.build_model(bands=feature_settings['n_mels'], channels=1,
-                    frames=model_settings['frames'],
-                    pool=model_settings['pool'],
-                    kernel=model_settings['kernel'],
-                    )
+        #m = sbcnn(exsettings)
+        m = ldcnn(exsettings)
+
+        m.summary()
+
         return m
 
     all_settings = {
