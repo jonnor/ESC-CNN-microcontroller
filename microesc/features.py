@@ -121,7 +121,7 @@ def load_sample(sample, settings, feature_dir, window_frames,
     hop_length = settings['hop_length']
 
     aug = None
-    if augment is not None and settings['augmentations'] > 0:
+    if augment and settings['augmentations'] > 0:
         aug = numpy.random.randint(-1, settings['augmentations'])
         if aug == -1:
             aug = None
