@@ -6,14 +6,19 @@ report: merged.pdf
 pyincludes/%.tex: pyincludes/%.py
 	PYTHONPATH=../ python3 $< > $@
 
+pyplots/%.png: pyplots/%.py
+	PYTHONPATH=../ python3 $< $@
+
 plots/%.tex: plot.py
 	PYTHONPATH=../ python3 plot.py $@
 
 plots/%.png: plot.py
 	PYTHONPATH=../ python3 plot.py $@
 
+
 includes: pyincludes/urbansound8k-classes.tex \
     pyincludes/microcontrollers.tex \
+    pyplots/filterbanks.png \
     plots/urbansound8k-examples.png \
     plots/urbansound8k-existing-models-logmel.tex \
     plots/urbansound8k-existing-models-logmel.png

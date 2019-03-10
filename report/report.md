@@ -261,20 +261,26 @@ All these have filters spacing that increase with frequency, mimicking the human
 
 A spectrogram processed with triangular filters evenly spaced on the Mel scale is called a Mel-spectrogram.
 
-    TODO: IMAGE, replace with own work
 
-![Mel-spaced filterbank. Filters are set to to be unity-height. Mel-filters using unit-area filters also exist. Source: [@SpeechProcessingTutorial]](./images/mel-filterbanks-20.png)
-
-![Mel-spectrogram of birdsong. The birdsong is clearly visible as up and down chirps at 3kHz and higher](./images/bird_clear_melspec.png)
+![Comparison of different filter responses. Mel, Gammatone, 1/3-octave](./pyplots/filterbanks.png)
 
 
+    TODO: image of normalized mel-spectrogram
+
+    TODO: image of spectrogram and mel-spectrogram of a sound sample
 
 
 ## Convolutional Neural Network
 
+Convolution operation
+Functions. Edge detection, median filtering
+Depth. Higher-level features. Patterns of patterns
 
-    TODO: reference CNNs as state-of-the-art in
+Pooling
 
+
+
+    TODO: reference CNNs as state-of-the-art in ESC
 
 A convolution filter (also called kernel) allows to express many common transformations
 on 1d or 2d data, like edge detection (horizontal/vertical) or smoothening filters (median). 
@@ -302,7 +308,6 @@ Overlap
     Number of shipments anually
 
 
-
 \begin{table}
 \input{pyincludes/microcontrollers.tex}
 \caption{Examples of available ARM microcontrollers and their characteristics}
@@ -314,8 +319,31 @@ Recommended prices from ST Microelectronics website for 1-10k unit orders.
 Similar offerings are available from other manufacturers such as
 Texas Instruments, Freescale, Atmel, Nordic Semiconductors, NXP.
 
-    TODO: mention possiblity of DNN accelerator in future
-    ARM Helium
+
+### Machine learning on microcontrollers
+
+Inference, not training
+General purpose vs
+Available tools.
+ARM CMSIS-NN
+tflite
+uTensor
+emlearn
+ELL
+
+### Hardware accelerators
+
+
+Kendryte K120. RISC-V
+GreenWaves GAP8
+
+    TODO: get some numbers for TOPS/second
+
+STMicroelectronics has stated that neural network accelerators will be available
+for their STM32 family of microcontrollers in 2019`TODO: ref`, based on their
+FD-SOI chip architecture[@ST-FD-SOI].
+
+ARM has announced ARM Helium, a set of for the Cortex
 
 
 
@@ -352,18 +380,18 @@ The entire setup can be seen in figure \ref{sensortile-devkit}.
 
 ## Software
 
-
-The machine learning models are trained in Python using Keras with Tensorflow backend,
-To perform feature extraction 
-
-librosa[@librosa]
-
-    TODO: picture of training + deployment pipelines
-
 STM32CubeMx
+STM32AI
+FP-AI-SENSING1
+Keras. Tensorflow backend
+librosa
+Pandas,numpy
+? Docker image
+? training on Kubernetes
+
+
 Function pack
 
-STM32AI
 
 All computations are done in single-precision float.
 
@@ -374,6 +402,16 @@ Tool can perform basic validation of the compressed model.
 Does not support multi-input models.
 
     TODO: include screenshot of STM32AI
+
+
+
+
+The machine learning models are trained in Python using Keras with Tensorflow backend,
+To perform feature extraction 
+
+librosa[@librosa]
+
+    TODO: picture of training + deployment pipelines
 
 
 
@@ -456,6 +494,9 @@ SB-CNN
 LD-CNN
 
 ## Experimental Setup
+
+Determine model requirements.
+Choose most feasible base model. Incl feature representation
 
 Preprocessing.
 Data augmentation

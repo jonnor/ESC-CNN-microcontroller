@@ -12,13 +12,11 @@ Is anything missing from Materials section?
 
 Report
 
-- Finish Hardware platform section
-- Finish Software platform section
+
 - Finish introduction
 - Finish draft methods. Ask for feedback OK
-
+- Finish Software platform section
 - Finish Existing methods
-
 - Include results into report. Boxplot, table with average,std perf
 
 
