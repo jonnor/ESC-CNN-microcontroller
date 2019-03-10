@@ -75,9 +75,9 @@ def ldcnn_head(input, head_name, filters=80, L=57, W=6):
     from keras.layers import Convolution2D, Flatten, MaxPooling2D, BatchNormalization
 
     x = input
-    x = Convolution2D(filters, (L,1), name=n('SFCL1'))(x)
+    x = Convolution2D(filters, (L,1), activation='relu', name=n('SFCL1'))(x)
     x = BatchNormalization()(x)
-    x = Convolution2D(filters, (1,W), name=n('SFCL2'))(x)
+    x = Convolution2D(filters, (1,W), activation='relu', name=n('SFCL2'))(x)
     x = BatchNormalization()(x)
     x = MaxPooling2D(pool_size=(4,3), strides=(1,3), name=n('MPL1'))(x)
     x = Convolution2D(filters, (1,3), dilation_rate=(2,2), name=n('DCL'))(x)
@@ -87,7 +87,7 @@ def ldcnn_head(input, head_name, filters=80, L=57, W=6):
 
 
 def ldcnn(bands=60, frames=31, n_classes=10,
-            filters=80, L=57, W=6, fully_connected=5000, dropout=0.5):
+            filters=80, L=57, W=6, fully_connected=5000, dropout=0.25):
 
     """
     LD-CNN: A Lightweight Dilated Convolutional Neural Network for Environmental Sound Classification
@@ -135,7 +135,7 @@ def ldcnn_nodelta(bands=60, frames=31, n_classes=10,
     input = Input(shape=input_shape, name='mel_input')
 
     m = ldcnn_head(input, 'mel', filters, L, W)
-    m = Dropout(dropout)(m)
+    #m = Dropout(dropout)(m)
 
     m = Dense(fully_connected, activation='relu', kernel_regularizer=l2(0.001), name='FCL')(m)
     m = Dropout(dropout)(m)
