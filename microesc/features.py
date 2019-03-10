@@ -66,13 +66,12 @@ def compute_mels(y, settings):
     return mels
 
 
-def sample_windows(length, frame_samples, window_frames, overlap=0.5):
+def sample_windows(length, frame_samples, window_frames, overlap=0.5, start=0):
     """Split @samples into a number of windows of samples
     with length @frame_samples * @window_frames
     """
 
     ws = frame_samples * window_frames
-    start = 0
     while start < length:
         end = min(start + ws, length)
         yield start, end
@@ -171,7 +170,7 @@ def load_sample(sample, settings, feature_dir, window_frames,
 
 Sample = collections.namedtuple('Sample', 'start end fold slice_file_name')
 
-def load_windows(sample, settings, loader, overlap):
+def load_windows(sample, settings, loader, overlap, start=0):
     sample_rate = settings['samplerate']
     frame_samples = settings['hop_length']
     window_frames = settings['frames']
@@ -181,7 +180,7 @@ def load_windows(sample, settings, loader, overlap):
     duration = sample.end - sample.start
     length = int(sample_rate * duration)
 
-    for win in sample_windows(length, frame_samples, window_frames, overlap=overlap):
+    for win in sample_windows(length, frame_samples, window_frames, overlap=overlap, start=start):
         chunk = Sample(start=win[0]/sample_rate,
                        end=win[1]/sample_rate,
                        fold=sample.fold,
