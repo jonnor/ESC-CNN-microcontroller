@@ -15,7 +15,7 @@ from . import urbansound8k, features, common
 def augmentations(audio, sr):
     
     ts  = [ 0.81, 0.93, 1.07, 1.23]
-    ps = [ -2, -1, 1, 2, -3.5, 2.5, 2.5, 3.5 ]
+    ps = [ -2, -1, 1, 2, -3.5, -2.5, 2.5, 3.5 ]
 
     out = {}
     for stretch in ts:
@@ -41,8 +41,10 @@ def precompute(samples, settings, out_dir, n_jobs=8, verbose=1, force=False):
         numpy.savez(outp, f)
 
         if settings['augmentations']:
+            augmented = augmentations(y, sr).values()
             assert settings['augmentations'] == 12
-            for aug, augdata in enumerate(augmentations(y, sr).values()):
+            assert len(augmented) == settings['augmentations'], len(augmented)
+            for aug, augdata in enumerate(augmented):
                 f = features.compute_mels(augdata, settings)
                 p = outp.replace('.npz', '.aug{}.npz'.format(aug))
                 numpy.savez(p, f)
