@@ -32,22 +32,34 @@ def precompute(samples, settings, out_dir, n_jobs=8, verbose=1, force=False):
     out_folder = out_dir
 
     def compute(inp, outp):
-        if os.path.exists(outp) and not force:
-            return outp
+        sr = settings['samplerate']
 
-        sr = sr=settings['samplerate']
-        y, sr = librosa.load(inp, sr=sr)
-        f = features.compute_mels(y, settings)
-        numpy.savez(outp, f)
+        _lazy_y = None
+        def load():
+            nonlocal _lazy_y
+            if _lazy_y is None:
+                _lazy_y, _sr = librosa.load(inp, sr=sr)
+                assert _sr == sr, _sr
+            return _lazy_y
+
+        if not os.path.exists(outp) or force:
+            y = load()
+            f = features.compute_mels(y, settings)
+            numpy.savez(outp, f)
 
         if settings['augmentations']:
-            augmented = augmentations(y, sr).values()
-            assert settings['augmentations'] == 12
-            assert len(augmented) == settings['augmentations'], len(augmented)
-            for aug, augdata in enumerate(augmented):
-                f = features.compute_mels(augdata, settings)
-                p = outp.replace('.npz', '.aug{}.npz'.format(aug))
-                numpy.savez(p, f)
+
+            paths = [ outp.replace('.npz', '.aug{}.npz'.format(aug)) for aug in range(12) ]
+            exists = [ os.path.exists(p) for p in paths ]
+            if not all(exists) or force:
+                y = load()
+                augmented = augmentations(y, sr).values()
+                assert settings['augmentations'] == 12
+                assert len(augmented) == settings['augmentations'], len(augmented)
+
+                for aug, (augdata, path) in enumerate(zip(augmented, paths)):
+                    f = features.compute_mels(augdata, settings)
+                    numpy.savez(path, f)
 
         return outp
     
