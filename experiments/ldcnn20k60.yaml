@@ -13,5 +13,5 @@ val_samples: 5000
 augment: 1
 voting: 'mean'
 voting_overlap: 0.5
-pool: '3x2'
+pool: '2x2'
 kernel: '5x5'
