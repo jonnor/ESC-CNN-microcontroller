@@ -20,8 +20,6 @@ def build_model(frames=128, bands=128, channels=1, num_labels=10, kernel=(5,5), 
 
     model = Sequential()
 
-    Conv2 = SeparableConv2D if depthwise_separable else Convolution2D
-
     # Layer 1 - 24 filters with a receptive field of (f,f), i.e. W has the shape (24,1,f,f). 
     # This is followed by (4,2) max-pooling over the last two dimensions and a ReLU activation function.
     model.add(Convolution2D(24, kernel, padding='same', input_shape=(bands, frames, channels)))
@@ -31,14 +29,14 @@ def build_model(frames=128, bands=128, channels=1, num_labels=10, kernel=(5,5), 
 
     # Layer 2 - 48 filters with a receptive field of (f,f), i.e. W has the shape (48,24,f,f). 
     # Like L1 this is followed by (4,2) max-pooling and a ReLU activation function.
-    model.add(Conv2(48, kernel, padding='same'))
+    model.add(Convolution2D(24, kernel, padding='valid', dilation_rate=(2,2)))
     model.add(BatchNormalization())
-    model.add(MaxPooling2D(pool_size=pool))
+    #model.add(MaxPooling2D(pool_size=pool))
     model.add(Activation('relu'))
 
     # Layer 3 - 48 filters with a receptive field of (f,f), i.e. W has the shape (48, 48, f, f). 
     # This is followed by a ReLU but no pooling.
-    model.add(Conv2(48, kernel, padding='valid'))
+    model.add(Convolution2D(24, kernel, padding='valid',dilation_rate=(1,1)))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
 

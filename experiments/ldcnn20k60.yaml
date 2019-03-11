@@ -4,7 +4,7 @@ fmin: 0
 fmax: 11025
 n_fft: 1024
 hop_length: 512
-augmentations: 5
+augmentations: 12
 frames: 31
 batch: 400
 epochs: 50
