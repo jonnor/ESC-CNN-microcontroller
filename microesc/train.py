@@ -222,11 +222,11 @@ def ldcnn(settings):
                             filters=80, L=57, W=6, fully_connected=5000)
     return m
 
-def sbcnn(settings):
-    m = sbcnn.build_model(bands=feature_settings['n_mels'], channels=1,
-                    frames=model_settings['frames'],
-                    pool=model_settings['pool'],
-                    kernel=model_settings['kernel'],
+def sb_cnn(settings):
+    m = sbcnn.build_model(bands=settings['n_mels'], channels=1,
+                    frames=settings['frames'],
+                    pool=parse_dimensions(settings['pool']),
+                    kernel=parse_dimensions(settings['kernel']),
                     )
     return m
 
@@ -275,8 +275,8 @@ def main():
         return d
 
     def build_model():
-        #m = sbcnn(exsettings)
-        m = ldcnn(exsettings)
+        m = sb_cnn(exsettings)
+        #m = ldcnn(exsettings)
 
         m.summary()
 
