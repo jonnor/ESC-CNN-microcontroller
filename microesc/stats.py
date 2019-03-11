@@ -1,19 +1,20 @@
 
 import math
 import os
+import sys
 
 import tensorflow as tf
 import numpy
 import keras.layers
 
-from models import sbcnn, speech, dilated, skm, piczakcnn, dmix
+from .models import sbcnn, speech, dilated, skm, piczakcnn, dmix
 
 def fft_splitradix(N):
     return 4*N*math.log(N,2) - (6*N) + 8
 
 
 def is_training_scope(scope):
-    patterns = ('/random_uniform', '/weight_regularizer', '/dropout_', '/dropout/')
+    patterns = ('/random_uniform', '/weight_regularizer', '/dropout_', '/dropout/', 'AssignMovingAvg')
 
     is_training = False
     for t in patterns:
