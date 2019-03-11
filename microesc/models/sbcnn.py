@@ -2,7 +2,7 @@
 
 import numpy as np
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Activation, Flatten
+from keras.layers import Dense, Dropout, Activation, Flatten, BatchNormalization
 from keras.layers import Convolution2D, MaxPooling2D, SeparableConv2D
 from keras.regularizers import l2
 
@@ -25,18 +25,21 @@ def build_model(frames=128, bands=128, channels=1, num_labels=10, kernel=(5,5), 
     # Layer 1 - 24 filters with a receptive field of (f,f), i.e. W has the shape (24,1,f,f). 
     # This is followed by (4,2) max-pooling over the last two dimensions and a ReLU activation function.
     model.add(Convolution2D(24, kernel, padding='same', input_shape=(bands, frames, channels)))
+    model.add(BatchNormalization())
     model.add(MaxPooling2D(pool_size=pool))
     model.add(Activation('relu'))
 
     # Layer 2 - 48 filters with a receptive field of (f,f), i.e. W has the shape (48,24,f,f). 
     # Like L1 this is followed by (4,2) max-pooling and a ReLU activation function.
     model.add(Conv2(48, kernel, padding='same'))
+    model.add(BatchNormalization())
     model.add(MaxPooling2D(pool_size=pool))
     model.add(Activation('relu'))
 
     # Layer 3 - 48 filters with a receptive field of (f,f), i.e. W has the shape (48, 48, f, f). 
     # This is followed by a ReLU but no pooling.
     model.add(Conv2(48, kernel, padding='valid'))
+    model.add(BatchNormalization())
     model.add(Activation('relu'))
 
     # flatten output into a single dimension, let Keras do shape inference

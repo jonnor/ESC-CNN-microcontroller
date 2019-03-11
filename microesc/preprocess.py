@@ -23,7 +23,7 @@ def augmentations(audio, sr):
         out[name] = librosa.effects.time_stretch(audio, stretch)
 
     for shift in ps:
-        name = 'ts{:.2f}'.format(shift)
+        name = 'ps{:.2f}'.format(shift)
         out[name] = librosa.effects.pitch_shift(audio, sr, shift)
 
     return out
