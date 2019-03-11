@@ -19,7 +19,7 @@ model_options = {
     'convnetjs': 4,  
 }
 
-def generate_config(model_path, out_path, name='network', model_type='keras'):
+def generate_config(model_path, out_path, name='network', model_type='keras', compression=None):
 
     data = {
         "name": name,
@@ -30,7 +30,7 @@ def generate_config(model_path, out_path, name='network', model_type='keras'):
             "3": [ model_path , ""],
             "4": [ model_path ],
         },
-        "compression": "None",
+        "compression": compression,
         "pinnr_path": out_path,
         "src_path": out_path,
         "inc_path": out_path,
@@ -74,7 +74,7 @@ def extract_stats(output):
     return out
 
 
-def generatecode(model_path, out_path, name, model_type):
+def generatecode(model_path, out_path, name, model_type, compression):
 
     # Path to CLI tool
     home = str(pathlib.Path.home())
@@ -87,7 +87,8 @@ def generatecode(model_path, out_path, name, model_type):
         os.makedirs(out_path)
 
     # Generate .ai config file
-    config = generate_config(model_path, out_path, name=name, model_type=model_type)
+    config = generate_config(model_path, out_path, name=name,
+                             model_type=model_type, compression=compression)
     config_path = os.path.join(out_path, 'config.ai')
     with open(config_path, 'w') as f:
         f.write(config)
@@ -122,6 +123,9 @@ def parse():
         help='Type of model. {}'.format(supported_types))
     a('--name', default='network',
         help='Name of the generated network')
+    a('--compression', default=None, type=int,
+        help='Compression setting to use. Valid: 4|8')
+
 
     args = parser.parse_args()
     return args
@@ -129,7 +133,10 @@ def parse():
 def main():
     args = parse()
 
-    stats = generatecode(args.model, args.out, name=args.name, model_type=args.type)
+    stats = generatecode(args.model, args.out,
+                        name=args.name,
+                        model_type=args.type,
+                        compression=args.compression)
     print('Wrote model to', args.out)
     print('Model status: ', json.dumps(stats))
 
