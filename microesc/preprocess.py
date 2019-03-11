@@ -11,18 +11,22 @@ import joblib
 from . import urbansound8k, features, common
 
 
-# SalomonBello2016 experienced that only pitch shifts helped all classes
-# Piczak2015 on the used class-dependent time-shift and pitch-shift
-# https://github.com/karoldvl/paper-2015-esc-convnet/blob/master/Code/_Datasets/Setup.ipynb
-def augment(audio, sr,
-            pitch_shift=(-3, 3),
-            time_stretch=(0.9, 1.1),):
+# TS,PS1 and PS1 from SalomonBello2016
+def augmentations(audio, sr):
     
-    stretch = numpy.random.uniform(time_stretch[0], time_stretch[1]) 
-    pitch = numpy.random.randint(pitch_shift[0], pitch_shift[1])
-    aug = librosa.effects.time_stretch(librosa.effects.pitch_shift(audio, sr, pitch), stretch)
+    ts  = [ 0.81, 0.93, 1.07, 1.23]
+    ps = [ -2, -1, 1, 2, -3.5, 2.5, 2.5, 3.5 ]
 
-    return aug
+    out = {}
+    for stretch in ts:
+        name = 'ts{:.2f}'.format(stretch)
+        out[name] = librosa.effects.time_stretch(audio, stretch)
+
+    for shift in ps:
+        name = 'ts{:.2f}'.format(shift)
+        out[name] = librosa.effects.pitch_shift(audio, sr, shift)
+
+    return out
 
 def precompute(samples, settings, out_dir, n_jobs=8, verbose=1, force=False):
     out_folder = out_dir
@@ -36,10 +40,12 @@ def precompute(samples, settings, out_dir, n_jobs=8, verbose=1, force=False):
         f = features.compute_mels(y, settings)
         numpy.savez(outp, f)
 
-        for aug in range(settings['augmentations']):
-            f = features.compute_mels(augment(y, sr=sr), settings)
-            p = outp.replace('.npz', '.aug{}.npz'.format(aug))
-            numpy.savez(p, f)
+        if settings['augmentations']:
+            assert settings['augmentations'] == 12
+            for aug, augdata in enumerate(augmentations(y, sr).values()):
+                f = features.compute_mels(augdata, settings)
+                p = outp.replace('.npz', '.aug{}.npz'.format(aug))
+                numpy.savez(p, f)
 
         return outp
     
