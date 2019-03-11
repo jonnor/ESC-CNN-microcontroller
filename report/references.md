@@ -219,3 +219,115 @@ Number of params around 50-100k
 
 Getting very good results for striding in time and striding in frequency
 
+# Efficient CNNs
+
+* [SqueezeNet: AlexNet-level accuracy with 50x fewer parameters and <0.5MB model size](http://arxiv.org/abs/1602.07360). 2015.
+1x1 convolutions over 3x3. Percentage tunable as hyperparameters.
+Pooling very late in the layers.
+No fully-connected end, uses convolutional instead.
+5MB model performs like AlexNet on ImageNet. 650KB when compressed to 8bit at 33% sparsity. 
+* [MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications](https://arxiv.org/abs/1704.04861). 2017.
+Extensive use of 1×1 Conv layers. 95% of it’s computation time, 75% parameters. 25% parameters in final fully-connected.
+Also depthwise-separable convolutions. Combination of a depthwise convolution and a pointwise convolution.
+Has two hyperparameters: image size and a width multiplier `alpha` (0.0-1.0).
+Figure 4 shows log linear dependence between accuracy and computation.
+0.5 MobileNet-160 has 76M mul-adds, versus SqueezeNet 1700 mult-adds, both around 60% on ImageNet.
+Smallest tested was 0.25 MobileNet-128, with 15M mult-adds and 200k parameters.
+* [ShuffleNet](https://arxiv.org/abs/1707.01083). Zhang, 2017.
+Introduces the three variants of the Shuffle unit. Group convolutions and channel shuffles.
+Group convolution applies over data from multiple groups (RGB channels). Reduces computations.
+Channel shuffle randomly mixes the output channels of the group convolution.
+* [MobileNetV2: Inverted Residuals and Linear Bottlenecks](https://arxiv.org/abs/1801.04381). 2018
+Inserting linear bottleneck layers into the convolutional blocks.
+Ratio between the size of the input bottleneck and the inner size as the expansion ratio.
+Shortcut connections between bottlenecks.
+ReLU6 as the non-linearity. Designed for with low-precision computation (8 bit fixed-point). y = min(max(x, 0), 6).
+Max activtions size 200K float16, versus 800K for MobileNetV1 and 600K for ShuffleNet.
+Smallest network at 96x96 with 12M mult-adds, 0.35 width. Performance curve very similar to ShuffleNet.
+Combined with SSDLite, gives similar object detection performance as YOLOv2 at 10% model size and 5% compute.
+200ms on Pixel1 phone using TensorFlow Lite.
+* [EffNet](https://arxiv.org/abs/1801.06434). Freeman, 2018.
+Spatial separable convolutions.
+Made of depthwise convolution with a line kernel (1x3),
+followed by a separable pooling,
+and finished by a depthwise convolution with a column kernel (3x1).
+* [FD-MobileNet: Improved MobileNet with a Fast Downsampling Strategy](https://arxiv.org/abs/1802.03750). 2018.
+[3 Small But Powerful Convolutional Networks](https://towardsdatascience.com/3-small-but-powerful-convolutional-networks-27ef86faa42d).
+Explains MobileNet, ShuffleNet, EffNet. Visualizations of most important architecture differences, and the computational complexity benefits.
+[Why MobileNet and Its Variants (e.g. ShuffleNet) Are Fast](https://medium.com/@yu4u/why-mobilenet-and-its-variants-e-g-shufflenet-are-fast-1c7048b9618d).
+Covers MobileNet, ShuffleNet, FD-MobileNet.
+Explains the convolution variants used visually. Pointwise convolution (conv1x1), grouped convolution, depthwise convolution.
+
+## Depthwise separable convolutions
+
+https://towardsdatascience.com/review-mobilenetv1-depthwise-separable-convolution-light-weight-model-a382df364b69
+Explains the width multiplier alpha,
+and resolutions multiplier
+
+MobileNet got close to InceptionV3 results with 1/8 the parameters and multiply-adds
+
+Xception uses depthwise-separable to get better performance over InceptionV3
+https://arxiv.org/abs/1610.02357v3
+https://vitalab.github.io/deep-learning/2017/03/21/xception.html
+https://towardsdatascience.com/review-xception-with-depthwise-separable-convolution-better-than-inception-v3-image-dc967dd42568
+! no activation in Xception block. Better results without activation units compared to ReLu and ELU 
+
+## Spatially separable convolutions
+
+EffNet
+https://arxiv.org/abs/1801.06434v6
+Builds on SqueezeNet and MobileNet
+
+## Dilated convolutions
+Increase receptive field
+
+Alternative to max/mean pooling,
+and to strided convolutions
+
+DRN  —  Dilated Residual Networks
+Code Github: https://github.com/fyu/drn
+Review
+https://towardsdatascience.com/review-drn-dilated-residual-networks-image-classification-semantic-segmentation-d527e1a8fb5
+! shows equations clearly, good pictures
+
+Can give gridding artifacts, when high-frequency content present in input
+
+DRN outperforms ResNet for same parameter counts
+
+## Strided convolutions
+
+
+## Grouped convolutions
+
+
+## Global Average Pooling
+
+Can be used instead of Flatten, to reduced number of channels before Dense
+Or can be used to replace Dense layers completely.
+
+Striving for Simplicity: The All Convolutional Net
+https://arxiv.org/abs/1412.6806
+
+Replaces Dense layers with Global average pooling
+Replaces Maxpooling with Conv with striding
+
+
+Network in Network (2013)
+https://arxiv.org/abs/1312.4400
+Review http://teleported.in/posts/network-in-network/
+
+Used Global Average Pooling insted of Dense layers
+Last Conv layer has n_classes channels.
+Fewer parameters. Improved spatial invariance. More intuitive, less black-box.
+
+DenseNet and ResNet use same
+
+Densely Connected Convolutional Networks
+https://arxiv.org/abs/1608.06993
+
+Deep Residual Learning for Image Recognition
+https://arxiv.org/abs/1512.03385
+
+GAP used a lot for segmentation
+
+

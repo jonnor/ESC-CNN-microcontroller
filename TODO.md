@@ -42,9 +42,7 @@ Experiments
 - Try lower number of mels
 - Try longer time periods
 - Try different voting overlaps
-- Try depthwise-separable SB-CNN
 - Try stacked 1D convolution in front 
-- Try global fully convolutional
 
 Code quality
 
@@ -53,7 +51,6 @@ Code quality
 
 Run CNN model on microcontroller
 
-- Run a LD-CNN-nodelta model on microcontroller. Try training for 16kHz, 30 mels?
 - STM32AI: Test different FFT/mel sizes
 - STM32AI: Support window overlap?
 - STM32AI: Report/fix melspec preprocessing bug

@@ -292,6 +292,19 @@ Using a set of kernels in combination can detect many pattern variations.
 
 ![Convolution kernel as edge detector, applied to image. Source: [@UnderstandingConvolution]](./images/convolution.png)
 
+## Efficient CNNs
+
+Depthwise separable convolutions. Depth multiplier "1x1(xD) convolution", pointwise
+Spatially separable convolutions.
+Dilated convolutions.
+
+Dilated Residual Networks
+
+MobileNets
+EffNet
+
+
+
 ## Windowed voting
 
 Mean
@@ -495,8 +508,15 @@ LD-CNN
 
 ## Experimental Setup
 
-Determine model requirements.
-Choose most feasible base model. Incl feature representation
+1. Determine model requirements. Run neural networks, compare runtime vs MACC
+Choose most feasible base model. Feature representation
+
+
+Evaluate effects of:
+- Changing model architecture
+- Different voting overlap
+
+
 
 Preprocessing.
 Data augmentation
@@ -520,6 +540,9 @@ Feature extraction settings
 # Results
 
     TODO: boxplots of accuracy
+
+
+    TODO: accuracy versus MACCs
 
 
 \newpage
