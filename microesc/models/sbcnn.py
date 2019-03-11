@@ -3,7 +3,7 @@
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten, BatchNormalization
-from keras.layers import Convolution2D, MaxPooling2D, SeparableConv2D
+from keras.layers import Convolution2D, MaxPooling2D, SeparableConv2D, GlobalAveragePooling2D
 from keras.regularizers import l2
 
 
@@ -38,22 +38,11 @@ def build_model(frames=128, bands=128, channels=1, num_labels=10, kernel=(5,5), 
 
     # Layer 3 - 48 filters with a receptive field of (f,f), i.e. W has the shape (48, 48, f, f). 
     # This is followed by a ReLU but no pooling.
-    model.add(Conv2(48, kernel, padding='valid'))
+    model.add(Conv2(num_labels, kernel, padding='valid'))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
 
-    # flatten output into a single dimension, let Keras do shape inference
-    model.add(Flatten())
-
-    # Layer 4 - a fully connected NN layer of 64 hidden units, L2 penalty of 0.001
-    model.add(Dense(64, kernel_regularizer=l2(0.001)))
-    model.add(Activation('relu'))
-    model.add(Dropout(dropout))
-
-    # Layer 5 - an output layer with one output unit per class, with L2 penalty, 
-    # followed by a softmax activation function
-    model.add(Dense(num_labels, kernel_regularizer=l2(0.001)))
-    model.add(Dropout(dropout))
+    model.add(GlobalAveragePooling2D())
     model.add(Activation('softmax'))
 
     return model
