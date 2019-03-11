@@ -38,26 +38,38 @@ def generate_config(model_path, out_path, name='network', model_type='keras'):
     }
     return json.dumps(data)
 
+def parse_with_unit(s):
+    number, unit = s.split()
+    number = float(number)
+    multipliers = {
+        'KBytes': 1e3,
+        'MBytes': 1e6,
+    }
+    mul = multipliers[unit]
+    return number * mul
+
 def extract_stats(output):
     regex = r"  ([^:]*):(.*)"
 
     out = {}
     matches = re.finditer(regex, output.decode('utf-8'), re.MULTILINE)
 
-    for i, match in enumerate(matches, start=1):
-    
-        print('m', i, match.groups())
-        g = match.groups()
+    for i, match in enumerate(matches, start=1): 
+        key, value = match.groups()
+        key = key.strip()
+        value = value.strip()
 
-        if g[0].strip() == 'MACC / frame':
-            out['maccs_frame'] = int(g[1].strip())
+        if key == 'MACC / frame':
+            out['maccs_frame'] = int(value)
             pass
-        elif g[0].strip() == 'RAM size':
-            # TODO: parse. Note, output can be in MBytes or KBytes 
+        elif key == 'RAM size':
+            ram, min = value.split('(Minimum:')
+            out['ram_usage_max'] = parse_with_unit(ram)
+            out['ram_usage_min'] = parse_with_unit(min.rstrip(')'))
             pass
-        elif g[0].strip() == 'ROM size':
+        elif key == 'ROM size':
+            out['flash_usage'] = parse_with_unit(value)
             pass
-            #out['flash_']
 
     return out
 
@@ -87,7 +99,7 @@ def generatecode(model_path, out_path, name, model_type):
         '--auto',
         '-c', config_path,
     ]
-    stdout = subprocess.check_output(args)
+    stdout = subprocess.check_output(args, stderr=subprocess.STDOUT)
 
     # Parse MACCs / params from stdout
     stats = extract_stats(stdout)

@@ -39,8 +39,6 @@ May require different hyperparameters? Maybe need to train for much longer?
 
 Experiments
 
-- Try lower number of mels
-- Try longer time periods
 - Try different voting overlaps
 - Try stacked 1D convolution in front 
 
