@@ -29,7 +29,7 @@ def build_model(frames=128, bands=128, channels=1, num_labels=10, kernel=(5,5), 
 
     # Layer 2 - 48 filters with a receptive field of (f,f), i.e. W has the shape (48,24,f,f). 
     # Like L1 this is followed by (4,2) max-pooling and a ReLU activation function.
-    model.add(Convolution2D(24, kernel, padding='valid', dilation_rate=(2,2)))
+    model.add(SeparableConv2D(24, kernel, padding='valid', dilation_rate=(2,2)))
     model.add(BatchNormalization())
     #model.add(MaxPooling2D(pool_size=pool))
     model.add(Activation('relu'))
