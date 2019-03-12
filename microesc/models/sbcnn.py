@@ -36,7 +36,7 @@ def build_model(frames=128, bands=128, channels=1, num_labels=10, kernel=(5,5), 
 
     # Layer 3 - 48 filters with a receptive field of (f,f), i.e. W has the shape (48, 48, f, f). 
     # This is followed by a ReLU but no pooling.
-    model.add(Convolution2D(24, kernel, padding='valid',dilation_rate=(1,1)))
+    model.add(Convolution2D(24, kernel, padding='valid',dilation_rate=(2,1)))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
 
