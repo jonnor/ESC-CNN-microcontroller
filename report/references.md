@@ -257,6 +257,8 @@ Explains MobileNet, ShuffleNet, EffNet. Visualizations of most important archite
 [Why MobileNet and Its Variants (e.g. ShuffleNet) Are Fast](https://medium.com/@yu4u/why-mobilenet-and-its-variants-e-g-shufflenet-are-fast-1c7048b9618d).
 Covers MobileNet, ShuffleNet, FD-MobileNet.
 Explains the convolution variants used visually. Pointwise convolution (conv1x1), grouped convolution, depthwise convolution.
+- CondenseNet. CondenseNet: An Efficient DenseNet using Learned Group Convolutions. https://arxiv.org/abs/1711.09224
+More efficient than MobileNet and ShuffleNets.
 
 ## Depthwise separable convolutions
 
@@ -299,6 +301,50 @@ DRN outperforms ResNet for same parameter counts
 
 ## Grouped convolutions
 
+Grouped convolutions. Filter groups
+
+Partitions inputs into mutually exclusive groups.
+
+Computational cost.
+O output features
+R input features
+G number of groups
+Standard convolution of R×O.
+Group convolution to R×O/G
+
+
+Alexnet variation used multiple groups. Concatenated at the end.
+Primarily to allow training in parallel
+With 2 groups got better score, at fewer parameters.
+With N groups, each convolutional layer is 1/N as deep
+https://blog.yani.io/filter-group-tutorial/
+
+ResNeXt
+
+
+Has this been applied to audio/spectrograms?
+Could one do filter groupings along frequency axis?
+Could one also perform groupings with multi-scale inputs?
+
+ShuffleNet and MobileNets use grouped convolutions inside in each block
+ShuttleNet adds a channel shuffle to intermix information in different channels
+
+ShuffleNet V2: Practical Guidelines for Efficient CNN Architecture Design
+https://arxiv.org/abs/1807.11164
+Half of the features in block are passed on as-is. Similar to DenseNet
+
+has some theoretical experiments on modern CNNs for optimizing efficiency
+G1) Equal channel width minimizes memory access cost (MAC)
+G2) Excessive group convolution increases MAC
+G4) Element-wise operations are non-negligible.
+Element-wise operators include ReLU, AddTensor, AddBias, etc. They have small FLOPs but relatively heavy MAC
+
+For example, at 500MFLOPs ShuffleNet v2 is 58% faster than MobileNet
+v2, 63% faster than ShuffleNet v1 and 25% faster than Xception. On ARM, the
+speeds of ShuffleNet v1, Xception and ShuffleNet v2 are comparable; however,
+MobileNet v2 is much slower, especially on smaller FLOPs. We believe this is
+because MobileNet v2 has higher MAC
+
 
 ## Global Average Pooling
 
@@ -331,3 +377,44 @@ https://arxiv.org/abs/1512.03385
 GAP used a lot for segmentation
 
 
+## Automatic model search
+
+
+Learning Transferable Architectures for Scalable Image Recognition
+https://arxiv.org/abs/1707.07012
+Introduced NASNet. 
+1.2% better in top-1 ImageNet accuracy than the best human-invented architectures
+while having 9 billion fewer FLOPS - 28% lower computational demand than state-of-the-art.
+
+
+Auto-Keras: Efficient Neural Architecture Search with Network Morphism. Haifeng Jin, Qingquan Song, and Xia Hu. arXiv:1806.10282.
+
+https://autokeras.com/
+
+- Random search
+- Grid search
+- Greedy search
+- Baysian optimization
+
+Has pluggable interface for the searching mechanism. Searcher
+Has a CNN generator clas.
+
+https://github.com/CiscoAI/amla
+NAC/EnvelopeNets
+ENAS
+DARTS
+
+Single Shot Neural Architecture Search Via Direct Sparse Optimization
+https://openreview.net/forum?id=ryxjH3R5KQ
+Optimizes from a single full network, instead of trying many different models
+
+DARTS: Differentiable Architecture Search
+https://paperswithcode.com/paper/darts-differentiable-architecture-search
+
+
+https://paperswithcode.com/paper/learning-transferable-architectures-for
+
+Rethinking the Value of Network Pruning
+https://paperswithcode.com/paper/rethinking-the-value-of-network-pruning
+Channel-wise pruning as network architecture search for CNNs
+Re-training pruned network from scratch usually better than reusing full network, contrary to exiting thinking
