@@ -16,7 +16,7 @@ import librosa
 import sklearn.metrics
 
 from . import features, urbansound8k, common
-from .models import sbcnn, dilated
+from .models import sbcnn, dilated, mobilenet
 
 
 def dataframe_generator(X, Y, loader, batchsize=10, n_classes=10):
@@ -227,6 +227,13 @@ def sb_cnn(settings):
                     frames=settings['frames'],
                     pool=parse_dimensions(settings['pool']),
                     kernel=parse_dimensions(settings['kernel']),
+                    )
+    return m
+
+def mobilenets(settings):
+    m = mobilenet.build_model(bands=settings['n_mels'], channels=1,
+                    frames=settings['frames'],
+                    alpha=0.35,
                     )
     return m
 
