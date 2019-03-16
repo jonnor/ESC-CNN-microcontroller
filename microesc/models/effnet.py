@@ -41,8 +41,8 @@ def get_block(x_in, ch_in, ch_out, kernel=3, downsample=2):
 
 
 def Effnet(input_shape, nb_classes, n_blocks=2,
-            initial_filters=16, filter_growth=1.5, dropout=0.5, kernel=5, downsample=3,
-            include_top='flatten', weights=None):
+            initial_filters=32, filter_growth=2.0, dropout=0.5, kernel=5, downsample=3,
+            include_top='conv', weights=None):
 
     x_in = Input(shape=input_shape)
     x = x_in
