@@ -102,8 +102,11 @@ def generatecode(model_path, out_path, name, model_type, compression):
     ]
     stdout = subprocess.check_output(args, stderr=subprocess.STDOUT)
 
+    # TODO: detect NOT IMPLEMENTED
+
     # Parse MACCs / params from stdout
     stats = extract_stats(stdout)
+    assert len(stats.keys()), 'No model output. Stdout: {}'.format(stdout) 
 
     return stats
 
