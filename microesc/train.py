@@ -233,7 +233,7 @@ def sb_cnn(settings):
 def mobilenets(settings):
     m = mobilenet.build_model(bands=settings['n_mels'], channels=1,
                     frames=settings['frames'],
-                    alpha=0.35,
+                    alpha=0.50,
                     )
     return m
 
