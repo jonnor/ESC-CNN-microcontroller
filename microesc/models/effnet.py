@@ -40,9 +40,9 @@ def get_block(x_in, ch_in, ch_out, kernel=3, downsample=2):
     return x
 
 
-def Effnet(input_shape, nb_classes, n_blocks=2,
-            initial_filters=16, filter_growth=1.5, dropout=0.5, kernel=5, downsample=3,
-            include_top=True, weights=None):
+def Effnet(input_shape, nb_classes, n_blocks=3,
+            initial_filters=16, filter_growth=1.5, dropout=0.5, kernel=5, downsample=2,
+            include_top='flatten', weights=None):
 
     x_in = Input(shape=input_shape)
     x = x_in
@@ -52,10 +52,19 @@ def Effnet(input_shape, nb_classes, n_blocks=2,
         filters_out = int(initial_filters*(filter_growth**(block_no+1)))
         x = get_block(x, filters_in, filters_out, kernel=kernel, downsample=downsample)
 
-    if include_top:
+    if include_top == 'flatten':
         x = Flatten()(x)
         x = Dropout(dropout)(x)
         x = Dense(nb_classes, activation='softmax')(x)
+    elif include_top == 'conv':
+        # MobileNetv1 style
+        x = GlobalAveragePooling2D()(x)
+        shape = (1, 1, filters_out)
+        x = Reshape(shape)(x)
+        x = Dropout(dropout)(x)
+        x = Conv2D(nb_classes, (1, 1), padding='same')(x)
+        x = Activation('softmax', name='act_softmax')(x)
+        x = Reshape((nb_classes,), name='reshape_2')(x)
 
     model = Model(inputs=x_in, outputs=x)
 
