@@ -16,7 +16,7 @@ import librosa
 import sklearn.metrics
 
 from . import features, urbansound8k, common
-from .models import sbcnn, dilated, mobilenet
+from .models import sbcnn, dilated, mobilenet, effnet
 
 
 def dataframe_generator(X, Y, loader, batchsize=10, n_classes=10):
@@ -237,6 +237,9 @@ def mobilenets(settings):
                     )
     return m
 
+def eff_net(settings):
+    m = effnet.build_model(bands=settings['n_mels'], frames=settings['frames'])
+    return m
 
 def main():
 
