@@ -34,7 +34,7 @@ def _conv_block(inputs, filters, alpha, kernel=(3, 3), strides=(1, 1)):
 # From keras_applications.mobilenet
 # Modified to work with STM32 Cube.AI 3.3
 def _depthwise_conv_block(inputs, pointwise_conv_filters, alpha,
-                          depth_multiplier=1, strides=(1, 1), block_id=1):
+                          depth_multiplier=1, strides=(1, 1), kernel=(3,3), block_id=1):
     channel_axis = 1 if backend.image_data_format() == 'channels_first' else -1
     pointwise_conv_filters = int(pointwise_conv_filters * alpha)
 
@@ -45,7 +45,7 @@ def _depthwise_conv_block(inputs, pointwise_conv_filters, alpha,
     else:
         x = layers.ZeroPadding2D(((0, 1), (0, 1)),
                                  name='conv_pad_%d' % block_id)(inputs)
-    x = layers.DepthwiseConv2D((3, 3),
+    x = layers.DepthwiseConv2D(kernel,
                                padding='same' if strides == (1, 1) else 'valid',
                                depth_multiplier=depth_multiplier,
                                strides=strides,
@@ -69,6 +69,7 @@ def build_model(frames=32, bands=32, channels=1, n_classes=10, dropout=0.5,
                 depth_multiplier=1,
                 alpha=1.0, n_stages=3,
                 initial_filters = 32,
+                kernel = (3,3),
                 stride_f = 2, stride_t = 2):
     """
     """
@@ -89,13 +90,13 @@ def build_model(frames=32, bands=32, channels=1, n_classes=10, dropout=0.5,
     input_shape = (bands, frames, channels)
     img_input = keras.layers.Input(shape=input_shape)
     
-    x = conv(img_input, initial_filters, alpha, strides=(2, 2))
+    x = conv(img_input, initial_filters, alpha, kernel=kernel, strides=(1, 1))
     x = dwconv(x, initial_filters*2, alpha, depth_multiplier, block_id=1)
 
     for stage_no in range(1, n_stages):
         filters = initial_filters*2**stage_no
-        x = dwconv(x, filters, alpha, depth_multiplier, strides=(stride_f, stride_t), block_id=(stage_no*2))
-        x = dwconv(x, filters, alpha, depth_multiplier, block_id=(stage_no*2)+1)
+        x = dwconv(x, filters, alpha, depth_multiplier, kernel=kernel, strides=(stride_f, stride_t), block_id=(stage_no*2))
+        x = dwconv(x, filters, alpha, depth_multiplier, kernel=kernel, block_id=(stage_no*2)+1)
 
     shape = (1, 1, int(filters * alpha))
 
@@ -113,7 +114,14 @@ def build_model(frames=32, bands=32, channels=1, n_classes=10, dropout=0.5,
     return model
 
 def main():
-    m = build_model(frames=32, bands=60, alpha=0.35)
+    # kernel_f: [3, 5, 7]
+    # kernel_t: [3, 5, 7]
+    # n_stages: (2, 5)
+    # alpha: (0.1, 2.0)
+    # stride_f: (2, 4)
+    # stride_t: (2, 4)
+
+    m = build_model(frames=31, bands=60, alpha=0.35)
     m.summary()
 
     m.save('mobilenet.hdf5')
