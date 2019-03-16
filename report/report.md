@@ -341,7 +341,7 @@ Available tools.
 ARM CMSIS-NN
 tflite
 uTensor
-emlearn
+emlearn[@emlearn]
 ELL
 
 ### Hardware accelerators
