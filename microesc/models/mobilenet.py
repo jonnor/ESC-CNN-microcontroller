@@ -22,7 +22,7 @@ def relu6(x, name):
 def _conv_block(inputs, filters, alpha, kernel=(3, 3), strides=(1, 1)):
     channel_axis = 1 if backend.image_data_format() == 'channels_first' else -1
     filters = int(filters * alpha)
-    x = layers.ZeroPadding2D(padding=((0, 1), (0, 1)), name='conv1_pad')(inputs)
+    x = layers.ZeroPadding2D(padding=((0, kernel[1]//2), (0, kernel[1]//2)), name='conv1_pad')(inputs)
     x = layers.Conv2D(filters, kernel,
                       padding='valid',
                       use_bias=False,
@@ -43,7 +43,7 @@ def _depthwise_conv_block(inputs, pointwise_conv_filters, alpha,
     if strides == (1, 1):
         x = inputs
     else:
-        x = layers.ZeroPadding2D(((0, 1), (0, 1)),
+        x = layers.ZeroPadding2D(((0, kernel[1]//2), (0, kernel[1]//2)),
                                  name='conv_pad_%d' % block_id)(inputs)
     x = layers.DepthwiseConv2D(kernel,
                                padding='same' if strides == (1, 1) else 'valid',
@@ -67,10 +67,10 @@ def _depthwise_conv_block(inputs, pointwise_conv_filters, alpha,
 
 def build_model(frames=32, bands=32, channels=1, n_classes=10, dropout=0.5,
                 depth_multiplier=1,
-                alpha=1.0, n_stages=3,
+                alpha=1.0, n_stages=2,
                 initial_filters = 32,
-                kernel = (3,3),
-                stride_f = 2, stride_t = 2):
+                kernel = (5,5),
+                stride_f = 3, stride_t = 3):
     """
     """
 
@@ -90,7 +90,7 @@ def build_model(frames=32, bands=32, channels=1, n_classes=10, dropout=0.5,
     input_shape = (bands, frames, channels)
     img_input = keras.layers.Input(shape=input_shape)
     
-    x = conv(img_input, initial_filters, alpha, kernel=kernel, strides=(1, 1))
+    x = conv(img_input, initial_filters, alpha, kernel=kernel, strides=(2, 2))
     x = dwconv(x, initial_filters*2, alpha, depth_multiplier, block_id=1)
 
     for stage_no in range(1, n_stages):
