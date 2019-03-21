@@ -74,6 +74,42 @@ def extract_stats(output):
     return out
 
 
+def test_ram_use():
+    examples = [
+    ("""
+    AI_ARRAY_OBJ_DECLARE(
+      input_1_output_array, AI_DATA_FORMAT_FLOAT, 
+      NULL, NULL, 1860,
+      AI_STATIC)
+    AI_ARRAY_OBJ_DECLARE(
+      conv2d_1_output_array, AI_DATA_FORMAT_FLOAT, 
+      NULL, NULL, 29760,
+      AI_STATIC)
+    """, {'input_1_output_array': 1860, 'conv2d_1_output_array': 29760}),
+
+    ]
+
+
+    for input, expected in examples:
+        out = extract_ram_use(input)
+
+        assert out == expected, out
+
+# TODO: also extract AI_NETWORK_DATA_ACTIVATIONS_SIZE  and AI_NETWORK_DATA_WEIGHTS_SIZE
+def extract_ram_use(str):
+    regex = r"AI_ARRAY_OBJ_DECLARE\(([^)]*)\)"
+    matches = re.finditer(regex, str, re.MULTILINE)
+
+    out = {}
+    for i, match in enumerate(matches): 
+        (items, ) = match.groups()
+        items = [ i.strip() for i in items.split(',') ]
+        name, format, _, _, size, modifiers = items
+        out[name] = int(size)
+    
+    return out
+
+
 def generatecode(model_path, out_path, name, model_type, compression):
 
     # Path to CLI tool
@@ -108,6 +144,12 @@ def generatecode(model_path, out_path, name, model_type, compression):
     stats = extract_stats(stdout)
     assert len(stats.keys()), 'No model output. Stdout: {}'.format(stdout) 
 
+    with open(os.path.join(out_path, 'network.c'), 'r') as f:
+        network_c = f.read()
+        ram = extract_ram_use(network_c)
+        arrays_ram = sum(ram.values())
+        print('r', arrays_ram)
+
     return stats
 
 def parse():
@@ -135,6 +177,8 @@ def parse():
 
 def main():
     args = parse()
+
+    test_ram_use()
 
     stats = generatecode(args.model, args.out,
                         name=args.name,

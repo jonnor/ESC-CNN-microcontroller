@@ -22,25 +22,24 @@ Report
 
 Model evaluation
 
-- Check data augmentations working
-Check the generated files wrt originals
-! Initially `sbcnn16k32aug` did (little bit) worse than `sbcnn16k30`.
-May require different hyperparameters? Maybe need to train for much longer?
-
 - Write all settings/parameters to a file when ran
-- Use best voted performance to pick model
 - Flatten settings structure in train
 - Allow to specify hyperparameters on cmdline
-- Perform a hyperparameter search
+- Use best voted performance to pick model
 - Merge all experiments into single .csv file
 - Check windowing functions, esp last frame and padding
-- Setup GPU training. Preload feature files into memory?
+- Setup GPU training
 
 
 Experiments
 
 - Try different voting overlaps
 - Try stacked 1D convolution in front 
+
+Evaluation
+
+- Test a reduced number of classes
+- Test only foreground samples
 
 Code quality
 
