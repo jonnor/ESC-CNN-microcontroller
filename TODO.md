@@ -16,9 +16,10 @@ Report
 
 
 - Finish introduction
-- Finish draft methods. Ask for feedback OK
-- Finish Software platform section
-- Finish Existing methods
+- Ask for feedback OK on Methods+Materials draft
+- Finish Existing methods review
+- Add Keras models as attachments
+- Add STM tools as attachments
 - Include results into report. Boxplot, table with average,std perf
 
 
@@ -27,15 +28,10 @@ Model evaluation
 - Write all settings/parameters to a file when ran
 - Flatten settings structure in train
 - Allow to specify hyperparameters on cmdline
+- Generate jobs for running all model experiments
 - Use best voted performance to pick model
-- Merge all experiments into single .csv file
+- Merge all experiments results into single .csv file
 - Check windowing functions, esp last frame and padding
-
-
-Experiments
-
-- Try different voting overlaps
-- Try stacked 1D convolution in front 
 
 Evaluation
 
@@ -56,10 +52,6 @@ Run CNN model on microcontroller
 https://community.st.com/s/topic/0TO0X0000003iUqWAI/stm32-machine-learning-ai
 - Test USB audio input
 - Test measuring current with ST board
-
-Reproducability
-
-- Try run preprocessing on cloud
 
 ESC-50/ESC-10
 
