@@ -49,6 +49,7 @@ Code quality
 
 Run CNN model on microcontroller
 
+- X-CUBE-AI: Test updating to version 3.4.0 
 - STM32AI: Test different FFT/mel sizes
 - STM32AI: Support window overlap?
 - STM32AI: Report/fix melspec preprocessing bug

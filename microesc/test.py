@@ -11,6 +11,14 @@ import keras.metrics
 
 from . import urbansound8k, features, common
 
+groups = {
+    'social_activity': [ 'street_music', 'children_playing', 'dog_bark' ],
+    'construction': [ 'drilling', 'jackhammer' ],
+    'road_noise': [ 'engine_idling', 'car_horn', 'siren' ],
+    'domestic_machines': [ 'air_conditioner' ],
+    'danger': [ 'gun_shot' ],
+}
+
 
 def load_history(jobs_dir, job_id):
 

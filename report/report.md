@@ -173,8 +173,7 @@ The need for low-cost and widely deployed noise monitoring solutions
 that can inform not only about the sound level but also information about the noise source,
 motivates our research question:
 
-> Can we classify environmental sounds directly on a wireless and battery-operated noise sensor,
-without requiring to transmit privacy-sensitive audio to a central system?
+> Can we classify environmental sounds directly on a wireless and battery-operated noise sensor?
 
 
 \newpage
@@ -508,6 +507,33 @@ family of microcontrollers with instructions that can be used to speed up neural
 \newpage
 # Materials
 
+## Urbansound8K dataset
+
+The Urbansound8K dataset[@UrbanSound8k] was collected in 2014
+based on selecting and manually labeling content from the Freesound[@Freesound] repository.
+The dataset contains 8732 labeled sound clips with a total duration of 8.75 hours.
+Most clips are 4 seconds long, but shorter clips also exist.
+10 different classes are present, as shown in table \ref{table:urbansound8k-classes}.
+The classes are a subset of those found in the Urbansound taxonomy,
+which was developed based on analysis of noise complaints in New York city between 2010 and 2014.
+    
+\begin{table}
+\centering
+\input{pyincludes/urbansound8k-classes.tex}
+\caption{Classes found in the Urbansound8k dataset}
+\label{table:urbansound8k-classes}
+\end{table}
+
+![Spectrograms of sound clips from Urbansound8k dataset, selected for each class\label{urbansound8k-examples}](./plots/urbansound8k-examples.png)
+
+The target sound is rarely alone in the sound clip, and may be in the background, partially obscured by sounds outside the available classes.
+This makes Urbansound8k a relatively challenging dataset.
+For figure \ref{urbansound8k-examples} sounds with clear occurences of the target sound were chosen.
+
+The dataset comes pre-arranged into 10 folds. A single fold may contain multiple clips from the same source file,
+but the same source file is not used in multiple folds to prevent data leakage.
+Authors recommend always using fold 10 as the test set, to allow easy comparison of results between experiments.
+
 ## Hardware platform
 
 As the microcontroller we have chosen the STM32L476[@STM32L476] from STMicroelectronics.
@@ -537,73 +563,44 @@ The entire setup can be seen in figure \ref{sensortile-devkit}.
 
 ## Software
 
-STM32CubeMx
-STM32AI
-
-Keras. Tensorflow backend
-librosa
-Pandas,numpy
-? Docker image
-? training on Kubernetes
+The STM32L476 microcontroller is supported by STM32CubeMX`TODO: ref` development package from ST Microelectronics.
+ST also provides the X-CUBE-AI`TODO: ref` addon for STM32CubeMX, which provides integrated support for Neural Networks.
+In this work, X-CUBE-AI version 3.3.0 was used. 
 
 
-FP-AI-SENSING1 Function pack
+The addon allows loading trained models from various formats, including:
+Keras (Tensorflow), Caffe and PyTorch.
 
-
-All computations are done in single-precision float.
+![STM32CubeMX application with X-CUBE-AI addon after loading a Keras model](./img/stm32cubeai.png)
 
 Supports model compression by quantizing model weights.
-8x or 4x.
+Available settings for compression are 4x or 8x.
 Tool can perform basic validation of the compressed model. 
 
-Does not support multi-input models.
+All computations are done in single-precision float.
+TODO: reference CMSIS-NN, ARM Keyword spotting 4x faster using fixed-point/SIMD.
 
-    TODO: include screenshot of STM32AI
 
+Example code from the FP-AI-SENSING1 Function pack`TODO: ref` from ST was used as a skeleton for the device code.
+This implements mel-spectrogram feature pre-processing in C, and uses the model code output by X-CUBE-AI to perform inference.
 
 `MAYBE: table with software versions? From requirements.txt`
 
-The trainining setup is implemented in Python.
+The training setup is implemented in Python.
 The machine learning models are implemented in Keras using the Tensorflow backend.
 To perform feature extraction during training librosa[@librosa] was used.
+numpy and Pandas is used for
 
-Training was performed on a GTX2060 GPU with 6GB of RAM, but could be done on a standard desktop CPU.
+The training software has automated tests made with pytest,
+and uses Travis CI to execute the tests automatically for each change.
+
+All the code used is available at https://github.com/jonnor/ESC-CNN-microcontroller.
 
 `TODO: picture of training + deployment pipelines`
 
 
-TODO: reference CMSIS-NN, ARM Keyword spotting 4x faster using fixed-point/SIMD.
 
-
-\newpage
-## Urbansound8K dataset
-
-The Urbansound8K dataset[@UrbanSound8k] was collected in 2014
-based on selecting and manually labeling content from the Freesound[@Freesound] repository.
-The dataset contains 8732 labeled sound clips with a total duration of 8.75 hours.
-Most clips are 4 seconds long, but shorter clips also exist.
-10 different classes are present, as shown in table \ref{table:urbansound8k-classes}.
-The classes are a subset of those found in the Urbansound taxonomy,
-which was developed based on analysis of noise complaints in New York city between 2010 and 2014.
-    
-\begin{table}
-\centering
-\input{pyincludes/urbansound8k-classes.tex}
-\caption{Classes found in the Urbansound8k dataset}
-\label{table:urbansound8k-classes}
-\end{table}
-
-![Spectrograms of sound clips from Urbansound8k dataset, selected for each class\label{urbansound8k-examples}](./plots/urbansound8k-examples.png)
-
-The target sound is rarely alone in the sound clip, and may be in the background, partially obscured by sounds outside the available classes.
-This makes Urbansound8k a relatively challenging dataset.
-For figure \ref{urbansound8k-examples} sounds with clear occurences of the target sound were chosen.
-
-The dataset comes pre-arranged into 10 folds. A single fold may contain multiple clips from the same source file,
-but the same source file is not used in multiple folds to prevent data leakage.
-Authors recommend always using fold 10 as the test set, to allow easy comparison of results between experiments.
-
-## Processing pipeline
+## Model pipeline
 
 `TODO: image of pipeline`
 
@@ -612,19 +609,6 @@ Authors recommend always using fold 10 as the test set, to allow easy comparison
 \newpage
 # Methods
 
-<!---
-
-2. Choose most feasible base model. Feature representation
-3. Implement model(s) in Keras
-4. Preprocess files into features
-5. Train different models. On each of the folds
-6. Select best models based on validation score
-7. Compare models on testset.
-8. Run models on device, determine actual runtime. Compare wrt theoretical MACCs
-9. Measure current draw
-(10. Try different voting overlaps)
-11. Test a simplified variation of dataset
--->
 
 ## Determining model requirements 
 
@@ -650,12 +634,14 @@ without having to manually use the CubeMX user interface.
 The results can be seen in \ref{table:urbansound8k-existing-models-logmel}.
 
 To determine the approximate number of MACC/s that our target hardware is able to sustain,
-a few model variations with different MACC/s were created.
+a few model variations with different complexity (MACC/s) were created.
+The SB-CNN model was used as a base, with 30 mels bands (the default in ST FP-SENSING1 function pack).
+
 Then the models were ran on on device (with random inputs), and their execution time recorded.
+The results can be seen in. From this we estimate.
 
-The SB-CNN model was used as a base, with 30 mels bands (the default in)
-
-`TODO: table of MACC/s and execution time, linear regression`
+`TODO: table of MACC/s and execution time`
+`TODO: compute estimated CPU capacity`
 
 \ref{existing-models-perf}
 
@@ -665,48 +651,79 @@ The SB-CNN model was used as a base, with 30 mels bands (the default in)
 ![Performance of existing CNN models using log-mel features on Urbansound8k dataset. Green region shows the region which satisfies our model requirements.\label{existing-models-perf}](./plots/urbansound8k-existing-models-logmel.png)
 
 
-By benchmarking 
-
-    TODO: move to methods section?
-
-For RAM and . The remaining 
-
 
 |  Resource    | Maximum   | Desirable    |
 | -------      |:---------:|:------------:|
 | RAM usage    |   64 kB   | `< 32 kB`    |
 | Flash use    |   512 kB  | `< 256 kB`   |
-| CPU usage (MACCs/s)    |   4 M    | `< 0.5 M`    |
+| CPU usage    |   4 M MACC/s   | `< 0.5 M MACC/s`  |
 
 Table: Summary of device contraints for machine learning model
 
-    TODO: describe benchmark used to reach MACC/s number
+## Models to evaluate
+
+Model families:
+
+SB-CNN
+LD-CNN
+MobileNet
+EffNet
 
 
 ## Preprocessing
 
-The smallest feature in use by existing methods was by LD-CNN,
+Mel-spectrograms is used as the input feature.
+The most compact and most computationally efficient featureset in use by existing methods was by LD-CNN,
 which used 31 frames @ 22050 Hz with 60 mels bands.
 This achieved results near the state-of-art, so we opted to use the same.
-
 
 `TODO: table with preprocessing settings`
 
 During preprocessing we also perform Data Augmentation.
-Time-stretching and Pitch-shifting following `TODO: ref`
+Time-stretching and Pitch-shifting following `TODO: ref SB-CNN`
 
-The preprocessed files
+The preprocessed mel-spectrograms are stored as compressed Numpy arrays.
+
+Each window of mel-spectrogram frames is normalized by subtracting
+the mean of the window and dividing by the standard deviation.
+
+## Training
+
+`?! Include Hyperparameter search ?`
+
+10-fold cross-validation using the pre-assigned folds of the Urbansound8k dataset and fold 10 as the held-out test set.
+
+Training is done with minibatches of size of `TODO`.
+In each batch, audio clips from training set are selected randomly.
+And for each sample, a time window is selected from a random position.
+`TODO: ref SB?`
+
+As the optimizer, Stocastic Gradient Decent (SGD) with Nesterov momentum set to 0.9 is used.
+Learning rate of `TODO`.
+Each model is trained for 50 epochs.
+
+Training was performed on a NVidia GTX2060 GPU with 6GB of RAM to reduce experiment time,
+however the models can be trained on a CPU supported by TensorFlow and a minimum of 1GB RAM.
 
 
-`??? Hyperparameter search`
+## Evaluation
 
-Perform 10-fold cross-validation using the pre-assigned folds of the Urbansound8k dataset and fold 10 as the held-out test set.
+Once training is completed, the model with best perfomance on the validation set is selected.
+The selected models are then evaluated on the test set.
 
+In addition to the unmodified Urbansound8k test set,
+we also evaluate the models on two simplified variations:
 
-Model variations
+- Only clips where target sound is in the foreground
+- Reduction into 3 classes: 
 
-Optimizer
-Hyperparameters
+The testset is also execution on device, recording the average inference time per sample. 
+
+<!---
+TODO
+9. Measure current draw
+(10. Try different voting overlaps)
+-->
 
 
 \newpage
@@ -722,8 +739,7 @@ Hyperparameters
 # Discussion
 
 Problem
-> Can we classify environmental sounds directly on a wireless and battery-operated noise sensor,
-without requiring to transmit privacy-sensitive audio to a central system?
+> Can we classify environmental sounds directly on a wireless and battery-operated noise sensor?
 
 <!--
 What is the approx cost of system. BOM

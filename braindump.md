@@ -411,101 +411,9 @@ https://github.com/ARM-software/CMSIS_5/issues/217
 
 
 
-
-
-### Simpler classes
-
-Attempt at narrower taxonomy.
-Note, different from Urbansound taxonomy.
-
-Social activity
-9      street_music
-2  children_playing
-3          dog_bark
-
-Construction
-    drilling
-    jackhammer
-
-Domestic machines
-0   air_conditioner
-
-Road_noise
-5     engine_idling
-1          car_horn
-
-Alarm
-8             siren
-
-Danger
-6          gun_shot
-        "explosion"
-
-
-
-### Speech commands
-
-Reproducing existing TensorFlow tutorials.
-
-mfcc40
-`--preprocess=mfcc --how_many_training_steps=20000,6000 --learning_rate=0.01,0.001 --model_architecture=low_latency_conv` reaches about 80% val accuracy. Final test 77.8%. Final test 78.3%.
-
-average40
-`--preprocess=average --how_many_training_steps=30000,6000 --learning_rate=0.01,0.001 --model_architecture=low_latency_conv`
-fails to reach more than 50% accuracy...
-
-logmel32
-`preprocess=logmel --feature_bin_count 32 --how_many_training_steps=20000,6000 --learning_rate=0.01,0.001 --model_architecture=low_latency_conv`
-Reaches about 80% val accuracy after 7000 epochs, about 84% total.
-Trains faster than MFCC, and performs much better than average.
-Final test accuracy = 83.5%.
-
-MFCC13?
-`--preprocess=mfcc --feature_bin_count=13 --how_many_training_steps=20000,6000 --learning_rate=0.01,0.001 --model_architecture=low_latency_conv`
-
-SVDF
-`--preprocess=mfcc --model_architecture=low_latency_svdf --how_many_training_steps=100000,3500 --learning_rate=0.01,0.005`
-Should reach 85%.
-
-
-Is SVDF used/usable for CNNs? Seems to work well for DNN and RNN
-
-FastGRNN does amazingly on Speech commands. How does it do on ECS-10/50 or Urbanset 8k?
-
-
-## Methodology
-
-- Select a general purpose microcontroller. Having a specific amount of storage,RAM and CPU.
-
-STM32 family spans a large range.
-Mid-range. STM32L4 low-power (ARM Cortex M4F+).
-High perf. STM32F4, STM32F7.
-Low-perf. STM32F1/STM32L1
-Support for standard microphone,LogMel,CNNs out-of-the-box 
-Note: most usecases require (wireless) connectivity.
-Can use separate chip for demo?
-SensorTile devkit has Bluetooth chip included.
-
-- Select open datasets for audio classification
-Acoustic event detection,
-Acoustic noise source classification,
-Acoustic Scene classification,
-Keyword spotting
-Speech command
-Should have at least one binary classification, and one multi-label. Maybe detection/segmentation
-Should have one with short events, and one with longer effects "scene" etc
-
-- Select a couple of baseline methods
-With reference results available on 
-Ideally with open code for easily reproducability.
-
-- Create and tests hypothesis for approaches to take for making more efficient models
-
-Power efficiency. Measurement: Current consumption. Proxy: CPU inference time 
-Cost efficient. Measurement: Microcontroller cost. Proxy: RAM,CPU requirements
-
 Not All Ops Are Created Equal!, https://arxiv.org/abs/1801.04326
 Found up to 5x difference in throughput/energy between different operations.
+
 
 ## Ideas for optimization
 
@@ -518,7 +426,7 @@ Approaches
 
 # Hypotheses
 
-### Stacked 1D  conv instead of 2D
+### Stacked 1D conv instead of 2D
 
 Hypothesis: Stacked 1D convolutions instead of 2D are more compute efficient
 
