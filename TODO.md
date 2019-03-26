@@ -28,7 +28,6 @@ Model evaluation
 - Use best voted performance to pick model
 - Merge all experiments into single .csv file
 - Check windowing functions, esp last frame and padding
-- Setup GPU training
 
 
 Experiments
@@ -71,6 +70,13 @@ Dissemination
 
 ## Done
 
+- Test GPU training on GTX2060.
+20 seconds instead of 170 seconds per epoch on mobilenets. 8.5x speedup
+1 model only utilizing 33% of GPU power. Can run multiple models in parallell, for over 20x speedup
+Under 30 minutes per experiment on all 10 folds.
+However SB-CNN fails with cudaNN error.
+https://github.com/tensorflow/tensorflow/issues/24828
+https://github.com/keras-team/keras/issues/1538
 - STM32AI. Made tool for updating window functions.
 https://github.com/jonnor/emlearn/blob/master/examples/window-function.py
 - Test 16k30 SB-CNN model.

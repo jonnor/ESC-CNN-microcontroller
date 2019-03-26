@@ -9,31 +9,37 @@ Reduced value
 Regulations
 Noise assesment
 Challenges. Local problem, multiple sources, time-dependent
-Track noise level, identifying source, plan/take corrective action
+Increasing noise problem. Urbanization
+Positive sound qualities. Recreational. Perceptual, subjective.
+Track noise level, plan/take corrective action. Visibility
+Identifying source. Environmental Sound Classification
 Smart-city concept, data-driven
 Wireless Sensor Networks
 Existing projects
 Privacy, GDPR
+=> this thesis
 
+
+
+Sound is everywhere around us. It is a communication tool, speech
+side-effect of many human activities
+construction
+machinery
+
+
+workplace, occupational noise
 
 
 ## Environmental noise
-Noise is unwanted sound. Environmental noise is the summary of noise pollution from outside,
+
+
+Noise is unwanted sound.
+
+
+Environmental noise is the summary of noise pollution from outside,
 caused by transport, industrial and recreational activities.
 Road traffic is the most widespread source of environmental noise in urban environments.
 
-## Sound level
-Sound level is measured in decibel (dB).
-0dB is the threshold of hearing, at $20 µPascal$ relative sound pressure. 
-The level is normally A-weighted, which simulates the frequency response of human hearing.
-
-![Descibel scale with common noise sources](./images/decibel-scale.jpg)
-
-## Equivalent Continious Sound Level
-The sound level is constantly changing.
-To get a single number representation, the sound level is averaged over a time period **T**.
-
-![Equivalent continious sound level](./images/equivalent-continious-level.jpg)
 
 
 ## Regulations
@@ -110,6 +116,15 @@ operating together in a Wireless Sensor Network.
 ## Existing projects
 
 
+In addition to commercial products, a number of research projects have deployed sensor networks for acoustic noise.
+This includes SONYC[@Sonyc] in New York City, and the Sentilo[@Sentilo] project in Barcelona.
+
+The noise profile data is based on the 1/3 octave band, following the standard IEC 61260-1:2014[@IECOctaveBands].
+This can be used by a machine learning system to distinguish different noise sources[@AudioCodingSensorGrid].
+The paper also demonstrates that when frequency spectrum samples are performed 10 times per second or more seldom,
+it is not possible to understand conversations. This preserves the privacy requirement.
+
+
 
 ## Noise monitoring with Wireless Sensor Networks
 
@@ -134,6 +149,20 @@ without requiring to transmit audio or features to a central system?
 
 
 # Background
+
+## Sound level
+Sound level is measured in decibel (dB).
+0dB is the threshold of hearing, at $20 µPascal$ relative sound pressure. 
+The level is normally A-weighted, which simulates the frequency response of human hearing.
+
+![Descibel scale with common noise sources](./images/decibel-scale.jpg)
+
+## Equivalent Continious Sound Level
+The sound level is constantly changing.
+To get a single number representation, the sound level is averaged over a time period **T**.
+
+![Equivalent continious sound level](./images/equivalent-continious-level.jpg)
+
 
 ## Machine learning
 
