@@ -418,3 +418,87 @@ Rethinking the Value of Network Pruning
 https://paperswithcode.com/paper/rethinking-the-value-of-network-pruning
 Channel-wise pruning as network architecture search for CNNs
 Re-training pruned network from scratch usually better than reusing full network, contrary to exiting thinking
+
+
+
+# Background
+
+
+However, Environmental Noise Directive defines *indicators* for noise pollution:
+
+$L_{den}$: Designed to assess overall annoyance.
+It refers to an annual average day, evening and night period of exposure.
+Evening are weighted 5 dB(A) and a night weighting of 10 dB(A).
+Indicator level: 55dB(A).
+
+$L_{night}$: Designed to assess sleep disturbance.
+It refers to an annual average night period of exposure.
+Indicator level: 50dB(A).
+
+
+
+Why sound/hearing is important
+https://www.hearinglink.org/your-hearing/about-hearing/why-do-we-need-to-hear/
+
+
+## Acoustic Ecology
+
+Soundscape as social construct. Jøran Rudi, NOTAM
+Defines Soundscape and Acoustic Ecology.
+Ref Murray Schaeffer
+Ref Soundscape Journal
+
+> The attention that noise demands is neither lost on straight-pipe motorcyclists in general.
+> So noise is a tool with a large social impact. An analysis of urban noise must not miss that point.
+
+> Soundwalks is yet another genre in soundscape art – basically the listeners are led along a predefined
+path of sorts, planned because of its signature sounds and interesting audible events.
+
+An Introduction To Acoustic Ecology
+https://naisa.ca/radio-art-companion/an-introduction-to-acoustic-ecology/
+
+Hi-fi/low-fi. The quality of the sound environment. Better with Less masking, more frequeny-temporal variations.
+Acoustic horizon. How 'far' one can hear 
+
+Five Village Soundscapes (Schafer, 1978b)
+European Sound Diary (Schafer, 1977b)
+Schafer’s The Tuning of the World (1977a)
+
+particularly regarded by a community and its visitors are called “soundmarks”–in analogy to landmarks.
+Natural examples of the latter include geysers, waterfalls, and wind traps while cultural examples
+include distinctive bells and the sounds of traditional activities. 
+
+
+a hi-fi soundscape can be characterised by its lack of masking from noise and other sounds, with the result that all sounds–of all frequencies–”can be heard distinctly” (Schafer, 43)
+He defines a hi-fi soundscape as an environment where “sounds overlap less frequently; there is more perspective-foreground and background” (1977a, 43).
+
+Krause (1993) suggested an equilibrium is also apparent across the audio spectrum.
+Acoustical spectrographic maps transcribed from 2,500 hours of recordings confirmed his suspicions:
+animal and insect vocalisations tended to occupy small bands of frequencies leaving “spectral niches” (bands of little or no energy)
+into which the vocalisations (fundamental and formants) of other animals, birds or insects can fit.
+
+Another characteristic of the pre-industrial revolution, hi-fi soundscape, is that the “acoustic horizon” may extend for many miles.
+Thus sounds emanating from a listener’s own community may be heard at a considerable distance, reinforcing a sense of space and position and maintaining a relationship with home.
+This sense is further strengthened when it is possible to hear sounds emanating from adjacent settlements, establishing and maintaining relationships between local communities
+
+In the lo-fi soundscape, meaningful sounds (and any associated acoustic colouration), can be masked to such an extent that an individual’s “aural space” is reduced.
+Where the effect is so pronounced that an individual can no longer hear the reflected sounds of his/her own movement or speech, aural space has effectively shrunk to enclose the individual, isolating the listener from the environment.
+
+If the masking of reflected and direct sounds is so severe that an individual cannot hear his/her own footsteps–which is common on the streets of many cities–”
+one’s aural space is reduced to less than that of human proportions” (Truax 1984, 20).
+Under such extreme conditions, sound is either smothered (in the sense that particular sounds are not heard)–or sounds merge and sonic information mutates into anti-information: “noise.”
+
+In the developed world, sound has less significance and the opportunity to experience “natural” sounds decreases with each generation due to the destruction of natural habitats.
+Sound becomes something that the individual tries to block, rather than to hear; the lo-fi, low information soundscape has nothing to offer.
+As a result, many individuals try to shut it out through the use of double glazing or with **acoustic perfume–music**.
+*Music*–the virtual soundscape–is, in this context, used as a *means to control the sonic environment* rather than as a natural expression of it.
+
+
+## Machine Learning for hearing aids
+
+SoundSense Learn.
+A-B feedback for training automatic settings for hearing aids 
+http://www.hearingreview.com/2018/05/real-life-applications-machine-learning-hearing-aids-2/
+
+
+

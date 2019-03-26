@@ -1,16 +1,42 @@
 
+<!---
+
+Contributions
+
+- Demonstrate an ESC system running on a 5 USD microcontroller.
+Resulting in XX% accuracy on Urbansound8k dataset
+- Set of tools for STM32 CubeMX AI to overcome current limitations
+in the platform
+-->
+
+
 \newpage
 # Introduction
 
+<!---
+Sound
+    Importance. 
+
 Noise
-Environmental noise
-Health problems
-Reduced value
+Sources of noise.
+    People talking
+    Dogs barking
+    Construction
+    Air Conditioner, Refridgerator
+    
+Health problems. Sleep disturbance, 
+Economic impact. Reduced value of 
+Types of noise. Occuptional. Environmental noise
 Regulations
+
+
 Noise assesment
-Challenges. Local problem, multiple sources, time-dependent
+Challenges.
+    Local problem, multiple sources, time-dependent
+    perceptual/subjective evaluation
+    Positive sound qualities. Recreational
 Increasing noise problem. Urbanization
-Positive sound qualities. Recreational. Perceptual, subjective.
+
 Track noise level, plan/take corrective action. Visibility
 Identifying source. Environmental Sound Classification
 Smart-city concept, data-driven
@@ -18,32 +44,63 @@ Wireless Sensor Networks
 Existing projects
 Privacy, GDPR
 => this thesis
+-->
 
 
+Sound is everywhere around us, and a rich source of information about our surroundings.
 
-Sound is everywhere around us. It is a communication tool, speech
+Like other animals, humans communicate 
+
+We use sound explicitly to communicate when we talk, offering observations, facts
+
+
+## Importance
+
+When we talk, sound is a critical part of our communication, conveying not just statements
+but also information about.
+As we walk around 
+
+Sound can convey information also when 
+before we can see them
+alerted about dangerous situation
+
+Sound is used to communicate, be it by speech, audible gestures or computerized signals (
+
+car speeding up or slowing down
+fire alarm
+
+We communicate with eachother using sound when we talk, 
+
+communicating with intent
+
 side-effect of many human activities
-construction
+
+
+source of information
+understanding of the environment around us
+
+
+Since the industrial revolution, the human soundscape has become increasingly busy.
+
+mechanical and electromechanical devices
+Urbanization. Many more people in the same area
+
+transportation. Cars, railroads, aeroplanes
+construction. Drilling, cutting
 machinery
 
-
-workplace, occupational noise
-
-
-## Environmental noise
-
-
-Noise is unwanted sound.
-
+The sum of all the noise is referred to as Environmental noise.
 
 Environmental noise is the summary of noise pollution from outside,
 caused by transport, industrial and recreational activities.
-Road traffic is the most widespread source of environmental noise in urban environments.
 
 
+## Regulation
 
-## Regulations
-Environmental noise is regulated in the EU by the Environmental Noise Directive (2002/49/EC)[@EuNoiseDirective].
+Environmental noise is a type of noise pollution, and is regulated.
+
+In the EU, Environmental noise is regulated Environmental Noise Directive (2002/49/EC)[@EuNoiseDirective].
+
 The purpose of the directive is to:
 
 * determine peoples exposure to environmental noise
@@ -51,29 +108,12 @@ The purpose of the directive is to:
 * preventing and reducing environmental noise where necessary
 * preserving environmental noise quality where it is good
 
-The Directive requires Member States to prepare and publish noise maps and noise management action plans every 5 years for:
-
-* agglomerations with more than 100,000 inhabitants
-* major roads (more than 3 million vehicles a year)
-* major railways (more than 30.000 trains a year)
-* major airports (more than 50.000 movements a year, including small aircrafts and helicopters)
+The Directive requires Member States to prepare and publish noise maps and noise management action plans every 5 years for
+urban areas and major road, railways and airports.
 
 The Directive does not set limit or target values, nor does it prescribe the measures to be included in the action plans.
 This is up to authorities of each individual Member State.
 
-However, Environmental Noise Directive defines *indicators* for noise pollution:
-
-$L_{den}$: Designed to assess overall annoyance.
-It refers to an annual average day, evening and night period of exposure.
-Evening are weighted 5 dB(A) and a night weighting of 10 dB(A).
-Indicator level: 55dB(A).
-
-$L_{night}$: Designed to assess sleep disturbance.
-It refers to an annual average night period of exposure.
-Indicator level: 50dB(A).
-
-In Norway, the coverning legislation for noise pollution is Forurensningsloven[@Forurensningsloven],
-which implements the EU directive.
 
 ## Health impact
 
@@ -97,7 +137,133 @@ and "An estimated 8 million people experience sleep disturbance due to transport
     TODO: reference existing research / groups / project / locations
 
 
-## Noise measurements
+Using new sensor technology to
+Quantify and understand environmental noise, and plan and document remedies
+
+
+## Noise monitoring with Wireless Sensor Networks
+
+
+
+    TODO: write
+
+Continious monitoring.
+Low cost. Enables high density of sensor nodes
+
+Wireless connectivity
+Energy harvesting / battery operation
+
+In addition to commercial products, a number of research projects have deployed sensor networks for acoustic noise.
+This includes SONYC[@Sonyc] in New York City, and the Sentilo[@Sentilo] project in Barcelona.
+
+
+On-edge processing
+
+The noise profile data is based on the 1/3 octave band, following the standard IEC 61260-1:2014[@IECOctaveBands].
+This can be used by a machine learning system to distinguish different noise sources[@AudioCodingSensorGrid].
+The paper also demonstrates that when frequency spectrum samples are performed 10 times per second or more seldom,
+it is not possible to understand conversations. This preserves the privacy requirement.
+
+Save energy, bandwidth
+Respect privacy
+
+## Problem statement
+
+The need for low-cost and widely deployed noise monitoring solutions
+that can inform not only about the sound level but also information about the noise source,
+motivates our research question:
+
+> Can we classify environmental sounds directly on a wireless and battery-operated noise sensor,
+without requiring to transmit privacy-sensitive audio to a central system?
+
+
+\newpage
+# Background
+
+<!---
+Measuring noise
+
+    Terminology. Sound Pressure Level
+    Frequency weighting
+    Summarizaton. Eq SPL. L10, L90, Lmax, Lpeak
+    Spectrograms. Time-frequency characteristics. 1/3 acoustic bands
+
+    Equipment
+
+Sensor Networks for Noise Monitoring
+
+    Research projects.
+    Commercially available units.
+
+    Sound sensor. Microphone
+    Processing unit. Single-board-computers, microcontrollers
+    Connectivity. WiFI, GSM, LoRa. Bandwidth, range, power consumption
+    Energy source. Battery and Energy harvesting.
+
+Identifying noise source
+
+    Problem formulations. Classification
+
+        Out-of-scope
+            - Sound directivity.
+            - Multi-channel audio. Microphone arrays
+            - Multi-sensor fusion
+
+        Approach
+            **Classification**. Closed-set. Single label.
+            Not open-set classification / clustering
+            Not event detection. Not fine identification in time (onset)
+
+    Machine Learning.
+        Supervised
+        Data representations
+
+    Environmental Sound Classification (ESC).
+    Definition
+    Datasets
+        Urbansound8k
+        ESC-50
+        DCASE...
+    Existing work
+    Related.
+        Acoustic Scene Classification. Context-dependent compute
+        Domestic Sound Classification. 
+    DCASE conference and challenge
+
+    Convolutional Neural Networks
+
+
+-->
+
+## Measuring noise
+
+## Sound level
+The amplitude of a soundwave is specified by the variation in pressure, measured in pascal (Pa).
+Because of the wide range of possible values, Sound Pressure Level (SPL) is normally specified
+using the logarithmic decibel (dB) scale. A reference level of $20 µPascal$ is often used
+as the 0dB point. This is an estimate of the threshold of human hearing with air as the medium.
+
+    TODO: equation for converting 
+    TODO: explain reason for A-weighting.
+    TODO: plot of A weighting frequency response
+    TODO: reference standard defining A-weigthing 
+
+The level is normally A-weighted, which simulates the frequency response of human hearing.
+
+    TODO: own picture of noise sources on dB scale
+
+![Descibel scale with common noise sources](./images/decibel-scale.jpg)
+
+## Equivalent Continious Sound Level
+The sound pressure level is constantly changing.
+To get a single number representation, the sound level is averaged over a time period **T**.
+
+    TODO: mention other measurements, like L10/L90, Lpeak, Lmax
+    TODO: put in some equations
+
+![Equivalent continious sound level](./images/equivalent-continious-level.jpg)
+
+## Sound Level Meters
 
 Periodic noise measurements can be done with hand-held Sound Level meters.
 Their specifications are standardized in IEC 61672-1 Sound Level Meters[@IECSoundLevelMeters].
@@ -113,57 +279,6 @@ operating together in a Wireless Sensor Network.
 
 ![CESVA TA120 noise monitoring station](./images/cesva-ta120.png)
 
-## Existing projects
-
-
-In addition to commercial products, a number of research projects have deployed sensor networks for acoustic noise.
-This includes SONYC[@Sonyc] in New York City, and the Sentilo[@Sentilo] project in Barcelona.
-
-The noise profile data is based on the 1/3 octave band, following the standard IEC 61260-1:2014[@IECOctaveBands].
-This can be used by a machine learning system to distinguish different noise sources[@AudioCodingSensorGrid].
-The paper also demonstrates that when frequency spectrum samples are performed 10 times per second or more seldom,
-it is not possible to understand conversations. This preserves the privacy requirement.
-
-
-
-## Noise monitoring with Wireless Sensor Networks
-
-    TODO: write
-
-Continious monitoring.
-Low cost. Enables high density of sensor nodes
-
-Wireless connectivity
-Energy harvesting / battery operation
-
-On-edge processing
-Save energy, bandwidth
-Respect privacy
-
-This motivates our research question:
-
-> Can we classify environmental sounds directly on the noise sensor,
-without requiring to transmit audio or features to a central system?
-
-
-
-
-# Background
-
-## Sound level
-Sound level is measured in decibel (dB).
-0dB is the threshold of hearing, at $20 µPascal$ relative sound pressure. 
-The level is normally A-weighted, which simulates the frequency response of human hearing.
-
-![Descibel scale with common noise sources](./images/decibel-scale.jpg)
-
-## Equivalent Continious Sound Level
-The sound level is constantly changing.
-To get a single number representation, the sound level is averaged over a time period **T**.
-
-![Equivalent continious sound level](./images/equivalent-continious-level.jpg)
-
-
 ## Machine learning
 
 Supervised learning
@@ -175,9 +290,9 @@ Cross-fold validation
 
 ## Data augmentation
 
-Data augmentation
-Pitchshift,timestretch
-Mixup,between-class
+    Data augmentation
+    Pitchshift,timestretch
+    Mixup,between-class
 
 
 ## Classification
@@ -371,7 +486,7 @@ ARM CMSIS-NN
 tflite
 uTensor
 emlearn[@emlearn]
-ELL
+ELL. ProtoNN
 
 ### Hardware accelerators
 
@@ -385,8 +500,8 @@ STMicroelectronics has stated that neural network accelerators will be available
 for their STM32 family of microcontrollers in 2019`TODO: ref`, based on their
 FD-SOI chip architecture[@ST-FD-SOI].
 
-ARM has announced ARM Helium, a set of for the Cortex
-
+ARM has announced ARM Helium, an extension for the Cortex M
+family of microcontrollers with instructions that can be used to speed up neural networks. `TODO:ref `
 
 
 
@@ -424,7 +539,7 @@ The entire setup can be seen in figure \ref{sensortile-devkit}.
 
 STM32CubeMx
 STM32AI
-FP-AI-SENSING1
+
 Keras. Tensorflow backend
 librosa
 Pandas,numpy
@@ -432,7 +547,7 @@ Pandas,numpy
 ? training on Kubernetes
 
 
-Function pack
+FP-AI-SENSING1 Function pack
 
 
 All computations are done in single-precision float.
@@ -446,39 +561,18 @@ Does not support multi-input models.
     TODO: include screenshot of STM32AI
 
 
+`MAYBE: table with software versions? From requirements.txt`
 
+The trainining setup is implemented in Python.
+The machine learning models are implemented in Keras using the Tensorflow backend.
+To perform feature extraction during training librosa[@librosa] was used.
 
-The machine learning models are trained in Python using Keras with Tensorflow backend,
-To perform feature extraction 
+Training was performed on a GTX2060 GPU with 6GB of RAM, but could be done on a standard desktop CPU.
 
-librosa[@librosa]
-
-    TODO: picture of training + deployment pipelines
-
-
+`TODO: picture of training + deployment pipelines`
 
 
 TODO: reference CMSIS-NN, ARM Keyword spotting 4x faster using fixed-point/SIMD.
-
-## Model requirements
-
-Our machine learning algorithm must fit on the target device.
-By benchmarking 
-
-    TODO: move to methods section?
-
-For RAM and . The remaining 
-
-
-|  Resource    | Maximum   | Desirable    |
-| -------      |:---------:|:------------:|
-| RAM usage    |   64 kB   | `< 32 kB`    |
-| Flash use    |   512 kB  | `< 256 kB`   |
-| CPU usage (MACCs/s)    |   4 M    | `< 0.5 M`    |
-
-Table: Summary of device contraints for machine learning model
-
-    TODO: describe benchmark used to reach MACC/s number
 
 
 \newpage
@@ -509,14 +603,34 @@ The dataset comes pre-arranged into 10 folds. A single fold may contain multiple
 but the same source file is not used in multiple folds to prevent data leakage.
 Authors recommend always using fold 10 as the test set, to allow easy comparison of results between experiments.
 
+## Processing pipeline
+
+`TODO: image of pipeline`
+
+
 
 \newpage
 # Methods
 
+<!---
 
-## Existing models
+2. Choose most feasible base model. Feature representation
+3. Implement model(s) in Keras
+4. Preprocess files into features
+5. Train different models. On each of the folds
+6. Select best models based on validation score
+7. Compare models on testset.
+8. Run models on device, determine actual runtime. Compare wrt theoretical MACCs
+9. Measure current draw
+(10. Try different voting overlaps)
+11. Test a simplified variation of dataset
+-->
 
-    TODO: put both of these into one figure environment?
+## Determining model requirements 
+
+The models to be evaluated must fit the hardware constraints of the target device.
+From section `TODO: ref` these constraints are primarily:
+CPU execution time, RAM memory and Flash memory (for storing weights). 
 
 \begin{table}
 \input{plots/urbansound8k-existing-models-logmel.tex}
@@ -524,45 +638,75 @@ Authors recommend always using fold 10 as the test set, to allow easy comparison
 \label{table:urbansound8k-existing-models-logmel}
 \end{table}
 
+`TODO: ref attachments for Keras models`
+
+To evaluate the existing models reviewed in `TODO: link section` several were implemented in Keras,
+and ran them though STM32 Cube AI tool to get the required Flash storage (in bytes), RAM usage
+and CPU usage (in Multiply-Accumulate operations per second, MACC/s).
+
+A Python commandline script was developed to streamline collecting these statistics and outputting the C code for the model,
+without having to manually use the CubeMX user interface.
+`TODO: ref attachment stm32convert.py`
+The results can be seen in \ref{table:urbansound8k-existing-models-logmel}.
+
+To determine the approximate number of MACC/s that our target hardware is able to sustain,
+a few model variations with different MACC/s were created.
+Then the models were ran on on device (with random inputs), and their execution time recorded.
+
+The SB-CNN model was used as a base, with 30 mels bands (the default in)
+
+`TODO: table of MACC/s and execution time, linear regression`
+
+\ref{existing-models-perf}
+
+
     FIXME: plot is clipping text at bottom and top, need more margins
 
-![Performance of existing CNN models using log-mel features on Urbansound8k dataset. Green region shows the region which satisfies our model requirements.](./plots/urbansound8k-existing-models-logmel.png)
+![Performance of existing CNN models using log-mel features on Urbansound8k dataset. Green region shows the region which satisfies our model requirements.\label{existing-models-perf}](./plots/urbansound8k-existing-models-logmel.png)
 
 
-    TODO: refer
+By benchmarking 
+
+    TODO: move to methods section?
+
+For RAM and . The remaining 
 
 
-SB-CNN
-LD-CNN
+|  Resource    | Maximum   | Desirable    |
+| -------      |:---------:|:------------:|
+| RAM usage    |   64 kB   | `< 32 kB`    |
+| Flash use    |   512 kB  | `< 256 kB`   |
+| CPU usage (MACCs/s)    |   4 M    | `< 0.5 M`    |
 
-## Experimental Setup
+Table: Summary of device contraints for machine learning model
 
-1. Determine model requirements. Run neural networks, compare runtime vs MACC
-Choose most feasible base model. Feature representation
-
-
-Evaluate effects of:
-- Changing model architecture
-- Different voting overlap
+    TODO: describe benchmark used to reach MACC/s number
 
 
+## Preprocessing
 
-Preprocessing.
-Data augmentation
+The smallest feature in use by existing methods was by LD-CNN,
+which used 31 frames @ 22050 Hz with 60 mels bands.
+This achieved results near the state-of-art, so we opted to use the same.
 
-Hyperparameter search
 
-Cross-validation
+`TODO: table with preprocessing settings`
 
-Approach towards reaching goals
+During preprocessing we also perform Data Augmentation.
+Time-stretching and Pitch-shifting following `TODO: ref`
+
+The preprocessed files
+
+
+`??? Hyperparameter search`
+
+Perform 10-fold cross-validation using the pre-assigned folds of the Urbansound8k dataset and fold 10 as the held-out test set.
 
 
 Model variations
 
 Optimizer
 Hyperparameters
-
-Feature extraction settings
 
 
 \newpage
@@ -577,6 +721,15 @@ Feature extraction settings
 \newpage
 # Discussion
 
+Problem
+> Can we classify environmental sounds directly on a wireless and battery-operated noise sensor,
+without requiring to transmit privacy-sensitive audio to a central system?
+
+<!--
+What is the approx cost of system. BOM
+What is the battery lifetime. BOM
+-->
+
 would this be good enough to be useful for classifying noise assessment?
 
 might not be neccesary to go as fine-grained as 10 classes
@@ -590,8 +743,11 @@ class accuracies
 confusion 
 top3 performance
 
+
+
 Further work
 
+Reduce number of mels or number of frames.
 Use fixed-point / SIMD optimimized CNN implementation
 Using slightly bigger microcontroller.
 Able to double Flash. Up to 1024kB RAM, 8x. Approx 8x CPU.
