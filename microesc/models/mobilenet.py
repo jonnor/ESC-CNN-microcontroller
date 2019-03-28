@@ -22,7 +22,8 @@ def relu6(x, name):
 def _conv_block(inputs, filters, alpha, kernel=(3, 3), strides=(1, 1)):
     channel_axis = 1 if backend.image_data_format() == 'channels_first' else -1
     filters = int(filters * alpha)
-    x = layers.ZeroPadding2D(padding=((0, kernel[1]//2), (0, kernel[1]//2)), name='conv1_pad')(inputs)
+    padding = ((0, kernel[1]//2), (0, kernel[1]//2))
+    x = layers.ZeroPadding2D(padding=padding, name='conv1_pad')(inputs)
     x = layers.Conv2D(filters, kernel,
                       padding='valid',
                       use_bias=False,
@@ -76,16 +77,10 @@ def build_model(frames=32, bands=32, channels=1, n_classes=10, dropout=0.5,
 
     from keras.applications import mobilenet
 
-    #mobilenet.MobileNet(input_shape=(128,128,3), weights=None) # XXX: needed for it to set internal global vars...
-    #conv = mobilenet.mobilenet._conv_block
-    #dwconv = mobilenet.mobilenet._depthwise_conv_block
-
     conv = _conv_block
     dwconv = _depthwise_conv_block
-    backend = keras.backend
 
-    old_format = backend.image_data_format()
-    backend.set_image_data_format('channels_last')
+    assert keras.backend.image_data_format() == 'channels_last'
 
     input_shape = (bands, frames, channels)
     img_input = keras.layers.Input(shape=input_shape)
@@ -95,8 +90,10 @@ def build_model(frames=32, bands=32, channels=1, n_classes=10, dropout=0.5,
 
     for stage_no in range(1, n_stages):
         filters = initial_filters*2**stage_no
-        x = dwconv(x, filters, alpha, depth_multiplier, kernel=kernel, strides=(stride_f, stride_t), block_id=(stage_no*2))
-        x = dwconv(x, filters, alpha, depth_multiplier, kernel=kernel, block_id=(stage_no*2)+1)
+        x = dwconv(x, filters, alpha, depth_multiplier,
+                    kernel=kernel, strides=(stride_f, stride_t), block_id=(stage_no*2))
+        x = dwconv(x, filters, alpha, depth_multiplier,
+                    kernel=kernel, block_id=(stage_no*2)+1)
 
     shape = (1, 1, int(filters * alpha))
 
@@ -108,8 +105,6 @@ def build_model(frames=32, bands=32, channels=1, n_classes=10, dropout=0.5,
     x = keras.layers.Reshape((n_classes,), name='reshape_2')(x)
 
     model = keras.Model(img_input, x)
-
-    backend.set_image_data_format(old_format)
 
     return model
 

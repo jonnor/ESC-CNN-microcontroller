@@ -613,8 +613,8 @@ All the code used is available at https://github.com/jonnor/ESC-CNN-microcontrol
 ## Determining model requirements 
 
 The models to be evaluated must fit the hardware constraints of the target device.
-From section `TODO: ref` these constraints are primarily:
-CPU execution time, RAM memory and Flash memory (for storing weights). 
+From the [Microcontrollers](#microcontrollers) section, these constraints are primarily:
+CPU execution time, RAM memory and Flash memory. 
 
 \begin{table}
 \input{plots/urbansound8k-existing-models-logmel.tex}
@@ -629,8 +629,8 @@ and ran them though STM32 Cube AI tool to get the required Flash storage (in byt
 and CPU usage (in Multiply-Accumulate operations per second, MACC/s).
 
 A Python commandline script was developed to streamline collecting these statistics and outputting the C code for the model,
-without having to manually use the CubeMX user interface.
-`TODO: ref attachment stm32convert.py`
+without having to manually use the CubeMX user interface. See \ref{appendix:stm32convert}.
+
 The results can be seen in \ref{table:urbansound8k-existing-models-logmel}.
 
 To determine the approximate number of MACC/s that our target hardware is able to sustain,
@@ -768,6 +768,42 @@ Use fixed-point / SIMD optimimized CNN implementation
 Using slightly bigger microcontroller.
 Able to double Flash. Up to 1024kB RAM, 8x. Approx 8x CPU.
 
+
+<!---
+APPENDIX
+TODO: make be after references
+TODO: clean up the scripts, make fit on one/two page
+-->
+
+\begin{appendices}
+
+% introduces custom pythoncode command
+% ref https://tex.stackexchange.com/questions/103141/set-global-options-for-inputminted
+\newmintedfile[pythoncode]{python}{
+fontsize=\footnotesize
+}
+
+
+\section{SB-CNN Keras model}
+\pythoncode{../microesc/models/sbcnn.py}
+\label{listing:sbcnn}
+
+\newpage
+\section{LD-CNN Keras model}
+\pythoncode{../microesc/models/ldcnn.py}
+\label{listing:ldcnn}
+
+\newpage
+\section{MobileNet Keras model}
+\label{appendix:mobilenet}
+\pythoncode{../microesc/models/mobilenet.py}
+
+\newpage
+\section{Script for converting models using X-CUBE-AI}
+\label{appendix:stm32convert}
+\pythoncode{../microesc/stm32convert.py}
+
+\end{appendices}
 
 \newpage
 # References

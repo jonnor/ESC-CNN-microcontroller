@@ -25,7 +25,7 @@ includes: pyincludes/urbansound8k-classes.tex \
 
 
 report.pdf: report.md includes
-	pandoc --bibliography=references.bib -V papersize:a4 -V geometry:margin=1.0in -V fontsize=12pt -H preamble.tex --csl ieee.csl --toc -Vlof -Vlot -s report.md -o report.pdf
+	pandoc --bibliography=references.bib -V documentclass=report -V papersize:a4 -V geometry:margin=1.0in -V fontsize=12pt -H preamble.tex --csl ieee.csl --toc -Vlof -Vlot --pdf-engine-opt=-shell-escape -s report.md -o report.pdf
 
 merged.pdf: report.pdf summary.pdf
 	gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress -sOutputFile=merged.pdf cover.pdf summary.pdf report.pdf end.pdf
