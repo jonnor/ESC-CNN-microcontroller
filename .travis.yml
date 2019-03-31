@@ -2,13 +2,11 @@ dist: xenial
 language: python
 python: 
   - "3.6"
-env:
-  global:
-    - PATH=`pwd`/pandoc-2.7.1/bin/:$PATH
 install:
   - pip install -r requirements.txt
   - wget https://github.com/jgm/pandoc/releases/download/2.7.1/pandoc-2.7.1-linux.tar.gz
   - tar -xf pandoc-2.7.1-linux.tar.gz
+  - export PATH=`pwd`/pandoc-2.7.1/bin/:$PATH
 script:
   - which pandoc
   - pandoc -v
