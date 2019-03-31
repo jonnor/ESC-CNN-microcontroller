@@ -21,11 +21,13 @@ def test_precompute():
     if os.path.exists(dir):
         shutil.rmtree(dir)
 
+    workdir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../data/'))
+
     data = urbansound8k.load_dataset()
+    urbansound8k.maybe_download_dataset(workdir)
 
     d = os.path.join(dir, features.settings_id(settings))
-    expect_path = features.feature_path(data.iloc[0], d)    
-    print('e', expect_path)
+    expect_path = features.feature_path(data.iloc[0], d)
     assert not os.path.exists(expect_path), expect_path
 
     preprocess.precompute(data[0:4], settings, out_dir=d, verbose=0, force=True, n_jobs=2)

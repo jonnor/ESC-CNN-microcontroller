@@ -6,7 +6,7 @@ install:
   - pip install -r requirements.txt
 script:
   - PYTHONPATH=./ pytest -v
-  - make
+  - cd report && make
   - pdfinfo merged.pdf
 addons:
   apt:
