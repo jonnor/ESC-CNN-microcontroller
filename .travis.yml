@@ -12,6 +12,7 @@ script:
   - pandoc -v
   - cd report && make
   - pdfinfo merged.pdf
+  - cd -
   - PYTHONPATH=./ pytest -v --capture=no
 addons:
   apt:
