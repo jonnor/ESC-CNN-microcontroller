@@ -4,7 +4,7 @@ python:
   - "3.6"
 env:
   global:
-    - PATH=./pandoc-2.7.1/bin/:$PATH
+    - PATH=`pwd`/pandoc-2.7.1/bin/:$PATH
 install:
   - pip install -r requirements.txt
   - wget https://github.com/jgm/pandoc/releases/download/2.7.1/pandoc-2.7.1-linux.tar.gz
