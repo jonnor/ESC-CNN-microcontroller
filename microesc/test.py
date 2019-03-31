@@ -20,33 +20,52 @@ groups = {
 }
 
 
-def load_history(jobs_dir, job_id):
+def load_model_info(jobs_dir, job_dir):
+    template, date, time, rnd, fold = job_dir.split('-')
+    hist_path = os.path.join(jobs_dir, job_dir, 'train.csv')
 
+    df = pandas.read_csv(hist_path)
 
-    matching = [ d for d in os.listdir(jobs_dir) if job_id in d ]
-    assert len(matching) == 9, "Expected 9 folds, found {} matching {}".format(len(matching), job_id)
+    df['epoch'] = df.epoch + 1
+    df['fold'] = int(fold[-1])
+    df['template'] = template
+    df['run'] = '-'.join([date, time, rnd])
+    
+    models = []
+    for fname in os.listdir(os.path.join(jobs_dir, job_dir)):
+        if fname.endswith('model.hdf5'):
+            models.append(fname)
+    
+    models = sorted(models)
+    assert models[0].startswith('e01-')
+    last_model = models[len(models)-1]
+    expected_last = 'e{:02d}-'.format(len(models))
+    assert last_model.startswith(expected_last), (last_model, expected_last)
+
+    df['model'] = [ os.path.join(jobs_dir, job_dir, m) for m in models ]
+    return df
+
+def load_train_history(jobs_dir, limit=None):
+
+    jobs = os.listdir(jobs_dir)
+    if limit:
+        matching = [ d for d in jobs if limit in d ]
+    else:
+        matching = jobs
+    #assert len(matching) == 9, "Expected 9 folds, found {} matching {}".format(len(matching), job_id)
 
     dataframes = []
     
     for job_dir in matching:
-        fold = job_dir.split('-fold')[1]
-        hist_path = os.path.join(jobs_dir, job_dir, 'history.csv')
-    
-        df = pandas.read_csv(hist_path)
-        del df['Unnamed: 0']
-        df['epoch'] = df.epoch + 1
-        df['fold'] = fold
-        
-        models = []
-        for fname in os.listdir(os.path.join(jobs_dir, job_dir)):
-            if fname.endswith('model.hdf5'):
-                models.append(fname)
-        
-        models = sorted(models)
-        assert models[0].startswith('e01')
-        assert models[len(models)-1].startswith('e{:0d}'.format(len(models)))
-        df['model'] = [ os.path.join(jobs_dir, job_dir, m) for m in models ]
+
+        try:
+            df = load_model_info(jobs_dir, job_dir)
+        except (FileNotFoundError, ValueError) as e:
+            print('Failed to load job {}: {}'.format(job_dir, str(e)))
+            continue
+
         dataframes.append(df)
+        
 
     df = pandas.concat(dataframes)
     return df
@@ -60,10 +79,8 @@ def test_load_history():
 def pick_best(history, n_best=1):
 
     def best_by_loss(df):
-        return df.sort_values('val_loss', ascending=True).head(n_best)
+        return df.sort_values('voted_val_acc', ascending=False).head(n_best)
     return history.groupby('fold').apply(best_by_loss)
-
-    # best_by_loss.plot(y='val_acc', kind='bar', subplots=True)
 
 
 def evaluate(models, folds, test, predictor):
@@ -154,15 +171,12 @@ def main():
         return features.predict_voted(exsettings, model, data, loader=load_sample,
                                         method=voting, overlap=overlap)
 
-    if args.model:
-        best = pandas.DataFrame({ 'model': [  args.model ] * 9})
-        print('Warning: Single model, val_acc will not be accurate since folds have not been held out')
-    else:
-        history = load_history(args.models_dir, args.run)
-        best = pick_best(history)
+    history = load_train_history(args.models_dir, args.run)
+    best = pick_best(history)
 
     print('Loading models...')
     models = best['model'].apply(lambda p: keras.models.load_model(p))
+    print('Best model', best.voted_val_acc)
 
     print('Testing models...')
     val, test = evaluate(models, folds, test, predictor=predict)
