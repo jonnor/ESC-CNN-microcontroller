@@ -19,6 +19,7 @@ addons:
       - pandoc
       - pandoc-citeproc
       - texlive
+      - texlive-latex-extra
       - lmodern
       - poppler-utils
       - ghostscript
