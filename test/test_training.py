@@ -4,8 +4,7 @@ import itertools
 import pandas
 import numpy
 
-import train, features
-import urbansound8k
+from microesc import train, features, urbansound8k
 
 def test_generator_fake_loader():
 
