@@ -7,6 +7,8 @@ install:
   - wget https://github.com/jgm/pandoc/releases/download/2.7.1/pandoc-2.7.1-linux.tar.gz
   - tar -xf pandoc-2.7.1-linux.tar.gz
   - export PATH=./pandoc-2.7.1/bin/:$PATH
+  - which pandoc
+  - pandoc -v
 script:
   - cd report && make
   - pdfinfo merged.pdf
