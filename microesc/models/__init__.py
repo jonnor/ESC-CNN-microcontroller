@@ -26,11 +26,10 @@ def build(settings):
     )
 
     # TODO: make more generic
-    # LDCNN. filters=80, L=57, W=6, fully_connected=5000
-    # SBCNN. pool
+    # LDCNN. filters=80, L=57, W=6
     # MobileNet. alpha, 
     known_settings = [
-        'kernel', 'pool'
+        'kernel', 'pool', 'kernels_start', 'fully_connected',
     ]
     for k in known_settings:
         v = settings.get(k, None)
