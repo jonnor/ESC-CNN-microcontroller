@@ -7,13 +7,13 @@ import pandas
 
 import models, stm32convert
 
-def sbcnn_generator(n_iter=10, random_state=1):
+def sbcnn_generator(n_iter=400, random_state=1):
 
     from sklearn.model_selection import ParameterSampler
 
     params = dict(
-        kernel_t = range(1, 7),
-        kernel_f = range(1, 7),
+        kernel_t = range(3, 10, 2),
+        kernel_f = range(3, 10, 2),
         pool_t = range(2, 5),
         pool_f = range(2, 5),
         kernels_start = range(16, 64),
@@ -32,21 +32,14 @@ def sbcnn_generator(n_iter=10, random_state=1):
             'samplerate': 22050,
         }
 
-        pool = p['pool_t'], p['pool_f']
-        kernel = p['kernel_t'], p['kernel_f']
+        pool = p['pool_f'], p['pool_t'] 
+        kernel = p['kernel_f'], p['kernel_t'] 
         for k, v in p.items():
             s[k] = v
         s['pool'] = pool
         s['kernel'] = kernel
 
-        print('s', s)
-
-        try:
-            m = models.build(s)
-        except ValueError as e:
-            yield e
-
-        yield m, p
+        yield p, s
 
 
 def generate_models():
@@ -57,11 +50,16 @@ def generate_models():
         'gen_path': [],
         'id': [],
     }
-    for out in gen:
+    for out in iter(gen):
+        model = None
+
         try:
-            model, params = out
-        except TypeError:
-            print('Error:', out)
+            params, settings  = out
+            model = models.build(settings.copy())
+        except ValueError as e:
+            print('Error:', e)
+            continue
+
 
         # Store parameters
         for k, v in params.items():
@@ -77,7 +75,6 @@ def generate_models():
         out_path = os.path.join(out_dir, 'gen')     
    
         # Store model
-        print('pp', model_path)
         model.save(model_path)
         stats = stm32convert.generatecode(model_path, out_path,
                                   name='network', model_type='keras', compression=None)
@@ -86,8 +83,6 @@ def generate_models():
         data['model_path'].append(model_path)
         data['gen_path'].append(out_path)     
         data['id'].append(model_id)    
-
-        print('s', stats.values(), model.count_params())
 
         for k, v in stats.items():
             if data.get(k) is None:
