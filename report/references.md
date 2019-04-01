@@ -501,4 +501,19 @@ A-B feedback for training automatic settings for hearing aids
 http://www.hearingreview.com/2018/05/real-life-applications-machine-learning-hearing-aids-2/
 
 
+## UM2526 - Getting started with X-CUBE-AI Expansion Package for Artificial Intelligence (AI)
+
+STM32 Arm ® Cortex ® -M4: ~9 cycles/MACC
+
+add-on “AI System Performance”
+
+6 X-CUBE-AI internals
+
+> The C-code generator optimizer engine seeks to optimize memory usage (RAM & ROM) against inference computing time (power consumption is also considered).
+
+> Optimal activation/working memory:
+> A R/W chunk is defined to store temporary hidden layer values (outputs of the activation operators).
+> It can be considered as a scratch buffer used by the inference function. 
+> The activation memory is reused across different layers. As a result, the activation buffer size is defined by the maximum memory requirements of two consecutive layers.
+
 

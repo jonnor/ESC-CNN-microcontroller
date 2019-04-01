@@ -435,6 +435,13 @@ Using a set of kernels in combination can detect many pattern variations.
 
 ![Convolution kernel as edge detector, applied to image. Source: [@UnderstandingConvolution]](./images/convolution.png)
 
+## Windowed voting
+
+Mean
+Majority
+Overlap
+
+
 ## Efficient CNNs
 
 Depthwise separable convolutions. Depth multiplier "1x1(xD) convolution", pointwise
@@ -448,11 +455,6 @@ EffNet
 
 
 
-## Windowed voting
-
-Mean
-Majority
-Overlap
 
 
 ## Microcontrollers

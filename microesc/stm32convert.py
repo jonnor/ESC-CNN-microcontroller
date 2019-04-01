@@ -153,7 +153,6 @@ def generatecode(model_path, out_path, name, model_type, compression):
         network_c = f.read()
         ram = extract_ram_use(network_c)
         arrays_ram = sum(ram.values())
-        print('r', arrays_ram)
 
     return stats
 
