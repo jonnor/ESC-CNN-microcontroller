@@ -31,10 +31,6 @@ Model evaluation
 - Merge all experiments results into single .csv file
 - Check windowing functions, esp last frame and padding
 
-Evaluation
-
-- Test only foreground samples
-
 Code quality
 
 - Add end2end tests

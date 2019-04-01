@@ -75,12 +75,12 @@ def pick_best(history, n_best=1):
     return history.groupby('fold').apply(best_by_loss)
 
 
-def evaluate(models, folds, test, predictor):
-
-    val_scores = []
-    test_scores = []
+def evaluate(models, folds, test, predictor, only_foreground=False):
 
     def score(model, data):
+        if only_foreground:
+            data = data[data.salience == 2]
+
         y_true = data.classID
         p = predictor(model, data)
         y_pred = numpy.argmax(p, axis=1)
@@ -91,18 +91,36 @@ def evaluate(models, folds, test, predictor):
         return confusion
 
     # validation
+    out = {
+        'val_foreground': [],
+        'val_background': [],
+        'test_foreground': [],
+        'test_background': [],
+    }
+
+    salience_info = { 'foreground': 1, 'background': 2 }
+
+    # val
     for i, m in enumerate(models):
-        validation_fold = folds[i][1]
-        s = score(m, validation_fold)
-        val_scores.append(s)
+        data = folds[i][1]
+        for variant, salience in salience_info.items():   
+            s = score(m, data[data.salience == salience])
+            out['val_'+variant].append(s)
 
     # test
     for i, m in enumerate(models):
-        s = score(m, test)
-        test_scores.append(s)
-        
+        data = test
+        for variant, salience in salience_info.items():   
+            s = score(m, data[data.salience == salience])
+            out['test_'+variant].append(s)
+     
+    for k, v in out.items():
+        out[k] = numpy.stack(v)
 
-    return val_scores, test_scores
+    out['val'] = out['val_foreground'] + out['val_background']
+    out['test'] = out['test_foreground'] + out['test_background']
+
+    return out
 
 
 def parse(args):
@@ -171,10 +189,10 @@ def main():
     print('Best model', best.voted_val_acc)
 
     print('Testing models...')
-    val, test = evaluate(models, folds, test, predictor=predict)
+    results = evaluate(models, folds, test, predictor=predict)
 
     results_path = os.path.join(out_dir, 'confusion.npz')
-    numpy.savez(results_path, val=val, test=test)
+    numpy.savez(results_path, **results)
 
     print('Wrote to', results_path)
 
