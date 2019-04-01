@@ -6,17 +6,27 @@ import numpy
 import seaborn as sns
 import matplotlib.pyplot as plt     
 
-#from . import common
-import urbansound8k
-import common
+from . import common, urbansound8k
 
-def plot_confusion(cm, classnames, normalize=False):
+groups = {
+    'social_activity': [ 'street_music', 'children_playing', 'dog_bark' ],
+    'construction': [ 'drilling', 'jackhammer' ],
+    'road_noise': [ 'engine_idling', 'car_horn', 'siren' ],
+    'domestic_machines': [ 'air_conditioner' ],
+    'danger': [ 'gun_shot' ],
+}
 
+def plot_confusion(cm, classnames, normalize=False, percent=False):
+
+    fmt = '.2f'
     if normalize:
         cm = cm_normalize(cm)
+    if percent:
+        cm = cm_normalize(cm)*100
+        fmt = ".1f"
 
     fig, ax = plt.subplots(1, figsize=(10,8))
-    sns.heatmap(cm, annot=True, ax=ax);
+    sns.heatmap(cm, annot=True, ax=ax, fmt=fmt);
 
     ax.set_xlabel('Predicted labels')
     ax.set_ylabel('True labels')
@@ -37,6 +47,27 @@ def cm_accuracy(cm):
     correct = numpy.sum(numpy.diag(cm))
     total = numpy.sum(numpy.sum(cm, axis=1))
     return correct/total
+
+def grouped_confusion(cm, groups):
+    groupnames = list(groups.keys())
+    groupids = list(range(len(groupnames)))
+    group_cm = numpy.zeros(shape=(len(groupids), len(groupids)))
+    groupid_from_classid = {}
+    for gid, name in zip(groupids, groupnames):
+        classes = groups[name]
+        for c in classes:
+            cid = urbansound8k.classes[c]
+            groupid_from_classid[cid] = gid
+
+    for true_c in range(cm.shape[0]):
+        for pred_c in range(cm.shape[1]):
+            v = cm[true_c, pred_c]
+            true_g = groupid_from_classid[true_c]
+            pred_g = groupid_from_classid[pred_c]
+            group_cm[true_g, pred_g] += v
+
+    return group_cm, groupnames
+
 
 def parse(args):
 
