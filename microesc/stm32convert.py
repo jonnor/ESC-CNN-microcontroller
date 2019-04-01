@@ -11,6 +11,7 @@ import subprocess
 import argparse
 import os.path
 import re
+import platform
 
 model_options = {
     'keras': 1,
@@ -114,7 +115,11 @@ def generatecode(model_path, out_path, name, model_type, compression):
 
     # Path to CLI tool
     home = str(pathlib.Path.home())
-    p = 'STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/{version}/Utilities/{os}/generatecode'.format(version='3.3.0', os='linux')    
+    version = os.environ.get('XCUBEAI_VERSION', '3.4.0')
+    platform_name = platform.system().lower()
+    if platform_name == 'darwin':
+        platform_name = 'mac'
+    p = 'STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/{version}/Utilities/{os}/generatecode'.format(version=version, os=platform_name)    
     default_path = os.path.join(home, p)
     cmd_path = os.environ.get('XCUBEAI_GENERATECODE', default_path)
 
