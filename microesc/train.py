@@ -90,7 +90,7 @@ def train_model(out_dir, fold, builder,
     val_samples = settings['val_samples']
     epochs = settings['epochs']
     batch_size = settings['batch']
-    #learning_rate = settings['learning_rate']   
+    learning_rate = settings.get('learning_rate', 0.01)
 
     train, val = fold
 
@@ -99,7 +99,7 @@ def train_model(out_dir, fold, builder,
 
     model = builder()
     model.compile(loss='categorical_crossentropy',
-                  optimizer=keras.optimizers.SGD(lr=0.01, momentum=0.9, nesterov=True),
+                  optimizer=keras.optimizers.SGD(lr=learning_rate, momentum=0.9, nesterov=True),
                   metrics=['accuracy'])
 
     model_path = os.path.join(out_dir, 'e{epoch:02d}-v{val_loss:.2f}.t{loss:.2f}.model.hdf5')
@@ -167,6 +167,8 @@ def parse(args):
 
     a('--fold', type=int, default=0,
         help='')
+    a('--learning_rate', type=float, default=None,
+        help='Learning rate')
 
     a('--name', type=str, default='',
         help='')
@@ -246,10 +248,11 @@ def main():
     model_settings = load_model_settings(exsettings)
     for k,v in model_settings.items():
         exsettings[k] = v
+    if args['learning_rate'] is not None:
+        exsettings['learning_rate'] = args['learning_rate']
 
     features.maybe_download(feature_settings, feature_dir)
 
-    # TODO: allow specifying dataset on commandline
 
     data = urbansound8k.load_dataset()
     folds, test = urbansound8k.folds(data)
