@@ -7,7 +7,8 @@ from keras.layers import Convolution2D, MaxPooling2D, SeparableConv2D
 from keras.regularizers import l2
 
 
-def build_model(frames=128, bands=128, channels=1, num_labels=10, kernel=(5,5), pool=(4,2), dropout=0.5, depthwise_separable=False):
+def build_model(frames=128, bands=128, channels=1, num_labels=10,
+                kernel=(5,5), pool=(4,2), dropout=0.5, depthwise_separable=False):
     """
     Implements SB-CNN model from
     Deep Convolutional Neural Networks and Data Augmentation for Environmental Sound Classification
@@ -18,7 +19,7 @@ def build_model(frames=128, bands=128, channels=1, num_labels=10, kernel=(5,5), 
     but parameters are changed back to those of the original paper authors
     """
 
-    model = Sequential()
+    model = Sequential([])
 
     Conv2 = SeparableConv2D if depthwise_separable else Convolution2D
 
@@ -58,19 +59,4 @@ def build_model(frames=128, bands=128, channels=1, num_labels=10, kernel=(5,5), 
 
     return model
 
-def main():
-    print('sbcnn.orig')
-    m = build_model()
-    m.summary()
-    m.save('sbcnn.orig.hdf5')
-
-    print('sbcnn16k30')
-    m = build_model(frames=72, bands=30, kernel=(3,3), pool=(3,3))
-    m.summary()
-    m.save('sbcnn16k30.hdf5')
-
-
-
-if __name__ == '__main__':
-    main()
 

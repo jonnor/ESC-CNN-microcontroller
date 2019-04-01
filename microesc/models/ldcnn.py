@@ -80,15 +80,3 @@ def ldcnn_nodelta(bands=60, frames=31, n_classes=10,
     model = Model(input, m)
     return model
 
-
-def main():
-    m = ldcnn()
-    m.save('ldcnn.hdf5')
-    m.summary()
-
-    m = ldcnn_nodelta()
-    m.save('ldcnn.nodelta.hdf5')
-    m.summary()
-
-if __name__ == '__main__':
-    main()

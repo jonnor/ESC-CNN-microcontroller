@@ -15,8 +15,7 @@ import keras
 import librosa
 import sklearn.metrics
 
-from . import features, urbansound8k, common
-from .models import sbcnn, dilated, mobilenet, effnet
+from . import features, urbansound8k, common, models
 
 
 def dataframe_generator(X, Y, loader, batchsize=10, n_classes=10):
@@ -217,29 +216,6 @@ def settings(args):
     return train_settings
 
 
-def ldcnn(settings):
-    m = dilated.ldcnn_nodelta(frames=settings['frames'], bands=settings['n_mels'], 
-                            filters=80, L=57, W=6, fully_connected=5000)
-    return m
-
-def sb_cnn(settings):
-    m = sbcnn.build_model(bands=settings['n_mels'], channels=1,
-                    frames=settings['frames'],
-                    pool=parse_dimensions(settings['pool']),
-                    kernel=parse_dimensions(settings['kernel']),
-                    )
-    return m
-
-def mobilenets(settings):
-    m = mobilenet.build_model(bands=settings['n_mels'], channels=1,
-                    frames=settings['frames'],
-                    alpha=0.50,
-                    )
-    return m
-
-def eff_net(settings):
-    m = effnet.build_model(bands=settings['n_mels'], frames=settings['frames'])
-    return m
 
 def main():
 
@@ -268,6 +244,8 @@ def main():
     feature_settings = features.settings(exsettings)
     train_settings = settings(exsettings)
     model_settings = load_model_settings(exsettings)
+    for k,v in model_settings.items():
+        exsettings[k] = v
 
     features.maybe_download(feature_settings, feature_dir)
 
@@ -285,11 +263,9 @@ def main():
         return d
 
     def build_model():
-        m = sb_cnn(exsettings)
-        #m = ldcnn(exsettings)
+        m = models.build(exsettings)
 
         m.summary()
-
         return m
 
     all_settings = {

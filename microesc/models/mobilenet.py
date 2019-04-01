@@ -108,19 +108,4 @@ def build_model(frames=32, bands=32, channels=1, n_classes=10, dropout=0.5,
 
     return model
 
-def main():
-    # kernel_f: [3, 5, 7]
-    # kernel_t: [3, 5, 7]
-    # n_stages: (2, 5)
-    # alpha: (0.1, 2.0)
-    # stride_f: (2, 4)
-    # stride_t: (2, 4)
-
-    m = build_model(frames=31, bands=60, alpha=0.35)
-    m.summary()
-
-    m.save('mobilenet.hdf5')
-
-if __name__ == '__main__':
-    main()
 
