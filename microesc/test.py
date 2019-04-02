@@ -75,19 +75,17 @@ def pick_best(history, n_best=1):
     return history.groupby('fold').apply(best_by_loss)
 
 
-def evaluate(models, folds, test, predictor, only_foreground=False):
+def evaluate(models, folds, test, predictor):
 
     def score(model, data):
-        if only_foreground:
-            data = data[data.salience == 2]
-
         y_true = data.classID
         p = predictor(model, data)
         y_pred = numpy.argmax(p, axis=1)
         # other metrics can be derived from confusion matrix
         acc = sklearn.metrics.accuracy_score(y_true, y_pred)
         print('acc', acc)
-        confusion = sklearn.metrics.confusion_matrix(y_true, y_pred)
+        labels = list(range(len(urbansound8k.classnames)))
+        confusion = sklearn.metrics.confusion_matrix(y_true, y_pred, labels=labels)
         return confusion
 
     # validation
