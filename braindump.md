@@ -98,6 +98,9 @@ But still has a hyperparamter lambda that must be tuned.
 Evaluted on URBAN-SED, a Sound Event Detection dataset based on Urbansound8k.
 Said to apply generally to MIM problems.
 
+SB-CNN 10MACC reaches 75% with lr=0.001. 
+0.003 and 0.005 only reaches 72-73%
+
 #### DenseNet
 
 dropout=0.0, depth=10, block=3, growth=12, pooling='avg' (45k parameters)
