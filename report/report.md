@@ -132,51 +132,59 @@ According to a report done on behalf of the European Commision[@RVIMTransportati
 and "the number of cases of premature mortality due to these diseases as a result of noise exposure is about 10 thousand per year.",
 and "An estimated 8 million people experience sleep disturbance due to transportation noise and about 4 million perceive this as severe".
 
-## Urban noise
-
-    TODO: reference existing research / groups / project / locations
-
-
-Using new sensor technology to
-Quantify and understand environmental noise, and plan and document remedies
-
 
 ## Noise monitoring with Wireless Sensor Networks
 
-
-
-    TODO: write
-
-Continious monitoring.
-Low cost. Enables high density of sensor nodes
-
-Wireless connectivity
-Energy harvesting / battery operation
-
-In addition to commercial products, a number of research projects have deployed sensor networks for acoustic noise.
+Several cities have started to deploy networks of sound sensors in order to understand and reduce noise issues.
+These consist of many sensor nodes positioned in the area of interest,
+transmitting the data to a central system for storage and reporting.
 
 The SONYC[@SONYC] project in New York City had 56 sound sensors as of 2018.[@SONYC2019]
-The noise monitoring project in Barcelona[@BarcelonaNoiseMonitoring] had 86 sound sensors as of 2018.[@BarcelonaNoiseMonitoring2018].
+The Barcelona Noise Monitoring System[@BarcelonaNoiseMonitoring] had 86 sound sensors as of 2018.[@BarcelonaNoiseMonitoring2018].
+CENSE[@CENSE] project plans to install around 150 sensors in Lorient, France[@CENSESensor].
 
+To keep costs low and support a dense coverage, the sensor nodes are aften designed to operate wirelessly.
+Communication is done using wireless radio technologies such as WiFi, GSM, NB-IoT or 6LoWPAN.
+Energy to power the sensor is harvested, either using solar power or from streetlight powered at night.
+A battery backup allows the sensor to continue operating also when energy is momentarily unavailable.
 
-On-edge processing
+These sensor networks enable continious logging of the sound level (Leq dB).
+Typical measurement resolution are per-minute, per second or per 125ms.
+Sound level sensors in Europe are designed to specifications of IEC 61672-1 Sound Level Meters[@IECSoundLevelMeters],
+with an accuracy of either Class 2 or Class 1.
+The equivalent standard for North America is ANSI S1.4[@ANSISoundLevelMeters], and Type 1/2 accuracy.
+
+Most sensors also aim to provide information that can be used to characterize the noise.
+This requires much more data than sound level measurements,
+making it challenging to transmit within the given bandwidth and energy budget of a sensor.
+Recording and storing detailed audio data may also capture sensitive information and violate privacy requirements.
+
+To address these concerns
+
+Sending the raw audio waveform 
+
+A simple method is to transmit and store the raw audio, however this is problematic
+fro
 
 The noise profile data is based on the 1/3 octave band, following the standard IEC 61260-1:2014[@IECOctaveBands].
 This can be used by a machine learning system to distinguish different noise sources[@AudioCodingSensorGrid].
 The paper also demonstrates that when frequency spectrum samples are performed 10 times per second or more seldom,
 it is not possible to understand conversations. This preserves the privacy requirement.
 
+
+
+ and get data needed for efficiently managing and reducing noise. 
+
+On-edge processing
+
 Save energy, bandwidth
 Respect privacy
-
-## Environmental Sound Classification
-
 
 
 ## Problem statement
 
 The need for low-cost and widely deployed noise monitoring solutions
-that can inform not only about the sound level but also information about the noise source,
+that can inform not only about the sound level but also give information about the noise source,
 motivates our research question:
 
 > Can we classify environmental sounds directly on a wireless and battery-operated noise sensor?
