@@ -493,6 +493,15 @@ Sound becomes something that the individual tries to block, rather than to hear;
 As a result, many individuals try to shut it out through the use of double glazing or with **acoustic perfume–music**.
 *Music*–the virtual soundscape–is, in this context, used as a *means to control the sonic environment* rather than as a natural expression of it.
 
+## Audio Embeddings for Environmental Sound Classification
+
+* VGGish. 128 dimensions, 8 quantized bit. Used as base for DCASE2019 challenge.
+* SoundNet.
+* L^3 (Look, Listen, Learn). 73.65% on Urbansound8k. 512 dimensions.
+* EdgeL3. Compressed version of L^3.
+70% compression. 72.64% on Urbansound8k.
+0.814 MB for its 213,491 parameters in float32.
+12 MB RAM needed for activations.
 
 ## Machine Learning for hearing aids
 
@@ -500,6 +509,12 @@ SoundSense Learn.
 A-B feedback for training automatic settings for hearing aids 
 http://www.hearingreview.com/2018/05/real-life-applications-machine-learning-hearing-aids-2/
 
+## Feature representation
+
+[An Optimized Recurrent Unit for Ultra-Low-Power Keyword Spotting](https://arxiv.org/abs/1902.05026).
+??? do they use standard Urbansound8k folds and test-set
+Uses samplerate 8kHz.
+eGRU_arc Urbansound8k score of 72%. Maybe 8kHz is enough?
 
 ## UM2526 - Getting started with X-CUBE-AI Expansion Package for Artificial Intelligence (AI)
 

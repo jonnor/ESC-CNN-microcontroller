@@ -154,7 +154,9 @@ Wireless connectivity
 Energy harvesting / battery operation
 
 In addition to commercial products, a number of research projects have deployed sensor networks for acoustic noise.
-This includes SONYC[@Sonyc] in New York City, and the Sentilo[@Sentilo] project in Barcelona.
+
+The SONYC[@SONYC] project in New York City had 56 sound sensors as of 2018.[@SONYC2019]
+The noise monitoring project in Barcelona[@BarcelonaNoiseMonitoring] had 86 sound sensors as of 2018.[@BarcelonaNoiseMonitoring2018].
 
 
 On-edge processing
@@ -166,6 +168,10 @@ it is not possible to understand conversations. This preserves the privacy requi
 
 Save energy, bandwidth
 Respect privacy
+
+## Environmental Sound Classification
+
+
 
 ## Problem statement
 
@@ -480,14 +486,31 @@ Texas Instruments, Freescale, Atmel, Nordic Semiconductors, NXP.
 
 ### Machine learning on microcontrollers
 
-Inference, not training
-General purpose vs
-Available tools.
-ARM CMSIS-NN
-tflite
-uTensor
-emlearn[@emlearn]
-ELL. ProtoNN
+Due to the constraints of microcontroller hardware,
+most of the traditional machine learning frameworks cannot be used directly. 
+Instead dedicated tools are available for this niche, usually integrating with established frameworks.
+
+CMSIS-NN by ARM.
+A low-level library for ARM Cortex-M microcontrollers implementing basic neural network building blocks,
+such as 2D convolutions, pooling and Gated Recurrent Units.
+It uses optimized fixed-point maths and SIMD instructions,
+which can be 4x faster and energy efficient than floating point[@CMSISNN].
+
+uTensor[@uTensor] by ARM. Allows to run a subset of TensorFlow models on ARM Cortex-M devices,
+designed for use with the mbed software platform.
+
+TensorFlow Lite for Microcontrollers, an experimental port of
+TensorFlow was announced at TensorFlow Developer Summit in March 2019[@LaunchingTensorflowLiteMicrocontrollers].
+Its goal is to be compatible with TensorFlow Lite (for mobile devices etc),
+and reuse platform-specific libraries such as CMSIS-NN or uTensor in order to be as efficient as possible.
+
+EdgeML by Microsoft Research India[@EdgeMLGithub].
+Contains novel algorithms developed especially for microcontrollers,
+such as Bonsai[Bonsai], ProtoNN[@ProtoNN] and FastGRNN[@FastGRNN].
+
+emlearn[@emlearn] by the author.
+Supports converting a subset of Scikit-Learn[@scikit-learn] and Keras[@Keras] models
+and run them using C code designed for microcontrollers.
 
 ### Hardware accelerators
 
@@ -575,13 +598,10 @@ Keras (Tensorflow), Caffe and PyTorch.
 
 ![STM32CubeMX application with X-CUBE-AI addon after loading a Keras model](./img/stm32cubeai.png)
 
-Supports model compression by quantizing model weights.
-Available settings for compression are 4x or 8x.
-Tool can perform basic validation of the compressed model. 
-
-All computations are done in single-precision float.
-TODO: reference CMSIS-NN, ARM Keyword spotting 4x faster using fixed-point/SIMD.
-
+X-CUBE-AI supports model compression by quantizing model weights. Available settings for compression are 4x or 8x.
+However as of version 3.4.0, the compression is applied only to fully-connected layers (not to convolutional layers)[@X-CUBE-AI-manual, ch 6.1].
+The tool can perform basic validation of the compressed model. 
+As of version 3.4.0, all computations are done in single-precision float.
 
 Example code from the FP-AI-SENSING1 Function pack`TODO: ref` from ST was used as a skeleton for the device code.
 This implements mel-spectrogram feature pre-processing in C, and uses the model code output by X-CUBE-AI to perform inference.
