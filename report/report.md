@@ -159,35 +159,17 @@ This requires much more data than sound level measurements,
 making it challenging to transmit within the given bandwidth and energy budget of a sensor.
 Recording and storing detailed audio data may also capture sensitive information and violate privacy requirements.
 
-To address these concerns
+To address these concerns several methods for efficiently coding the information before
+transmitting have been proposed.
 
-Sending the raw audio waveform 
+In [@AudioCodingSensorGrid], the noise profile data is based on the 1/3 octave band spectrogram
+and compressed using a Huffman encoding.
 
-A simple method is to transmit and store the raw audio, however this is problematic
-fro
-
-The noise profile data is based on the 1/3 octave band, following the standard IEC 61260-1:2014[@IECOctaveBands].
-This can be used by a machine learning system to distinguish different noise sources[@AudioCodingSensorGrid].
-The paper also demonstrates that when frequency spectrum samples are performed 10 times per second or more seldom,
-it is not possible to understand conversations. This preserves the privacy requirement.
-
-
-
- and get data needed for efficiently managing and reducing noise. 
-
-On-edge processing
-
-Save energy, bandwidth
-Respect privacy
-
-
-## Problem statement
-
-The need for low-cost and widely deployed noise monitoring solutions
-that can inform not only about the sound level but also give information about the noise source,
-motivates our research question:
 
 > Can we classify environmental sounds directly on a wireless and battery-operated noise sensor?
+
+
+Problem statement
 
 
 \newpage

@@ -493,6 +493,19 @@ Sound becomes something that the individual tries to block, rather than to hear;
 As a result, many individuals try to shut it out through the use of double glazing or with **acoustic perfume–music**.
 *Music*–the virtual soundscape–is, in this context, used as a *means to control the sonic environment* rather than as a natural expression of it.
 
+## Audio Coding for Environmental Sound Classification
+
+https://www.mdpi.com/1424-8220/17/12/2758/htm#B17-sensors-17-02758
+logarimic compression, quantization, differential encoding, Huffman compression
+Bitrates between 400-1400 bit/s for 8 frames per second.
+
+! only tested on relatively weak classifiers.
+With (40 band and 85 frames/s) mel-spectrograms RandomForest/SVM performed 68/69% accuracy on Urbansound8k.
+Down to 65% with 30 band and 8 frames/s.
+With 1/3 octave, SVM/RF performed 63% accuracy on Urbansound8k.
+
+Same classification down to 5 bits/word.
+
 ## Audio Embeddings for Environmental Sound Classification
 
 * VGGish. 128 dimensions, 8 quantized bit. Used as base for DCASE2019 challenge.
