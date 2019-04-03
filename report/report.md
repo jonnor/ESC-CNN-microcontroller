@@ -54,6 +54,8 @@ Like other animals, humans communicate
 We use sound explicitly to communicate when we talk, offering observations, facts
 
 
+`TODO: add an image`
+
 ## Importance
 
 When we talk, sound is a critical part of our communication, conveying not just statements
@@ -135,6 +137,8 @@ and "An estimated 8 million people experience sleep disturbance due to transport
 
 ## Noise monitoring with Wireless Sensor Networks
 
+`TODO: add an image`
+
 Several cities have started to deploy networks of sound sensors in order to understand and reduce noise issues.
 These consist of many sensor nodes positioned in the area of interest,
 transmitting the data to a central system for storage and reporting.
@@ -156,14 +160,25 @@ The equivalent standard for North America is ANSI S1.4[@ANSISoundLevelMeters], a
 
 Most sensors also aim to provide information that can be used to characterize the noise.
 This requires much more data than sound level measurements,
-making it challenging to transmit within the given bandwidth and energy budget of a sensor.
+making it challenging to transmit within the bandwidth and energy budget of a sensor.
 Recording and storing detailed audio data may also capture sensitive information and violate privacy requirements.
 
-To address these concerns several methods for efficiently coding the information before
-transmitting have been proposed.
+To address these concerns several methods for efficiently coding the information before transmitting have been developed.
 
-In [@AudioCodingSensorGrid], the noise profile data is based on the 1/3 octave band spectrogram
-and compressed using a Huffman encoding.
+In [@AudioCodingSensorGrid], a compressed noise profile data is based on lossy compression of spectrograms is proposed.
+For 125ms time resolution the bitrate is between 400 and 1400 bits per second,
+however this gave a 5 percentage points reduction in classification accuracy.
+
+Others have proposed to use neural networks to produce an audio "embedding" inspired
+by the success of world embeddings for Natural Language Processing.
+In VGGish model trained on Audioset[@VGGish] an a 8-bit, 128 dimensional embedding is used for 10 seconds clips,
+making 102 bits per second.
+L^3 (Look, Listen, Learn)[@L3] also proposed an embedding with 512 dimensions.
+
+The computation of such an embedding generally requires very large models and lots of compute resources.
+EdgeL^3[@EdgeL3] showed that the L^3 model can be compressed by up to 95%,
+however the resource consumption is still outside the range feasible on most battery powered units.
+
 
 
 > Can we classify environmental sounds directly on a wireless and battery-operated noise sensor?
