@@ -527,7 +527,8 @@ http://www.hearingreview.com/2018/05/real-life-applications-machine-learning-hea
 [An Optimized Recurrent Unit for Ultra-Low-Power Keyword Spotting](https://arxiv.org/abs/1902.05026).
 ??? do they use standard Urbansound8k folds and test-set
 Uses samplerate 8kHz.
-eGRU_arc Urbansound8k score of 72%. Maybe 8kHz is enough?
+eGRU_arch Urbansound8k score of 72%. Maybe 8kHz is enough?
+eGRU_opt UrbanSound8k 61.2%
 
 ## UM2526 - Getting started with X-CUBE-AI Expansion Package for Artificial Intelligence (AI)
 

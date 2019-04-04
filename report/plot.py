@@ -38,7 +38,7 @@ def model_table(data_path):
     
     return table.to_latex()
     
-def plot_models(data_path, figsize=(8,4)):
+def plot_models(data_path, figsize=(8,4), max_params=128e3, max_maccs=4.5e6):
     df = logmel_models(data_path)
     
     fig, ax = plt.subplots(1, figsize=figsize)
@@ -52,9 +52,8 @@ def plot_models(data_path, figsize=(8,4)):
     ax.set_ylabel('Multiply-Adds / second')
     
     # highlight feasible region
-    feasible_x = (512e3/4) * (1950/480)
-    print('params', feasible_x)
-    feasible_y = 8.0e6
+    feasible_x = max_params
+    feasible_y = max_maccs
     x = [ 0, feasible_x, feasible_x, 0 ]
     y = [ 0,  0, feasible_y, feasible_y ]
     ax.fill(x, y, color='green', alpha=0.5)

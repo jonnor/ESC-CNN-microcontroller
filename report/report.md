@@ -137,7 +137,8 @@ and "An estimated 8 million people experience sleep disturbance due to transport
 
 ## Noise monitoring with Wireless Sensor Networks
 
-`TODO: add an image`
+`TODO: add an image of sensor network for noise in city`
+`TODO: add image of different sound classification architectures`
 
 Several cities have started to deploy networks of sound sensors in order to understand and reduce noise issues.
 These consist of many sensor nodes positioned in the area of interest,
@@ -158,6 +159,8 @@ Sound level sensors in Europe are designed to specifications of IEC 61672-1 Soun
 with an accuracy of either Class 2 or Class 1.
 The equivalent standard for North America is ANSI S1.4[@ANSISoundLevelMeters], and Type 1/2 accuracy.
 
+`TODO: write why knowing the noise source/type is useful`
+
 Most sensors also aim to provide information that can be used to characterize the noise.
 This requires much more data than sound level measurements,
 making it challenging to transmit within the bandwidth and energy budget of a sensor.
@@ -172,19 +175,18 @@ however this gave a 5 percentage points reduction in classification accuracy.
 Others have proposed to use neural networks to produce an audio "embedding" inspired
 by the success of world embeddings for Natural Language Processing.
 In VGGish model trained on Audioset[@VGGish] an a 8-bit, 128 dimensional embedding is used for 10 seconds clips,
-making 102 bits per second.
-L^3 (Look, Listen, Learn)[@L3] also proposed an embedding with 512 dimensions.
+leading to a datarate of 102 bits per second.
+L^3 (Look, Listen, Learn)[@L3] similarly proposed an embedding with 512 dimensions.
 
 The computation of such an embedding generally requires very large models and lots of compute resources.
 EdgeL^3[@EdgeL3] showed that the L^3 model can be compressed by up to 95%,
-however the resource consumption is still outside the range feasible on most battery powered units.
+however the authors state that more work is needed to fit the RAM constraints of desirable sensor hardware.
 
+The minimal amount of data transmissions would be to only send the detected noise category.
 
+This motivates the problem statement of this thesis:
 
 > Can we classify environmental sounds directly on a wireless and battery-operated noise sensor?
-
-
-Problem statement
 
 
 \newpage
@@ -756,17 +758,20 @@ TODO
 \newpage
 # Results
 
-    TODO: boxplots of accuracy
+    TODO: boxplots of accuracy on 	models
 
 
-    TODO: accuracy versus MACCs
+    TODO: plot accuracy versus MACCs for models
 
+    TODO: add confusion matrices. Full, foreground-only, grouped-foreground-only
 
 \newpage
 # Discussion
 
-Problem
+<!--
+Ref Problem
 > Can we classify environmental sounds directly on a wireless and battery-operated noise sensor?
+-->
 
 <!--
 What is the approx cost of system. BOM

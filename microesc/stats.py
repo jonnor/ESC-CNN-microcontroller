@@ -7,7 +7,7 @@ import tensorflow as tf
 import numpy
 import keras.layers
 
-from .models import sbcnn, speech, dilated, skm, piczakcnn, dmix
+from models import sbcnn, speech, dilated, skm, piczakcnn, dmix
 
 def fft_splitradix(N):
     return 4*N*math.log(N,2) - (6*N) + 8
@@ -67,6 +67,13 @@ def analyze_model(build_func, input_shapes, n_classes):
 
         return flops, params
 
+def find_ram(model):
+
+    for layer in model.layers:
+
+        print('s', def(layers))
+
+
 def next_power_of_two(x):
   """Calculates the smallest enclosing power of two for an input.
 
@@ -79,11 +86,13 @@ def next_power_of_two(x):
   return 1 if x == 0 else 2**(int(x) - 1).bit_length()
 
 
-def logmel_raw_compare(sample_rate=44100, window_stride_ms=10):
+def main():
 
     # XXX: analysis window overlap / voting not taken into account
     # FIXME: take length of frame (in seconds) into account
 
+    sample_rate=44100
+    window_stride_ms=10
 
     def build_speech_tiny():
         return speech.build_tiny_conv(input_frames=frames, input_bins=bands, n_classes=10)
@@ -91,14 +100,14 @@ def logmel_raw_compare(sample_rate=44100, window_stride_ms=10):
     # TODO: output window size (ms), and input size (ms)
     models = {
         'SB-CNN': (sbcnn.build_model, [(128, 128, 1)]),
-        'Piczak': (piczakcnn.build_model, [(60, 41, 2)]),
-        'SKM': (skm.build_model, [(40,173,1)]),
-        'DilaConv': (dilated.dilaconv, [(64, 41, 2)]),
-        'D-CNN': (dilated.dcnn, [(60, 31, 1), (60, 31, 1)]),
-        'LD-CNN': (dilated.ldcnn, [(60, 31, 1), (60, 31, 1)]),
-        'Dmix-CNN': (dmix.build_model, [(128, 128, 2)]),
+#        'Piczak': (piczakcnn.build_model, [(60, 41, 2)]),
+#        'SKM': (skm.build_model, [(40,173,1)]),
+#        'DilaConv': (dilated.dilaconv, [(64, 41, 2)]),
+#        'D-CNN': (dilated.dcnn, [(60, 31, 1), (60, 31, 1)]),
+#        'LD-CNN': (dilated.ldcnn, [(60, 31, 1), (60, 31, 1)]),
+#        'Dmix-CNN': (dmix.build_model, [(128, 128, 2)]),
         #'speech-tiny': build_speech_tiny,
-        'cnn-one-fstride4': (speech.build_one, [(40, 61, 1)]),
+#        'cnn-one-fstride4': (speech.build_one, [(40, 61, 1)]),
     }
 
     model_params = {}
@@ -133,4 +142,4 @@ def logmel_raw_compare(sample_rate=44100, window_stride_ms=10):
 
 
 if __name__ == '__main__':
-    logmel_raw_compare()
+    main()

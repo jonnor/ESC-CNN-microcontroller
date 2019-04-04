@@ -86,7 +86,8 @@ def test_ram_use():
       conv2d_1_output_array, AI_DATA_FORMAT_FLOAT, 
       NULL, NULL, 29760,
       AI_STATIC)
-    """, {'input_1_output_array': 1860, 'conv2d_1_output_array': 29760}),
+    """,
+    { 'input_1_output_array': 1860, 'conv2d_1_output_array': 29760 }),
 
     ]
 
@@ -152,7 +153,7 @@ def generatecode(model_path, out_path, name, model_type, compression):
     with open(os.path.join(out_path, 'network.c'), 'r') as f:
         network_c = f.read()
         ram = extract_ram_use(network_c)
-        arrays_ram = sum(ram.values())
+        stats['arrays'] = ram		 
 
     return stats
 
@@ -183,6 +184,7 @@ def main():
     args = parse()
 
     test_ram_use()
+
 
     stats = generatecode(args.model, args.out,
                         name=args.name,

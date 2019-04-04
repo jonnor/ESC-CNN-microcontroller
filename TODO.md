@@ -14,30 +14,30 @@ Where should work on new/improved STM32AI tools go?
 
 Report
 
-
 - Finish introduction
 - Finish Existing methods review
-- Ask for feedback OK on Methods+Materials draft
-- Include results into report. Boxplot, table with average,std perf
+- Ask for feedback OK on Methods+Materials+Introduction draft
+- Include results into report.
 
+Experiments
 
-Model evaluation
-
-- Write all settings/parameters to a file when ran
+- Train a full set of SB-CNN10M models
+- Decide candidate models
 - Flatten settings structure in train
+- Write all settings/parameters to a file when ran
 - Include git version in settings file
-- train: Allow to specify hyperparameters on cmdline
+- train: Allow to all parameters on cmdline
 - Generate jobs for running all model experiments
 - Merge all experiments results into single .csv file
-- Check windowing functions, esp last frame and padding
 
 Code quality
 
 - Add end2end tests
+- Check windowing functions, esp last frame and padding
 
 Run CNN model on microcontroller
 
-- X-CUBE-AI: Test updating to version 3.4.0
+- Test SystemPerformance tool on STM32
 - STM32AI: Test different FFT/mel sizes
 - STM32AI: Support window overlap?
 - STM32AI: Report/fix melspec preprocessing bug
@@ -48,8 +48,9 @@ https://community.st.com/s/topic/0TO0X0000003iUqWAI/stm32-machine-learning-ai
 
 Dissemination
 
-- Image of overall pipeline
+- Image of overall project/system
 - Project image, title page
+- Record a demo video
 
 
 ## Done
