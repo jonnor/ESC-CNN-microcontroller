@@ -40,8 +40,7 @@ Increasing noise problem. Urbanization
 Track noise level, plan/take corrective action. Visibility
 Identifying source. Environmental Sound Classification
 Smart-city concept, data-driven
-Wireless Sensor Networks
-Existing projects
+
 Privacy, GDPR
 => this thesis
 -->
@@ -188,6 +187,7 @@ This motivates the problem statement of this thesis:
 
 > Can we classify environmental sounds directly on a wireless and battery-operated noise sensor?
 
+![Different strategies for data transmission in a sensor network for noise monitoring.](./img/sensornetworks.png)
 
 \newpage
 # Background

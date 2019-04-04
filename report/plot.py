@@ -95,16 +95,23 @@ def flatten(list):
             out.append(y)
     return out
 
-def plot_spectrogram(f, ax=None):
+def plot_spectrogram(f, ax=None, cmap=None):
     y, sr = librosa.load(f, sr=44100)
-    
+
+    fig = None
     if not ax:
         fig, ax = plt.subplots(1, figsize=(16,4))
 
     S = numpy.abs(librosa.stft(y))
     S = librosa.amplitude_to_db(S, ref=numpy.max)
-    
-    librosa.display.specshow(S, ax=ax, y_axis='log', x_axis='time', sr=sr)
+
+    kwargs = dict(
+        ax=ax, y_axis='log', x_axis='time', sr=sr,
+    )
+    if cmap is not None:
+        kwargs['cmap'] = cmap
+    librosa.display.specshow(S, **kwargs)
+    return fig
 
 def plot_spectrograms(files, titles, out=None):
     assert len(files) == len(titles)
