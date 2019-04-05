@@ -14,6 +14,7 @@ script:
   - pdfinfo merged.pdf
   - cd -
   - PYTHONPATH=./ pytest -v --capture=no
+  - cd firmware/perftest && make
 addons:
   apt:
     packages:
@@ -25,3 +26,4 @@ addons:
       - lmodern
       - poppler-utils
       - ghostscript
+      - gcc-arm-none-eabi
