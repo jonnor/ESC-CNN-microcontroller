@@ -513,7 +513,7 @@ and reuse platform-specific libraries such as CMSIS-NN or uTensor in order to be
 
 EdgeML by Microsoft Research India[@EdgeMLGithub].
 Contains novel algorithms developed especially for microcontrollers,
-such as Bonsai[Bonsai], ProtoNN[@ProtoNN] and FastGRNN[@FastGRNN].
+such as Bonsai[@Bonsai], ProtoNN[@ProtoNN] and FastGRNN[@FastGRNN].
 
 emlearn[@emlearn] by the author.
 Supports converting a subset of Scikit-Learn[@scikit-learn] and Keras[@Keras] models
@@ -613,8 +613,6 @@ As of version 3.4.0, all computations are done in single-precision float.
 Example code from the FP-AI-SENSING1 Function pack`TODO: ref` from ST was used as a skeleton for the device code.
 This implements mel-spectrogram feature pre-processing in C, and uses the model code output by X-CUBE-AI to perform inference.
 
-`MAYBE: table with software versions? From requirements.txt`
-
 The training setup is implemented in Python.
 The machine learning models are implemented in Keras using the Tensorflow backend.
 To perform feature extraction during training librosa[@librosa] was used.
@@ -631,7 +629,7 @@ All the code used is available at https://github.com/jonnor/ESC-CNN-microcontrol
 
 ## Model pipeline
 
-`TODO: image of pipeline`
+![Overview of classification pipeline](./img/classification-pipeline.png)
 
 
 
@@ -814,6 +812,8 @@ Reduce samplerate to 8kHz (eGRU).
 APPENDIX
 TODO: make be after references
 TODO: clean up the scripts, make fit on one/two page
+
+MAYBE: table with software versions? From requirements.txt
 -->
 
 \begin{appendices}
