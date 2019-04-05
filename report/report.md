@@ -791,14 +791,23 @@ class accuracies
 confusion 
 top3 performance
 
-
-
-Further work
-
-Reduce number of mels or number of frames.
-Use fixed-point / SIMD optimimized CNN implementation
-Using slightly bigger microcontroller.
+Possible to use slightly bigger microcontroller.
 Able to double Flash. Up to 1024kB RAM, 8x. Approx 8x CPU.
+
+
+## Further work
+
+Use fixed-point / SIMD optimimized CNN implementation.
+4-5x possible. Ref CMSIS-NN
+
+CNN quantizations for efficient integer inference. 
+[@IncrementalNetworkQuantization]
+
+Reduce number of mels.
+Reduce samplerate to 8kHz (eGRU).
+
+
+
 
 
 <!---

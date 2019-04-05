@@ -546,3 +546,49 @@ add-on “AI System Performance”
 > The activation memory is reused across different layers. As a result, the activation buffer size is defined by the maximum memory requirements of two consecutive layers.
 
 
+# Quantization
+
+Incremental network quantization: Towards lossless CNNs with low-precision weights. April 2017.
+https://arxiv.org/abs/1702.03044
+No accuracy drop on ResNet-50 for 4,3 and 2-bit weights.
+Gives power-of-two weights. Can be performed with bit-shifts, no multiply needed.
+
+LQ-Nets: Learned Quantization for Highly Accurate and Compact Deep Neural Networks.
+Jul 2018.
+http://openaccess.thecvf.com/content_ECCV_2018/html/Dongqing_Zhang_Optimized_Quantization_for_ECCV_2018_paper.html
+https://github.com/Microsoft/LQ-Nets - implemented for TensorFlow 1.3+
+Can quantize to bitwise operations for fast inference.
+Down to 2 bit weights and activations. Very close performance to full precision.
+Does not quantizize first and last layer, claims speedup from bitwise operations low due to few channels.
+Training time is 1.4x to 3.8x longer than without quantization (depending on quant setting).
+! large list of references on quantized networks.
+
+Quantization and Training of Neural Networks for Efficient Integer-Arithmetic-Only Inference.
+http://openaccess.thecvf.com/content_cvpr_2018/html/Jacob_Quantization_and_Training_CVPR_2018_paper.html
+Up to 200% faster inference on ARM smartphones.
+Notes that ReLu6 benefical, since it creates a natural (0, 6) range for activations.
+
+Training and Inference with Integers in Deep Neural Networks. February 2018.
+https://arxiv.org/abs/1802.04680
+2-bit Ternary weights. No multiplications during inference.
+8-bit actications.
+Proposes WAGE. Constraints on Weights, Activations, Gradients and Errors to low-bithwidth integers,
+*both in training and inference*.
+Introduce a new initalization method and scaling layer to replace Batch Norm, which can cause problems for quantization.
+Table 5: energy costs in silicon. 16-bit FP and 32-bit FP use 5-10x and 15-30x more energy than 8-bit INT.
+"It is promising to training DNNs with integers encoded with logarithmic representation"
+
+ShiftCNN: Generalized Low-Precision Architecture for Inference of Convolutional Neural Networks
+https://arxiv.org/abs/1706.02393
+Power-of-two weight representation and, only shift and addition operations. Multiplierless CNN.
+Also precomputing convolution terms. Can be applied to any CNN architecture with a relatively small codebook of weights, allows to decrease the number of product operations by at least two orders of magnitude
+Quantize full-precision floating-point model into ShiftCNN *without retraining*.
+? can it be implemented efficiently in software, without custom ShiftALU hardware?
+
+SEP-Nets: Small and Effective Pattern Networks
+https://arxiv.org/abs/1706.03912
+Binarizes kxk convolutions, 1x1 convolutions left as is or 8-bit quantizied
+Also uses 4x grouped convolutions.
+Near Mobilenet performance on Imagenet at 1/5 the size, 1MB 
+
+
