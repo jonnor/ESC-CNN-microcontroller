@@ -217,9 +217,17 @@ def settings(args):
         train_settings[k] = v
     return train_settings
 
+def setup_keras():
+    import tensorflow as tf
+    from keras.backend import tensorflow_backend as B
 
+    # allow_growth is needed to avoid CUDNN_STATUS_INTERNAL_ERROR on some convolutional layers
+    session_config = tf.ConfigProto(gpu_options=tf.GPUOptions(allow_growth=True))
+    sess = tf.Session(config=session_config)
+    B.set_session(sess)
 
 def main():
+    setup_keras()
 
     args = parse(sys.argv[1:])
     args = dict(args.__dict__)

@@ -37,13 +37,11 @@ Code quality
 
 Run CNN model on microcontroller
 
-- Test SystemPerformance tool on STM32
+- Test measuring current with ST board
 - STM32AI: Test different FFT/mel sizes
-- STM32AI: Support window overlap?
 - STM32AI: Report/fix melspec preprocessing bug
 https://community.st.com/s/topic/0TO0X0000003iUqWAI/stm32-machine-learning-ai
 - Test USB audio input
-- Test measuring current with ST board
 
 
 Dissemination
@@ -55,6 +53,11 @@ Dissemination
 
 ## Done
 
+- Tested SystemPerformance tool on STM32.
+Standalone tool works nicely, gives performance for entire network.
+Interactive profiler "Validation tool" did not work, STMCubeMX fails to communicate with firmware.
+Firmware seems to work fine, says "ready to receive host command".
+Validation tool seems to be only tool that can give per-layer inference times. 
 - Test GPU training on GTX2060.
 20 seconds instead of 170 seconds per epoch on mobilenets. 8.5x speedup
 1 model only utilizing 33% of GPU power. Can run multiple models in parallell, for over 20x speedup
