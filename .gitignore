@@ -4,6 +4,6 @@ report/merged.pdf
 report/report.pdf
 report/summary.pdf
 report/status.pdf
-data/
+/data/
 .ipynb_checkpoints/
 _minted-input/
