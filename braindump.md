@@ -101,6 +101,11 @@ Said to apply generally to MIM problems.
 SB-CNN 10MACC reaches 75% with lr=0.001. 
 0.003 and 0.005 only reaches 72-73%
 
+effnet 0.7MACC reaches 66% with lr=0.01
+69% with lr=0.005
+But RAM usage too high!
+When using strides=(2,2) in first layer, only gets to 51%
+
 #### DenseNet
 
 dropout=0.0, depth=10, block=3, growth=12, pooling='avg' (45k parameters)

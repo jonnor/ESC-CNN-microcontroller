@@ -1,17 +1,14 @@
 
 import math
-import os
+import os.path
 import sys
 
 import tensorflow as tf
 import numpy
-import keras.layers
+import pandas
+import keras
 
-from models import sbcnn, speech, dilated, skm, piczakcnn, dmix
-
-def fft_splitradix(N):
-    return 4*N*math.log(N,2) - (6*N) + 8
-
+from . import stm32convert
 
 def is_training_scope(scope):
     patterns = ('/random_uniform', '/weight_regularizer', '/dropout_', '/dropout/', 'AssignMovingAvg')
@@ -67,23 +64,77 @@ def analyze_model(build_func, input_shapes, n_classes):
 
         return flops, params
 
-def find_ram(model):
+def layer_info(model):
 
-    for layer in model.layers:
+    df = pandas.DataFrame({
+        'name': [ l.name for l in model.layers ] ,
+        'type': [ l.__class__.__name__ for l in model.layers ],
+        'shape_in': [ l.get_input_shape_at(0)[1:] for l in model.layers ],
+        'shape_out': [ l.get_output_shape_at(0)[1:] for l in model.layers ],
+    })
+    df['size_in'] = df.shape_in.apply(numpy.prod)
+    df['size_out'] = df.shape_out.apply(numpy.prod)
+    return df
 
-        print('s', def(layers))
+def stm32layer_sizes(stats):
+    activation_types = set(['_output_array', '_output_in_array', '_output_out_array'])
+    weight_types = set(['_weights_array', '_bias_array', '_scale_array'])
+    array_types = activation_types.union(weight_types)
+    
+    def lazy_add(d, key, value):
+        if d.get(key, None) is None:
+            d[key] = 0
+        d[key] += value
+    
+    activations = {}
+    weights = {}
+    
+    for name, size in stats['arrays'].items():
+        
+        known = False
+        for suffix in array_types:
+            if name.endswith(suffix): 
+                layer_name = name.rstrip(suffix)
+                out = activations if suffix in activation_types else weights
+                lazy_add(out, layer_name, size)
+                known = True
 
+        assert known, 'Unknown array {}'.format(name)
 
-def next_power_of_two(x):
-  """Calculates the smallest enclosing power of two for an input.
+    layers = set(activations.keys()).union(set(weights.keys())) 
+          
+    df = pandas.DataFrame({
+        'activations': [ activations.get(n, math.nan) for n in layers  ],
+        'weights': [ weights.get(n, math.nan) for n in layers ],
+    }, dtype='int', index=list(layers))
+        
+    return df
 
-  Args:
-    x: Positive float or integer number.
+def check_model_constraints(model, max_ram=64e3, max_maccs=4.5e6*0.72, max_flash=512e3):
 
-  Returns:
-    Next largest power of two integer.
-  """
-  return 1 if x == 0 else 2**(int(x) - 1).bit_length()
+    out_dir = './out' # FIXME: use tempdir
+
+    model_path = os.path.join(out_dir, 'model.hd5f')
+    out_path = os.path.join(out_dir, 'gen')
+    model.save(model_path)
+
+    stats = stm32convert.generatecode(model_path, out_path,
+                                  name='network', model_type='keras', compression=None)
+
+    layers = layer_info(model)
+    sizes = stm32layer_sizes(stats)
+    combined = layers.join(sizes, on='name', how='inner')
+
+    def check(val, limit, message):
+        assert val <= limit, message.format(val, limit)
+
+    check(stats['flash_usage'], max_flash, "FLASH use too high: {} > {}")
+    check(stats['ram_usage_max'], max_ram, "RAM use too high: {} > {}")
+    check(stats['maccs_frame'], max_maccs, "CPU use too high: {} > {}")
+
+    del stats['arrays']
+
+    return stats, combined
 
 
 def main():

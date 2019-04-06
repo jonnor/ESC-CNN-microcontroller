@@ -15,7 +15,7 @@ import keras
 import librosa
 import sklearn.metrics
 
-from . import features, urbansound8k, common, models
+from . import features, urbansound8k, common, models, stats
 
 
 def dataframe_generator(X, Y, loader, batchsize=10, n_classes=10):
@@ -275,8 +275,6 @@ def main():
 
     def build_model():
         m = models.build(exsettings)
-
-        m.summary()
         return m
 
     all_settings = {
@@ -285,6 +283,11 @@ def main():
         'training': train_settings,
     }
 
+    print('Checking model contraints')
+    m = build_model()
+    m.summary()
+    stats.check_model_constraints(m)
+    
     print('Training model', name)
     print('Settings', json.dumps(all_settings))
 

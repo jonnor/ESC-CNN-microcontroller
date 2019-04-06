@@ -21,7 +21,8 @@ Report
 
 Experiments
 
-- Train a full set of SB-CNN10M models
+- Output STM32 stats to file
+- Train a full set of SB-CNN models
 - Decide candidate models
 - Flatten settings structure in train
 - Write all settings/parameters to a file when ran
@@ -53,6 +54,9 @@ Dissemination
 
 ## Done
 
+- Investigated why MobileNets etc use much more RAM than SB-CNN.
+For SB-CNN (Conv2d->MaxPooling2d), X-CUBE-AI fuses in the MaxPooling op, and reduces RAM usage by the pooling factor (4-9x).
+For MobileNet this optimization breaks down, because 
 - Fixed CUDA issue with SB-CNN. Can run 5x train at same time with minibatch 100,
 however am still CPU bound and GPU utilization only 30%. Also small batches seem to perform worse.
 With 400 batches and 3 processes, GPU utilization only 20%
