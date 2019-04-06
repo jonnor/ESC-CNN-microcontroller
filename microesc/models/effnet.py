@@ -13,9 +13,10 @@ def get_post(x_in):
     x = BatchNormalization()(x)
     return x
 
-def get_block(x_in, ch_in, ch_out, kernel=3, downsample=2):
+def get_block(x_in, ch_in, ch_out, kernel=3, downsample=2, strides=(1,1)):
     x = Conv2D(ch_in,
                kernel_size=(1, 1),
+               dilation_rate=strides,
                padding='same',
                use_bias=False)(x_in)
     x = get_post(x)
@@ -40,9 +41,13 @@ def get_block(x_in, ch_in, ch_out, kernel=3, downsample=2):
     return x
 
 
-def Effnet(input_shape, nb_classes, n_blocks=3,
-            initial_filters=16, filter_growth=1.5, dropout=0.5, kernel=5, downsample=2,
+def Effnet(input_shape, nb_classes, n_blocks=2,
+            initial_filters=16, filter_growth=1.5, dropout=0.5, kernel=5, downsample=2, pool=None,
             include_top='conv', weights=None):
+
+    if getattr(kernel, '__iter__', None):
+        assert kernel[0] == kernel[1]
+        kernel = kernel[0]
 
     x_in = Input(shape=input_shape)
     x = x_in
@@ -50,7 +55,9 @@ def Effnet(input_shape, nb_classes, n_blocks=3,
     for block_no in range(n_blocks):
         filters_in = int(initial_filters*(filter_growth**block_no))
         filters_out = int(initial_filters*(filter_growth**(block_no+1)))
-        x = get_block(x, filters_in, filters_out, kernel=kernel, downsample=downsample)
+        strides = (2, 2) if block_no == 0 else (1, 1) # reduce RAM
+        x = get_block(x, filters_in, filters_out,
+                      kernel=kernel, downsample=downsample, strides=strides)
 
     if include_top == 'flatten':
         x = Flatten()(x)
@@ -73,9 +80,17 @@ def Effnet(input_shape, nb_classes, n_blocks=3,
 
     return model
 
-def build_model(frames=31, bands=60, channels=1, n_classes=10):
+def build_model(frames=31, bands=60, channels=1, n_classes=10, **kwargs):
     shape = (bands, frames, channels)
 
-    return Effnet(shape, nb_classes=n_classes)
+    return Effnet(shape, nb_classes=n_classes, **kwargs)
+
+def main():
+    m = build_model()
+    m.summary()
+    m.save('effnet.hdf5')
+
+if __name__ == '__main__':
+    main()
 
 
