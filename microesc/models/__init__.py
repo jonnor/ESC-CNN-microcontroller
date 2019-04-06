@@ -1,7 +1,7 @@
 
 from . import sbcnn, piczakcnn
 from . import ldcnn, dcnn
-from . import mobilenet, effnet, dense
+from . import mobilenet, effnet, dense, squeezenet
 from . import dmix, dilated
 from . import skm, speech
 
@@ -13,6 +13,7 @@ families = {
     'mobilenet': mobilenet.build_model,
     'effnet': effnet.build_model,
     'skm': skm.build_model,
+    'squeezenet': squeezenet.build_model,
 }
 
 def build(settings):
