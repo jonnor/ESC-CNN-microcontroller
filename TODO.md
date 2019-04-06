@@ -53,6 +53,9 @@ Dissemination
 
 ## Done
 
+- Fixed CUDA issue with SB-CNN. Can run 5x train at same time with minibatch 100,
+however am still CPU bound and GPU utilization only 30%. Also small batches seem to perform worse.
+With 400 batches and 3 processes, GPU utilization only 20%
 - Tested SystemPerformance tool on STM32.
 Standalone tool works nicely, gives performance for entire network.
 Interactive profiler "Validation tool" did not work, STMCubeMX fails to communicate with firmware.
@@ -60,7 +63,7 @@ Firmware seems to work fine, says "ready to receive host command".
 Validation tool seems to be only tool that can give per-layer inference times. 
 - Test GPU training on GTX2060.
 20 seconds instead of 170 seconds per epoch on mobilenets. 8.5x speedup
-1 model only utilizing 33% of GPU power. Can run multiple models in parallell, for over 20x speedup
+1 model only utilizing 33% of GPU power. Can theoretically run multiple models in parallell, for over 20x speedup
 Under 30 minutes per experiment on all 10 folds.
 However SB-CNN fails with cudaNN error.
 https://github.com/tensorflow/tensorflow/issues/24828

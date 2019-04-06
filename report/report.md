@@ -4,9 +4,12 @@
 Contributions
 
 - Demonstrate an ESC system running on a 5 USD microcontroller.
-Resulting in XX% accuracy on Urbansound8k dataset
+Resulting in XX% accuracy on Urbansound8k dataset.
+- First evaluations of modern efficient CNNs such as
+MobileNet, SqueezeNet on Urbansound8k dataset 
 - Set of tools for STM32 CubeMX AI to overcome current limitations
 in the platform
+
 -->
 
 
@@ -33,7 +36,7 @@ Regulations
 Noise assesment
 Challenges.
     Local problem, multiple sources, time-dependent
-    perceptual/subjective evaluation
+    Perceptual/subjective evaluation
     Positive sound qualities. Recreational
 Increasing noise problem. Urbanization
 
@@ -53,7 +56,8 @@ Like other animals, humans communicate
 We use sound explicitly to communicate when we talk, offering observations, facts
 
 
-`TODO: add an image`
+![Health impacts of noise at different severity levels[@NoiseStressConcept]](./img/noiseseverity.png)
+
 
 ## Importance
 
@@ -435,7 +439,6 @@ Depth. Higher-level features. Patterns of patterns
 Pooling
 
 
-
     TODO: reference CNNs as state-of-the-art in ESC
 
 A convolution filter (also called kernel) allows to express many common transformations
@@ -457,16 +460,22 @@ Overlap
 
 ## Efficient CNNs
 
-Depthwise separable convolutions. Depth multiplier "1x1(xD) convolution", pointwise
+Depthwise separable convolutions.
+Pointwise convolution. 1x1. Bottleneck
 Spatially separable convolutions.
 Dilated convolutions.
 
 Dilated Residual Networks
 
-MobileNets
+MobileNet
 EffNet
 
+## Environmental Sound Classification
 
+Datasets
+Established methods. Generally state of the art
+
+## Convolutional Neural Networks for 
 
 
 
@@ -507,7 +516,7 @@ uTensor[@uTensor] by ARM. Allows to run a subset of TensorFlow models on ARM Cor
 designed for use with the mbed software platform.
 
 TensorFlow Lite for Microcontrollers, an experimental port of
-TensorFlow was announced at TensorFlow Developer Summit in March 2019[@LaunchingTensorflowLiteMicrocontrollers].
+TensorFlow, announced at TensorFlow Developer Summit in March 2019[@LaunchingTensorflowLiteMicrocontrollers].
 Its goal is to be compatible with TensorFlow Lite (for mobile devices etc),
 and reuse platform-specific libraries such as CMSIS-NN or uTensor in order to be as efficient as possible.
 
@@ -597,7 +606,7 @@ The entire setup can be seen in figure \ref{sensortile-devkit}.
 
 The STM32L476 microcontroller is supported by STM32CubeMX`TODO: ref` development package from ST Microelectronics.
 ST also provides the X-CUBE-AI`TODO: ref` addon for STM32CubeMX, which provides integrated support for Neural Networks.
-In this work, X-CUBE-AI version 3.3.0 was used. 
+In this work, X-CUBE-AI version 3.4.0 was used. 
 
 
 The addon allows loading trained models from various formats, including:
@@ -605,32 +614,100 @@ Keras (Tensorflow), Caffe and PyTorch.
 
 ![STM32CubeMX application with X-CUBE-AI addon after loading a Keras model](./img/stm32cubeai.png)
 
+`TODO: move some of this to background?`
 X-CUBE-AI supports model compression by quantizing model weights. Available settings for compression are 4x or 8x.
-However as of version 3.4.0, the compression is applied only to fully-connected layers (not to convolutional layers)[@X-CUBE-AI-manual, ch 6.1].
+In the version used, the compression is applied only to fully-connected layers (not to convolutional layers)[@X-CUBE-AI-manual, ch 6.1].
+All computations are done in single-precision float.
 The tool can perform basic validation of the compressed model. 
-As of version 3.4.0, all computations are done in single-precision float.
 
-Example code from the FP-AI-SENSING1 Function pack`TODO: ref` from ST was used as a skeleton for the device code.
-This implements mel-spectrogram feature pre-processing in C, and uses the model code output by X-CUBE-AI to perform inference.
+A Python commandline script was created to streamline collecting model statistics using X-CUBE-AI,
+without having to manually use the STM32CubeMX user interface. See \ref{appendix:stm32convert}.
+This tool provides equired Flash storage (in bytes), RAM usage
+and CPU usage (in Multiply-Accumulate operations per second, MAC/s) as JSON,
+and writes the generated C code to a specified directory.
+
 
 The training setup is implemented in Python.
-The machine learning models are implemented in Keras using the Tensorflow backend.
+The machine learning models are implemented in Keras using the Tensorflow backend,
+and are attached be found in the appendices.
+
 To perform feature extraction during training librosa[@librosa] was used.
-numpy and Pandas is used for
+numpy and Pandas is used for general numperic computations and data management.
 
 The training software has automated tests made with pytest,
 and uses Travis CI to execute the tests automatically for each change.
 
 All the code used is available at https://github.com/jonnor/ESC-CNN-microcontroller.
 
+
 `TODO: picture of training + deployment pipelines`
 
 
+## Models
 
-## Model pipeline
+### Model requirements
 
-![Overview of classification pipeline](./img/classification-pipeline.png)
+The candidate models must fit the constraints of our hardware platform,
+and leave sufficient resources for other parts of an application to run on the device.
+To do so, we allocate a maximum 50% of the CPU, RAM, and FLASH to the model.
 
+ST estimates that an ARM Cortex M4F type device uses approximately 9 cycles/MACC[@X-CUBE-AI-manual].
+With 80 MHz CPU frequency this is approximately 9 MACC/second at 100% CPU utilization.
+
+
+|  Resource    | Maximum (50% utilization)   | Desirable    |
+| -------      |:---------:|:------------:|
+| RAM usage    |   64 kB   | `< 32 kB`    |
+| Flash use    |   512 kB  | `< 256 kB`   |
+| CPU usage    |   4.5 M MACC/s   | `< 0.5 M MACC/s`  |
+
+Table: Summary of device contraints for machine learning model
+
+
+`TODO: link model review section`
+
+Models from the existing literature are shown with respect to
+the in model constraints \ref{table:urbansound8k-existing-models-logmel}.
+Only SB-CNN and LD-CNN are close.
+
+`MAYBE: move perf table to`
+
+\begin{table}
+\input{plots/urbansound8k-existing-models-logmel.tex}
+\caption{Existing methods and their results on Urbansound8k}
+\label{table:urbansound8k-existing-models-logmel}
+\end{table}
+
+
+![Performance of existing CNN models using log-mel features on Urbansound8k dataset. Green region shows the region which satisfies our model requirements.\label{existing-models-perf}](./plots/urbansound8k-existing-models-logmel.png)
+
+
+### Compared models
+
+Model families:
+
+LD-CNN.
+Already optimized from D-CNN. Expect that many of the gains possible have been found already. 
+Uses full height layers.
+Quite different from existing literature on efficient CNNs
+which instead tends to use small uniformly sized kernels (3x3).
+
+SB-CNN
+DenseNet. X-CUBE-AI conversion fails. `INTERNAL ERROR: 'refcount'`
+
+MobileNet. Had to replace Relu6() with ReLu. ! large memory usage
+EffNet. Had to replace LeakyReLU with ReLu ! large memory usage
+
+Residual connections. For deep networks. 
+SqueezeNeXt.
+
+Grouped convolutions were only added to TensorFlow in April 2019[@TensorFlowGroupConvolutionPR].
+Griped convolutions are not supported by our version of 2X-CUBE-AI.
+
+\ref{existing-models-perf}
+
+
+`FIXME: plot is clipping text at bottom and top, need more margins`
 
 
 \newpage
@@ -643,25 +720,10 @@ The models to be evaluated must fit the hardware constraints of the target devic
 From the [Microcontrollers](#microcontrollers) section, these constraints are primarily:
 CPU execution time, RAM memory and Flash memory. 
 
-\begin{table}
-\input{plots/urbansound8k-existing-models-logmel.tex}
-\caption{Existing methods and their results on Urbansound8k}
-\label{table:urbansound8k-existing-models-logmel}
-\end{table}
 
-`TODO: ref attachments for Keras models`
 
-To evaluate the existing models reviewed in `TODO: link section` several were implemented in Keras,
-and ran them though STM32 Cube AI tool to get the required Flash storage (in bytes), RAM usage
-and CPU usage (in Multiply-Accumulate operations per second, MACC/s).
-
-A Python commandline script was developed to streamline collecting these statistics and outputting the C code for the model,
-without having to manually use the CubeMX user interface. See \ref{appendix:stm32convert}.
-
-The results can be seen in \ref{table:urbansound8k-existing-models-logmel}.
-
-To determine the approximate number of MACC/s that our target hardware is able to sustain,
-a few model variations with different complexity (MACC/s) were created.
+To determine the approximate number of MAC/s that our target hardware is able to sustain,
+a few model variations with different complexity (MAC/s) were created.
 The SB-CNN model was used as a base, with 30 mels bands (the default in ST FP-SENSING1 function pack).
 
 Then the models were ran on on device (with random inputs), and their execution time recorded.
@@ -670,32 +732,11 @@ The results can be seen in. From this we estimate.
 `TODO: table of MACC/s and execution time`
 `TODO: compute estimated CPU capacity`
 
-\ref{existing-models-perf}
 
 
-    FIXME: plot is clipping text at bottom and top, need more margins
+## Model pipeline
 
-![Performance of existing CNN models using log-mel features on Urbansound8k dataset. Green region shows the region which satisfies our model requirements.\label{existing-models-perf}](./plots/urbansound8k-existing-models-logmel.png)
-
-
-
-|  Resource    | Maximum   | Desirable    |
-| -------      |:---------:|:------------:|
-| RAM usage    |   64 kB   | `< 32 kB`    |
-| Flash use    |   512 kB  | `< 256 kB`   |
-| CPU usage    |   4 M MACC/s   | `< 0.5 M MACC/s`  |
-
-Table: Summary of device contraints for machine learning model
-
-## Models to evaluate
-
-Model families:
-
-SB-CNN
-LD-CNN
-MobileNet
-EffNet
-
+![Overview of classification pipeline](./img/classification-pipeline.png)
 
 ## Preprocessing
 
@@ -707,7 +748,7 @@ This achieved results near the state-of-art, so we opted to use the same.
 `TODO: table with preprocessing settings`
 
 During preprocessing we also perform Data Augmentation.
-Time-stretching and Pitch-shifting following `TODO: ref SB-CNN`
+Time-stretching and Pitch-shifting following [@SB-CNN], for a total of 12 variations per sample.
 
 The preprocessed mel-spectrograms are stored as compressed Numpy arrays.
 
@@ -735,16 +776,20 @@ however the models can be trained on a CPU supported by TensorFlow and a minimum
 
 ## Evaluation
 
-Once training is completed, the model with best perfomance on the validation set is selected.
+Once training is completed, the model epoch with best perfomance on the validation set is selected
+for each of the cross-validation folds.
 The selected models are then evaluated on the test set.
 
-In addition to the unmodified Urbansound8k test set,
+In addition to the original Urbansound8k test set,
 we also evaluate the models on two simplified variations:
 
 - Only clips where target sound is in the foreground
 - Reduction into 3 classes: 
 
-The testset is also execution on device, recording the average inference time per sample. 
+## Execution time
+
+The SystemPerformance application skeleton from X-CUBE-AI is used to record the
+average inference time per sample on the STM32L476 microcontroller.
 
 <!---
 TODO

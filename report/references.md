@@ -222,10 +222,17 @@ Getting very good results for striding in time and striding in frequency
 # Efficient CNNs
 
 * [SqueezeNet: AlexNet-level accuracy with 50x fewer parameters and <0.5MB model size](http://arxiv.org/abs/1602.07360). 2015.
-1x1 convolutions over 3x3. Percentage tunable as hyperparameters.
+Fire module 1x1 convolutions and 3x3 convolutions. Percentage tunable as hyperparameters.
 Pooling very late in the layers.
 No fully-connected end, uses convolutional instead.
 5MB model performs like AlexNet on ImageNet. 650KB when compressed to 8bit at 33% sparsity. 
+Noted that residual connection increases model performance by 2.9% without increasing model size.
+* [SqueezeNext: ]
+Uses a Resnet style residual connection, elementwise Additition.
+Uses spatially separable convolution (1x3 and 3x1). Order changes during network! 
+Notes inefficiency of depthwise-separable convolution in terms of hardware performance,
+due to its poor arithmetic intensity (ratio of compute to memory operations). REF Williams2009
+2.59x faster inference time than SqueezeNet (and to MobileNet).
 * [MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications](https://arxiv.org/abs/1704.04861). 2017.
 Extensive use of 1×1 Conv layers. 95% of it’s computation time, 75% parameters. 25% parameters in final fully-connected.
 Also depthwise-separable convolutions. Combination of a depthwise convolution and a pointwise convolution.
@@ -251,17 +258,32 @@ Spatial separable convolutions.
 Made of depthwise convolution with a line kernel (1x3),
 followed by a separable pooling,
 and finished by a depthwise convolution with a column kernel (3x1).
-* [FD-MobileNet: Improved MobileNet with a Fast Downsampling Strategy](https://arxiv.org/abs/1802.03750). 2018.
+* CondenseNet. CondenseNet: An Efficient DenseNet using Learned Group Convolutions. https://arxiv.org/abs/1711.09224
+More efficient than MobileNet and ShuffleNets.
+* [FD-MobileNet: Improved MobileNet with a Fast Downsampling Strategy](https://arxiv.org/abs/1802.03750). February 2018.
+1.1x inference speedup over MobileNet. And 1.82x over ShuffleNet.
+
+Explanations
+
 [3 Small But Powerful Convolutional Networks](https://towardsdatascience.com/3-small-but-powerful-convolutional-networks-27ef86faa42d).
 Explains MobileNet, ShuffleNet, EffNet. Visualizations of most important architecture differences, and the computational complexity benefits.
+
 [Why MobileNet and Its Variants (e.g. ShuffleNet) Are Fast](https://medium.com/@yu4u/why-mobilenet-and-its-variants-e-g-shufflenet-are-fast-1c7048b9618d).
+[@ConvolutionsIllustrated]
+
 Covers MobileNet, ShuffleNet, FD-MobileNet.
-Explains the convolution variants used visually. Pointwise convolution (conv1x1), grouped convolution, depthwise convolution.
-- CondenseNet. CondenseNet: An Efficient DenseNet using Learned Group Convolutions. https://arxiv.org/abs/1711.09224
-More efficient than MobileNet and ShuffleNets.
+! Explains the convolution variants used visually.
+Pointwise convolution (conv1x1), grouped convolution, depthwise convolution.
+
+
+
+
 
 ## Depthwise separable convolutions
 
+Depthwise convolutions special case of grouped convolutions. n_groups == n_channels
+
+MobileNet
 https://towardsdatascience.com/review-mobilenetv1-depthwise-separable-convolution-light-weight-model-a382df364b69
 Explains the width multiplier alpha,
 and resolutions multiplier
@@ -283,8 +305,7 @@ Builds on SqueezeNet and MobileNet
 ## Dilated convolutions
 Increase receptive field
 
-Alternative to max/mean pooling,
-and to strided convolutions
+Alternative to max/mean pooling, and to strided convolutions?
 
 DRN  —  Dilated Residual Networks
 Code Github: https://github.com/fyu/drn
@@ -297,6 +318,17 @@ Can give gridding artifacts, when high-frequency content present in input
 DRN outperforms ResNet for same parameter counts
 
 ## Strided convolutions
+
+Alternative to maxpool?
+Used by ResNet
+
+## Pointwise convolution
+
+1x1 in spatial dimensions. Used to blend information between channels.
+
+Complexity: H*W*N*M
+
+Bottleneck
 
 
 ## Grouped convolutions
@@ -319,12 +351,12 @@ With 2 groups got better score, at fewer parameters.
 With N groups, each convolutional layer is 1/N as deep
 https://blog.yani.io/filter-group-tutorial/
 
+Not supported by X-CUBE-AI.
+
 ResNeXt
-
-
-Has this been applied to audio/spectrograms?
-Could one do filter groupings along frequency axis?
-Could one also perform groupings with multi-scale inputs?
+Adds grouped convolutions to ResNet.
+Keras implementation of ResNeXt
+https://gist.github.com/mjdietzx/0cb95922aac14d446a6530f87b3a04ce
 
 ShuffleNet and MobileNets use grouped convolutions inside in each block
 ShuttleNet adds a channel shuffle to intermix information in different channels
@@ -332,18 +364,25 @@ ShuttleNet adds a channel shuffle to intermix information in different channels
 ShuffleNet V2: Practical Guidelines for Efficient CNN Architecture Design
 https://arxiv.org/abs/1807.11164
 Half of the features in block are passed on as-is. Similar to DenseNet
-
 has some theoretical experiments on modern CNNs for optimizing efficiency
 G1) Equal channel width minimizes memory access cost (MAC)
 G2) Excessive group convolution increases MAC
 G4) Element-wise operations are non-negligible.
-Element-wise operators include ReLU, AddTensor, AddBias, etc. They have small FLOPs but relatively heavy MAC
+Element-wise operators include ReLU, AddTensor, AddBias, etc.
+They have small FLOPs but relatively heavy MAC
 
 For example, at 500MFLOPs ShuffleNet v2 is 58% faster than MobileNet
 v2, 63% faster than ShuffleNet v1 and 25% faster than Xception. On ARM, the
 speeds of ShuffleNet v1, Xception and ShuffleNet v2 are comparable; however,
-MobileNet v2 is much slower, especially on smaller FLOPs. We believe this is
-because MobileNet v2 has higher MAC
+MobileNet v2 is much slower, especially on smaller FLOPs.
+We believe this is because MobileNet v2 has higher MAC
+
+
+Has this been applied to audio/spectrograms?
+Could one do filter groupings along frequency axis?
+Could one also perform groupings with multi-scale inputs?
+
+Smart application could also reduce RAM usage?
 
 
 ## Global Average Pooling
@@ -591,4 +630,16 @@ Binarizes kxk convolutions, 1x1 convolutions left as is or 8-bit quantizied
 Also uses 4x grouped convolutions.
 Near Mobilenet performance on Imagenet at 1/5 the size, 1MB 
 
+Ristretto
+http://ristretto.lepsucd.com/
+Operates on Caffee models.
+Supports Convolutional and Fully Connected layers.
+? no support for Depthwise Separable layers?
+! Not maintained since September 2016.
+! Dynamic-fixed-point seems not executable as "ordinary fixed point" without hacks?
+With `ristretto` CLI tool can specify desired error rate, and will find smallest bitwidths for parameters. 
+Example on SqueezeNet less than 1% degradation in performance.
+Supports several quantization strategies.
+* Dynamic Fixed Point: A modified fixed-point format.
+* Power-of-two parameters: Layers with power-of-two parameters don’t need any multipliers, when implemented in hardware
 
