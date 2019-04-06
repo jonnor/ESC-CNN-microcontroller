@@ -12,6 +12,7 @@ def build_model(frames=128, bands=128, channels=1, num_labels=10,
                 fully_connected=64,
                 kernels_start=24, kernels_growth=2,
                 dropout=0.5,
+                use_strides=True,
                 depthwise_separable=True):
     """
     Implements SB-CNN model from
@@ -24,21 +25,27 @@ def build_model(frames=128, bands=128, channels=1, num_labels=10,
     and added Batch Normalization
     """
     Conv2 = SeparableConv2D if depthwise_separable else Convolution2D
+    if use_strides:
+        strides = pool
+        pool = (1, 1)
+    else:
+        strides = (1, 1)
 
     block1 = [
-        Convolution2D(kernels_start, kernel, padding='same', input_shape=(bands, frames, channels)),
+        Convolution2D(kernels_start, kernel, padding='same', strides=strides,
+                      input_shape=(bands, frames, channels)),
         BatchNormalization(),
         MaxPooling2D(pool_size=pool),
         Activation('relu'),
     ]
     block2 = [
-        Conv2(kernels_start*kernels_growth, kernel, padding='same'),
+        Conv2(kernels_start*kernels_growth, kernel, padding='same', strides=strides),
         BatchNormalization(),
         MaxPooling2D(pool_size=pool),
         Activation('relu'),
     ]
     block3 = [
-        Conv2(kernels_start*kernels_growth, kernel, padding='valid'),
+        Conv2(kernels_start*kernels_growth, kernel, padding='valid', strides=strides),
         BatchNormalization(),
         Activation('relu'),
     ]
