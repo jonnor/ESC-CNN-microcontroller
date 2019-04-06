@@ -283,10 +283,12 @@ def main():
         'training': train_settings,
     }
 
-    print('Checking model contraints')
+
     m = build_model()
     m.summary()
-    stats.check_model_constraints(m)
+    print('Checking model contraints')
+    ss, ll = stats.check_model_constraints(m)
+    print('Stats', ss)
     
     print('Training model', name)
     print('Settings', json.dumps(all_settings))
