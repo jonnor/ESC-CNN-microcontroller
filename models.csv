@@ -1,7 +1,7 @@
-conv_block,conv_size,downsample_size,downsample_type,filters
-conv,5x5,3x2,maxpool,24
-conv,5x5,2x2,stride,24
-dw,5x5,2x2,stride,24
-dw_pw,5x5,2x2,stride,24
-pw_dw_pw,5x5,2x2,stride,24
+conv_block,conv_size,downsample_size,downsample_type,filters,modelcheck
+conv,5x5,3x2,maxpool,24,skip
+conv,5x5,2x2,stride,20,
+dw,5x5,2x2,stride,24,
+dw_pw,5x5,2x2,stride,24,
+pw_dw_pw,5x5,2x2,stride,24,
 

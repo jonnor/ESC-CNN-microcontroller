@@ -13,7 +13,7 @@ def build_model(frames=128, bands=128, channels=1, num_labels=10,
                 kernels_start=24, kernels_growth=2,
                 dropout=0.5,
                 use_strides=False,
-                depthwise_separable=True):
+                depthwise_separable=False):
     """
     Implements SB-CNN model from
     Deep Convolutional Neural Networks and Data Augmentation for Environmental Sound Classification

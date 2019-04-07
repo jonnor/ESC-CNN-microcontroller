@@ -4,6 +4,7 @@ import os.path
 import subprocess
 import datetime
 import uuid
+import time
 
 import pandas
 import numpy
@@ -11,7 +12,13 @@ import numpy
 from microesc import common
 
 def arglist(options):
-    args = [ "--{}={}".format(k, v) for k, v in options.items() ]
+    def format_arg(k, v):
+        if v is None:
+            return "--{}".format(k)
+        else:
+            return "--{}={}".format(k, v)
+
+    args = [ format_arg(k, v) for k, v in options.items() ]
     return args
 
 def command_for_job(options):
@@ -41,17 +48,66 @@ def generate_train_jobs(experiments, settings_path, folds, overrides):
             }
             for k, v in experiment.items():
                 # overrides per experiment
-                options[k] = v
+                if k == 'modelcheck':
+                    if v == 'skip':
+                        options['skip_model_check'] = None
+                else:
+                    options[k] = v
 
             for k, v in overrides.items():
                 options[k] = v
 
-            cmd = command_for_job(options)
-            return cmd
+            print('o', options)
+
+            return options
 
     # FIXME: better job name
     jobs = [ job(str(idx), ex) for idx, ex in experiments.iterrows() ] 
     return jobs
+
+import joblib
+import subprocess
+
+def run_job(jobdata, out_dir, verbose=2):
+    args = command_for_job(jobdata)
+    log_dir = os.path.join(out_dir, jobdata['name'])
+    common.ensure_directories(log_dir)
+    log_path = os.path.join(log_dir, 'stdout.log') 
+
+    cmdline = ' '.join(args)
+    with open(os.path.join(log_dir, 'cmdline'), 'w') as f:
+        f.write(cmdline)
+
+    start = time.time()
+    print('starting job', cmdline, log_path)
+
+    # Read stdout and write to log, following https://stackoverflow.com/a/18422264/1967571
+    exitcode = None
+    with open(log_path, 'w') as log_file:
+        process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE)
+        for line in iter(process.stdout.readline, b''):
+            line = line.decode('utf-8')
+
+            if verbose > 2:
+                sys.stdout.write(line)
+
+            log_file.write(line)
+            log_file.flush()
+        exitcode = process.wait()
+    
+    end = time.time()
+    res = {
+        'start': start,
+        'end': end,
+        'exitcode': exitcode,
+    }
+
+def run_jobs(commands, out_dir, n_jobs=5, verbose=1):
+
+    jobs = [joblib.delayed(run_job)(cmd, out_dir) for cmd in commands]
+    out = joblib.Parallel(n_jobs=n_jobs, verbose=verbose)(jobs)
+    return out
+
 
 def parse(args):
 
@@ -81,12 +137,15 @@ def main():
     folds = list(range(0, 9))
     if args.check:
         folds = (1,)
-        overrides['train_samples'] = settings['batch']*1
-        overrides['val_samples'] = settings['batch']*1
+        batches = 1
+        overrides['batch'] = 10
+        overrides['epochs'] = 1
+        overrides['train_samples'] = batches * overrides['batch']
+        overrides['val_samples'] = batches * overrides['batch']
 
     cmds = generate_train_jobs(experiments, args.settings_path, folds, overrides)
 
-    print('\n'.join(" ".join(cmd) for cmd in cmds))
+    run_jobs(cmds, args.models_dir)
 
 if __name__ == '__main__':
     main()

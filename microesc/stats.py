@@ -2,6 +2,7 @@
 import math
 import os.path
 import sys
+import tempfile
 
 import tensorflow as tf
 import numpy
@@ -112,14 +113,16 @@ def stm32layer_sizes(stats):
 
 def check_model_constraints(model, max_ram=64e3, max_maccs=4.5e6*0.72, max_flash=512e3):
 
-    out_dir = './out' # FIXME: use tempdir
+    
+    with tempfile.TemporaryDirectory(prefix='microesc') as tempdir:
+        out_dir = tempdir
 
-    model_path = os.path.join(out_dir, 'model.hd5f')
-    out_path = os.path.join(out_dir, 'gen')
-    model.save(model_path)
+        model_path = os.path.join(out_dir, 'model.hd5f')
+        out_path = os.path.join(out_dir, 'gen')
+        model.save(model_path)
 
-    stats = stm32convert.generatecode(model_path, out_path,
-                                  name='network', model_type='keras', compression=None)
+        stats = stm32convert.generatecode(model_path, out_path,
+                                      name='network', model_type='keras', compression=None)
 
     layers = layer_info(model)
     sizes = stm32layer_sizes(stats)

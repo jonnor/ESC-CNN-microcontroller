@@ -23,6 +23,13 @@ default_model_settings = dict(
     kernel='3x3',
     pool='3x3',
     frames=72,
+    conv_block='conv',
+    conv_size='5x5',
+    downsample_size='4x2',
+    downsample_type='maxpool',
+    filters=24,
+    voting='mean',
+    voting_overlap=0.5,
 )
 
 names = set().union(*[
@@ -59,6 +66,8 @@ def parse_dimensions(s):
 parsers = {
     'pool': parse_dimensions,
     'kernel': parse_dimensions,
+    'conv_size': parse_dimensions,
+    'downsample_size': parse_dimensions,
 }
 
 def test_parse_dimensions():
@@ -75,7 +84,7 @@ test_parse_dimensions()
 def load_settings(args):
     settings = {}
     for key in names:
-        string = args.get(key, defaults[key]) 
+        string = args.get(key, defaults[key])
         parser = parsers.get(key, lambda x: x)
         value = parser(string)       
         settings[key] = value
@@ -87,4 +96,16 @@ def test_settings_empty():
     load_settings({})
 
 test_settings_empty()
+
+
+def add_arguments(parser):
+    a = parser.add_argument
+
+    for name in names:
+        data_type = type(defaults[name]) 
+        default = None
+        a('--{}'.format(name), default=default, type=data_type,
+            help='%(default)s'
+        )
+
 

@@ -157,11 +157,14 @@ def parse(args):
     a = parser.add_argument
 
     common.add_arguments(parser)
+    Settings.add_arguments(parser)
 
     a('--fold', type=int, default=0,
         help='')
     a('--learning_rate', type=float, default=None,
         help='Learning rate')
+    a('--skip_model_check', action='store_true', default=False,
+        help='Skip checking whether model fits on STM32 device')
 
     a('--name', type=str, default='',
         help='')
@@ -204,6 +207,9 @@ def main():
 
     # model settings
     exsettings = common.load_settings_path(args['settings_path'])
+    for k, v in args.items():
+        if v is not None:
+            exsettings[k] = v
     exsettings = Settings.load_settings(exsettings)
 
     feature_settings = features.settings(exsettings)
@@ -230,9 +236,13 @@ def main():
 
     m = build_model()
     m.summary()
-    print('Checking model contraints')
-    ss, ll = stats.check_model_constraints(m)
-    print('Stats', ss)
+
+    if args['skip_model_check']:
+        print('WARNING: model constraint check skipped')
+    else:
+        print('Checking model contraints')
+        ss, ll = stats.check_model_constraints(m)
+        print('Stats', ss)
     
     print('Training model', name)
     print('Settings', json.dumps(exsettings))

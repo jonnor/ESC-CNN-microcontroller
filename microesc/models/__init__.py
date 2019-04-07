@@ -27,16 +27,39 @@ def build(settings):
     )
 
     # TODO: make more generic
-    # LDCNN. filters=80, L=57, W=6
-    # MobileNet. alpha, 
     known_settings = [
-        'kernel', 'pool', 'kernels_start', 'fully_connected',
+        'conv_size',
+        'conv_block',
+        'downsample_type',
+        'downsample_size',
+        'filters',
     ]
     for k in known_settings:
         v = settings.get(k, None)
         if v is not None:
+            if k == 'conv_size':
+                k = 'pool'
+            if k == 'conv_block':
+                if v == 'dw' or v == 'dw_pw' or v == 'pw_dw_pw':
+                    # FIXME: implement dwpw and pwdwpw
+                    k = 'depthwise_separable'
+                    v = True
+                else:
+                    continue
+            if k == 'downsample_size':
+                k = 'pool'
+            if k == 'downsample_type':
+                if v == 'stride':
+                    k = 'use_strides'
+                    v = True
+                else:
+                    continue
+            if k == 'filters':
+                k = 'kernels_start'
+
             options[k] = v
 
+    print('o', options)
     model = builder(**options)
     return model
 
