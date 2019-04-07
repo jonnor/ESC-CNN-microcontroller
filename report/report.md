@@ -140,8 +140,7 @@ and "An estimated 8 million people experience sleep disturbance due to transport
 
 ## Noise monitoring with Wireless Sensor Networks
 
-`TODO: add an image of sensor network for noise in city`
-`TODO: add image of different sound classification architectures`
+`TODO: add an image of noise in city, maybe with sensors`
 
 Several cities have started to deploy networks of sound sensors in order to understand and reduce noise issues.
 These consist of many sensor nodes positioned in the area of interest,
@@ -706,6 +705,8 @@ Griped convolutions are not supported by our version of 2X-CUBE-AI.
 
 \ref{existing-models-perf}
 
+The SB-CNN model was used as a base, with 30 mels bands. ST FP-SENSING1 function pack[@FP-AI-SENSING1]
+
 
 `FIXME: plot is clipping text at bottom and top, need more margins`
 
@@ -713,24 +714,6 @@ Griped convolutions are not supported by our version of 2X-CUBE-AI.
 \newpage
 # Methods
 
-
-## Determining model requirements 
-
-The models to be evaluated must fit the hardware constraints of the target device.
-From the [Microcontrollers](#microcontrollers) section, these constraints are primarily:
-CPU execution time, RAM memory and Flash memory. 
-
-
-
-To determine the approximate number of MAC/s that our target hardware is able to sustain,
-a few model variations with different complexity (MAC/s) were created.
-The SB-CNN model was used as a base, with 30 mels bands (the default in ST FP-SENSING1 function pack).
-
-Then the models were ran on on device (with random inputs), and their execution time recorded.
-The results can be seen in. From this we estimate.
-
-`TODO: table of MACC/s and execution time`
-`TODO: compute estimated CPU capacity`
 
 
 

@@ -22,13 +22,15 @@ Report
 Experiments
 
 - Output STM32 stats to file
+- Write tool for running all experiments. Support --preflight option
+- Write uniform Keras model based on SB-CNN etc
+- Determine filter settings to make MACCs approx equal
+- Run each model on device, record inference time
 - Train a full set of SB-CNN models
-- Decide candidate models
 - Flatten settings structure in train
 - Write all settings/parameters to a file when ran
 - Include git version in settings file
 - train: Allow to all parameters on cmdline
-- Generate jobs for running all model experiments
 - Merge all experiments results into single .csv file
 
 Code quality

@@ -4,7 +4,7 @@ fmin: 0
 fmax: 11025
 n_fft: 1024
 hop_length: 512
-augmentations: 5
+augmentations: 12
 frames: 31
 batch: 400
 epochs: 50
@@ -13,5 +13,5 @@ val_samples: 5000
 augment: 1
 voting: 'mean'
 voting_overlap: 0.5
-pool: '2x2'
+pool: '3x2'
 kernel: '5x5'

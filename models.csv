@@ -1,15 +1,18 @@
-tt,block,kernel,downsample,downsample_type,kernels,    (ram_use,flash_use,maccs) (val_acc_avg, val_acc_std, test_acc_avg, test_acc_std)  (inference_time)
-baseline(SB-CNN),conv,5x5,3x2,maxpool
-
--STRIDE,5x5,2x2,stride
--DW,5x5,2x2,stride
--DW-PW(MobileNet),5x5,2x2,stride
--PW-DW-PW(ResNet/MobileNetV2),5x5,2x2,stride
+id,nick,conv_block,kernel_size,downsample,downsample_type,filters,    (ram_use,flash_use,maccs) (val_acc_avg, val_acc_std, test_acc_avg, test_acc_std)  (inference_time)
+0,SB-CNN,conv,5x5,3x2,maxpool,24
+1,Stride,conv,5x5,2x2,stride,
+2,DepthwiseSep,dw,5x5,2x2,stride,
+3,MobileNet,dw_pw,5x5,2x2,stride,
+4,MobileNetV2,pw_dw_pw,5x5,2x2,stride,
 
 5x9x
 
+# SpatiallySeparable. pw_sdw_pw
 
-Find out effect of better convolutional blocks.
+Find out effect of better convolutional blocks on accuracy vs inference time.
+(and striding)
+(wide versus deep)
+(different voting overlaps)
 
 Stride in Keras/Tensorflow must be uniform.
 
@@ -18,7 +21,8 @@ Then can try 3x3 kernel, 3 intermediate blocks
 
 Use same learning rate for all.
 
-Adjust number of convolutions to make MACC approximately equal within groups
+Adjust number of convolutions to make MACC approximately equal within groups.
+Ref Google paper keyword spotting. tstride/fstride?
 
 Should have a preflight check. Runs all models, in parallell, 1 epoch, 1 fold, 1/10 the samples.
 

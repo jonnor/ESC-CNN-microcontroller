@@ -12,7 +12,7 @@ def build_model(frames=128, bands=128, channels=1, num_labels=10,
                 fully_connected=64,
                 kernels_start=24, kernels_growth=2,
                 dropout=0.5,
-                use_strides=True,
+                use_strides=False,
                 depthwise_separable=True):
     """
     Implements SB-CNN model from
