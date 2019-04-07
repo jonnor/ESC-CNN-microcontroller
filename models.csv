@@ -1,0 +1,29 @@
+tt,block,kernel,downsample,downsample_type,kernels,    (ram_use,flash_use,maccs) (val_acc_avg, val_acc_std, test_acc_avg, test_acc_std)  (inference_time)
+baseline(SB-CNN),conv,5x5,3x2,maxpool
+
+-STRIDE,5x5,2x2,stride
+-DW,5x5,2x2,stride
+-DW-PW(MobileNet),5x5,2x2,stride
+-PW-DW-PW(ResNet/MobileNetV2),5x5,2x2,stride
+
+5x9x
+
+
+Find out effect of better convolutional blocks.
+
+Stride in Keras/Tensorflow must be uniform.
+
+first all with 5x5 kernel, 2 intermediate blocks.
+Then can try 3x3 kernel, 3 intermediate blocks
+
+Use same learning rate for all.
+
+Adjust number of convolutions to make MACC approximately equal within groups
+
+Should have a preflight check. Runs all models, in parallell, 1 epoch, 1 fold, 1/10 the samples.
+
+Then can test reporting tools based on that.
+
+Plot training curves together.
+
+
