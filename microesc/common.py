@@ -22,15 +22,8 @@ def add_arguments(parser):
     a('--models', dest='models_dir', default='./data/models',
         help='%(default)s')
 
-    a('--experiments', dest='experiments_dir', default='./experiments',
+    a('--settings', dest='settings_path', default='./experiments/ldcnn20k60.yaml',
         help='%(default)s')
-    a('--experiment', dest='experiment', default='', # TODO: add a default
-        help='%(default)s')
-
-
-def load_experiment(folder, name):
-    path = os.path.join(folder, name+'.yaml')
-    return load_settings_path(path)
 
 def load_settings_path(path):
     with open(path, 'r') as config_file:

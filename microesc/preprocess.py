@@ -104,7 +104,7 @@ def main():
     urbansound8k.default_path = os.path.join(args.datasets_dir, 'UrbanSound8K/')
     urbansound8k.maybe_download_dataset(args.datasets_dir)
     data = urbansound8k.load_dataset()
-    settings = common.load_experiment(args.experiments_dir, args.experiment)
+    settings = common.load_settings_path(args.settings_path)
     settings = features.settings(settings)
     features_path = os.path.join(args.features_dir, features.settings_id(settings))
 

@@ -156,7 +156,7 @@ def main():
     urbansound8k.maybe_download_dataset(args.datasets_dir)
     data = urbansound8k.load_dataset()
     folds, test = urbansound8k.folds(data)
-    exsettings = common.load_experiment(args.experiments_dir, args.experiment)
+    exsettings = common.load_settings_path(args.settings_path)
     frames = exsettings['frames']
     voting = exsettings['voting']
     overlap = exsettings['voting_overlap']

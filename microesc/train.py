@@ -16,6 +16,7 @@ import librosa
 import sklearn.metrics
 
 from . import features, urbansound8k, common, models, stats
+from . import settings as Settings
 
 
 def dataframe_generator(X, Y, loader, batchsize=10, n_classes=10):
@@ -146,14 +147,6 @@ def history_dataframe(h):
     return df
 
 
-default_training_settings = dict(
-    epochs=50,
-    batch=50,
-    train_samples=36000,
-    val_samples=3000,
-    augment=0,
-)
-
 
 
 def parse(args):
@@ -177,45 +170,7 @@ def parse(args):
 
     return parsed
 
-default_model_settings = dict(
-    model='sbcnn',
-    kernel='3x3',
-    pool='3x3',
-    frames=72,
-)
 
-def parse_dimensions(s):
-    pieces = s.split('x')
-    return tuple( int(d) for d in pieces )    
-
-def test_parse_dimensions():
-    valid_examples = [
-        ('3x3', (3,3)),
-        ('4x2', (4,2))
-    ]
-    for inp, expect in valid_examples:
-        out = parse_dimensions(inp)
-        assert out == expect, (out, '!=', expect) 
-
-test_parse_dimensions()
-
-def load_model_settings(args):
-    model_settings = {}
-    for k in default_model_settings.keys():
-        v = args.get(k, default_model_settings[k]) 
-        if k in ('pool', 'kernel'):
-            v = parse_dimensions(v)
-
-        model_settings[k] = v
-    return model_settings
-
-
-def settings(args):
-    train_settings = {}
-    for k in default_training_settings.keys():
-        v = args.get(k, default_training_settings[k])
-        train_settings[k] = v
-    return train_settings
 
 def setup_keras():
     import tensorflow as tf
@@ -234,8 +189,6 @@ def main():
 
     # experiment settings
     feature_dir = args['features_dir']
-    name = args['experiment']
-
     fold = args['fold']
 
     if args['name']:
@@ -243,21 +196,19 @@ def main():
     else:
         t = datetime.datetime.now().strftime('%Y%m%d-%H%M') 
         u = str(uuid.uuid4())[0:4]
-        name = "-".join([name, t, u, 'fold{}'.format(fold)])
+        name = "-".join(['unknown', t, u, 'fold{}'.format(fold)])
 
     output_dir = os.path.join(args['models_dir'], name)
 
     common.ensure_directories(output_dir, feature_dir)
 
     # model settings
-    exsettings = common.load_experiment(args['experiments_dir'], args['experiment'])
+    exsettings = common.load_settings_path(args['settings_path'])
+    exsettings = Settings.load_settings(exsettings)
+
     feature_settings = features.settings(exsettings)
-    train_settings = settings(exsettings)
-    model_settings = load_model_settings(exsettings)
-    for k,v in model_settings.items():
-        exsettings[k] = v
-    if args['learning_rate'] is not None:
-        exsettings['learning_rate'] = args['learning_rate']
+    train_settings = { k: v for k, v in exsettings.items() if k in Settings.default_training_settings }
+    model_settings = { k: v for k, v in exsettings.items() if k in Settings.default_model_settings }
 
     features.maybe_download(feature_settings, feature_dir)
 
@@ -277,13 +228,6 @@ def main():
         m = models.build(exsettings)
         return m
 
-    all_settings = {
-        'model': model_settings,
-        'features': feature_settings,
-        'training': train_settings,
-    }
-
-
     m = build_model()
     m.summary()
     print('Checking model contraints')
@@ -291,7 +235,7 @@ def main():
     print('Stats', ss)
     
     print('Training model', name)
-    print('Settings', json.dumps(all_settings))
+    print('Settings', json.dumps(exsettings))
 
     h = train_model(output_dir, folds[fold],
                       builder=build_model,

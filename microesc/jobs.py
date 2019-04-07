@@ -59,19 +59,11 @@ def parse(args):
 
     parser = argparse.ArgumentParser(description='Generate jobs')
 
-    #common.add_arguments(parser)
-
+    common.add_arguments(parser)
     a = parser.add_argument
 
-    a('--models', default='models.csv',
+    a('--experiments', default='models.csv',
         help='%(default)s')
-    a('--settings', default='experiments/ldcnn20k60.yaml',
-        help='%(default)s')
-
-
-    a('--jobs', dest='jobs_dir', default='./data/jobs',
-        help='%(default)s')
-
     a('--check', action='store_true',
         help='Only run a pre-flight check')
     
@@ -82,8 +74,8 @@ def parse(args):
 def main():
     args = parse(sys.argv[1:])
 
-    models = pandas.read_csv(args.models)
-    settings = common.load_settings_path(args.settings)
+    experiments = pandas.read_csv(args.experiments)
+    settings = common.load_settings_path(args.settings_path)
 
     overrides = {}
     folds = list(range(0, 9))
@@ -92,7 +84,7 @@ def main():
         overrides['train_samples'] = settings['batch']*1
         overrides['val_samples'] = settings['batch']*1
 
-    cmds = generate_train_jobs(models, args.settings, folds, overrides)
+    cmds = generate_train_jobs(experiments, args.settings_path, folds, overrides)
 
     print('\n'.join(" ".join(cmd) for cmd in cmds))
 

@@ -13,24 +13,17 @@ import keras
 import librosa
 
 from . import urbansound8k
+from . import settings as Settings
 
 
 default_base_url = 'https://storage.googleapis.com/urbansound8k'
-default_settings = dict(
-    feature='mels',
-    samplerate=16000,
-    n_mels=32,
-    fmin=0,
-    fmax=8000,
-    n_fft=512,
-    hop_length=256,
-    augmentations=5,
-)
+
 
 def settings(base):
     feature_settings = {}
-    for k in default_settings.keys():
-        feature_settings[k] = base.get(k, default_settings[k])
+    default = Settings.default_feature_settings
+    for k in default.keys():
+        feature_settings[k] = base.get(k, default[k])
     return feature_settings
 
 
