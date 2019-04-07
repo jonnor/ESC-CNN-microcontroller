@@ -57,8 +57,6 @@ def generate_train_jobs(experiments, settings_path, folds, overrides):
             for k, v in overrides.items():
                 options[k] = v
 
-            print('o', options)
-
             return options
 
     # FIXME: better job name
@@ -70,16 +68,17 @@ import subprocess
 
 def run_job(jobdata, out_dir, verbose=2):
     args = command_for_job(jobdata)
-    log_dir = os.path.join(out_dir, jobdata['name'])
-    common.ensure_directories(log_dir)
-    log_path = os.path.join(log_dir, 'stdout.log') 
+    job_dir = os.path.join(out_dir, jobdata['name'])
+    common.ensure_directories(job_dir)
+    log_path = os.path.join(job_dir, 'stdout.log') 
 
     cmdline = ' '.join(args)
-    with open(os.path.join(log_dir, 'cmdline'), 'w') as f:
+    with open(os.path.join(job_dir, 'cmdline'), 'w') as f:
         f.write(cmdline)
 
     start = time.time()
-    print('starting job', cmdline, log_path)
+    print('starting job', cmdline)
+    print('job log', log_path)
 
     # Read stdout and write to log, following https://stackoverflow.com/a/18422264/1967571
     exitcode = None
@@ -94,13 +93,20 @@ def run_job(jobdata, out_dir, verbose=2):
             log_file.write(line)
             log_file.flush()
         exitcode = process.wait()
-    
+
+        files = os.listdir(job_dir)
+        assert 'train.csv' in files, files
+        assert 'history.csv' in files, files
+        model_files = [ p for p in files if p.endswith('.hdf5') ]
+        assert len(model_files) > 0, files
+
     end = time.time()
     res = {
         'start': start,
         'end': end,
         'exitcode': exitcode,
     }
+    return res
 
 def run_jobs(commands, out_dir, n_jobs=5, verbose=1):
 
@@ -122,7 +128,11 @@ def parse(args):
         help='%(default)s')
     a('--check', action='store_true',
         help='Only run a pre-flight check')
-    
+    a('--jobs', type=int, default=5,
+        help='Number of parallel jobs')
+    a('--folds', type=int, default=9,
+        help='Number of folds to test')
+
     parsed = parser.parse_args(args)
 
     return parsed
@@ -134,10 +144,9 @@ def main():
     settings = common.load_settings_path(args.settings_path)
 
     overrides = {}
-    folds = list(range(0, 9))
+    folds = list(range(0, args.folds))
     if args.check:
-        folds = (1,)
-        batches = 1
+        batches = 2
         overrides['batch'] = 10
         overrides['epochs'] = 1
         overrides['train_samples'] = batches * overrides['batch']
@@ -145,7 +154,10 @@ def main():
 
     cmds = generate_train_jobs(experiments, args.settings_path, folds, overrides)
 
-    run_jobs(cmds, args.models_dir)
+    out = run_jobs(cmds, args.models_dir, n_jobs=args.jobs)
+    print(out)
+    success = all([ o['exitcode'] == 0 for o in out ])
+    assert success
 
 if __name__ == '__main__':
     main()
