@@ -30,8 +30,10 @@ def add_arguments(parser):
 
 def load_experiment(folder, name):
     path = os.path.join(folder, name+'.yaml')
+    return load_settings_path(path)
 
+def load_settings_path(path):
     with open(path, 'r') as config_file:
         settings = yaml.load(config_file.read())    
-    
+   
     return settings

@@ -715,6 +715,22 @@ The SB-CNN model was used as a base, with 30 mels bands. ST FP-SENSING1 function
 # Methods
 
 
+## Blabla
+<!---
+Find out effect of better convolutional blocks on accuracy vs inference time.
+(and striding)
+(wide versus deep)
+(different voting overlaps)
+-->
+
+Stride in Keras/Tensorflow must be uniform.
+
+first all with 5x5 kernel, 2 intermediate blocks.
+Then can try 3x3 kernel, 3 intermediate blocks
+
+Adjust number of convolutions to make MACC approximately equal within groups.
+Ref Google paper keyword spotting. tstride/fstride?
+
 
 
 ## Model pipeline
