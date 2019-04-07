@@ -68,12 +68,13 @@ def _depthwise_conv_block(inputs, pointwise_conv_filters, alpha,
 
 def build_model(frames=32, bands=32, channels=1, n_classes=10, dropout=0.5,
                 depth_multiplier=1,
-                alpha=1.0, n_stages=3,
-                initial_filters = 32,
+                alpha=0.5, n_stages=2,
+                initial_filters = 24,
                 kernel = (5,5),
-                stride_f = 2, stride_t = 2):
+                pool = (2, 2)):
     """
     """
+    stride_f, stride_t = pool
 
     from keras.applications import mobilenet
 
@@ -85,7 +86,7 @@ def build_model(frames=32, bands=32, channels=1, n_classes=10, dropout=0.5,
     input_shape = (bands, frames, channels)
     img_input = keras.layers.Input(shape=input_shape)
     
-    x = conv(img_input, initial_filters, alpha, kernel=kernel, strides=(1, 1))
+    x = conv(img_input, initial_filters, alpha, kernel=kernel, strides=(2, 2))
     x = dwconv(x, initial_filters*2, alpha, depth_multiplier, block_id=1)
 
     for stage_no in range(1, n_stages):
