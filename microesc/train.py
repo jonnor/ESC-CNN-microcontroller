@@ -161,8 +161,6 @@ def parse(args):
 
     a('--fold', type=int, default=0,
         help='')
-    a('--learning_rate', type=float, default=None,
-        help='Learning rate')
     a('--skip_model_check', action='store_true', default=False,
         help='Skip checking whether model fits on STM32 device')
 

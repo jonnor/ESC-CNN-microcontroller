@@ -16,6 +16,7 @@ default_training_settings = dict(
     train_samples=36000,
     val_samples=3000,
     augment=0,
+    learning_rate=0.01,
 )
 
 default_model_settings = dict(
