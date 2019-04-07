@@ -5,7 +5,9 @@ import subprocess
 import datetime
 import uuid
 import time
+import subprocess
 
+import joblib
 import pandas
 import numpy
 
@@ -36,35 +38,37 @@ def generate_train_jobs(experiments, settings_path, folds, overrides):
         name = "-".join([experiment, timestamp, unique])
         return name+'-fold{}'.format(fold)
 
-    def job(exname, experiment):
+    def create_job(exname, experiment, fold):
+        n = name(exname, fold)
 
-        for fold in folds:
-            n = name(exname, fold)
-            
-            options = {
-                'name': n,
-                'fold': fold,
-                'settings': settings_path,
-            }
-            for k, v in experiment.items():
-                # overrides per experiment
-                if k == 'modelcheck':
-                    if v == 'skip':
-                        options['skip_model_check'] = None
-                else:
-                    options[k] = v
-
-            for k, v in overrides.items():
+        options = {
+            'name': n,
+            'fold': fold,
+            'settings': settings_path,
+        }
+        for k, v in experiment.items():
+            # overrides per experiment
+            if k == 'modelcheck':
+                if v == 'skip':
+                    options['skip_model_check'] = None
+            else:
                 options[k] = v
 
-            return options
+        for k, v in overrides.items():
+            options[k] = v
 
-    # FIXME: better job name
-    jobs = [ job(str(idx), ex) for idx, ex in experiments.iterrows() ] 
+        return options
+
+    jobs = []
+    for idx, ex in experiments.iterrows():
+        for fold in folds:
+            j = create_job(str(idx), ex, fold)
+            jobs.append(j)
+
+    assert len(jobs) == len(experiments) * len(folds), len(jobs)
     return jobs
 
-import joblib
-import subprocess
+
 
 def run_job(jobdata, out_dir, verbose=2):
     args = command_for_job(jobdata)
@@ -153,6 +157,8 @@ def main():
         overrides['val_samples'] = batches * overrides['batch']
 
     cmds = generate_train_jobs(experiments, args.settings_path, folds, overrides)
+    print('Preparing {} jobs', len(cmds))
+    print('\n'.join([ c['name'] for c in cmds ]))
 
     out = run_jobs(cmds, args.models_dir, n_jobs=args.jobs)
     print(out)
