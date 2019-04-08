@@ -516,6 +516,102 @@ Overlap
 
 ## Batch normalization
 
+
+
+
+
+## Environmental Sound Classification
+
+`TODO: write about datasets`
+
+Urbansound8k
+ESC-50 (and ESC-10) dataset.
+DCASE
+
+## CNNs for Environmental Sound Classification
+
+Many papers have used Convolutional Neural Networks (CNN) for Environmental Sound Classification.
+Approaches based on spectrograms and in particular log-scaled melspectrogram being the most common.
+
+PiczakCNN[@PiczakCNN] in 2015 was one of the first applications of CNNs to the Urbansound8k dataset.
+It uses 2 channels of log-melspectrograms, both the plain spectrogram values
+and the first-order difference (delta spectrogram).
+The model uses 2 convolutional layers, first with size 57x6 (frequency x time) and then 1x3,
+followed by two fully connected layers with 5000 neurons each.
+The paper evaluates short (950ms) versus long (2.3 seconds)
+analysis windows, and majority voting versus probability voting.
+Performance on Urbansound8k ranged from 69% to 73%.
+It was found that probability voting and long windows perform slightly better.
+ 
+SB-CNN[@SB-CNN] (2016) is a 3-layer convolutional with uniform 5x5 kernels and 4x2 max pooling.
+The paper also analyzes the effects of several types of data augmentation on Urbansound8k.
+including Time Shift, Pitch Shift, Dynamic Range Compression and Background Noise.
+With all augmentations, performance on their model raised from 72% to 79% classification accuracy.
+However time-stretching and pitch-shifting were the only techniques that
+gave a consistent performance boost across all classes.
+
+D-CNN[@D-CNN] (2017) uses feature representation and model architecture that largely follows that of PiczakCNN, however the second layer uses dilated convolutions with a dilation rate of 2. 
+With additional data augmentation of time-stretching and noise addition,
+this gave a performance of up to 81.9% accuracy on Urbansound8k.
+LeakyRelu was found to perform slightly better than ReLu which scored 81.2%.
+
+A recent paper investigated the effects of mixup for data augmentation (2018)[@ESC-mixup].
+Their model uses 4 blocks with 2 convolutional layers each followed by max pooling.
+The second and third blocks form a spatially separated convolution,
+second block with 2 3x1 convolutions, and third block with 2 1x5 convolutions. 
+On mel-spectrograms the model scored 74.7% on Urbansound8k without data augmentation,
+77.3% with only mixup applied,
+and 82.6% when time stretching and pitch shift was combined with mixup.
+When using Gammatone spectrogram features instead of mel-spectrogram
+performance increased to 83.7%, which seems to be state-of-the-art as of April 2019.
+
+
+
+Recently approaches that use the raw audio waveform as input have also been documented.
+ 
+EnvNet[@EnvNet] (2017) used 1D convolutions in order to learn a 2D spectrogram-like representation
+which is then classified using standard 2D convolutional layers. 
+They show that the resulting spectrograms have frequency responses with
+a shape similar to mel-spectrograms.
+The model manages a 66.3% accuracy score on Urbansound8k[@EnvNet2] with raw audio input.
+
+In [@VeryDeepESC], authors evaluted a number of deep CNNs using only 1D convolutions.
+Raw audio with 8kHz sample rate was used as the input.
+Their 18 layer model (M18) got a 71% accuracy on Urbansound8k,
+and the 11 layer version (M11) got 69%.
+
+EnvNet2[@EnvNet2] (2018) is like EnvNet but with 13 layers total instead of 7,
+and using 44.1 kHz input samplerate instead of 16kHz.
+Without data augmentation it achieves 69.1% accuracy on Urbansound8k.
+When combining data augmentation with a technique similar to mixup called between-class examples,
+the model is able to reach 78.3% on Urbansound8k.
+
+
+Resource efficient models (in parameters, inference time or power consumption)
+for Environmental Sound Classification is not as well explored yet.
+
+WSNet[@WSNet] is a 1D network on raw audio designed for efficiency.
+It uses a weight sampling approach and uses weight quantization to
+reaches a 70.5% on UrbandSound8k with a 288K parameters and 100M mult-adds.
+
+LD-CNN[@LD-CNN] is a more efficient version of D-CNN.
+In order to reduce parameters, several changes are made:
+Early layers use spatially separable convolutions .
+Then dilated convolution in the middle.
+`TODO? fill out`
+As a result the model has 2.05MB of paramters, 50x fewer than D-CNN,
+and only drops accuracy by 2% to 79% on Urbansound8k.
+This is a strong indication that existing models for ESC may be heavily overparameterized
+and can be made significantly more resource efficient.
+`TODO: include mult-adds`
+
+eGRU[@eGRU] demonstrates an Recurrent Neural Network based on a modified Gated Recurrent Unit.
+The feature representation used was raw STFT spectrogram from 8Khz audio.
+With full-precision floating point the model got 72% on Urbansound8k,
+however this fell to 61% when using the proposed quantization technique and running on device.
+`TODO: include MAC/s and inference times`
+As of April 2019, eGru was the only paper found that performs ESC on a microcontroller.
+
 ## Efficient CNNs for image classification
 
 The development of more efficient Convolutional Neural Networks have received
@@ -573,60 +669,6 @@ More efficient than MobileNet and ShuffleNets.
 
 [FD-MobileNet: Improved MobileNet with a Fast Downsampling Strategy](https://arxiv.org/abs/1802.03750). February 2018.
 1.1x inference speedup over MobileNet. And 1.82x over ShuffleNet.
-
-
-
-## Environmental Sound Classification
-
-`TODO: write about datasets`
-
-Urbansound8k
-ESC-50 (and ESC-10) dataset.
-DCASE
-
-
-
-Many papers have used Convolutional Neural Networks (CNN) for Environmental Sound Classification.
-Approaches based on spectrograms and in particular log-scaled melspectrogram being the most common.
-
-PiczakCNN[@PiczakCNN] in 2015 was one of the first applications of CNNs to the Urbansound8k dataset.
-The model uses 2 convolutional layers, first with size 57x6 (frequency x time) and then 1x3,
-followed by two fully connected layers with 5000 neurons each.
-The paper evaluates short (950ms) versus long (2.3 seconds)
-analysis windows, and majority voting versus probability voting.
-Performance on Urbansound8k ranged from 69% to 73%.
-It was found that probability voting and long windows perform slightly better.
- 
-SB-CNN[@SB-CNN] is a 3-layer convolutional with uniform 5x5 kernels and 4x2 max pooling.
-The paper also analyzes the effects of several types of data augmentation on Urbansound8k.
-including Time Shift, Pitch Shift, Dynamic Range Compression and Background Noise.
-With all augmentations, performance on their model raised from 72% to 79% classification accuracy.
-However time-stretching and pitch-shifting were the only techniques that
-gave a consistent performance boost across all classes.
-
-D-CNN
-
-Found that using LeakyReLu instead of ReLu increased the accuracy of their model from
-81.2% to 81.9% accuracy on Urbansound8k.
-
-Recently approaches that use the raw audio as input, without spectrograms feature,
-have also been documented.
- 
-EnvNet
-EnvNet2
-
-
-Resource efficient models (in parameters, inference time or power consumption)
-for Environmental Sound Classification is not as well explored yet.
-
-LD-CNN[@LD-CNN] is a more efficient version of D-CNN.
-In order to reduce parameters
-
-As of April 2019, eGRU[@eGRU] was the only paper found that performs ESC on a microcontroller.
-They demonstrate an Recurrent Neural Network based on a modified Gated Recurrent Unit.
-The feature representation used was raw STFT spectrogram from 8Khz audio.
-With floating point the model got 72% on Urbansound8k,
-however this fell to 61% when using the proposed quantization technique and running on device.
 
 
 ## Microcontrollers
@@ -952,6 +994,8 @@ TODO
 
 \newpage
 # Results
+
+`TODO: plot training curves over epochs`
 
 ![Test accuracy of the different models](./img/models_accuracy.png)
 

@@ -44,12 +44,13 @@ Parameters not specified. Estimated 444k
 ### Deep Convolutional Neural Network with Mixup for Environmental Sound Classification
 https://link.springer.com/chapter/10.1007/978-3-030-03335-4_31
 November, 2018.
-83.7% on UrbanSound8k.
-Uses mixup and data augmentation. 5% increase in perf
-Uses stacked 1-D convolutions in some places
-(3,7), (3,5), (3,1), (3,1), (1,5), 
 
 log-melspectrogram, gammatone compared
+Uses mixup and data augmentation.
+Uses stacked 1-D convolutions in some places
+(3,7), (3,5), (3,1), (3,1), (1,5), (1,5)
+
+83.7% on UrbanSound8k with Gammatones.
 
 window size of 1024, hop length of 512 and 128 bands,128 frames (1.5sec)
 
@@ -83,6 +84,7 @@ Uses a 1 second window.
 Randomly chosen at training time.
 Mean voting over windows. 0.2second stride 
 
+Urbansound8k 66.7% (from EnvNet2 paper)
 
 ### Learning from Between-class Examples for Deep Sound Recognition
 https://openreview.net/forum?id=B1Gi6LeRZ
@@ -120,13 +122,24 @@ December, 2018
 
 DilaConv
 
-Claim: Dilated CNN achieves better results than that of CNN with max-pooling.
-About 4% on UrbanSound8K.
-! not compared with striding
-! no mention of data augmentation applied??
+Notes that a dilated convolution with striding can replaces max pooling,
+and give bigger field-of-view.
+
+Kernel size 3x3. Dilation rate 2, striding 2x2.
+Several numbers of dilated convolutions and conv layers were attempted.
+Best performance was found with 4 layers, where 1-3 layers were DilaConv.
+
+! very hard to read the results, only in graphs, and across multiple groups
+! not compared with plain striding
+! not compared with plain max pooling 
+! claims better performance than existing, but uses very weak baselines/comparisons
+? no mention of data augmentation applied?
+
+The models struggled particularly with Air Conditioner class,
+only 45% accuracy. 
+
 
 log-mel + delta-logmel
-
 sample rate 22500
 window size of 1024, hop length of 512
 64 n-mels
@@ -135,9 +148,7 @@ Global Average Pooling, Softmax output
 SGD 0.0001, 0.9 Nesterov momentum
 500 epochs training
 
-Dilated convolution increased receptive field without adding parameters.
-3x3 kernel with dilation rate 2 = 7x7 receptive field, dilation rate 3 = 11x11 receptive field
-! great images in the article.
+! good images in the article.
 
 ### LD-CNN: A Lightweight Dilated Convolutional Neural Network for Environmental Sound Classification
 2018.
@@ -146,10 +157,12 @@ http://epubs.surrey.ac.uk/849351/1/LD-CNN.pdf
 LD-CNN
 Based on D-CNN, but 50 times smaller, only looses 2% points accuracy
 
+Early layers use 1D stacked convolutions.
+Then dilated convolution in the middle.
+
 log-mel + delta-logmel
 time-stretching augmentation
 60 mels
-
 31 frames on Urbasound
 101 frames on ESC50
 
@@ -160,8 +173,10 @@ Model size 2.05MB.
 79% Urbansound.
 66% ESC-50.
 
-Early layers use 1D stacked convolutions.
-Then dilated convolution in the middle.
+References multiple other lightweight ESC models testing.
+?? Claims DenseNet performs well at 390.3KB size.
+But their reference does not support this, it is just a general intro to DenseNet concept.
+
 
 The first layer is nearly full height/frequency (57 of 60 bands),
 and processed with stride 1, giving 4 values out.
@@ -175,12 +190,11 @@ Means combination of low + high frequency patterns will have be learned by later
 `cnn-one-fstride4` in Google Keyword Spotting paper does essentially this.
 
 
-References multiple other lightweight ESC models testing.
-?? Claims DenseNet performs well at 390.3KB size.
-But their reference does not support this, it is just a general intro to DenseNet concept.
 
+### Very deep convolutional neural networks for raw waveforms
+2016
 
-### WSN: COMPACT AND EFFICIENT NETWORKS WITH WEIGHT SAMPLING
+### WSNet: COMPACT AND EFFICIENT NETWORKS WITH WEIGHT SAMPLING
 https://arxiv.org/abs/1711.10067
 Xiaojie Jin, Yingzhen Yang
 
@@ -191,7 +205,6 @@ CNN trained on raw audio.
 
 Compared on UrbanSound8k and ESC-50.
 70.5% average acc on UrbandSound8k.
-! evaluated on 5 folds? the dataset is pre-stratified with 10 folds, leakage can happen
 
 2 model variations evaluated, plus quantized versions.
 520K and 288K parameters.
@@ -233,24 +246,24 @@ Covers MobileNet, ShuffleNet, FD-MobileNet.
 Pointwise convolution (conv1x1), grouped convolution, depthwise convolution.
 
 ## Dilated convolutions
-Increase receptive field
 
-Alternative to max/mean pooling, and to strided convolutions?
+Dilated convolution increased receptive field without adding parameters.
+Alternative to increasing kernel size.
+3x3 kernel with dilation rate 2 = 7x7 receptive field, dilation rate 3 = 11x11 receptive field
 
 DRN  —  Dilated Residual Networks
 https://towardsdatascience.com/review-drn-dilated-residual-networks-image-classification-semantic-segmentation-d527e1a8fb5
 ! shows equations clearly, good pictures
+DRN outperforms ResNet for same parameter counts
 
 Can give gridding artifacts, when high-frequency content present in input
 
-DRN outperforms ResNet for same parameter counts
-
 
 ## Grouped convolutions
-
-Grouped convolutions. Filter groups
+Aka Filter groups
 
 Partitions inputs into mutually exclusive groups.
+Reduces number of computations.
 
 Computational cost.
 O output features
@@ -273,7 +286,7 @@ Adds grouped convolutions to ResNet.
 Keras implementation of ResNeXt
 https://gist.github.com/mjdietzx/0cb95922aac14d446a6530f87b3a04ce
 
-ShuffleNet and MobileNets use grouped convolutions inside in each block
+ShuffleNet use grouped convolutions inside in each block
 ShuttleNet adds a channel shuffle to intermix information in different channels
 
 ShuffleNet V2: Practical Guidelines for Efficient CNN Architecture Design
@@ -286,9 +299,9 @@ G4) Element-wise operations are non-negligible.
 Element-wise operators include ReLU, AddTensor, AddBias, etc.
 They have small FLOPs but relatively heavy MAC
 
-For example, at 500MFLOPs ShuffleNet v2 is 58% faster than MobileNet
-v2, 63% faster than ShuffleNet v1 and 25% faster than Xception. On ARM, the
-speeds of ShuffleNet v1, Xception and ShuffleNet v2 are comparable; however,
+For example, at 500MFLOPs ShuffleNet v2 is 58% faster than MobileNetv2,
+63% faster than ShuffleNet v1 and 25% faster than Xception.
+On ARM, the speeds of ShuffleNet v1, Xception and ShuffleNet v2 are comparable; however,
 MobileNet v2 is much slower, especially on smaller FLOPs.
 We believe this is because MobileNet v2 has higher MAC
 
@@ -388,7 +401,6 @@ Indicator level: 55dB(A).
 $L_{night}$: Designed to assess sleep disturbance.
 It refers to an annual average night period of exposure.
 Indicator level: 50dB(A).
-
 
 
 Why sound/hearing is important
