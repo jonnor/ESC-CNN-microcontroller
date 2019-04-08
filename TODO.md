@@ -22,7 +22,6 @@ Report
 Experiments
 
 - Output STM32 stats to file
-- Write tool for running all experiments
 - Write uniform Keras model based on SB-CNN etc
 - Determine filter settings to make MACCs approx equal
 - Run each model on device, record inference time

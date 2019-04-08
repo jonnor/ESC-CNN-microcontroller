@@ -6,7 +6,8 @@ import numpy
 import seaborn as sns
 import matplotlib.pyplot as plt     
 
-from . import common, urbansound8k
+import common, urbansound8k
+#from . import common, urbansound8k
 
 groups = {
     'social_activity': [ 'street_music', 'children_playing', 'dog_bark' ],
@@ -78,6 +79,9 @@ def parse(args):
 
     common.add_arguments(parser)
 
+    a('--run', dest='run', default='',
+        help='%(default)s')
+
     a('--out', dest='results_dir', default='./data/results',
         help='%(default)s')
 
@@ -98,7 +102,7 @@ def main():
 
     args = parse(None)
 
-    cm = numpy.load(os.path.join(args.results_dir, '{}'.format(args.experiment), 'confusion.npz'))
+    cm = numpy.load(os.path.join(args.results_dir, args.run, '{}.confusion.npz'.format(1)))
     val, test = cm['val'], cm['test']
 
 
@@ -108,15 +112,14 @@ def main():
     val_fig.savefig('val.cm.png')
     test_fig.savefig('test.cm.png')
 
-    c_acc = cm_class_accuracy(numpy.mean(val, axis=0))
-    print_accuracies(c_acc, 'class_acc')
+    tests_acc = [ cm_accuracy(test[f]) for f in range(0, len(test)) ]
+    print_accuracies(tests_acc, 'test_acc') 
 
     folds_acc = [ cm_accuracy(val[f]) for f in range(0, len(val)) ]
     print_accuracies(folds_acc, 'val_acc')
 
-    tests_acc = [ cm_accuracy(test[f]) for f in range(0, len(test)) ]
-    print_accuracies(tests_acc, 'test_acc') 
-
+    c_acc = cm_class_accuracy(numpy.mean(val, axis=0))
+    print_accuracies(c_acc, 'class_acc')
 
     print('wrote')
 
