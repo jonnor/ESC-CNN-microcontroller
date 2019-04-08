@@ -50,7 +50,10 @@ Dissemination
 
 - Investigated why MobileNets etc use much more RAM than SB-CNN.
 For SB-CNN (Conv2d->MaxPooling2d), X-CUBE-AI fuses in the MaxPooling op, and reduces RAM usage by the pooling factor (4-9x).
-For MobileNet this optimization breaks down, because 
+For MobileNet this optimization breaks down, because pooling is not used.
+Layer 2 is then typically too large.
+Instead one can pre-scale down using strided convolutions.
+When done from layer 1, this brings RAM usage under control
 - Fixed CUDA issue with SB-CNN. Can run 5x train at same time with minibatch 100,
 however am still CPU bound and GPU utilization only 30%. Also small batches seem to perform worse.
 With 400 batches and 3 processes, GPU utilization only 20%

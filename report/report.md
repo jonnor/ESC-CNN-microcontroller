@@ -431,14 +431,11 @@ A spectrogram processed with triangular filters evenly spaced on the Mel scale i
 
 ## Convolutional Neural Network
 
+`TODO: image over overall architecture`
+
 Convolution operation
 Functions. Edge detection, median filtering
 Depth. Higher-level features. Patterns of patterns
-
-Pooling
-
-
-    TODO: reference CNNs as state-of-the-art in ESC
 
 A convolution filter (also called kernel) allows to express many common transformations
 on 1d or 2d data, like edge detection (horizontal/vertical) or smoothening filters (median). 
@@ -446,9 +443,67 @@ But kernels kernel can be seen as parametric local feature detector can express 
 patterns, like a upward or downward diagonal from a bird chirp when applied to a spectrogram.
 Using a set of kernels in combination can detect many pattern variations.
 
-    TODO: IMAGE, replace with own work
 
-![Convolution kernel as edge detector, applied to image. Source: [@UnderstandingConvolution]](./images/convolution.png)
+Convolution over width, height, channels.
+So unlike what the name suggests a Convolution2D, is actually a 3D convolution.
+
+
+## Depthwise separable convolutions
+
+Depthwise convolutions special case of grouped convolutions. n_groups == n_channels
+
+MobileNet
+https://towardsdatascience.com/review-mobilenetv1-depthwise-separable-convolution-light-weight-model-a382df364b69
+Explains the width multiplier alpha,
+and resolutions multiplier
+
+MobileNet got close to InceptionV3 results with 1/8 the parameters and multiply-adds
+
+Xception uses depthwise-separable to get better performance over InceptionV3
+https://arxiv.org/abs/1610.02357v3
+https://vitalab.github.io/deep-learning/2017/03/21/xception.html
+https://towardsdatascience.com/review-xception-with-depthwise-separable-convolution-better-than-inception-v3-image-dc967dd42568
+! no activation in Xception block. Better results without activation units compared to ReLu and ELU 
+
+## Pointwise convolution
+
+Bottleneck
+1x1 in spatial dimensions.
+Used to blend information between channels.
+
+Complexity: H*W*N*M
+
+## Spatially separable convolutions
+
+EffNet
+https://arxiv.org/abs/1801.06434v6
+Builds on SqueezeNet and MobileNet
+
+
+`TODO: images explaining convolution types.`
+`Ref Yusuke Uchida [@ConvolutionsIllustrated], used with permission under CC-BY`
+
+
+## Pooling
+
+Max, mean
+
+## Strided convolutions
+
+Alternative to maxpool?
+Used by ResNet.
+"Fully convolutional neural networks". Only Conv operations
+
+
+
+<!---
+SKIP
+- Residual connections/networks
+- Grouped convolutions
+? Global Average Pooling
+-->
+
+
 
 ## Windowed voting
 
@@ -456,26 +511,122 @@ Mean
 Majority
 Overlap
 
+`TODO: image showing how voting is performed` 
 
-## Efficient CNNs
 
-Depthwise separable convolutions.
-Pointwise convolution. 1x1. Bottleneck
-Spatially separable convolutions.
-Dilated convolutions.
+## Batch normalization
 
-Dilated Residual Networks
+## Efficient CNNs for image classification
 
-MobileNet
-EffNet
+The development of more efficient Convolutional Neural Networks have received
+a lot of attention.
+Especially motivated by the ability to run models that give close to state-of-the-art performance
+on mobile phones and tablets.
+
+[SqueezeNet: AlexNet-level accuracy with 50x fewer parameters and <0.5MB model size](http://arxiv.org/abs/1602.07360). 2015.
+Fire module 1x1 convolutions and 3x3 convolutions. Percentage tunable as hyperparameters.
+Pooling very late in the layers.
+No fully-connected end, uses convolutional instead.
+5MB model performs like AlexNet on ImageNet. 650KB when compressed to 8bit at 33% sparsity. 
+Noted that residual connection increases model performance by 2.9% without increasing model size.
+
+[MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications](https://arxiv.org/abs/1704.04861). 2017.
+Extensive use of 1×1 Conv layers. 95% of it’s computation time, 75% parameters. 25% parameters in final fully-connected.
+Also depthwise-separable convolutions. Combination of a depthwise convolution and a pointwise convolution.
+Has two hyperparameters: image size and a width multiplier `alpha` (0.0-1.0).
+Figure 4 shows log linear dependence between accuracy and computation.
+0.5 MobileNet-160 has 76M mul-adds, versus SqueezeNet 1700 mult-adds, both around 60% on ImageNet.
+Smallest tested was 0.25 MobileNet-128, with 15M mult-adds and 200k parameters.
+
+[ShuffleNet](https://arxiv.org/abs/1707.01083). Zhang, 2017.
+Introduces the three variants of the Shuffle unit. Group convolutions and channel shuffles.
+Group convolution applies over data from multiple groups (RGB channels). Reduces computations.
+Channel shuffle randomly mixes the output channels of the group convolution.
+
+[SqueezeNext: Hardware-Aware Neural Network Design](https://arxiv.org/abs/1803.10615)
+Uses a Resnet style residual connection, elementwise Additition.
+Uses spatially separable convolution (1x3 and 3x1). Order changes during network! 
+Notes inefficiency of depthwise-separable convolution in terms of hardware performance,
+due to its poor arithmetic intensity (ratio of compute to memory operations). REF Williams2009
+2.59x faster inference time than SqueezeNet (and to MobileNet).
+
+
+[MobileNetV2: Inverted Residuals and Linear Bottlenecks](https://arxiv.org/abs/1801.04381). 2018
+Inserting linear bottleneck layers into the convolutional blocks.
+Ratio between the size of the input bottleneck and the inner size as the expansion ratio.
+Shortcut connections between bottlenecks.
+ReLU6 as the non-linearity. Designed for with low-precision computation (8 bit fixed-point). y = min(max(x, 0), 6).
+Max activtions size 200K float16, versus 800K for MobileNetV1 and 600K for ShuffleNet.
+Smallest network at 96x96 with 12M mult-adds, 0.35 width. Performance curve very similar to ShuffleNet.
+Combined with SSDLite, gives similar object detection performance as YOLOv2 at 10% model size and 5% compute.
+200ms on Pixel1 phone using TensorFlow Lite.
+
+[EffNet](https://arxiv.org/abs/1801.06434). 2018.
+Spatial separable convolutions.
+Made of depthwise convolution with a line kernel (1x3),
+followed by a separable pooling,
+and finished by a depthwise convolution with a column kernel (3x1).
+
+CondenseNet: An Efficient DenseNet using Learned Group Convolutions.
+https://arxiv.org/abs/1711.09224
+More efficient than MobileNet and ShuffleNets.
+
+[FD-MobileNet: Improved MobileNet with a Fast Downsampling Strategy](https://arxiv.org/abs/1802.03750). February 2018.
+1.1x inference speedup over MobileNet. And 1.82x over ShuffleNet.
+
+
 
 ## Environmental Sound Classification
 
-Datasets
-Established methods. Generally state of the art
+`TODO: write about datasets`
 
-## Convolutional Neural Networks for 
+Urbansound8k
+ESC-50 (and ESC-10) dataset.
+DCASE
 
+
+
+Many papers have used Convolutional Neural Networks (CNN) for Environmental Sound Classification.
+Approaches based on spectrograms and in particular log-scaled melspectrogram being the most common.
+
+PiczakCNN[@PiczakCNN] in 2015 was one of the first applications of CNNs to the Urbansound8k dataset.
+The model uses 2 convolutional layers, first with size 57x6 (frequency x time) and then 1x3,
+followed by two fully connected layers with 5000 neurons each.
+The paper evaluates short (950ms) versus long (2.3 seconds)
+analysis windows, and majority voting versus probability voting.
+Performance on Urbansound8k ranged from 69% to 73%.
+It was found that probability voting and long windows perform slightly better.
+ 
+SB-CNN[@SB-CNN] is a 3-layer convolutional with uniform 5x5 kernels and 4x2 max pooling.
+The paper also analyzes the effects of several types of data augmentation on Urbansound8k.
+including Time Shift, Pitch Shift, Dynamic Range Compression and Background Noise.
+With all augmentations, performance on their model raised from 72% to 79% classification accuracy.
+However time-stretching and pitch-shifting were the only techniques that
+gave a consistent performance boost across all classes.
+
+D-CNN
+
+Found that using LeakyReLu instead of ReLu increased the accuracy of their model from
+81.2% to 81.9% accuracy on Urbansound8k.
+
+Recently approaches that use the raw audio as input, without spectrograms feature,
+have also been documented.
+ 
+EnvNet
+EnvNet2
+
+
+Resource efficient models (in parameters, inference time or power consumption)
+for Environmental Sound Classification is not as well explored yet.
+
+LD-CNN[@LD-CNN] is a more efficient version of D-CNN.
+In order to reduce parameters
+
+As of April 2019, eGRU[@eGRU] was the only paper found that performs ESC on a microcontroller.
+They demonstrate an Recurrent Neural Network based on a modified Gated Recurrent Unit.
+The feature representation used was raw STFT spectrogram from 8Khz audio.
+With floating point the model got 72% on Urbansound8k,
+however this fell to 61% when using the proposed quantization technique and running on device.
 
 
 ## Microcontrollers
