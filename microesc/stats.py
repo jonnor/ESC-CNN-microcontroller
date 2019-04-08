@@ -111,31 +111,38 @@ def stm32layer_sizes(stats):
         
     return df
 
-def check_model_constraints(model, max_ram=64e3, max_maccs=4.5e6*0.72, max_flash=512e3):
+def model_info(model):
 
-    
     with tempfile.TemporaryDirectory(prefix='microesc') as tempdir:
         out_dir = tempdir
 
-        model_path = os.path.join(out_dir, 'model.hd5f')
-        out_path = os.path.join(out_dir, 'gen')
-        model.save(model_path)
+        if type(model) == str:
+            model_path = model
+            model = keras.models.load_model(model_path)
+        else:
+            model_path = os.path.join(out_dir, 'model.hd5f')
+            model.save(model_path)
 
+        out_path = os.path.join(out_dir, 'gen')
         stats = stm32convert.generatecode(model_path, out_path,
                                       name='network', model_type='keras', compression=None)
 
     layers = layer_info(model)
     sizes = stm32layer_sizes(stats)
     combined = layers.join(sizes, on='name', how='inner')
+    del stats['arrays'] # is in combined
 
+    return stats, combined
+
+def check_model_constraints(model, max_ram=64e3, max_maccs=4.5e6*0.72, max_flash=512e3):
+    stats, combined = model_info(model)
+    
     def check(val, limit, message):
         assert val <= limit, message.format(val, limit)
 
     check(stats['flash_usage'], max_flash, "FLASH use too high: {} > {}")
     check(stats['ram_usage_max'], max_ram, "RAM use too high: {} > {}")
     check(stats['maccs_frame'], max_maccs, "CPU use too high: {} > {}")
-
-    del stats['arrays']
 
     return stats, combined
 

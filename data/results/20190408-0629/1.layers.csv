@@ -1,0 +1,10 @@
+,name,type,shape_in,shape_out,size_in,size_out,activations,weights
+0,conv2d_4,Conv2D,"(60, 31, 1)","(30, 16, 20)",1860,9600,9600,520
+3,activation_6,Activation,"(30, 16, 20)","(30, 16, 20)",9600,9600,9600,
+4,conv2d_5,Conv2D,"(30, 16, 20)","(15, 8, 40)",9600,4800,4800,20040
+7,activation_7,Activation,"(15, 8, 40)","(15, 8, 40)",4800,4800,4800,
+8,conv2d_6,Conv2D,"(15, 8, 40)","(6, 2, 40)",4800,480,960,40040
+12,dense_3,Dense,"(480,)","(64,)",480,64,64,30784
+13,activation_9,Activation,"(64,)","(64,)",64,64,64,
+15,dense_4,Dense,"(64,)","(10,)",64,10,10,650
+17,activation_10,Activation,"(10,)","(10,)",10,10,10,

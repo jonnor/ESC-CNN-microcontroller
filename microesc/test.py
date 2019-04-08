@@ -9,7 +9,7 @@ import pandas
 import numpy
 import keras.metrics
 
-from . import urbansound8k, features, common
+from . import urbansound8k, features, common, stats
 
 
 def load_model_info(jobs_dir, job_dir):
@@ -147,6 +147,7 @@ def parse(args):
 
     a('--run', dest='run', default='',
         help='%(default)s')
+
     a('--check', action='store_true', default='',
         help='Run a check pass, not actually evaluating')
 
@@ -198,6 +199,19 @@ def main():
 
     best = pick_best(history)
     print('Best models\n', best[['epoch', 'voted_val_acc']])
+
+    print('Computing model info')
+    def get_stats(row):
+        ex = row.iloc[0]
+        model = ex['model_path']
+        model_stats, layer_info = stats.model_info(model)
+        layer_info_path = os.path.join(out_dir, '{}.layers.csv'.format(ex['experiment']))
+        layer_info.to_csv(layer_info_path)
+        return pandas.Series(model_stats)
+
+    model_stats = best.groupby(level='experiment').apply(get_stats)
+    print('Model stats\n', model_stats)
+    model_stats.to_csv(os.path.join(out_dir, 'stm32stats.csv'))
 
     print('Testing models...')
     results = evaluate(best, folds, test, predictor=predict, out_dir=out_dir, dry_run=args.check)
