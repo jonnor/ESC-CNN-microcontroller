@@ -70,26 +70,6 @@ def grouped_confusion(cm, groups):
     return group_cm, groupnames
 
 
-def parse(args):
-
-    import argparse
-
-    parser = argparse.ArgumentParser(description='Test trained models')
-    a = parser.add_argument
-
-    common.add_arguments(parser)
-
-    a('--run', dest='run', default='',
-        help='%(default)s')
-
-    a('--out', dest='results_dir', default='./data/results',
-        help='%(default)s')
-
-
-    parsed = parser.parse_args(args)
-
-    return parsed
-
 def print_accuracies(accs, title):
 
     m = numpy.mean(accs)
@@ -99,58 +79,47 @@ def print_accuracies(accs, title):
     print('\n')
 
 
-
-
-def stats():
-
-    val, test = cm['val'], cm['test']
-
-    classnames = urbansound8k.classnames
-    val_fig = plot_confusion(numpy.mean(val, axis=0), classnames, percent=True)
-    test_fig = plot_confusion(numpy.mean(test, axis=0), classnames, percent=True) 
-    val_fig.savefig('val.cm.png')
-    test_fig.savefig('test.cm.png')
-
-    tests_acc = [ cm_accuracy(test[f]) for f in range(0, len(test)) ]
-    print_accuracies(tests_acc, 'test_acc') 
-
-    folds_acc = [ cm_accuracy(val[f]) for f in range(0, len(val)) ]
-    print_accuracies(folds_acc, 'val_acc')
-
-    c_acc = cm_class_accuracy(numpy.mean(val, axis=0))
-    print_accuracies(c_acc, 'class_acc')
-
-    print('wrote')
-
 def get_accuracies(confusions):
     accs = [ cm_accuracy(confusions[f]) for f in range(0, len(confusions)) ]
     assert len(accs) == 9, len(accs) 
     return pandas.Series(accs) 
 
-def plot_accuracy_comparison(experiments):
+def plot_accuracy_comparison(experiments, ylim=(0.65, 0.85)):
     
     acc = experiments.confusions_test.apply(get_accuracies).T
-    print(acc)
-
     fig, ax = plt.subplots(1)
     acc.boxplot(ax=ax)
-    fig.savefig('accs.png')
+    ax.set_ylim(ylim)
+
+    return fig
+
+def plot_accuracy_vs_compute(experiments, ylim=(0.65, 0.75)):
+    # TODO: color experiment groups
+    # TODO: add error bars?
+
+    acc = experiments.confusions_test.apply(get_accuracies).T
+    df = experiments.copy()
+    df['accuracy'] = acc.mean()
+
+    fig, ax = plt.subplots(1)
+    df.plot.scatter(ax=ax, x='maccs_frame', y='accuracy')
+    ax.set_ylim((0.65, 0.80))
+
     return fig
 
 
-def load_results(input_dir, suffix='.confusion.npz'):
+def load_results(input_dir, confusion_suffix='.confusion.npz'):
 
     files = os.listdir(input_dir)
-    files = [ f for f in files if f.endswith(suffix) ]
-    names = [ f.rstrip(suffix) for f in files ]
+    files = [ f for f in files if f.endswith(confusion_suffix) ]
+    names = [ f.rstrip(confusion_suffix) for f in files ]
 
     df = pandas.DataFrame({
         'experiment': names,
         'result_path': [ os.path.join(input_dir, f) for f in files ],
     })
 
-    def load_results(row):
-        print('rr')
+    def load_confusions(row):
         path = row['result_path']
         results = numpy.load(path)
         for k, v in results.items():
@@ -158,20 +127,68 @@ def load_results(input_dir, suffix='.confusion.npz'):
         return row
 
 
-    df = df.apply(load_results, axis=1)
+    stat_path = os.path.join(input_dir, 'stm32stats.csv')
+    model_stats = pandas.read_csv(stat_path, index_col='experiment')
+
+    df = df.apply(load_confusions, axis=1)
+    df = df.join(model_stats)
+
     return df
+
+
+def parse(args):
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Test trained models')
+    a = parser.add_argument
+
+    common.add_arguments(parser)
+
+    a('--run', dest='run', default='',
+        help='%(default)s')
+    a('--results', dest='results_dir', default='./data/results',
+        help='%(default)s')
+    a('--out', dest='out_dir', default='./report/img',
+        help='%(default)s')
+
+    parsed = parser.parse_args(args)
+
+    return parsed
 
 
 def main():
     args = parse(None)
 
-    # TODO: plot MACCS vs accuracy
-
     input_dir = os.path.join(args.results_dir, args.run)
-    df = load_results(input_dir)
-    print('res\n', df)
-    plot_accuracy_comparison(df)
+    out_dir = args.out_dir
 
+    df = load_results(input_dir)
+    acc = df.confusions_test.apply(get_accuracies).mean()
+    df['test_acc_mean'] = acc
+
+    print('res\n', df[['experiment', 'test_acc_mean', 'maccs_frame']])
+
+    def save(fig, name):
+        p = os.path.join(out_dir, name)
+        fig.savefig(p, bbox_inches='tight', pad_inches=0)
+
+    fig = plot_accuracy_comparison(df)
+    save(fig, 'models_accuracy.png')
+
+    fig = plot_accuracy_vs_compute(df)
+    save(fig, 'models_efficiency.png')
+
+    classnames = urbansound8k.classnames
+    best = df.sort_values('test_acc_mean', ascending=False).head(1).iloc[0]
+
+    confusion_matrix = numpy.mean(best.confusions_test, axis=0)
+    fig = plot_confusion(confusion_matrix, classnames, percent=True)
+    save(fig, 'confusion_test.png')
+
+    cm = numpy.mean(best.confusions_test_foreground, axis=0)
+    group_cm, groupnames = grouped_confusion(cm, groups)
+    fig = plot_confusion(group_cm, groupnames, percent=True)
+    save(fig, 'grouped_confusion_test_foreground.png')
 
 if __name__ == '__main__':
     main()

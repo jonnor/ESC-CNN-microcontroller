@@ -17,19 +17,13 @@ Report
 - Finish introduction
 - Finish Existing methods review
 - Ask for feedback OK on Methods+Materials+Introduction draft
-- Include results into report.
 
 Experiments
 
-- Output STM32 stats to file
 - Write uniform Keras model based on SB-CNN etc
-- Determine filter settings to make MACCs approx equal
 - Run each model on device, record inference time
-- Train a full set of SB-CNN models
 - Write all settings/parameters to a file when ran
 - Include git version in settings file
-- train: Allow to all parameters on cmdline
-- Merge all experiments results into single .csv file
 
 Code quality
 

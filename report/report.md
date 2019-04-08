@@ -783,7 +783,9 @@ In addition to the original Urbansound8k test set,
 we also evaluate the models on two simplified variations:
 
 - Only clips where target sound is in the foreground
-- Reduction into 3 classes: 
+- Grouping into 5 more coarsely classes 
+
+`TODO: table of group membership`
 
 ## Execution time
 
@@ -800,12 +802,15 @@ TODO
 \newpage
 # Results
 
-    TODO: boxplots of accuracy on 	models
+![Test accuracy of the different models](./img/models_accuracy.png)
 
 
-    TODO: plot accuracy versus MACCs for models
+![Accuracy versus compute of different models](./img/models_efficiency.png)
 
-    TODO: add confusion matrices. Full, foreground-only, grouped-foreground-only
+![Confusion matrix on Urbansound8k](./img/confusion_test.png)
+
+![Confusion matrix in reduced groups with only foreground sounds](./img/grouped_confusion_test_foreground.png)
+
 
 \newpage
 # Discussion
@@ -816,6 +821,7 @@ Ref Problem
 -->
 
 <!--
+TODO
 What is the approx cost of system. BOM
 What is the battery lifetime. BOM
 -->
