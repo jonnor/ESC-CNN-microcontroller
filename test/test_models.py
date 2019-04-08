@@ -16,7 +16,8 @@ def test_models_basic(family):
         'samplerate': 22050,
     }
     if family == 'sbcnn':
-        s['kernel'] = (3, 3)
+        s['downsample_size'] = (3, 2)
+        s['conv_size'] = (3, 3)
 
     m = models.build(s)
     
