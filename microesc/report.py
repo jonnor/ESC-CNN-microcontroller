@@ -7,8 +7,7 @@ import seaborn
 import matplotlib.pyplot as plt     
 import pandas
 
-import common, urbansound8k
-#from . import common, urbansound8k
+from . import common, urbansound8k
 
 groups = {
     'social_activity': [ 'street_music', 'children_playing', 'dog_bark' ],
