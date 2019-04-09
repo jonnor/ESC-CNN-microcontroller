@@ -194,6 +194,9 @@ Means combination of low + high frequency patterns will have be learned by later
 ### Very deep convolutional neural networks for raw waveforms
 2016
 
+Reproduction in Keras
+https://github.com/philipperemy/very-deep-convnets-raw-waveforms
+
 ### WSNet: COMPACT AND EFFICIENT NETWORKS WITH WEIGHT SAMPLING
 https://arxiv.org/abs/1711.10067
 Xiaojie Jin, Yingzhen Yang
@@ -209,26 +212,221 @@ Compared on UrbanSound8k and ESC-50.
 2 model variations evaluated, plus quantized versions.
 520K and 288K parameters.
 
+#### AclNet: efficient end-to-end audio classification CNN
+https://arxiv.org/abs/1811.06669
+November, 2018
+Intel
+
+> AclNet gets its inspirations for efficient computations from MobileNet
+Depthwise separable convolutions
+
+Using data augmentation and mixup got 5% improvement
+a=0.1/0.2 for mixup
+Input length of 1.5 sevonds. 1-2 seconds worked OK.
+
+Low-level features (LLF).
+Two layers of 1D strided convolution as FIR decimation filterbank.
+64 channels x 128 frames (with 10 ms frame rate).
+
+Then a VGG type architecture as backend. Conv->Conv->Maxpool, 4 blocks
+Uses MobileNet style width multiplier to adjust complexity,
+controls number of channels in layers
+
+Evaluated on ESC-50
+Depthwise-Separable @44kHz. 81.75% accuracy, 155k parameters, 49M multiply-adds/second. 
+Standard Convolutio @44kHz, 82.20% accuracy, 84k parameters, 131M multiply-adds/second.
+
+16kHz topped at 80.9%, just below human perf.
+75% acc with 3M MACC/s using 16kHz
+75% acc took 20M MACC/s with 44.1kHz
+
+
+### WaveMsNet, Learning Environmental Sounds with Multi-scale Convolutional Neural Network
+https://arxiv.org/abs/1803.10219
+March, 2018
+
+Uses 1-d convolutions on raw audio in frontend.
+Tests small,medium,large receptive field, and a model with all.
+Multi-scale outperforms single by 2-3% absolute.
+
+When only using raw audio. 70% on ESC-50, 88% on ESC-10
+When combined with log-mel features, 79.10% on ESC-50. 93.75% on ESC-10.
+
+
+### Audio representation for environmental sound classification using convolutional neural networks
+https://lup.lub.lu.se/student-papers/search/publication/8964345
+2018.
+Master thesis. 66 pages total.
+30 pages theory, 6+14 pages on experiment.
+
+Used SBCNN as the base model. "for promise in embedded systems"
+spectrograms as base feature.
+Tried mel and linear spectrograms.
+Tried downsampling datarate.
+
+Used mean-normalization per patch.
+Used 128 mel-frequency bands.
+
+Evaluated on ESC-50.
+Best model mel-spectrogram. Table 4.1
+M 2048 75 44.1 top1=74.70% top3=88.35%
+
+75% overlap better than 50%.
+.. Down to acc=66% with 32/16kHz sample rate.
+! did not change N_fft with different frequencies, so temporal resolution differs also
+
+Future work.
+Raw audio as input feature.
+Number of mel-specrogram points.
+Different filterbanks.
+
+### Multi-Channel Convolutional Neural Networks with Multi-Level Feature Fusion for Environmental Sound Classification
+January 2019.
+https://www.researchgate.net/publication/329569964_Multi-channel_Convolutional_Neural_Networks_with_Multi-level_Feature_Fusion_for_Environmental_Sound_Classification_25th_International_Conference_MMM_2019_Thessaloniki_Greece_January_8-11_2019_Proceedi
+
+MC-DCNN.
+Stacking 1D layers with very small filters (except first layer).
+Multi-level fusion. Multiple CNN heads at different resolutions, features are concatenated.
+Fully convolutional, using 1D CNN backend with global-average-pooking.
+
+Number of parameters ?
+
+! Table 5 has good overview of performance, relative to other models.
+On raw audio showing performance similar to M18,EnvNet2
+Urbansound8k 73.6%.
+ESC-50 71.1±0.8  ESC-10 84.1±0.7
+
+Fusion with 3 heads performs better.
+
+### Look, Listen and Learn
+August, 2017.
+
+Unsupervised learning of audio+image embeddings.
+Using log-spectrogram input.
+Output audio: 512 dimensional vector.
+
+ESC-50. 79.3%
+
+### LEARNING FILTER BANKS USING DEEP LEARNING FOR ACOUSTIC SIGNALS
+Shuhui Qu.
+
+Based on the procedure of log Mel-filter banks, we design a filter bank learning layer.
+Urbansound8K dataset, the experience guided learning leads to a 2% accuracy improvement.
+
+
+### Automatic Environmental Sound Recognition: Performance versus Computational Cost
+2016.
+https://ieeexplore.ieee.org/document/7515194/
+https://arxiv.org/abs/1607.04589.pdf
+Sacha Krstulović and Mark D. Plumbley
+
+Intended target platform ARM Cortex M4F.
+Compares performance of different classifiers.
+GMM,SVM,k-NN.
+! no CNNs present
+
+MFCC input. 13 bands, with deltas.
+Evaluated on Baby Cry and Smoke Alarm datasets, binary classification tasks.
+DNNs gave best performance, and perf/computation.
+
+Only theoretical N-operations shown, not actual runtime
+! gives adds/multiplies formulas for each classifier type. Nice
+
+
 
 # Efficient CNNs for Keyword Spotting
 
 ### Convolutional Neural Networks for Small-footprint Keyword Spotting 
-2015
 https://www.isca-speech.org/archive/interspeech_2015/papers/i15_1478.pdf
+2015
 
 Designs small CNNs
 Keeping number of multiples the same, at 500 M
 Number of params around 50-100k
 
-40 log-mel
+40 log-mel spectrogram
 25 ms frames
 10 ms shift
 32 frame windows = 310 ms
 ! 1 frame shifts = 96% overlap
 
-1 layer or 2 layer CNNs. Testing pooling and striding alternatives
-
+1 layer or 2 layer CNNs, followed by 2 dense layers
+Testing pooling and striding alternatives
 Getting very good results for striding in time and striding in frequency
+
+
+## Hello Edge: Keyword Spotting on Microcontrollers
+https://arxiv.org/abs/1711.07128
+2017
+
+!uses MFCC
+Reviews many deep learning approaches. DNN, CNN, RNN, CRNN, DS-CNN.
+Depthwise Separable Convolutional Neural Network (DS-CNN)
+provides the best accuracy while requiring significantly lower memory and compute resources.
+Considering 3 different sizes of networks, bound by NN memory limit and ops/second limits.
+Small= 80KB, 6M ops/inference, 94.5% accuracy.
+8-bit weights and 8-bit activations, with KWS running at 10 inferences per second.
+Each inference – including memcopy, MFCC feature extraction and DNN execution – takes about 12 ms.
+10x inferences/second. Rest sleeping = 12% duty cycle.
+
+Explained in
+"How to Achieve High-Accuracy Keyword Spotting on Cortex-M Processors"
+https://community.arm.com/processors/b/blog/posts/high-accuracy-keyword-spotting-on-cortex-m-processors.
+
+Running on STM32F746G-DISCO.
+DSCNNL model gives 0.83/84.6% on Kaggle leaderboard
+https://www.kaggle.com/c/tensorflow-speech-recognition-challenge/data
+
+## Compressing Deep Neural Networks using a Rank-Constrained Topology
+https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/43813.pdf
+
+Implemented in Tensorflow
+Ex `low_latency_svdf` with 750K parameters and 750kFLOPS.
+Reaching 0.85 acc on Speech Commands dataset
+
+## Studying the Effects of Feature Extraction Settings on the Accuracy and Memory Requirements of Neural Networks for Keyword Spotting
+https://ieeexplore.ieee.org/abstract/document/8576243
+
+Compares MFCC feature extraction settings. Compares RAM/ROM use.
+10-40 MFCC bands. 10-40ms size.
+! GRU used 0.66 KB RAM with 314KB FLASH reaching 92%.
+DS-CNN used 62KB RAM with 161KB FLASH reaching 93.5%
+
+## On-the-fly deterministic binary filters for memory efficient keyword spotting applications on embedded devices
+https://dl.acm.org/citation.cfm?id=3212731
+
+BinaryCmd makes represents weights as a combination of predefined orthogonal binary basis.
+that can generate convolutional filters very efficiently on-the-fly.
+Deter-ministic Binary Filters, DBF.
+Orthogonal variable spreading factor, OVSF
+Using MFCC features.
+Claims state of the art results (over Hey Edge) for models under 3MOPs and 30kB of model size.
+! but CRNN at 3.3MOP has much higher performance
+! smaller variation of CRNN nor DS-CNN not tested...
+
+## FastGRNN: A Fast, Accurate, Stable and Tiny Kilobyte Sized Gated Recurrent Neural Network
+https://www.microsoft.com/en-us/research/publication/fastgrnn-a-fast-accurate-stable-and-tiny-kilobyte-sized-gated-recurrent-neural-network/
+Evaluated on Google Speech Command Set, both 30 and 12 class. Clips are 1 second
+12 class: Smallest model 5.5KB, 92% acc, 242 ms on Cortex M0+ @ 48Mhz.
+Using Log mel spectrograms, 32 mels, 25ms window, 10ms stride
+
+## Stochastic Adaptive Neural Architecture Search for Keyword Spotting
+https://arxiv.org/abs/1811.06753
+2018
+
+Proposes SANAS (Stochastic Adaptive Neural Architecture Search)
+
+Designing multiple architectures with different complexity,
+switching automatically at runtime to use simpler models to reduce CPU time 
+
+Evaluated on Speech Command Set
+
+cnn-trad-fpool3 used 120-130 MFLOPS/frame for 72.8% correct,
+Their solution 40M for 80% correct and higher match for matched or slightly better perf.
+
+Code at http://github.com/TomVeniat/SANAS
+
+
 
 # Efficient CNNs
 

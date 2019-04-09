@@ -528,6 +528,21 @@ Urbansound8k
 ESC-50 (and ESC-10) dataset.
 DCASE
 
+[ESC-50: Dataset for Environmental Sound Classification](https://github.com/karoldvl/ESC-50).
+2k samples. 50 classes in 5 major categories.
+5 seconds each.
+Compiled from Freesound.org data
+! only 40 samples per class.
+
+Github repo has an excellent overview of attempted methods and their results.
+
+* Best models achieving 86.50% accuracy.
+* Human accuracy estimated 81.30%.
+* Baseline CNN at 64.50%. 
+* Baseline MFCC-RF, 44.30%.
+* Over 20 CNN variations attempted.
+
+
 ## CNNs for Environmental Sound Classification
 
 Many papers have used Convolutional Neural Networks (CNN) for Environmental Sound Classification.
@@ -550,6 +565,9 @@ With all augmentations, performance on their model raised from 72% to 79% classi
 However time-stretching and pitch-shifting were the only techniques that
 gave a consistent performance boost across all classes.
 
+`MAYBE: add an image of PiczakCNN`
+`TODO: add an image of SB-CNN`
+
 D-CNN[@D-CNN] (2017) uses feature representation and model architecture that largely follows that of PiczakCNN, however the second layer uses dilated convolutions with a dilation rate of 2. 
 With additional data augmentation of time-stretching and noise addition,
 this gave a performance of up to 81.9% accuracy on Urbansound8k.
@@ -569,6 +587,8 @@ performance increased to 83.7%, which seems to be state-of-the-art as of April 2
 
 Recently approaches that use the raw audio waveform as input have also been documented.
  
+`TODO: add image of a 1D CNN`
+
 EnvNet[@EnvNet] (2017) used 1D convolutions in order to learn a 2D spectrogram-like representation
 which is then classified using standard 2D convolutional layers. 
 They show that the resulting spectrograms have frequency responses with
@@ -587,8 +607,10 @@ When combining data augmentation with a technique similar to mixup called betwee
 the model is able to reach 78.3% on Urbansound8k.
 
 
+## Resource efficient Environmental Sound Classification
+
 Resource efficient models (in parameters, inference time or power consumption)
-for Environmental Sound Classification is not as well explored yet.
+for Environmental Sound Classification is not that well explored yet.
 
 WSNet[@WSNet] is a 1D network on raw audio designed for efficiency.
 It uses a weight sampling approach and uses weight quantization to
@@ -605,14 +627,25 @@ This is a strong indication that existing models for ESC may be heavily overpara
 and can be made significantly more resource efficient.
 `TODO: include mult-adds`
 
+AclNet [@AclNet].
+`TODO: write about`
+
 eGRU[@eGRU] demonstrates an Recurrent Neural Network based on a modified Gated Recurrent Unit.
 The feature representation used was raw STFT spectrogram from 8Khz audio.
 With full-precision floating point the model got 72% on Urbansound8k,
 however this fell to 61% when using the proposed quantization technique and running on device.
 `TODO: include MAC/s and inference times`
-As of April 2019, eGru was the only paper found that performs ESC on a microcontroller.
+As of April 2019, eGRU was the only paper found that performs ESC on a microcontroller.
 
-## Efficient CNNs for image classification
+## Resource efficient speech detection
+
+Keyword spotting
+
+FastGRNN
+DS-KWS
+
+
+## Resource efficient image classification
 
 The development of more efficient Convolutional Neural Networks have received
 a lot of attention.

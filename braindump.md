@@ -193,6 +193,26 @@ Quick test on SB-CNN16k 30mels, fold0, validation
 0.5, acc 0.6746849942726232
 0.9, acc 0.6758304696449027
 
+```
+After models have been chosen with 0.5 overlap:
+
+python report.py --results data/results/overlap0/ --run 20190408-0629 --out data/results/overlap0/
+
+res
+   experiment  test_acc_mean  maccs_frame
+0          1       0.693748   10185806.0
+1          2       0.703305    3180954.0
+2          0       0.715651     530162.0
+
+python report.py --run 20190408-0629
+
+res
+   experiment  test_acc_mean  maccs_frame
+0          1       0.708084   10185806.0
+1          2       0.713262    3180954.0
+2          0       0.718439     530162.0
+```
+
 ### Model choosing
 
 With SGD (default options).
@@ -481,6 +501,29 @@ Ideas:
 - Does it help to initialize initial convolutions as well-behaved filters?
 - Can we perform a greedy search for filters?
 
+
+Is this strided convolution on raw audio
+more computationally efficent than STFT,log-mel calculation?
+
+LLF from ACLNet: 1.44k params, 4.35 MMACS. 2 conv, maxpool.
+1.28 second window. 64x128 output. Equivalent to 64 bin, 10ms skip log-mel?
+Can it be performed with quantizied weights? 8 bit integer. SIMD.
+Would be advantage, FFT is hard to compute in this manner...
+Advantage, potential offloading to CNN co-processor
+
+Calc mult-add from model.
+Tensorflow, https://stackoverflow.com/questions/51077386/how-to-count-multiply-adds-operations
+
+https://dsp.stackexchange.com/questions/9267/fft-does-the-result-of-n-log-2n-stand-for-total-operations-or-complex-ad
+def fft_splitradix(N):
+    return 4*N*math.log(N,2) - (6*N) + 8
+
+Could one use teacher-student / knowledge distillation to pre-train 1D conv on raw audio?
+Previously raw audio conv have been quite different than logmel, advantageous together.
+Maybe this allows training a version similar to logmel, which can still be executed with convolutions,
+and combined together for higher perf?
+
+
 ## Tree-based CNN backend
 
 ### Hypothesis: A tree-based classifier is more CPU/storage efficient than FC/conv as last part of CNN
@@ -519,8 +562,6 @@ How to test
 - Use *LIME* to visualize existing networks to get some idea of possibility of reduction
 - Use *permutation feature importance* on spectrogram bins to quantify importance of each band
 - Make the STFT-mel filter trainable, with L1 regularization
-
-
 
 
 
@@ -621,22 +662,6 @@ When using multi-objective optimization, maximize the number of features.
 What about greedy algorithms with random restarts/jumps?
 
 
-
-### Automatic Environmental Sound Recognition: Performance versus Computational Cost
-2016.
-
-Intended target platform ARM Cortex M4F.
-Compares performance of different classifiers on ESC task, using different classifiers.
-MFCC input. 13 bands, with deltas.
-GMM,SVM,k-NN.
-
-! no CNNs present
-! only theoretical N-operations shown, not actual runtime
-
-Evaluated on Baby Cry and Smoke Alarm datasets. Binary classification tasks.
-DNNs gave best performance, and perf/computation.
-
-! gives adds/multiplies formulas for each classifier type
 
 ### Design aspects of acoustic sensor networks for environmental noise monitoring
 September 2016.
