@@ -21,14 +21,13 @@ default_training_settings = dict(
 
 default_model_settings = dict(
     model='sbcnn',
-    kernel='3x3',
-    pool='3x3',
     frames=72,
     conv_block='conv',
     conv_size='5x5',
     downsample_size='4x2',
-    downsample_type='maxpool',
     filters=24,
+    n_stages=3,
+    n_blocks_per_stage=1,
     voting='mean',
     voting_overlap=0.5,
 )

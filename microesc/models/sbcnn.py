@@ -8,9 +8,11 @@ from keras.regularizers import l2
 
 
 def build_model(frames=128, bands=128, channels=1, num_labels=10,
-                kernel=(5,5), pool=(4,2),
+                conv_size=(5,5), conv_block='conv',
+                downsample_size=(4,2),
                 fully_connected=64,
-                kernels_start=24, kernels_growth=2,
+                n_stages=None, n_blocks_per_stage=None,
+                filters=24, kernels_growth=2,
                 dropout=0.5,
                 use_strides=False,
                 depthwise_separable=False):
@@ -25,27 +27,30 @@ def build_model(frames=128, bands=128, channels=1, num_labels=10,
     and added Batch Normalization
     """
     Conv2 = SeparableConv2D if depthwise_separable else Convolution2D
+    assert conv_block == 'conv'
+    kernel = conv_size
     if use_strides:
-        strides = pool
+        strides = downsample_size
         pool = (1, 1)
     else:
         strides = (1, 1)
+        pool = downsample_size
 
     block1 = [
-        Convolution2D(kernels_start, kernel, padding='same', strides=strides,
+        Convolution2D(filters, kernel, padding='same', strides=strides,
                       input_shape=(bands, frames, channels)),
         BatchNormalization(),
         MaxPooling2D(pool_size=pool),
         Activation('relu'),
     ]
     block2 = [
-        Conv2(kernels_start*kernels_growth, kernel, padding='same', strides=strides),
+        Conv2(filters*kernels_growth, kernel, padding='same', strides=strides),
         BatchNormalization(),
         MaxPooling2D(pool_size=pool),
         Activation('relu'),
     ]
     block3 = [
-        Conv2(kernels_start*kernels_growth, kernel, padding='valid', strides=strides),
+        Conv2(filters*kernels_growth, kernel, padding='valid', strides=strides),
         BatchNormalization(),
         Activation('relu'),
     ]
