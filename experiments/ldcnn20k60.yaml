@@ -11,6 +11,6 @@ batch: 400
 epochs: 50
 train_samples: 30000
 val_samples: 5000
-learning_rate: 0.001
+learning_rate: 0.01
 voting: 'mean'
 voting_overlap: 0.5
