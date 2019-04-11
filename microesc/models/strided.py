@@ -110,17 +110,20 @@ def build_model(frames=128, bands=128, channels=1, n_classes=10,
     """
     
     """
-
-    conv_func = block_types.get(conv_block)
     input = Input(shape=(bands, frames, channels))
     x = input
 
     block_no = 0
     for stage_no in range(0, n_stages):
         for b_no in range(0, n_blocks_per_stage):
+            # last padding == valid
             padding = 'valid' if block_no == (n_stages*n_blocks_per_stage)-1 else 'same'
+            # downsample only one per stage
+            downsample = downsample_size if b_no == 0 else (1, 1)
+            # first convolution is standard
+            conv_func = conv if block_no == 0 else block_types.get(conv_block)
             name = "conv{}".format(block_no)
-            downsample = downsample_size if b_no == 0 else (1, 1) 
+
             x = conv_func(x, conv_size, int(filters), downsample,
                             name=name, padding=padding)
             block_no += 1
