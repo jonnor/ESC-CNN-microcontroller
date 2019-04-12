@@ -8,7 +8,6 @@ Critical line
 
 - Write all settings/parameters to a file when ran
 - Include git version in settings file
-- Train and evaluate more models
 - Run each model on device, record inference time
 
 - Finalize introduction. Health/import section, images

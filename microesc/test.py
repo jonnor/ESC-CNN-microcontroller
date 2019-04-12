@@ -28,7 +28,12 @@ def load_model_info(jobs_dir, job_dir):
         if fname.endswith('model.hdf5'):
             models.append(fname)
     
-    models = sorted(models)
+    def get_epoch(s):
+        e = s.split('-')[0].lstrip('e')
+        e = int(e)
+        return e
+
+    models = sorted(models, key=get_epoch)
     assert models[0].startswith('e01-')
     last_model = models[len(models)-1]
     expected_last = 'e{:02d}-'.format(len(models))
