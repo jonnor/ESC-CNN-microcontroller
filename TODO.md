@@ -1,42 +1,47 @@
 
-## Questions
-
-Where should review of existing methods go?
-
-What should go into methods, except for Experimental Setup?
-
-Is anything missing from Materials section?
-
-Where should work on new/improved STM32AI tools go?
 
 ## TODO
 
+### Draft 1
 
-Report
+Critical line
 
-- Finish introduction
-- Finish Existing methods review
-- Ask for feedback OK on Methods+Materials+Introduction draft
-
-Experiments
-
-- Write uniform Keras model based on SB-CNN etc
-- Run each model on device, record inference time
 - Write all settings/parameters to a file when ran
 - Include git version in settings file
+- Train and evaluate more models
+- Run each model on device, record inference time
+
+- Finalize introduction. Health/import section, images
+- Finalize Existing methods review. Fix image CNNs section, add images
+- Materials. Add images of model comparisons
+- BACKGROUND section. Information about CNNs, images
+- Background. Info about microcontrollers
+
+- Make plots pretty in Results
+- Write basic Discussion and Conclusion
+
+THURSDAY18. 
+
+- Go through with
+
+MONDAY22. Send draft to OK
+
+Run CNN model on microcontroller
+
+- Measuring current with ST board on best model.
+
+### Post
+
+Experiment
+
+- Run with different filters / with multipliers. At least DW,DW-PW,PW-DW-PW
+- Add a test with 16kHz / 30 mels?
+- Add tests with 2x 3x3 blocks instead of 5x5?
 
 Code quality
 
 - Add end2end tests
 - Check windowing functions, esp last frame and padding
-
-Run CNN model on microcontroller
-
-- Test measuring current with ST board
-- STM32AI: Test different FFT/mel sizes
-- STM32AI: Report/fix melspec preprocessing bug
-https://community.st.com/s/topic/0TO0X0000003iUqWAI/stm32-machine-learning-ai
-- Test USB audio input
 
 
 Dissemination
@@ -44,6 +49,13 @@ Dissemination
 - Image of overall project/system
 - Project image, title page
 - Record a demo video
+- Write a blogpost
+
+Foo 
+- STM32AI: Test different FFT/mel sizes
+- STM32AI: Report/fix melspec preprocessing bug
+https://community.st.com/s/topic/0TO0X0000003iUqWAI/stm32-machine-learning-ai
+- Test USB audio input
 
 
 ## Done
@@ -103,10 +115,5 @@ Built-in example also had BT audio out (but locked at 8kHz?)
 - Installed STM32Cube AI toolchain, and build STM32 AI examples (HAR)
 - Make a shortlist of datasets to consider
 - Order STM32 devkits
-
-
-## Status
-
-
 
 

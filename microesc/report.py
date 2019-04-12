@@ -102,7 +102,7 @@ def plot_accuracy_vs_compute(experiments, ylim=(0.65, 0.75)):
     df['accuracy'] = acc.mean()
 
     fig, ax = plt.subplots(1)
-    df.plot.scatter(ax=ax, x='maccs_frame', y='accuracy')
+    df.plot.scatter(ax=ax, x='maccs_frame', y='accuracy', logx=True)
     ax.set_ylim((0.65, 0.80))
 
     return fig

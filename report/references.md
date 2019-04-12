@@ -443,6 +443,9 @@ Covers MobileNet, ShuffleNet, FD-MobileNet.
 ! Explains the convolution variants used visually.
 Pointwise convolution (conv1x1), grouped convolution, depthwise convolution.
 
+https://towardsdatascience.com/a-comprehensive-introduction-to-different-types-of-convolutions-in-deep-learning-669281e58215
+
+
 ## Dilated convolutions
 
 Dilated convolution increased receptive field without adding parameters.
