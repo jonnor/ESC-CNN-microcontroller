@@ -60,8 +60,8 @@ def generate_train_jobs(experiments, settings_path, folds, overrides):
         return options
 
     jobs = []
-    for idx, ex in experiments.iterrows():
-        for fold in folds:
+    for fold in folds:
+        for idx, ex in experiments.iterrows():
             j = create_job(str(idx), ex, fold)
             jobs.append(j)
 
