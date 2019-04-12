@@ -8,9 +8,9 @@ augmentations: 12
 augment: 1
 frames: 31
 batch: 400
-epochs: 50
+epochs: 100
 train_samples: 30000
 val_samples: 5000
-learning_rate: 0.01
+learning_rate: 0.005
 voting: 'mean'
 voting_overlap: 0.5
