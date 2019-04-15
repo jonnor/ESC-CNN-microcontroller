@@ -618,8 +618,8 @@ reaches a 70.5% on UrbandSound8k with a 288K parameters and 100M mult-adds.
 
 LD-CNN[@LD-CNN] is a more efficient version of D-CNN.
 In order to reduce parameters, several changes are made:
-Early layers use spatially separable convolutions .
-Then dilated convolution in the middle.
+Early layers use spatially separable convolutions,
+and middle layers used dilated convolutions.
 `TODO? fill out`
 As a result the model has 2.05MB of paramters, 50x fewer than D-CNN,
 and only drops accuracy by 2% to 79% on Urbansound8k.
@@ -632,12 +632,14 @@ AclNet [@AclNet].
 
 eGRU[@eGRU] demonstrates an Recurrent Neural Network based on a modified Gated Recurrent Unit.
 The feature representation used was raw STFT spectrogram from 8Khz audio.
-With full-precision floating point the model got 72% on Urbansound8k,
+The model was evaluated on Urbansound8k, however it did not use the pre-existing folds and test-set,
+so results may not be directly comparable to others.
+With full-precision floating point the model got 72% accuracy,
 however this fell to 61% when using the proposed quantization technique and running on device.
-`TODO: include MAC/s and inference times`
-As of April 2019, eGRU was the only paper found that performs ESC on a microcontroller.
+As of April 2019, eGRU was the only paper found which performs ESC on a microcontroller.
 
-## Resource efficient speech detection
+
+## Resource efficient CNNs for speech detection
 
 Keyword spotting
 
@@ -647,10 +649,11 @@ DS-KWS
 
 ## Resource efficient image classification
 
-The development of more efficient Convolutional Neural Networks have received
-a lot of attention.
-Especially motivated by the ability to run models that give close to state-of-the-art performance
+The development of more efficient Convolutional Neural Networks for image classification have received a lot of attention.
+This is especially motivated by the ability to run models that give close to state-of-the-art performance
 on mobile phones and tablets.
+When using 2D-spectograms as the input feature, it is possible that many of these
+developments will transfer over to Environmental Sound Classification.
 
 [SqueezeNet: AlexNet-level accuracy with 50x fewer parameters and <0.5MB model size](http://arxiv.org/abs/1602.07360). 2015.
 Fire module 1x1 convolutions and 3x3 convolutions. Percentage tunable as hyperparameters.
@@ -755,19 +758,21 @@ and run them using C code designed for microcontrollers.
 
 ### Hardware accelerators
 
-
-Kendryte K120. RISC-V
-GreenWaves GAP8
-
-    TODO: get some numbers for TOPS/second
+With the increasing interest in deploying neural networks on low-power microcontrollers,
+dedicated hardware acceleration units are also being developed.
 
 STMicroelectronics has stated that neural network accelerators will be available
-for their STM32 family of microcontrollers in 2019`TODO: ref`, based on their
+for their STM32 family of microcontrollers[@ST-DCNN-accelerator], based on their
 FD-SOI chip architecture[@ST-FD-SOI].
 
-ARM has announced ARM Helium, an extension for the Cortex M
-family of microcontrollers with instructions that can be used to speed up neural networks. `TODO:ref `
+ARM has announced ARM Helium, an extended instruction set for the Cortex M
+family of microcontrollers that can be used to speed up neural networks[@ARMHeliumAnnouncement].
 
+Kendryte K210 is a microcontroller based on the open RISC-V architecture
+that includes a convolutional neural network accelerator[@KendryteK210Datasheet]. 
+
+GreenWaves GAP8 is a RISC-V chip with 8 cores designed for parallel-processing.
+They claim a 16x improvement in power efficiency over a ARM Cortex M7 chip[@GAP8vsARM].
 
 
 \newpage
@@ -867,7 +872,6 @@ All the code used is available at https://github.com/jonnor/ESC-CNN-microcontrol
 
 `TODO: picture of training + deployment pipelines`
 
-
 ## Models
 
 ### Model requirements
@@ -909,29 +913,50 @@ Only SB-CNN and LD-CNN are close.
 
 ### Compared models
 
-Model families:
-
-LD-CNN.
-Already optimized from D-CNN. Expect that many of the gains possible have been found already. 
-Uses full height layers.
-Quite different from existing literature on efficient CNNs
-which instead tends to use small uniformly sized kernels (3x3).
-
-SB-CNN
-DenseNet. X-CUBE-AI conversion fails. `INTERNAL ERROR: 'refcount'`
-
-MobileNet. Had to replace Relu6() with ReLu. ! large memory usage
-EffNet. Had to replace LeakyReLU with ReLu ! large memory usage
-
-Residual connections. For deep networks. 
-SqueezeNeXt.
-
-Grouped convolutions were only added to TensorFlow in April 2019[@TensorFlowGroupConvolutionPR].
-Griped convolutions are not supported by our version of 2X-CUBE-AI.
+SB-CNN and LD-CNN are the two candidates for a baseline model,
+being the only two that are close to the desired performance characteristic.
+SB-CNN also utilizes a CNN architecture similar to the literature on efficient CNN models,
+with small uniformly sized kernels followed by max pooling. 
+LD-CNN on the other hand uses full-height layers in the start, and has already been optimized
+but without reaching fully the performance needed.
+For these reasons SB-CNN was used as the base architecture.
 
 \ref{existing-models-perf}
 
-The SB-CNN model was used as a base, with 30 mels bands. ST FP-SENSING1 function pack[@FP-AI-SENSING1]
+Would like to determine the effects of using more computationally efficient
+convolutional blocks, in particular depthwise-separable and spatially-separable.
+Residual connections are not evaluated, as the networks are relatively shallow.
+Grouped convolutions are not evaluated, as they were only added to TensorFlow
+in April 2019[@TensorFlowGroupConvolutionPR], and are not supported by our version Keras and X-CUBE-AI.
+
+`TODO: images of RAM usage per layer`
+
+Some minor modifications was done to the SB-CNN model compared to original.
+The max pooling was changed from 4x2 to 3x2 to accomodate the reduced number of mel filter bands (60 instead of 128).
+Batch Normalization was also added.
+
+
+In the SB-CNN architecture X-CUBE-AI will fuse the layers Conv2D -> BN -> MaxPooling2D 
+into a single operation.
+This drastically reduces RAM usage, from `TODO` to...
+
+
+Unfortunately this optimization is not implemented for depthwise-separable layers.
+To get the RAM utilization within limits, striding is used as the downsampling strategy. 
+Since the stride in Keras/Tensorflow must be uniform.
+
+`TODO: images of each compared architecture. Overall / convolutional blocks`
+
+
+Some other models were also attempted.
+
+DenseNet. X-CUBE-AI conversion fails. `INTERNAL ERROR: 'refcount'`
+MobileNet. Had to replace Relu6() with ReLu.
+EffNet. Had to replace LeakyReLU with ReLu.
+
+
+
+ST FP-SENSING1 function pack[@FP-AI-SENSING1]
 
 
 `FIXME: plot is clipping text at bottom and top, need more margins`
@@ -949,14 +974,10 @@ Find out effect of better convolutional blocks on accuracy vs inference time.
 (different voting overlaps)
 -->
 
-Stride in Keras/Tensorflow must be uniform.
 
-first all with 5x5 kernel, 2 intermediate blocks.
-Then can try 3x3 kernel, 3 intermediate blocks
 
 Adjust number of convolutions to make MACC approximately equal within groups.
 Ref Google paper keyword spotting. tstride/fstride?
-
 
 
 ## Model pipeline
@@ -1000,10 +1021,10 @@ And for each sample, a time window is selected from a random position.
 
 As the optimizer, Stocastic Gradient Decent (SGD) with Nesterov momentum set to 0.9 is used.
 Learning rate of `TODO`.
-Each model is trained for 50 epochs.
+Each model is trained for up to 50 epochs.
 
 Training was performed on a NVidia GTX2060 GPU with 6GB of RAM to reduce experiment time,
-however the models can be trained on a CPU supported by TensorFlow and a minimum of 1GB RAM.
+however the models can be trained on any device supported by TensorFlow and a minimum of 1GB RAM.
 
 
 ## Evaluation
