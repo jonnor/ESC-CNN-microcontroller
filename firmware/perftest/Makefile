@@ -175,6 +175,16 @@ vpath %.c $(sort $(dir $(C_SOURCES)))
 OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASM_SOURCES:.s=.o)))
 vpath %.s $(sort $(dir $(ASM_SOURCES)))
 
+MODEL_PATH=../../data/models/3-20190412-1024-c527-fold8/e01*.model.hdf5
+STM32CONVERT=../../microesc/stm32convert.py
+DEVICE_MOUNT=/run/media/jon/NODE_L476RG
+
+Middlewares/ST/AI/AI/include/network.h: $(MODEL_PATH) Makefile
+	python3 $(STM32CONVERT) $< build/network/
+	cp build/network/network.h Middlewares/ST/AI/AI/include/
+	cp build/network/network.c Middlewares/ST/AI/AI/src/
+	cp build/network/network_data.{h,c} Middlewares/ST/AI/AI/data/
+
 $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR) 
 	$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
 
@@ -193,6 +203,10 @@ $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	
 $(BUILD_DIR):
 	mkdir $@		
+
+flash: $(BUILD_DIR)/$(TARGET).bin
+	cp $< $(DEVICE_MOUNT)/
+
 
 #######################################
 # clean up
