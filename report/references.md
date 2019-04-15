@@ -445,6 +445,23 @@ Pointwise convolution (conv1x1), grouped convolution, depthwise convolution.
 
 https://towardsdatascience.com/a-comprehensive-introduction-to-different-types-of-convolutions-in-deep-learning-669281e58215
 
+## Depthwise conv
+
+Depthwise convolutions special case of grouped convolutions. n_groups == n_channels
+
+MobileNet
+https://towardsdatascience.com/review-mobilenetv1-depthwise-separable-convolution-light-weight-model-a382df364b69
+Explains the width multiplier alpha,
+and resolutions multiplier
+
+MobileNet got close to InceptionV3 results with 1/8 the parameters and multiply-adds
+
+Xception uses depthwise-separable to get better performance over InceptionV3
+https://arxiv.org/abs/1610.02357v3
+https://vitalab.github.io/deep-learning/2017/03/21/xception.html
+https://towardsdatascience.com/review-xception-with-depthwise-separable-convolution-better-than-inception-v3-image-dc967dd42568
+! no activation in Xception block. Better results without activation units compared to ReLu and ELU 
+
 
 ## Dilated convolutions
 

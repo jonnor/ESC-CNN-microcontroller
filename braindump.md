@@ -675,3 +675,16 @@ Categorizes ESC sensors into 4 categories,
 
 Evaluated different usecases.
 Noise annoyance, Illegal firework detection/localization, Noise reason monitoring for tram passings. 
+
+
+
+###
+
+Results for "network", 16 inferences @80MHz/80MHz (complexity: 2980798 MACC)
+ duration     : 325.142 ms (average)
+ CPU cycles   : 26011388 -186/+125 (average,-/+)
+ CPU Workload : 32%
+ cycles/MACC  : 8.72 (average for all layers)
+ used stack   : 276 bytes
+ used heap    : 0:0 0:0 (req:allocated,req:released) cfg=0
+

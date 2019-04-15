@@ -202,7 +202,6 @@ Measuring noise
     Frequency weighting
     Summarizaton. Eq SPL. L10, L90, Lmax, Lpeak
     Spectrograms. Time-frequency characteristics. 1/3 acoustic bands
-
     Equipment
 
 Sensor Networks for Noise Monitoring
@@ -250,65 +249,24 @@ Identifying noise source
 
 -->
 
-## Measuring noise
-
-## Sound level
-The amplitude of a soundwave is specified by the variation in pressure, measured in pascal (Pa).
-Because of the wide range of possible values, Sound Pressure Level (SPL) is normally specified
-using the logarithmic decibel (dB) scale. A reference level of $20 µPascal$ is often used
-as the 0dB point. This is an estimate of the threshold of human hearing with air as the medium.
-
-    TODO: equation for converting 
-    TODO: explain reason for A-weighting.
-    TODO: plot of A weighting frequency response
-    TODO: reference standard defining A-weigthing 
-
-The level is normally A-weighted, which simulates the frequency response of human hearing.
-
-    TODO: own picture of noise sources on dB scale
-
-![Descibel scale with common noise sources](./images/decibel-scale.jpg)
-
-## Equivalent Continious Sound Level
-The sound pressure level is constantly changing.
-To get a single number representation, the sound level is averaged over a time period **T**.
-
-    TODO: mention other measurements, like L10/L90, Lpeak, Lmax
-    TODO: put in some equations
-
-![Equivalent continious sound level](./images/equivalent-continious-level.jpg)
-
-## Sound Level Meters
-
-Periodic noise measurements can be done with hand-held Sound Level meters.
-Their specifications are standardized in IEC 61672-1 Sound Level Meters[@IECSoundLevelMeters].
-Use of a handheld device requires an operator to be present, which limits how often
-and at how many locations measurements are made.
-
-![Norsonic Nor140 handheld acoustic measurement unit](./images/nor140.jpg)
-
-With a continous noise monitoring station, measurement are be done automatically,
-giving very good coverage over time.
-Many such stations can be deployed to also give good spatial coverage,
-operating together in a Wireless Sensor Network.
-
-![CESVA TA120 noise monitoring station](./images/cesva-ta120.png)
-
 ## Machine learning
 
+```
 Supervised learning
 Training set
 Validation set
 Test set
 Cross-fold validation
-
+```
 
 ## Data augmentation
 
-    Data augmentation
-    Pitchshift,timestretch
-    Mixup,between-class
-
+```
+Data augmentation
+Time-shift
+Pitchshift,timestretch
+Mixup,between-class
+```
 
 ## Classification
 
@@ -405,18 +363,15 @@ The overlap can be specified as percentage of the frame length (overlap percenta
 or as a number of samples (hop length). Overlap can for instance be 50%.
 A window function is applied to ensure that the signal level stays constant also in overlapping sections.
 
-## Short Time Fourier Transform
-
 ## Spectrogram filterbanks
 
 A raw Short Time Fourier Transform can contain 1024 or more bins, often with strong correlation across multiple bins.
 To reduce dimensionality, the STFT spectrogram is often processed with a filter-bank of 40-128 frequency bands.
 
 Some filter-bank alternatives are 1/3 octave bands, the Bark scale, Gammatone and the Mel scale.
-
 All these have filters spacing that increase with frequency, mimicking the human auditory system.
 
-## Mel-spectrogram
+Mel-spectrogram
 
 A spectrogram processed with triangular filters evenly spaced on the Mel scale is called a Mel-spectrogram.
 
@@ -428,10 +383,16 @@ A spectrogram processed with triangular filters evenly spaced on the Mel scale i
 
     TODO: image of spectrogram and mel-spectrogram of a sound sample
 
+## Neural Network
+
+Fully connected, Dense layer.
 
 ## Convolutional Neural Network
 
 `TODO: image over overall architecture`
+
+```
+```
 
 Convolution operation
 Functions. Edge detection, median filtering
@@ -447,38 +408,55 @@ Using a set of kernels in combination can detect many pattern variations.
 Convolution over width, height, channels.
 So unlike what the name suggests a Convolution2D, is actually a 3D convolution.
 
+## Convolutions in 2D
+
+Moves spatially across the X and Y.
+
+
+![Standard 3x3 convolutional block, input/output relationship. Source: Yusuke Uchida [@ConvolutionsIllustrated]](./img/conv-standard.png)
+
+The computational complexity of such a convolution is $ O_conv = WHNK_wk_hM $,
+
+```
+H input height
+W input width
+N input channels
+M output channels
+K_w kernel width
+K_h kernel height
+```
 
 ## Depthwise separable convolutions
 
-Depthwise convolutions special case of grouped convolutions. n_groups == n_channels
+![Depthwise separable convolutions, input/output relationship](./img/conv-depthwise-separable.png)
 
-MobileNet
-https://towardsdatascience.com/review-mobilenetv1-depthwise-separable-convolution-light-weight-model-a382df364b69
-Explains the width multiplier alpha,
-and resolutions multiplier
+While a regular convolution performs a convolution over both channels and the spatial extent,
+a Depthwise Separable convolution splits this into two convonlutions.
+First a Depthwise convolution over the spatial extent,
+followed by a a Pointwise convolution over the input channels.
+The pointwise convolution is sometimes called a 1x1 convolution,
+since it is equivalent to a 2D convolution operation with a 1x1 kernel. 
 
-MobileNet got close to InceptionV3 results with 1/8 the parameters and multiply-adds
+This factorization requires considerably fewer computations, but is somewhat less expressive.
 
-Xception uses depthwise-separable to get better performance over InceptionV3
-https://arxiv.org/abs/1610.02357v3
-https://vitalab.github.io/deep-learning/2017/03/21/xception.html
-https://towardsdatascience.com/review-xception-with-depthwise-separable-convolution-better-than-inception-v3-image-dc967dd42568
-! no activation in Xception block. Better results without activation units compared to ReLu and ELU 
+$$ O_{pw} = HWNM $$
+$$ O_{dw} = HWNK_wK_h $$
+$$ O_{ds} = O_pw + O_dw $$
 
-## Pointwise convolution
+For example, with $K_w=K_h=3$ and $M=64$, the reduction is approximately $7.5x$.
 
-Bottleneck
-1x1 in spatial dimensions.
-Used to blend information between channels.
-
-Complexity: H*W*N*M
 
 ## Spatially separable convolutions
+
+In a spatially separable convolution, a 2D convolution is factorized into two convolutions with 1D kernels.
+First a 2D convolution with $1xK_h$ is performed, followed by a 2D convolution with a $K_wx1$ kernel. 
+
+This reduces the number of computations and parameters, from $HWNM(K_wK_h)$ to $HWNM(K_w+K_h)$
+
 
 EffNet
 https://arxiv.org/abs/1801.06434v6
 Builds on SqueezeNet and MobileNet
-
 
 `TODO: images explaining convolution types.`
 `Ref Yusuke Uchida [@ConvolutionsIllustrated], used with permission under CC-BY`
@@ -490,7 +468,11 @@ Max, mean
 
 ## Strided convolutions
 
-Alternative to maxpool?
+Striding can be used to reduce spatial dimensionality,
+either as an alternative or compliment max/mean-pooling.
+
+? vunerable to aliasing?
+
 Used by ResNet.
 "Fully convolutional neural networks". Only Conv operations
 
@@ -499,7 +481,7 @@ Used by ResNet.
 <!---
 SKIP
 - Residual connections/networks
-- Grouped convolutions
+- Grouped convolutions. HWNK²M/G
 ? Global Average Pooling
 -->
 
