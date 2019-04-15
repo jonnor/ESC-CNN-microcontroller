@@ -1,4 +1,5 @@
 
+import sys
 import pandas
 import os.path
 
@@ -15,3 +16,7 @@ data = data.rename(columns={
 })
 table = data.to_latex(header=True, index=False)
 print(table)
+
+outpath = sys.argv[1] 
+with open(outpath, 'w') as f:
+    f.write(table)

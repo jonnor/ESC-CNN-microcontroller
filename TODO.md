@@ -6,8 +6,6 @@
 
 Critical line
 
-- Write all settings/parameters to a file when ran
-- Include git version in settings file
 - Run each model on device, record inference time
 
 - Finalize introduction. Health/import section, images
@@ -21,7 +19,7 @@ Critical line
 
 THURSDAY18. 
 
-- Go through with
+- Go through with Tyrone,Jarand
 
 MONDAY22. Send draft to OK
 
@@ -33,6 +31,8 @@ Run CNN model on microcontroller
 
 Experiment
 
+- Write all settings/parameters to a file when ran
+- Include git version in settings file
 - Run with different filters / with multipliers. At least DW,DW-PW,PW-DW-PW
 - Add a test with 16kHz / 30 mels?
 - Add tests with 2x 3x3 blocks instead of 5x5?

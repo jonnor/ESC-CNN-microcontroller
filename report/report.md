@@ -941,7 +941,7 @@ The SB-CNN model was used as a base, with 30 mels bands. ST FP-SENSING1 function
 # Methods
 
 
-## Blabla
+## Models evaluated
 <!---
 Find out effect of better convolutional blocks on accuracy vs inference time.
 (and striding)
@@ -970,7 +970,14 @@ The most compact and most computationally efficient featureset in use by existin
 which used 31 frames @ 22050 Hz with 60 mels bands.
 This achieved results near the state-of-art, so we opted to use the same.
 
-`TODO: table with preprocessing settings`
+
+\begin{table}
+\centering
+\input{pyincludes/experiment-settings.tex}
+\caption{Summary of preprocessing and training settings}
+\label{table:experiment-settings}
+\end{table}
+
 
 During preprocessing we also perform Data Augmentation.
 Time-stretching and Pitch-shifting following [@SB-CNN], for a total of 12 variations per sample.

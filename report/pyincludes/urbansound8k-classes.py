@@ -1,13 +1,11 @@
 
+import sys
 from microesc import urbansound8k
 import pandas
 import numpy
 
 data = urbansound8k.load_dataset()
 by_class = data.groupby('class')  
-
-#print('c', )
-
 foreground_ratio = by_class.apply(lambda r: numpy.mean(r['salience'] == 1))
 
 table = pandas.DataFrame({
@@ -17,3 +15,7 @@ table = pandas.DataFrame({
 })
 out = table.to_latex(header=True, index=True)
 print(out)
+
+outpath = sys.argv[1] 
+with open(outpath, 'w') as f:
+    f.write(out)

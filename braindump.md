@@ -562,7 +562,10 @@ How to test
 - Use *LIME* to visualize existing networks to get some idea of possibility of reduction
 - Use *permutation feature importance* on spectrogram bins to quantify importance of each band
 - Make the STFT-mel filter trainable, with L1 regularization
-
+- Use a fully convolutional CNN with support for different size inputs, in order to estimate feature importance?
+Ideally without retraining, or possibley with a bit of 
+- Can we use a custom layer in the front with weights for the different frequency bands, and L1 regularization?
+Maybe something like a dense layer from n_bands_in -> n_bands_out. And try higher and higher compression.
 
 
 ## Other
