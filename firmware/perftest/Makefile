@@ -175,7 +175,9 @@ vpath %.c $(sort $(dir $(C_SOURCES)))
 OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASM_SOURCES:.s=.o)))
 vpath %.s $(sort $(dir $(ASM_SOURCES)))
 
-MODEL_PATH=../../data/models/3-20190412-1024-c527-fold8/e01*.model.hdf5
+RUN=20190412-1024
+EXPERIMENT=4
+MODEL_PATH=../../data/models/$(EXPERIMENT)-$(RUN)*-fold8/e01*.model.hdf5
 STM32CONVERT=../../microesc/stm32convert.py
 DEVICE_MOUNT=/run/media/jon/NODE_L476RG
 

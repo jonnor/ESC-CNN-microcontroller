@@ -76,7 +76,10 @@ def main():
     device = '/dev/ttyACM0'
     baudrate = 115200
 
-    with serial.Serial(device, baudrate, timeout=1) as ser:
+    with serial.Serial(device, baudrate, timeout=0.5) as ser:
+
+        # avoid reading stale data
+        thrash = ser.read(10000)
 
         report = read_report(ser)
         out = parse_report(report)
