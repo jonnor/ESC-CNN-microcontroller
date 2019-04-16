@@ -6,8 +6,6 @@
 
 Critical line
 
-- Run each model on device, record inference time
-
 - Finalize introduction. Health/import section, images
 - Finalize Existing methods review. Fix image CNNs section, add images
 - Materials. Add images of model comparisons
@@ -31,17 +29,20 @@ Run CNN model on microcontroller
 
 Experiment
 
+- Switch to zero overlap voting?
 - Write all settings/parameters to a file when ran
 - Include git version in settings file
-- Run with different filters / with multipliers. At least DW,DW-PW,PW-DW-PW
-- Add a test with 16kHz / 30 mels?
-- Add tests with 2x 3x3 blocks instead of 5x5?
+- Run with different filters / width multipliers. At least DS-5x5
 
 Code quality
 
 - Add end2end tests
 - Check windowing functions, esp last frame and padding
 
+Maybe
+
+- Add a test with 16kHz / 30 mels?
+- Add tests with 2x 3x3 blocks instead of 5x5?
 
 Dissemination
 

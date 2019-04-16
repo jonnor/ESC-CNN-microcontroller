@@ -1,7 +1,7 @@
-model,conv_block,conv_size,downsample_size,filters,modelcheck
-sbcnn,conv,5x5,3x2,24,skip
-strided,conv,5x5,2x2,22
-strided,depthwise_separable,5x5,2x2,24,
-strided,depthwise_separable,3x3,2x2,24,
-strided,bottleneck_ds,3x3,2x2,28,
+model,conv_block,conv_size,downsample_size,filters,modelcheck,nickname
+sbcnn,conv,5x5,3x2,24,skip,SB-CNN22k
+strided,conv,5x5,2x2,22,,Stride-5x5
+strided,depthwise_separable,5x5,2x2,24,,DS-5x5
+strided,depthwise_separable,3x3,2x2,24,,DS-3x3
+strided,bottleneck_ds,3x3,2x2,28,,BN-DS-3x3
 

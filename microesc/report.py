@@ -1,9 +1,11 @@
 
 import os.path
 import sys
+import json
 
 import numpy
 import seaborn
+import matplotlib
 import matplotlib.pyplot as plt     
 import pandas
 
@@ -85,25 +87,74 @@ def get_accuracies(confusions):
     return pandas.Series(accs) 
 
 def plot_accuracy_comparison(experiments, ylim=(0.65, 0.85)):
-    
-    acc = experiments.confusions_test.apply(get_accuracies).T
+
+    df = experiments.copy()
+    df.index = experiments.nickname
+    acc = df.confusions_test.apply(get_accuracies).T
     fig, ax = plt.subplots(1)
+    
     acc.boxplot(ax=ax)
+
+    ax.set_ylabel('Accuracy')
     ax.set_ylim(ylim)
+
+    #ax.set_xticks(experiments.nickname)
+    #ax.set_xlabel('Model')
 
     return fig
 
-def plot_accuracy_vs_compute(experiments, ylim=(0.65, 0.75)):
+def plot_accuracy_vs_compute(experiments, ylim=(0.65, 0.85)):
     # TODO: color experiment groups
     # TODO: add error bars?
 
     acc = experiments.confusions_test.apply(get_accuracies).T
     df = experiments.copy()
     df['accuracy'] = acc.mean()
+    numpy.testing.assert_allclose(df.test_acc_mean, df.accuracy)
+    df['experiment'] = df.index
+
+    # FIXME: unhardcode
+    df.voting_overlap = 0.5
+    df.window_length = 0.72
+    df['classifications_per_second'] = 1 / (df.window_length * (1-df.voting_overlap))
+    df['utilization'] = df.duration_avg * df.classifications_per_second
+
+    #perf_metric = 'maccs_frame'
+    perf_metric = 'utilization'
 
     fig, ax = plt.subplots(1)
-    df.plot.scatter(ax=ax, x='maccs_frame', y='accuracy', logx=True)
-    ax.set_ylim((0.65, 0.80))
+    df.plot.scatter(ax=ax, x=perf_metric, y='accuracy', logx=True)
+
+    # Y axis
+    ax.set_ylim(ylim)
+    ax.set_ylabel('Accuracy')
+
+    # mark feasible regions
+    alpha = 0.2
+    ax.axvspan(xmin=0, xmax=0.5, alpha=alpha, color='green')
+    ax.axvspan(xmin=0.5, xmax=1.0, alpha=alpha, color='orange')
+    xmax = df.utilization.max()*2.0
+    ax.axvspan(xmin=1.0, xmax=xmax, alpha=alpha, color='red')
+    ax.set_xlim(ax.get_xlim()[0], xmax)
+    
+    def format_utilization(tick_val, tick_pos):
+        return '{:d}%'.format(int(tick_val*100))
+
+    ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(format_utilization))
+    ax.set_xlabel('CPU utilization')
+
+
+    # Add markers
+    def add_labels(row):
+        xy = row[perf_metric], row.accuracy
+        label = "{}".format(row.nickname) 
+        ax.annotate(label, xy,
+                    xytext=(3,3),
+                    textcoords='offset points',
+                    size=10,
+                    rotation=25,
+                    color='darkslategrey')
+    df.apply(add_labels, axis=1)
 
     return fig
 
@@ -118,6 +169,7 @@ def load_results(input_dir, confusion_suffix='.confusion.npz'):
         'experiment': names,
         'result_path': [ os.path.join(input_dir, f) for f in files ],
     })
+    df = df.set_index('experiment')
 
     def load_confusions(row):
         path = row['result_path']
@@ -126,15 +178,39 @@ def load_results(input_dir, confusion_suffix='.confusion.npz'):
             row['confusions_'+k] =v
         return row
 
-
-    stat_path = os.path.join(input_dir, 'stm32stats.csv')
-    model_stats = pandas.read_csv(stat_path, index_col='experiment')
-
     df = df.apply(load_confusions, axis=1)
+
+    # model statistics
+    stat_path = os.path.join(input_dir, 'stm32stats.csv')
+    model_stats = pandas.read_csv(stat_path, dtype={'experiment': str})
+    model_stats.set_index('experiment', inplace=True)
     df = df.join(model_stats)
+
+    # device performance
+    dev = load_device_results(input_dir)
+    df = df.join(dev)
+    numpy.testing.assert_allclose(df.macc, df.maccs_frame)
 
     return df
 
+def load_device_results(results_dir, suffix='.device.json'):
+
+    frames = []   
+    for filename in os.listdir(results_dir):
+        if filename.endswith(suffix):
+            experiment = filename.rstrip(suffix)
+            p = os.path.join(results_dir, filename)
+            with open(p, 'r') as f:
+                contents = f.read()
+                contents = contents.replace("'", '"') # hack invalid JSON
+                d = json.loads(contents)
+                d['experiment'] = experiment
+                df = pandas.DataFrame([d])
+                frames.append(df)
+
+    df = pandas.concat(frames)
+    df.set_index('experiment', inplace=True)
+    return df
 
 def parse(args):
     import argparse
@@ -163,10 +239,17 @@ def main():
     out_dir = args.out_dir
 
     df = load_results(input_dir)
-    acc = df.confusions_test.apply(get_accuracies).mean()
+    acc = df.confusions_test.apply(get_accuracies).mean(axis=1)
     df['test_acc_mean'] = acc
+    df = df.sort_index()
 
-    print('res\n', df[['experiment', 'test_acc_mean', 'maccs_frame']])
+    # FIXME: this should come from the results
+    models = pandas.read_csv('models.csv')
+    models.index = [ str(i) for i in models.index ]
+    df = df.join(models)
+    # TODO: also add experiment info
+
+    print('res\n', df[['test_acc_mean', 'maccs_frame']])
 
     def save(fig, name):
         p = os.path.join(out_dir, name)
