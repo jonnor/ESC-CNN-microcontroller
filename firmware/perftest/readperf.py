@@ -1,5 +1,6 @@
 
 import re
+import json
 
 import serial
 
@@ -83,7 +84,7 @@ def main():
 
         report = read_report(ser)
         out = parse_report(report)
-        print(out)
+        print(json.dumps(out))
 
 
 if __name__ == '__main__':
