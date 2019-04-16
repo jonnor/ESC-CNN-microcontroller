@@ -11,6 +11,38 @@ import keras
 
 from . import stm32convert
 
+def compute_conv2d(in_h, in_w, in_ch, out_ch, k_w, k_h):
+    """Compute complexity for standard Conv2D
+
+    """
+    return (in_h*in_w*in_ch)*out_ch*(k_w*k_h)
+
+
+def compute_conv2d_pw(in_h, in_w, in_ch, out_ch):
+    """Compute complexity for Pointwise (1x1) Conv2D
+
+    $$ O_{pw} = HWNM $$
+    """
+    return (in_h*in_w*in_ch)*out_ch
+
+def compute_conv2d_dw(in_h, in_w, in_ch, k_w, k_h):
+    """Compute complexity for Depthwise Conv2D
+
+    $$ O_{dw} = HWNK_wK_h $$
+    """
+    return (in_h*in_w*in_ch)*(k_w*k_h)
+    
+def compute_conv2d_ds(in_h, in_w, in_ch, out_ch, k_w, k_h):
+    """Complexity for Depthwise Separable
+
+    $$ O_{ds} = O_pw + O_dw $$
+    """
+    pw = compute_conv2d_pw(in_h, in_w, in_ch, out_ch)
+    dw = compute_conv2d_dw(in_h, in_w, in_ch, k_w, k_h)
+    return pw + dw
+
+
+
 def is_training_scope(scope):
     patterns = ('/random_uniform', '/weight_regularizer', '/dropout_', '/dropout/', 'AssignMovingAvg')
 

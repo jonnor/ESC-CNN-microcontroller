@@ -3,7 +3,7 @@ import pytest
 import keras
 
 from microesc import models
-from microesc import settings
+from microesc import settings, stats
 
 FAMILIES=list(models.families.keys())
 
@@ -51,3 +51,27 @@ def test_strided_variations(conv_type):
 
     m = models.build(s)
     assert isinstance(m, keras.Model)
+
+
+def test_conv_ds():
+    k = (5, 5)
+    i = (60, 31, 16)
+    ch = 16
+
+    conv = stats.compute_conv2d(*i, ch, *k)
+    ds = stats.compute_conv2d_ds(*i, ch, *k)
+
+    ratio = conv / ds
+    assert ratio > 9.0
+
+def test_conv_ds3x3():
+    k = (3, 3)
+    i = (60, 31, 64)
+    ch = 64
+
+    conv = stats.compute_conv2d(*i, ch, *k)
+    ds = stats.compute_conv2d_ds(*i, ch, *k)
+
+    ratio = conv / ds
+    assert ratio > 7.5
+
