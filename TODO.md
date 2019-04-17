@@ -7,7 +7,9 @@
 Critical line
 
 - Finalize Existing methods review.
-Fix image CNNs section. Fix keyword spotting section. add images
+Fix image CNNs section.
+Fix keyword spotting section.
+Add images
 - Finalize introduction. Health/import section, images
 - Materials. Add images of model comparisons
 - BACKGROUND section. Information about CNNs, images
@@ -16,24 +18,27 @@ Fix image CNNs section. Fix keyword spotting section. add images
 - Make plots pretty in Results
 - Write basic Discussion and Conclusion
 
+
 THURSDAY18. 
 
 - Go through with Tyrone,Jarand
 
 MONDAY22. Send draft to OK
 
-Run CNN model on microcontroller
-
-- Measuring current with ST board on best model.
 
 ### Post
 
 Experiment
 
 - Switch to zero overlap voting?
+- Test whether SB-CNN with two DS fits into memory
+- Do error analysis.
+If we only consider high-confidence outputs, are we more precise? How much does recall drop?
 - Write all settings/parameters to a file when ran
 - Include git version in settings file
-- Run with different filters / width multipliers. At least DS-5x5
+- Run with different filters. At least DS-5x5
+- MAYBE: Fix train and validation generators to be single-pass? 
+- MAYBE: Profile to see what makes training slow
 
 Code quality
 

@@ -14,8 +14,7 @@ def build_model(frames=128, bands=128, channels=1, num_labels=10,
                 n_stages=None, n_blocks_per_stage=None,
                 filters=24, kernels_growth=2,
                 dropout=0.5,
-                use_strides=False,
-                depthwise_separable=False):
+                use_strides=False):
     """
     Implements SB-CNN model from
     Deep Convolutional Neural Networks and Data Augmentation for Environmental Sound Classification
@@ -26,8 +25,8 @@ def build_model(frames=128, bands=128, channels=1, num_labels=10,
     but parameters are changed back to those of the original paper authors,
     and added Batch Normalization
     """
-    Conv2 = SeparableConv2D if depthwise_separable else Convolution2D
-    assert conv_block == 'conv'
+    Conv2 = SeparableConv2D if conv_block == 'depthwise_separable' else Convolution2D
+    assert conv_block in ('conv', 'depthwise_separable')
     kernel = conv_size
     if use_strides:
         strides = downsample_size
