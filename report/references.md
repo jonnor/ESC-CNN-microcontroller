@@ -410,6 +410,8 @@ Evaluated on Google Speech Command Set, both 30 and 12 class. Clips are 1 second
 12 class: Smallest model 5.5KB, 92% acc, 242 ms on Cortex M0+ @ 48Mhz.
 Using Log mel spectrograms, 32 mels, 25ms window, 10ms stride
 
+
+
 ## Stochastic Adaptive Neural Architecture Search for Keyword Spotting
 https://arxiv.org/abs/1811.06753
 2018
@@ -435,11 +437,24 @@ Code at http://github.com/TomVeniat/SANAS
 MobileNet
 Figure 4 shows log linear dependence between accuracy and computation.
 
-MobileNetV2
+
+MobilenetV2 [@Mobilenetv2] (2018) builds on Mobilenets and
+adds a pointwise convolution ... into the convolutional blocks.
+Ratio between the size of the input bottleneck and the inner size as the expansion ratio.
+Shortcut connections between bottlenecks.
+
+Max activtions size 200K float16, versus 800K for MobileNetV1 and 600K for ShuffleNet.
+Smallest network at 96x96 with 12M mult-adds, 0.35 width.
+Performance curve very similar to ShuffleNet.
+
+
 ReLU6 as the non-linearity. Designed for with low-precision computation (8 bit fixed-point). y = min(max(x, 0), 6).
 Combined with SSDLite, gives similar object detection performance as YOLOv2 at 10% model size and 5% compute.
 200ms on Pixel1 phone using TensorFlow Lite.
 
+[@SquuezeNext]
+Notes inefficiency of depthwise-separable convolution in terms of hardware performance,
+due to its poor arithmetic intensity (ratio of compute to memory operations). REF Williams2009
 
 
 CondenseNet: An Efficient DenseNet using Learned Group Convolutions.

@@ -545,12 +545,13 @@ The paper also analyzes the effects of several types of data augmentation on Urb
 including Time Shift, Pitch Shift, Dynamic Range Compression and Background Noise.
 With all augmentations, performance on their model raised from 72% to 79% classification accuracy.
 However time-stretching and pitch-shifting were the only techniques that
-gave a consistent performance boost across all classes.
+consistent gave a performance boost across all classes.
 
 `MAYBE: add an image of PiczakCNN`
 `TODO: add an image of SB-CNN`
 
-D-CNN[@D-CNN] (2017) uses feature representation and model architecture that largely follows that of PiczakCNN, however the second layer uses dilated convolutions with a dilation rate of 2. 
+D-CNN[@D-CNN] (2017) uses feature representation and model architecture that largely follows that of PiczakCNN,
+however the second layer uses dilated convolutions with a dilation rate of 2. 
 With additional data augmentation of time-stretching and noise addition,
 this gave a performance of up to 81.9% accuracy on Urbansound8k.
 LeakyRelu was found to perform slightly better than ReLu which scored 81.2%.
@@ -566,6 +567,7 @@ When using Gammatone spectrogram features instead of mel-spectrogram
 performance increased to 83.7%, which seems to be state-of-the-art as of April 2019.
 
 
+### Audio waveform models 
 
 Recently approaches that use the raw audio waveform as input have also been documented.
  
@@ -591,22 +593,18 @@ the model is able to reach 78.3% on Urbansound8k.
 
 ## Resource efficient Environmental Sound Classification
 
-Resource efficient models (in parameters, inference time or power consumption)
-for Environmental Sound Classification is not that well explored yet.
+There are also a few works on Environmental Sound Classification (ESC)
+that explicitly target making resource efficient models (in parameters, inference time or power consumption).
 
 WSNet[@WSNet] is a 1D network on raw audio designed for efficiency.
-It uses a weight sampling approach and uses weight quantization to
-reaches a 70.5% on UrbandSound8k with a 288K parameters and 100M mult-adds.
+It uses a weight sampling approach for efficient quantization of weights to
+reaches a 70.5% on UrbandSound8k with a 288K parameters and 100M MAC.
 
 LD-CNN[@LD-CNN] is a more efficient version of D-CNN.
-In order to reduce parameters, several changes are made:
-Early layers use spatially separable convolutions,
-and middle layers used dilated convolutions.
-`TODO? fill out`
+In order to reduce parameters the early layers use spatially separable convolutions,
+and the middle layers used dilated convolutions.
 As a result the model has 2.05MB of paramters, 50x fewer than D-CNN,
-and only drops accuracy by 2% to 79% on Urbansound8k.
-This is a strong indication that existing models for ESC may be heavily overparameterized
-and can be made significantly more resource efficient.
+while accuracy only dropped by 2% to 79% on Urbansound8k.
 `TODO: include mult-adds`
 
 AclNet [@AclNet].
@@ -614,89 +612,85 @@ AclNet [@AclNet].
 
 eGRU[@eGRU] demonstrates an Recurrent Neural Network based on a modified Gated Recurrent Unit.
 The feature representation used was raw STFT spectrogram from 8Khz audio.
-The model was evaluated on Urbansound8k, however it did not use the pre-existing folds and test-set,
-so results may not be directly comparable to others.
-With full-precision floating point the model got 72% accuracy,
-however this fell to 61% when using the proposed quantization technique and running on device.
+The model was tested using Urbansound8k, however it did not use the pre-existing folds and test-set,
+so the results may not be directly comparable to others.
+With full-precision floating point the model got 72% accuracy.
+When running on device using the proposed quantization technique the accuracy fell to 61%.
+
 As of April 2019, eGRU was the only paper found which performs ESC on a microcontroller.
-
-
-## Resource efficient CNNs for speech detection
-
-Keyword spotting
-
-FastGRNN
-DS-KWS
 
 
 ## Resource efficient image classification
 
-The development of more efficient Convolutional Neural Networks for image classification have received a lot of attention.
-This is especially motivated by the ability to run models that give close to state-of-the-art performance
-on mobile phones and tablets.
-Since spectograms are 2D inputs similar to images, it is possible that many of these
-developments will transfer over to Environmental Sound Classification.
+The development of more efficient Convolutional Neural Networks for
+image classification have received a lot of attention over the last few years.
+This is especially motivated by the ability to run models
+that give close to state-of-the-art performance on mobile phones and tablets.
+Since spectograms are 2D inputs that are similar to images, it is possible that some of these
+techniques can transfer over to Environmental Sound Classification.
 
-[SqueezeNet: AlexNet-level accuracy with 50x fewer parameters and <0.5MB model size](http://arxiv.org/abs/1602.07360).
-SqueezeNet (2015) focused on reducing the number of parameters.
-5MB model performs like AlexNet on ImageNet. 650KB when compressed to 8bit at 33% sparsity. 
-`TODO: `
-Introduces a Fire module, with a mix of 1x1 convolutions and 3x3 convolutions in parallel.
-A residual connection increased model performance by 2.9% without increasing model size.
+SqueezeNet[@SqueezeNet] (2015) focused on reducing the size of model parameters.
+It demonstrated AlexNet[@AlexNet]-level accuracy on ImageNet challenge using 50x fewer parameters,
+and the parameters can be compressed to under 0.5MB in size compared to 240MB for AlexNet.
+It replaced most 3x3 convolutions in a convolution block with 1x1 convolutions,
+and reduce the number of channels using "Squeeze" layers consisting only of 1x1 convolutions.
+The paper also found that a residual connection between blocks increased model performance
+by 2.9% without adding parameters.
 
-Percentage tunable as hyperparameters.
-Pooling very late in the layers.
-No fully-connected end, uses convolutional instead.
-
-
-Mobilenets[@Mobilnets] (2017) uses depthwise-separable convolutions
-in order to reduce inference time.
-
-Mobilenets use two hyperparameters to tune model complexity:
-a width multiplier `alpha` (0.0-1.0) which adjusts linearly the number of filters in each convolutional layer,
+Mobilenets[@Mobilenets] (2017) focused on reducing inference computations by
+using depthwise-separable convolutions.
+A family of models with different complexity was created using two hyperparameters:
+a width multiplier $\alpha$ (0.0-1.0) which adjusts the number of filters in each convolutional layer,
 and the input image size.
+On ImageNet, MobileNet-160 \alpha=0.5 with 76M MAC performs better than SqueezeNet with 1700M MAC,
+a 22x reduction. The smallest tested model was 0.25 MobileNet-128, with 15M mult-adds and 200k parameters.
 
-0.5 MobileNet-160 has 76M MAC, versus SqueezeNet 1700M MAC, both around 60% on ImageNet.
-Smallest tested was 0.25 MobileNet-128, with 15M mult-adds and 200k parameters.
+Shufflenet[@Shufflenet] (2017) uses group convolutions in order to reduce computations.
+In order to mix information between different groups of convolutions it introduces
+a random channel shuffle.
 
+SqueezeNext[@SqueezeNext] (2018) is based on SqueezeNet but
+uses spatially separable convolution (1x3 and 3x1) to improve inference time.
+While the MAC count was higher than MobileNet, they claim better inference
+time and power consumption on their simulated hardware accelerator.
 
-95% of it’s computation time, 75% parameters in conv. 25% parameters in final fully-connected.
+EffNet[@Effnet] (2018) also uses spatial separable convolutions,
+but additionally performs the downsampling in a separable fashion:
+first a 1x2 max pooling after the 1x3 kernel,
+followed by 2x1 striding in the 3x1 kernel.
 
+## Resource efficient CNNs for speech detection
 
+Speech detection is a big application of audio processing and machine learning.
+In the Keyword Spotting (KWS) task the goal is to detect a keyword or phrase that
+indicates that the user wants to enable speech control.
+Example phrases in commercially available products include "Hey Siri" for Apple devices or "OK Google" for Google devices.
+This is used both in smarthome devices such as Amazon Alexa, as well as smartwatches and mobile devices.
+For this reason keyword spotting on low-power devices and microcontrollers
+is an area of active research.
 
-Shufflenet (2017) uses group convolutions combined with channel shuffles in
-order to reduce computations.
+Note that speech recognition tasks often use Mel-Filter Cepstral Coefficients (MFCC),
+which is computed by performing a Discrete Cosine Transform (DCT) on a mel-spectrogram.
 
-Introduces the three variants of the Shuffle unit.
-Group convolutions and channel shuffles.
-Channel shuffle randomly mixes the output channels of the group convolution.
+In the "Hello Edge"[@HelloEdge] paper (2017),
+different models were evaluated for keyword spotting on microcontrollers.
+Included were most standard deep learning model architectures
+such as Deep Neural Networks, Recurrent Neural Networks and Convolutional Neural Networks.
+They found that Depthwise Separable Convolutional Neural Network (DS-CNN) provided the best
+accuracy while requiring significantly lower memory and compute resources than other alternatives.
+Models were evaluated with three different performance limits.
+Their "Small" version with under 80KB, 6M ops/inference achieved 94.5% accuracy on the Google Speech Command dataset.
+A DNN version was demonstrated on a high-end microcontroller (ARM Cortex M7 @ 216 Mhz) using CMSIS-NN framework,
+running keyword spotting at 10 inferences per second while utilizing only 12% CPU (rest sleeping).
 
-
-[SqueezeNext: Hardware-Aware Neural Network Design](https://arxiv.org/abs/1803.10615)
-Uses a Resnet style residual connection, elementwise Additition.
-Uses spatially separable convolution (1x3 and 3x1), with order changing though the network.
-2.59x faster inference time than SqueezeNet (and to MobileNet).
-
-Notes inefficiency of depthwise-separable convolution in terms of hardware performance,
-due to its poor arithmetic intensity (ratio of compute to memory operations). REF Williams2009
-
-
-[MobileNetV2: Inverted Residuals and Linear Bottlenecks](https://arxiv.org/abs/1801.04381). 2018
-Inserting linear bottleneck layers into the convolutional blocks.
-Ratio between the size of the input bottleneck and the inner size as the expansion ratio.
-Shortcut connections between bottlenecks.
-
-Max activtions size 200K float16, versus 800K for MobileNetV1 and 600K for ShuffleNet.
-Smallest network at 96x96 with 12M mult-adds, 0.35 width. Performance curve very similar to ShuffleNet.
-
-
-
-[EffNet](https://arxiv.org/abs/1801.06434). 2018.
-Spatial separable convolutions.
-Made of depthwise convolution with a line kernel (1x3),
-followed by a separable pooling,
-and finished by a depthwise convolution with a column kernel (3x1).
-
+FastGRNN[@FastGRNN] (2018) is a Gated Recurrent Neural Network designed
+for fast inference on audio tasks on microcontrollers.
+It uses a simplified gating architecture with residual connection,
+and uses a three-stage training schedule that
+forces weights to be quantizated in a sparse and low-rank fashion. 
+When evaluated on Google Speech Command Set (12 classes),
+their smallest model of 5.5KB achieved 92% accuracy
+and ran in 242ms on a low-end microcontroller (ARM Cortex M0+ @ 48Mhz).
 
 
 ## Microcontrollers
@@ -765,6 +759,7 @@ that includes a convolutional neural network accelerator[@KendryteK210Datasheet]
 
 GreenWaves GAP8 is a RISC-V chip with 8 cores designed for parallel-processing.
 They claim a 16x improvement in power efficiency over a ARM Cortex M7 chip[@GAP8vsARM].
+
 
 
 \newpage
