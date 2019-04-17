@@ -6,12 +6,10 @@
 
 Critical line
 
-- Finalize Existing methods review.
-Add images
-- Finalize introduction. Health/import section, images
-- Materials. Add images of model comparisons
 - BACKGROUND section. Information about CNNs, images
 - Background. Info about microcontrollers
+- Finalize introduction. Health/import section, images
+- Materials. Add images of model comparisons
 - Make plots pretty in Results
 - Write basic Discussion and Conclusion
 

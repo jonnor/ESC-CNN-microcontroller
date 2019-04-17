@@ -192,9 +192,6 @@ This motivates the problem statement of this thesis:
 
 ![Different strategies for data transmission in a sensor network for noise monitoring.](./img/sensornetworks.png)
 
-\newpage
-# Background
-
 <!---
 Measuring noise
 
@@ -213,112 +210,46 @@ Sensor Networks for Noise Monitoring
     Processing unit. Single-board-computers, microcontrollers
     Connectivity. WiFI, GSM, LoRa. Bandwidth, range, power consumption
     Energy source. Battery and Energy harvesting.
+-->
 
-Identifying noise source
+\newpage
+# Background
 
-    Problem formulations. Classification
+<!---
 
-        Out-of-scope
-            - Sound directivity.
-            - Multi-channel audio. Microphone arrays
-            - Multi-sensor fusion
+Digital Sound
+    Spectrograms
+    mel-spectrogram
 
-        Approach
-            **Classification**. Closed-set. Single label.
-            Not open-set classification / clustering
-            Not event detection. Not fine identification in time (onset)
+Machine Learning.
+    Fundamentals
 
-    Machine Learning.
-        Supervised
-        Data representations
+Machine Learning on sound   
+    **Classification**. Closed-set. Single label.
+    Anslysis windows
+    ?Weak labeling
 
-    Environmental Sound Classification (ESC).
-    Definition
-    Datasets
-        Urbansound8k
-        ESC-50
-        DCASE...
-    Existing work
-    Related.
-        Acoustic Scene Classification. Context-dependent compute
-        Domestic Sound Classification. 
-    DCASE conference and challenge
+Environmental Sound Classification (ESC).
+    Definition, Datasets
+    General methods -> CNN
 
-    Convolutional Neural Networks
+Convolutional Neural Networks
 
+Microcontrollers
+
+Related works for our task...
 
 -->
 
-## Machine learning
+<!---
+DROP
 
-```
-Supervised learning
-Training set
-Validation set
-Test set
-Cross-fold validation
-```
+Acoustic Scene Classification. Context-dependent compute
+Domestic Sound Classification. 
+Event detection. Not fine identification in time (onset)
+Open-set classification. Novelty detection, clustering
+-->
 
-## Data augmentation
-
-```
-Data augmentation
-Time-shift
-Pitchshift,timestretch
-Mixup,between-class
-```
-
-## Classification
-
-In classification the goal is to determine the which acoustic event appears in an audio sample.
-Samples can be short relative to the acoustic event length, or long, possibly having many instances of an event.
-The number of events and their time is not returned in classification.
-
-![Classification task with one class label per audio sample. Source: [@ComputationalAnalysisSound, fig 6.1]](./images/classification.png)
-
-The classification can be binary (is this birdsong?), or multi-class (which species is this?).
-Classification is often limited to a single label.
-
-When the classification is done on long samples consisting of many different events
-it is called Acoustic Scene Classification. Examples of a 'scene' in urban environments
-could be 'restaurant', 'park', 'office', each having a different
-composition of typical acoustic events.
-
-## Event Detection
-
-In event detection (also known as onset detection) the goal is to find the time spans where a given acoustic event occurs.
-If the acoustic event is "frog croaking", then for each instance of a frog croak
-the start time and end time of this event should be marked.
-
-![Event detection, with labels at precise start and end locations in time. Source: [@ComputationalAnalysisSound, fig 6.3] ](./images/eventdetection.png)
-
-In monophonic event detection, only the most prominent event is returned.
-A classifier ran on short samples relative to the length of the acoustic event
-can be used a detector.
-
-In polyphonic event detection, multiple events are allowed at the same time.
-This can be approached using separate classifiers per event type,
-or using a multi-label classifier as a joint model.
-
-## Weak labeling
-
-Many acoustic events are short in duration, for instance a door slamming.
-Other acoustic events only happen intermittently, like the the frog vocalizations in previous example.
-
-Under supervised learning, ideally each and every of the acoustic events instances in the training data
-would be labeled with their start and end time. This is called 'strong labels'.
-However aquiring strong labels requires careful attention to detail by the annotator and is costly.
-
-Therefore, often per-event time-based labels are not available.
-Instead fixed-length audio clips are only marked whether an event occurs at least once, or not at all.
-This is called a 'weak label' or 'weakly annotated' data.
-
-When performing event detection, with small time windows (compared to annotated audio clips) as input,
-the missing time information means there is not a direct label for this input.
-This is known as a Multiple Instance Learning (MIL) problem.
-Under MIL input instances are grouped into a 'bag', and the label exists on the bag
-instead of the individual instances.
-MIL formulations exist for many common machine learning algorithms.
 
 ## Digital sound
 
@@ -342,7 +273,8 @@ and is best avoided for machine learning tasks.
 Recordings can be multi-channel but for acoustic events
 single-channel (mono) data is still the most common.
 
-## Frames
+
+### Spectrograms
 
 To process and analyze the audio data it is often represented as *frames*, small groups of samples across time.
 Frames can be produced in real-time, by collecting N samples at a time,
@@ -363,15 +295,13 @@ The overlap can be specified as percentage of the frame length (overlap percenta
 or as a number of samples (hop length). Overlap can for instance be 50%.
 A window function is applied to ensure that the signal level stays constant also in overlapping sections.
 
-## Spectrogram filterbanks
-
 A raw Short Time Fourier Transform can contain 1024 or more bins, often with strong correlation across multiple bins.
 To reduce dimensionality, the STFT spectrogram is often processed with a filter-bank of 40-128 frequency bands.
 
 Some filter-bank alternatives are 1/3 octave bands, the Bark scale, Gammatone and the Mel scale.
 All these have filters spacing that increase with frequency, mimicking the human auditory system.
 
-Mel-spectrogram
+## Mel-spectrogram
 
 A spectrogram processed with triangular filters evenly spaced on the Mel scale is called a Mel-spectrogram.
 
@@ -383,16 +313,110 @@ A spectrogram processed with triangular filters evenly spaced on the Mel scale i
 
     TODO: image of spectrogram and mel-spectrogram of a sound sample
 
-## Neural Network
+## Machine learning
+
+```
+Supervised learning
+Classification
+Training set
+Validation set
+Test set
+k-fold cross validation
+
+Training time versus inference/prediction time
+```
+
+`TODO: image of train/val/test set split`
+
+
+## Machine Learning for Audio Classification
+
+### Feature representations
+
+Note that speech recognition tasks often use Mel-Filter Cepstral Coefficients (MFCC),
+which is computed by performing a Discrete Cosine Transform (DCT) on a mel-spectrogram.
+
+### Analysis windows
+
+Windowed voting
+
+Mean
+Majority
+Overlap
+
+`TODO: image showing how voting is performed` 
+
+Weak labeling
+
+Many acoustic events are short in duration, for instance a door slamming.
+Other acoustic events only happen intermittently, like the the frog vocalizations in previous example.
+
+Under supervised learning, ideally each and every of the acoustic events instances in the training data
+would be labeled with their start and end time. This is called 'strong labels'.
+However aquiring strong labels requires careful attention to detail by the annotator and is costly.
+
+Therefore, often per-event time-based labels are not available.
+Instead fixed-length audio clips are only marked whether an event occurs at least once, or not at all.
+This is called a 'weak label' or 'weakly annotated' data.
+
+When performing event detection, with small time windows (compared to annotated audio clips) as input,
+the missing time information means there is not a direct label for this input.
+This is known as a Multiple Instance Learning (MIL) problem.
+Under MIL input instances are grouped into a 'bag', and the label exists on the bag
+instead of the individual instances.
+MIL formulations exist for many common machine learning algorithms.
+
+
+### Data augmentation
+
+<!--
+Motivation
+Principle
+(General examples)
+Commonly used Data Augmentation for audio/ESC
+-->
+
+Getting new labeled samples is hard and expensive
+Data Augmentation is a way to generate new samples from existing ones,
+in order to expand the effective training set.
+Apply a transformation which modifies the data somehow,
+but in a way that does not change the label of the sample.
+(or in a way which the label change is predictable and can also be transformed)
+
+Common data augmentation techniques for audio include
+Time-shift, Pitch-shift and Time-stretch.
+
+`TODO: image of each of the augmenation techniques`
+
+<!--
+TODO: image of mixup`
+-->
+
+Mixup[@Mixup] is another type of data augmentation technique
+where two samples from a different classed are mixed together to create a new sample.
+A mixup ratio `FFFFF` controls how much the sample data is mixed,
+and the labels of the new sample is a mix of labels of the two inputs samples.
+
+`TODO: add equation for mixup`
+
+`TODO: Reference papers where mixup has been applied`
+
+
+<!--
+DROP
+Frequency response
+Dynamic range compression
+-->
+
+## Convolutional Neural Networks
+
+Neural Network
 
 Fully connected, Dense layer.
 
-## Convolutional Neural Network
 
 `TODO: image over overall architecture`
 
-```
-```
 
 Convolution operation
 Functions. Edge detection, median filtering
@@ -408,7 +432,12 @@ Using a set of kernels in combination can detect many pattern variations.
 Convolution over width, height, channels.
 So unlike what the name suggests a Convolution2D, is actually a 3D convolution.
 
-## Convolutions in 2D
+
+[@BatchNormalization]
+
+
+
+### Convolutions in 2D
 
 Moves spatially across the X and Y.
 
@@ -426,7 +455,24 @@ K_w kernel width
 K_h kernel height
 ```
 
-## Depthwise separable convolutions
+### Pooling
+
+Max, mean
+
+### Strided convolutions
+
+Striding can be used to reduce spatial dimensionality,
+either as an alternative or compliment max/mean-pooling.
+
+? vunerable to aliasing?
+
+Used by ResNet.
+"Fully convolutional neural networks". Only Conv operations
+
+
+### Depthwise separable convolutions
+
+[@Xception]
 
 ![Depthwise separable convolutions, input/output relationship](./img/conv-depthwise-separable.png)
 
@@ -446,37 +492,17 @@ $$ O_{ds} = O_pw + O_dw $$
 For example, with $K_w=K_h=3$ and $M=64$, the reduction is approximately $7.5x$.
 
 
-## Spatially separable convolutions
+### Spatially separable convolutions
 
 In a spatially separable convolution, a 2D convolution is factorized into two convolutions with 1D kernels.
 First a 2D convolution with $1xK_h$ is performed, followed by a 2D convolution with a $K_wx1$ kernel. 
 
 This reduces the number of computations and parameters, from $HWNM(K_wK_h)$ to $HWNM(K_w+K_h)$
 
-
-EffNet
-https://arxiv.org/abs/1801.06434v6
-Builds on SqueezeNet and MobileNet
-
 `TODO: images explaining convolution types.`
 `Ref Yusuke Uchida [@ConvolutionsIllustrated], used with permission under CC-BY`
 
-
-## Pooling
-
-Max, mean
-
-## Strided convolutions
-
-Striding can be used to reduce spatial dimensionality,
-either as an alternative or compliment max/mean-pooling.
-
-? vunerable to aliasing?
-
-Used by ResNet.
-"Fully convolutional neural networks". Only Conv operations
-
-
+EffNet, 
 
 <!---
 SKIP
@@ -485,228 +511,7 @@ SKIP
 ? Global Average Pooling
 -->
 
-
-
-## Windowed voting
-
-Mean
-Majority
-Overlap
-
-`TODO: image showing how voting is performed` 
-
-
-## Batch normalization
-
-
-
-
-
-## Environmental Sound Classification
-
-`TODO: write about datasets`
-
-Urbansound8k
-ESC-50 (and ESC-10) dataset.
-DCASE
-
-[ESC-50: Dataset for Environmental Sound Classification](https://github.com/karoldvl/ESC-50).
-2k samples. 50 classes in 5 major categories.
-5 seconds each.
-Compiled from Freesound.org data
-! only 40 samples per class.
-
-Github repo has an excellent overview of attempted methods and their results.
-
-* Best models achieving 86.50% accuracy.
-* Human accuracy estimated 81.30%.
-* Baseline CNN at 64.50%. 
-* Baseline MFCC-RF, 44.30%.
-* Over 20 CNN variations attempted.
-
-
-## CNNs for Environmental Sound Classification
-
-Many papers have used Convolutional Neural Networks (CNN) for Environmental Sound Classification.
-Approaches based on spectrograms and in particular log-scaled melspectrogram being the most common.
-
-PiczakCNN[@PiczakCNN] in 2015 was one of the first applications of CNNs to the Urbansound8k dataset.
-It uses 2 channels of log-melspectrograms, both the plain spectrogram values
-and the first-order difference (delta spectrogram).
-The model uses 2 convolutional layers, first with size 57x6 (frequency x time) and then 1x3,
-followed by two fully connected layers with 5000 neurons each.
-The paper evaluates short (950ms) versus long (2.3 seconds)
-analysis windows, and majority voting versus probability voting.
-Performance on Urbansound8k ranged from 69% to 73%.
-It was found that probability voting and long windows perform slightly better.
- 
-SB-CNN[@SB-CNN] (2016) is a 3-layer convolutional with uniform 5x5 kernels and 4x2 max pooling.
-The paper also analyzes the effects of several types of data augmentation on Urbansound8k.
-including Time Shift, Pitch Shift, Dynamic Range Compression and Background Noise.
-With all augmentations, performance on their model raised from 72% to 79% classification accuracy.
-However time-stretching and pitch-shifting were the only techniques that
-consistent gave a performance boost across all classes.
-
-`MAYBE: add an image of PiczakCNN`
-`TODO: add an image of SB-CNN`
-
-D-CNN[@D-CNN] (2017) uses feature representation and model architecture that largely follows that of PiczakCNN,
-however the second layer uses dilated convolutions with a dilation rate of 2. 
-With additional data augmentation of time-stretching and noise addition,
-this gave a performance of up to 81.9% accuracy on Urbansound8k.
-LeakyRelu was found to perform slightly better than ReLu which scored 81.2%.
-
-A recent paper investigated the effects of mixup for data augmentation (2018)[@ESC-mixup].
-Their model uses 4 blocks with 2 convolutional layers each followed by max pooling.
-The second and third blocks form a spatially separated convolution,
-second block with 2 3x1 convolutions, and third block with 2 1x5 convolutions. 
-On mel-spectrograms the model scored 74.7% on Urbansound8k without data augmentation,
-77.3% with only mixup applied,
-and 82.6% when time stretching and pitch shift was combined with mixup.
-When using Gammatone spectrogram features instead of mel-spectrogram
-performance increased to 83.7%, which seems to be state-of-the-art as of April 2019.
-
-
-### Audio waveform models 
-
-Recently approaches that use the raw audio waveform as input have also been documented.
- 
-`TODO: add image of a 1D CNN`
-
-EnvNet[@EnvNet] (2017) used 1D convolutions in order to learn a 2D spectrogram-like representation
-which is then classified using standard 2D convolutional layers. 
-They show that the resulting spectrograms have frequency responses with
-a shape similar to mel-spectrograms.
-The model manages a 66.3% accuracy score on Urbansound8k[@EnvNet2] with raw audio input.
-
-In [@VeryDeepESC], authors evaluted a number of deep CNNs using only 1D convolutions.
-Raw audio with 8kHz sample rate was used as the input.
-Their 18 layer model (M18) got a 71% accuracy on Urbansound8k,
-and the 11 layer version (M11) got 69%.
-
-EnvNet2[@EnvNet2] (2018) is like EnvNet but with 13 layers total instead of 7,
-and using 44.1 kHz input samplerate instead of 16kHz.
-Without data augmentation it achieves 69.1% accuracy on Urbansound8k.
-When combining data augmentation with a technique similar to mixup called between-class examples,
-the model is able to reach 78.3% on Urbansound8k.
-
-
-## Resource efficient Environmental Sound Classification
-
-There are also a few works on Environmental Sound Classification (ESC)
-that explicitly target making resource efficient models, measured
-in number of parameters and compute operations.
-
-WSNet[@WSNet] is a 1D network on raw audio designed for efficiency.
-It proposes a weight sampling approach for efficient quantization of weights to
-reache an accuracy of 70.5% on UrbandSound8k with a 288K parameters and 100M MAC.
-
-LD-CNN[@LD-CNN] is a more efficient version of D-CNN.
-In order to reduce parameters the early layers use spatially separable convolutions,
-and the middle layers used dilated convolutions.
-As a result the model has 2.05MB of paramters, 50x fewer than D-CNN,
-while accuracy only dropped by 2% to 79% on Urbansound8k.
-
-AclNet [@AclNet] is a CNN architecture.
-It uses 2 layers of 1D strided convolution as a FIR decimation filterbank
-to create a 2D spectrogram-like set of features.
-Then a VGG style architecture with Depthwise Separable Convolutions is applied.
-A width multiplier ala that of Mobilenet is used to adjust model complexity.
-Data augmentation and mixup is applied, and gave up to 5% boost.
-Evaluated on ESC-50, the best performing model gets 85.65% accuracy, very close to state-of-the-art.
-The smallest model had 7.3M MACs with 15k parameters and got 75% accuracy on ESC-50.
-
-eGRU[@eGRU] demonstrates an Recurrent Neural Network based on a modified Gated Recurrent Unit.
-The feature representation used was raw STFT spectrogram from 8Khz audio.
-The model was tested using Urbansound8k, however it did not use the pre-existing folds and test-set,
-so the results may not be directly comparable to others.
-With full-precision floating point the model got 72% accuracy.
-When running on device using the proposed quantization technique the accuracy fell to 61%.
-
-As of April 2019, eGRU was the only paper that could be found for the ESC task
-and the Urbansound8k dataset on a microcontroller.
-
-
-## Resource efficient image classification
-
-The development of more efficient Convolutional Neural Networks for
-image classification have received a lot of attention over the last few years.
-This is especially motivated by the ability to run models
-that give close to state-of-the-art performance on mobile phones and tablets.
-Since spectograms are 2D inputs that are similar to images, it is possible that some of these
-techniques can transfer over to Environmental Sound Classification.
-
-SqueezeNet[@SqueezeNet] (2015) focused on reducing the size of model parameters.
-It demonstrated AlexNet[@AlexNet]-level accuracy on ImageNet challenge using 50x fewer parameters,
-and the parameters can be compressed to under 0.5MB in size compared to 240MB for AlexNet.
-It replaced most 3x3 convolutions in a convolution block with 1x1 convolutions,
-and reduce the number of channels using "Squeeze" layers consisting only of 1x1 convolutions.
-The paper also found that a residual connection between blocks increased model performance
-by 2.9% without adding parameters.
-
-Mobilenets[@Mobilenets] (2017) focused on reducing inference computations by
-using depthwise-separable convolutions.
-A family of models with different complexity was created using two hyperparameters:
-a width multiplier $\alpha$ (0.0-1.0) which adjusts the number of filters in each convolutional layer,
-and the input image size.
-On ImageNet, MobileNet-160 \alpha=0.5 with 76M MAC performs better than SqueezeNet with 1700M MAC,
-a 22x reduction. The smallest tested model was 0.25 MobileNet-128, with 15M mult-adds and 200k parameters.
-
-Shufflenet[@Shufflenet] (2017) uses group convolutions in order to reduce computations.
-In order to mix information between different groups of convolutions it introduces
-a random channel shuffle.
-
-SqueezeNext[@SqueezeNext] (2018) is based on SqueezeNet but
-uses spatially separable convolution (1x3 and 3x1) to improve inference time.
-While the MAC count was higher than MobileNet, they claim better inference
-time and power consumption on their simulated hardware accelerator.
-
-EffNet[@Effnet] (2018) also uses spatial separable convolutions,
-but additionally performs the downsampling in a separable fashion:
-first a 1x2 max pooling after the 1x3 kernel,
-followed by 2x1 striding in the 3x1 kernel.
-Evaluated on CIFAR10 and Street View House Numbers (SVHN) datasets
-it scored a bit better than Mobilenets and ShuffleNet. 
-
-## Resource efficient CNNs for speech detection
-
-Speech detection is a big application of audio processing and machine learning.
-In the Keyword Spotting (KWS) task the goal is to detect a keyword or phrase that
-indicates that the user wants to enable speech control.
-Example phrases in commercially available products include "Hey Siri" for Apple devices
-or "OK Google" for Google devices.
-This is used both in smarthome devices such as Amazon Alexa, as well as smartwatches and mobile devices.
-For this reason keyword spotting on low-power devices and microcontrollers
-is an area of active research.
-
-Note that speech recognition tasks often use Mel-Filter Cepstral Coefficients (MFCC),
-which is computed by performing a Discrete Cosine Transform (DCT) on a mel-spectrogram.
-
-In [@sainath2015convolutional] (2015) authors evaluated variations of
-small-footprints CNNs for keyword spotting. They found that using large strides in time or frequency 
-could be used to create models that were significantly more effective.
-
-In the "Hello Edge"[@HelloEdge] paper (2017),
-different models were evaluated for keyword spotting on microcontrollers.
-Included were most standard deep learning model architectures
-such as Deep Neural Networks, Recurrent Neural Networks and Convolutional Neural Networks.
-They found that Depthwise Separable Convolutional Neural Network (DS-CNN) provided the best
-accuracy while requiring significantly lower memory and compute resources than other alternatives.
-Models were evaluated with three different performance limits.
-Their "Small" version with under 80KB, 6M ops/inference achieved 94.5% accuracy on the Google Speech Command dataset.
-A DNN version was demonstrated on a high-end microcontroller (ARM Cortex M7 @ 216 Mhz) using CMSIS-NN framework,
-running keyword spotting at 10 inferences per second while utilizing only 12% CPU (rest sleeping).
-
-FastGRNN[@FastGRNN] (2018) is a Gated Recurrent Neural Network designed
-for fast inference on audio tasks on microcontrollers.
-It uses a simplified gating architecture with residual connection,
-and uses a three-stage training schedule that
-forces weights to be quantizated in a sparse and low-rank fashion. 
-When evaluated on Google Speech Command Set (12 classes),
-their smallest model of 5.5KB achieved 92% accuracy
-and ran in 242ms on a low-end microcontroller (ARM Cortex M0+ @ 48Mhz).
-
-
+\newpage
 ## Microcontrollers
 
     TODO: write 
@@ -773,6 +578,217 @@ that includes a convolutional neural network accelerator[@KendryteK210Datasheet]
 
 GreenWaves GAP8 is a RISC-V chip with 8 cores designed for parallel-processing.
 They claim a 16x improvement in power efficiency over a ARM Cortex M7 chip[@GAP8vsARM].
+
+
+
+\newpage
+## Environmental Sound Classification
+
+`TODO: write about datasets`
+
+Urbansound8k
+ESC-50 (and ESC-10) dataset.
+DCASE challenges
+
+[ESC-50: Dataset for Environmental Sound Classification](https://github.com/karoldvl/ESC-50).
+2k samples. 50 classes in 5 major categories.
+5 seconds each.
+Compiled from Freesound.org data
+! only 40 samples per class.
+
+Github repo has an excellent overview of attempted methods and their results.
+
+* Best models achieving 86.50% accuracy.
+* Human accuracy estimated 81.30%.
+* Baseline CNN at 64.50%. 
+* Baseline MFCC-RF, 44.30%.
+* Over 20 CNN variations attempted.
+
+
+### Spectrogram-based models
+
+Many papers have used Convolutional Neural Networks (CNN) for Environmental Sound Classification.
+Approaches based on spectrograms and in particular log-scaled melspectrogram being the most common.
+
+PiczakCNN[@PiczakCNN] in 2015 was one of the first applications of CNNs to the Urbansound8k dataset.
+It uses 2 channels of log-melspectrograms, both the plain spectrogram values
+and the first-order difference (delta spectrogram).
+The model uses 2 convolutional layers, first with size 57x6 (frequency x time) and then 1x3,
+followed by two fully connected layers with 5000 neurons each.
+The paper evaluates short (950ms) versus long (2.3 seconds)
+analysis windows, and majority voting versus probability voting.
+Performance on Urbansound8k ranged from 69% to 73%.
+It was found that probability voting and long windows perform slightly better.
+ 
+![Architecture of Piczak CNN, from the original paper [@PiczakCNN]. \label{figure:piczak-cnn}](./img/piczak-cnn.png)
+
+SB-CNN[@SB-CNN] (2016) is a 3-layer convolutional with uniform 5x5 kernels and 4x2 max pooling.
+The paper also analyzes the effects of several types of data augmentation on Urbansound8k.
+including Time Shift, Pitch Shift, Dynamic Range Compression and Background Noise.
+With all augmentations, performance on their model raised from 72% to 79% classification accuracy.
+However time-stretching and pitch-shifting were the only techniques that
+consistent gave a performance boost across all classes.
+
+
+D-CNN[@D-CNN] (2017) uses feature representation and model architecture that largely follows that of PiczakCNN,
+however the second layer uses dilated convolutions with a dilation rate of 2. 
+With additional data augmentation of time-stretching and noise addition,
+this gave a performance of up to 81.9% accuracy on Urbansound8k.
+LeakyRelu was found to perform slightly better than ReLu which scored 81.2%.
+
+A recent paper investigated the effects of mixup for data augmentation (2018)[@ESC-mixup].
+Their model uses 4 blocks with 2 convolutional layers each followed by max pooling.
+The second and third blocks form a spatially separated convolution,
+second block with 2 3x1 convolutions, and third block with 2 1x5 convolutions. 
+On mel-spectrograms the model scored 74.7% on Urbansound8k without data augmentation,
+77.3% with only mixup applied,
+and 82.6% when time stretching and pitch shift was combined with mixup.
+When using Gammatone spectrogram features instead of mel-spectrogram
+performance increased to 83.7%, which seems to be state-of-the-art as of April 2019.
+
+
+### Audio waveform models 
+
+Recently approaches that use the raw audio waveform as input have also been documented.
+
+![EnvNet[@EnvNet] architecture, using raw audio as input. \label{figure:envnet}](./img/envnet.png)
+
+EnvNet[@EnvNet] (2017) used 1D convolutions in order to learn a 2D spectrogram-like representation
+which is then classified using standard 2D convolutional layers.
+The architecture is illustrated in Figure \ref{figure:envnet}.
+They show that the resulting spectrograms have frequency responses with
+a shape similar to mel-spectrograms.
+The model manages a 66.3% accuracy score on Urbansound8k[@EnvNet2] with raw audio input.
+
+
+In [@VeryDeepESC], authors evaluted a number of deep CNNs using only 1D convolutions.
+Raw audio with 8kHz sample rate was used as the input.
+Their 18 layer model (M18) got a 71% accuracy on Urbansound8k,
+and the 11 layer version (M11) got 69%.
+
+EnvNet2[@EnvNet2] (2018) is like EnvNet but with 13 layers total instead of 7,
+and using 44.1 kHz input samplerate instead of 16kHz.
+Without data augmentation it achieves 69.1% accuracy on Urbansound8k.
+When combining data augmentation with a technique similar to mixup called between-class examples,
+the model is able to reach 78.3% on Urbansound8k.
+
+
+## Resource efficient Convolutional Neural Networks
+
+### For Environmental Sound Classification
+
+There are also a few works on Environmental Sound Classification (ESC)
+that explicitly target making resource efficient models, measured
+in number of parameters and compute operations.
+
+WSNet[@WSNet] is a 1D network on raw audio designed for efficiency.
+It proposes a weight sampling approach for efficient quantization of weights to
+reache an accuracy of 70.5% on UrbandSound8k with a 288K parameters and 100M MAC.
+
+LD-CNN[@LD-CNN] is a more efficient version of D-CNN.
+In order to reduce parameters the early layers use spatially separable convolutions,
+and the middle layers used dilated convolutions.
+As a result the model has 2.05MB of paramters, 50x fewer than D-CNN,
+while accuracy only dropped by 2% to 79% on Urbansound8k.
+
+AclNet [@AclNet] is a CNN architecture.
+It uses 2 layers of 1D strided convolution as a FIR decimation filterbank
+to create a 2D spectrogram-like set of features.
+Then a VGG style architecture with Depthwise Separable Convolutions is applied.
+A width multiplier ala that of Mobilenet is used to adjust model complexity.
+Data augmentation and mixup is applied, and gave up to 5% boost.
+Evaluated on ESC-50, the best performing model gets 85.65% accuracy, very close to state-of-the-art.
+The smallest model had 7.3M MACs with 15k parameters and got 75% accuracy on ESC-50.
+
+eGRU[@eGRU] demonstrates an Recurrent Neural Network based on a modified Gated Recurrent Unit.
+The feature representation used was raw STFT spectrogram from 8Khz audio.
+The model was tested using Urbansound8k, however it did not use the pre-existing folds and test-set,
+so the results may not be directly comparable to others.
+With full-precision floating point the model got 72% accuracy.
+When running on device using the proposed quantization technique the accuracy fell to 61%.
+
+As of April 2019, eGRU was the only paper that could be found for the ESC task
+and the Urbansound8k dataset on a microcontroller.
+
+
+### For image classification
+
+The development of more efficient Convolutional Neural Networks for
+image classification have received a lot of attention over the last few years.
+This is especially motivated by the ability to run models
+that give close to state-of-the-art performance on mobile phones and tablets.
+Since spectograms are 2D inputs that are similar to images, it is possible that some of these
+techniques can transfer over to Environmental Sound Classification.
+
+SqueezeNet[@SqueezeNet] (2015) focused on reducing the size of model parameters.
+It demonstrated AlexNet[@AlexNet]-level accuracy on ImageNet challenge using 50x fewer parameters,
+and the parameters can be compressed to under 0.5MB in size compared to 240MB for AlexNet.
+It replaced most 3x3 convolutions in a convolution block with 1x1 convolutions,
+and reduce the number of channels using "Squeeze" layers consisting only of 1x1 convolutions.
+The paper also found that a residual connection between blocks increased model performance
+by 2.9% without adding parameters.
+
+Mobilenets[@Mobilenets] (2017) focused on reducing inference computations by
+using depthwise-separable convolutions.
+A family of models with different complexity was created using two hyperparameters:
+a width multiplier $\alpha$ (0.0-1.0) which adjusts the number of filters in each convolutional layer,
+and the input image size.
+On ImageNet, MobileNet-160 $\alpha=0.5$ with 76M MAC performs better than SqueezeNet with 1700M MAC,
+a 22x reduction. The smallest tested model was 0.25 MobileNet-128, with 15M mult-adds and 200k parameters.
+
+![Convolutional blocks of Effnet, ShuffleNet and Mobilenet. Illustration based on Effnet paper[@Effnet]](./img/conv-blocks-imagenets.png)
+
+Shufflenet[@Shufflenet] (2017) uses group convolutions in order to reduce computations.
+In order to mix information between different groups of convolutions it introduces
+a random channel shuffle.
+
+SqueezeNext[@SqueezeNext] (2018) is based on SqueezeNet but
+uses spatially separable convolution (1x3 and 3x1) to improve inference time.
+While the MAC count was higher than MobileNet, they claim better inference
+time and power consumption on their simulated hardware accelerator.
+
+Effnet[@Effnet] (2018) also uses spatial separable convolutions,
+but additionally performs the downsampling in a separable fashion:
+first a 1x2 max pooling after the 1x3 kernel,
+followed by 2x1 striding in the 3x1 kernel.
+Evaluated on CIFAR10 and Street View House Numbers (SVHN) datasets
+it scored a bit better than Mobilenets and ShuffleNet. 
+
+### For speech detection
+
+Speech detection is a big application of audio processing and machine learning.
+In the Keyword Spotting (KWS) task the goal is to detect a keyword or phrase that
+indicates that the user wants to enable speech control.
+Example phrases in commercially available products include "Hey Siri" for Apple devices
+or "OK Google" for Google devices.
+This is used both in smarthome devices such as Amazon Alexa, as well as smartwatches and mobile devices.
+For this reason keyword spotting on low-power devices and microcontrollers
+is an area of active research.
+
+In [@sainath2015convolutional] (2015) authors evaluated variations of
+small-footprints CNNs for keyword spotting. They found that using large strides in time or frequency 
+could be used to create models that were significantly more effective.
+
+In the "Hello Edge"[@HelloEdge] paper (2017),
+different models were evaluated for keyword spotting on microcontrollers.
+Included were most standard deep learning model architectures
+such as Deep Neural Networks, Recurrent Neural Networks and Convolutional Neural Networks.
+They found that Depthwise Separable Convolutional Neural Network (DS-CNN) provided the best
+accuracy while requiring significantly lower memory and compute resources than other alternatives.
+Models were evaluated with three different performance limits.
+Their "Small" version with under 80KB, 6M ops/inference achieved 94.5% accuracy on the Google Speech Command dataset.
+A DNN version was demonstrated on a high-end microcontroller (ARM Cortex M7 @ 216 Mhz) using CMSIS-NN framework,
+running keyword spotting at 10 inferences per second while utilizing only 12% CPU (rest sleeping).
+
+FastGRNN[@FastGRNN] (2018) is a Gated Recurrent Neural Network designed
+for fast inference on audio tasks on microcontrollers.
+It uses a simplified gating architecture with residual connection,
+and uses a three-stage training schedule that
+forces weights to be quantizated in a sparse and low-rank fashion. 
+When evaluated on Google Speech Command Set (12 classes),
+their smallest model of 5.5KB achieved 92% accuracy
+and ran in 242ms on a low-end microcontroller (ARM Cortex M0+ @ 48Mhz).
+
 
 
 
