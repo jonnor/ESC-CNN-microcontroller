@@ -440,6 +440,7 @@ https://github.com/ARM-software/CMSIS_5/issues/217
 
 
 Not All Ops Are Created Equal!, https://arxiv.org/abs/1801.04326
+[@lai2018not]
 Found up to 5x difference in throughput/energy between different operations.
 
 

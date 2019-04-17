@@ -594,21 +594,27 @@ the model is able to reach 78.3% on Urbansound8k.
 ## Resource efficient Environmental Sound Classification
 
 There are also a few works on Environmental Sound Classification (ESC)
-that explicitly target making resource efficient models (in parameters, inference time or power consumption).
+that explicitly target making resource efficient models, measured
+in number of parameters and compute operations.
 
 WSNet[@WSNet] is a 1D network on raw audio designed for efficiency.
-It uses a weight sampling approach for efficient quantization of weights to
-reaches a 70.5% on UrbandSound8k with a 288K parameters and 100M MAC.
+It proposes a weight sampling approach for efficient quantization of weights to
+reache an accuracy of 70.5% on UrbandSound8k with a 288K parameters and 100M MAC.
 
 LD-CNN[@LD-CNN] is a more efficient version of D-CNN.
 In order to reduce parameters the early layers use spatially separable convolutions,
 and the middle layers used dilated convolutions.
 As a result the model has 2.05MB of paramters, 50x fewer than D-CNN,
 while accuracy only dropped by 2% to 79% on Urbansound8k.
-`TODO: include mult-adds`
 
-AclNet [@AclNet].
-`TODO: write about`
+AclNet [@AclNet] is a CNN architecture.
+It uses 2 layers of 1D strided convolution as a FIR decimation filterbank
+to create a 2D spectrogram-like set of features.
+Then a VGG style architecture with Depthwise Separable Convolutions is applied.
+A width multiplier ala that of Mobilenet is used to adjust model complexity.
+Data augmentation and mixup is applied, and gave up to 5% boost.
+Evaluated on ESC-50, the best performing model gets 85.65% accuracy, very close to state-of-the-art.
+The smallest model had 7.3M MACs with 15k parameters and got 75% accuracy on ESC-50.
 
 eGRU[@eGRU] demonstrates an Recurrent Neural Network based on a modified Gated Recurrent Unit.
 The feature representation used was raw STFT spectrogram from 8Khz audio.
@@ -617,7 +623,8 @@ so the results may not be directly comparable to others.
 With full-precision floating point the model got 72% accuracy.
 When running on device using the proposed quantization technique the accuracy fell to 61%.
 
-As of April 2019, eGRU was the only paper found which performs ESC on a microcontroller.
+As of April 2019, eGRU was the only paper that could be found for the ESC task
+and the Urbansound8k dataset on a microcontroller.
 
 
 ## Resource efficient image classification
@@ -658,19 +665,26 @@ EffNet[@Effnet] (2018) also uses spatial separable convolutions,
 but additionally performs the downsampling in a separable fashion:
 first a 1x2 max pooling after the 1x3 kernel,
 followed by 2x1 striding in the 3x1 kernel.
+Evaluated on CIFAR10 and Street View House Numbers (SVHN) datasets
+it scored a bit better than Mobilenets and ShuffleNet. 
 
 ## Resource efficient CNNs for speech detection
 
 Speech detection is a big application of audio processing and machine learning.
 In the Keyword Spotting (KWS) task the goal is to detect a keyword or phrase that
 indicates that the user wants to enable speech control.
-Example phrases in commercially available products include "Hey Siri" for Apple devices or "OK Google" for Google devices.
+Example phrases in commercially available products include "Hey Siri" for Apple devices
+or "OK Google" for Google devices.
 This is used both in smarthome devices such as Amazon Alexa, as well as smartwatches and mobile devices.
 For this reason keyword spotting on low-power devices and microcontrollers
 is an area of active research.
 
 Note that speech recognition tasks often use Mel-Filter Cepstral Coefficients (MFCC),
 which is computed by performing a Discrete Cosine Transform (DCT) on a mel-spectrogram.
+
+In [@sainath2015convolutional] (2015) authors evaluated variations of
+small-footprints CNNs for keyword spotting. They found that using large strides in time or frequency 
+could be used to create models that were significantly more effective.
 
 In the "Hello Edge"[@HelloEdge] paper (2017),
 different models were evaluated for keyword spotting on microcontrollers.

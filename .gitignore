@@ -5,5 +5,8 @@ report/report.pdf
 report/summary.pdf
 report/status.pdf
 /data/
+!data/results
 .ipynb_checkpoints/
 _minted-input/
+/test/data
+/test/out
