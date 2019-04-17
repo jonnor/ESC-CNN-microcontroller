@@ -30,7 +30,8 @@ def command_for_job(options):
     args += arglist(options)
     return args
 
-def generate_train_jobs(experiments, settings_path, folds, overrides):
+def generate_train_jobs(experiments, settings_path, folds, overrides, 
+                        ignored = [ 'nickname' ]):
 
     timestamp = datetime.datetime.now().strftime('%Y%m%d-%H%M') 
     unique = str(uuid.uuid4())[0:4]   
@@ -56,6 +57,9 @@ def generate_train_jobs(experiments, settings_path, folds, overrides):
 
         for k, v in overrides.items():
             options[k] = v
+
+        for k in ignored:
+            del options[k]
 
         return options
 
@@ -137,6 +141,11 @@ def parse(args):
     a('--folds', type=int, default=9,
         help='Number of folds to test')
 
+    a('--start', type=int, default=0,
+        help='First experiment')
+    a('--stop', type=int, default=None,
+        help='Last experiment')
+
     parsed = parser.parse_args(args)
 
     return parsed
@@ -146,6 +155,9 @@ def main():
 
     experiments = pandas.read_csv(args.experiments)
     settings = common.load_settings_path(args.settings_path)
+
+    stop = len(experiments) if args.stop is None else args.stop
+    experiments = experiments.loc[range(args.start, stop)]
 
     overrides = {}
     folds = list(range(0, args.folds))
