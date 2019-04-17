@@ -104,7 +104,7 @@ def build_model(frames=128, bands=128, channels=1, n_classes=10,
                 conv_block='conv',
                 downsample_size=(2,2),
                 n_stages=3, n_blocks_per_stage=1,
-                filters=24, kernels_growth=1.5,
+                filters=24, kernels_growth=1.75,
                 fully_connected=64,
                 dropout=0.5, l2=0.001):
     """
