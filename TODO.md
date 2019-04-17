@@ -6,8 +6,9 @@
 
 Critical line
 
+- Finalize Existing methods review.
+Fix image CNNs section. Fix keyword spotting section. add images
 - Finalize introduction. Health/import section, images
-- Finalize Existing methods review. Fix image CNNs section, add images
 - Materials. Add images of model comparisons
 - BACKGROUND section. Information about CNNs, images
 - Background. Info about microcontrollers
@@ -42,7 +43,6 @@ Code quality
 Maybe
 
 - Add a test with 16kHz / 30 mels?
-- Add tests with 2x 3x3 blocks instead of 5x5?
 
 Dissemination
 

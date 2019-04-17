@@ -677,14 +677,25 @@ Evaluated different usecases.
 Noise annoyance, Illegal firework detection/localization, Noise reason monitoring for tram passings. 
 
 
+# Power draw
 
-###
+perftest firmware
+3.3V
+Measured 35 mA when executing network.
+30mA when not executing
+?? much higher than expected.
 
-Results for "network", 16 inferences @80MHz/80MHz (complexity: 2980798 MACC)
- duration     : 325.142 ms (average)
- CPU cycles   : 26011388 -186/+125 (average,-/+)
- CPU Workload : 32%
- cycles/MACC  : 8.72 (average for all layers)
- used stack   : 276 bytes
- used heap    : 0:0 0:0 (req:allocated,req:released) cfg=0
+
+STM32L4SystemPower PDF
+
+All numbers at 1.8V?
+
+RUN1. 10.5mA @ 80 Mhz
+LPRun. 270uA @ 2Mhz. 
+LPSleep. 80uA @ 2Mhz. SAI/ADC still active
+
+
+
+
+
 
