@@ -634,46 +634,62 @@ DS-KWS
 The development of more efficient Convolutional Neural Networks for image classification have received a lot of attention.
 This is especially motivated by the ability to run models that give close to state-of-the-art performance
 on mobile phones and tablets.
-When using 2D-spectograms as the input feature, it is possible that many of these
+Since spectograms are 2D inputs similar to images, it is possible that many of these
 developments will transfer over to Environmental Sound Classification.
 
-[SqueezeNet: AlexNet-level accuracy with 50x fewer parameters and <0.5MB model size](http://arxiv.org/abs/1602.07360). 2015.
-Fire module 1x1 convolutions and 3x3 convolutions. Percentage tunable as hyperparameters.
+[SqueezeNet: AlexNet-level accuracy with 50x fewer parameters and <0.5MB model size](http://arxiv.org/abs/1602.07360).
+SqueezeNet (2015) focused on reducing the number of parameters.
+5MB model performs like AlexNet on ImageNet. 650KB when compressed to 8bit at 33% sparsity. 
+`TODO: `
+Introduces a Fire module, with a mix of 1x1 convolutions and 3x3 convolutions in parallel.
+A residual connection increased model performance by 2.9% without increasing model size.
+
+Percentage tunable as hyperparameters.
 Pooling very late in the layers.
 No fully-connected end, uses convolutional instead.
-5MB model performs like AlexNet on ImageNet. 650KB when compressed to 8bit at 33% sparsity. 
-Noted that residual connection increases model performance by 2.9% without increasing model size.
 
-[MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications](https://arxiv.org/abs/1704.04861). 2017.
-Extensive use of 1×1 Conv layers. 95% of it’s computation time, 75% parameters. 25% parameters in final fully-connected.
-Also depthwise-separable convolutions. Combination of a depthwise convolution and a pointwise convolution.
-Has two hyperparameters: image size and a width multiplier `alpha` (0.0-1.0).
-Figure 4 shows log linear dependence between accuracy and computation.
-0.5 MobileNet-160 has 76M mul-adds, versus SqueezeNet 1700 mult-adds, both around 60% on ImageNet.
+
+Mobilenets[@Mobilnets] (2017) uses depthwise-separable convolutions
+in order to reduce inference time.
+
+Mobilenets use two hyperparameters to tune model complexity:
+a width multiplier `alpha` (0.0-1.0) which adjusts linearly the number of filters in each convolutional layer,
+and the input image size.
+
+0.5 MobileNet-160 has 76M MAC, versus SqueezeNet 1700M MAC, both around 60% on ImageNet.
 Smallest tested was 0.25 MobileNet-128, with 15M mult-adds and 200k parameters.
 
-[ShuffleNet](https://arxiv.org/abs/1707.01083). Zhang, 2017.
-Introduces the three variants of the Shuffle unit. Group convolutions and channel shuffles.
-Group convolution applies over data from multiple groups (RGB channels). Reduces computations.
+
+95% of it’s computation time, 75% parameters in conv. 25% parameters in final fully-connected.
+
+
+
+Shufflenet (2017) uses group convolutions combined with channel shuffles in
+order to reduce computations.
+
+Introduces the three variants of the Shuffle unit.
+Group convolutions and channel shuffles.
 Channel shuffle randomly mixes the output channels of the group convolution.
+
 
 [SqueezeNext: Hardware-Aware Neural Network Design](https://arxiv.org/abs/1803.10615)
 Uses a Resnet style residual connection, elementwise Additition.
-Uses spatially separable convolution (1x3 and 3x1). Order changes during network! 
+Uses spatially separable convolution (1x3 and 3x1), with order changing though the network.
+2.59x faster inference time than SqueezeNet (and to MobileNet).
+
 Notes inefficiency of depthwise-separable convolution in terms of hardware performance,
 due to its poor arithmetic intensity (ratio of compute to memory operations). REF Williams2009
-2.59x faster inference time than SqueezeNet (and to MobileNet).
 
 
 [MobileNetV2: Inverted Residuals and Linear Bottlenecks](https://arxiv.org/abs/1801.04381). 2018
 Inserting linear bottleneck layers into the convolutional blocks.
 Ratio between the size of the input bottleneck and the inner size as the expansion ratio.
 Shortcut connections between bottlenecks.
-ReLU6 as the non-linearity. Designed for with low-precision computation (8 bit fixed-point). y = min(max(x, 0), 6).
+
 Max activtions size 200K float16, versus 800K for MobileNetV1 and 600K for ShuffleNet.
 Smallest network at 96x96 with 12M mult-adds, 0.35 width. Performance curve very similar to ShuffleNet.
-Combined with SSDLite, gives similar object detection performance as YOLOv2 at 10% model size and 5% compute.
-200ms on Pixel1 phone using TensorFlow Lite.
+
+
 
 [EffNet](https://arxiv.org/abs/1801.06434). 2018.
 Spatial separable convolutions.
@@ -681,12 +697,6 @@ Made of depthwise convolution with a line kernel (1x3),
 followed by a separable pooling,
 and finished by a depthwise convolution with a column kernel (3x1).
 
-CondenseNet: An Efficient DenseNet using Learned Group Convolutions.
-https://arxiv.org/abs/1711.09224
-More efficient than MobileNet and ShuffleNets.
-
-[FD-MobileNet: Improved MobileNet with a Fast Downsampling Strategy](https://arxiv.org/abs/1802.03750). February 2018.
-1.1x inference speedup over MobileNet. And 1.82x over ShuffleNet.
 
 
 ## Microcontrollers
@@ -738,7 +748,7 @@ emlearn[@emlearn] by the author.
 Supports converting a subset of Scikit-Learn[@scikit-learn] and Keras[@Keras] models
 and run them using C code designed for microcontrollers.
 
-### Hardware accelerators
+### Hardware accelerators for neural networks
 
 With the increasing interest in deploying neural networks on low-power microcontrollers,
 dedicated hardware acceleration units are also being developed.
@@ -779,13 +789,16 @@ which was developed based on analysis of noise complaints in New York city betwe
 
 ![Spectrograms of sound clips from Urbansound8k dataset, selected for each class\label{urbansound8k-examples}](./plots/urbansound8k-examples.png)
 
-The target sound is rarely alone in the sound clip, and may be in the background, partially obscured by sounds outside the available classes.
+The target sound is rarely alone in the sound clip, and may be in the background,
+partially obscured by sounds outside the available classes.
 This makes Urbansound8k a relatively challenging dataset.
 For figure \ref{urbansound8k-examples} sounds with clear occurences of the target sound were chosen.
 
-The dataset comes pre-arranged into 10 folds. A single fold may contain multiple clips from the same source file,
+The dataset comes pre-arranged into 10 folds.
+A single fold may contain multiple clips from the same source file,
 but the same source file is not used in multiple folds to prevent data leakage.
-Authors recommend always using fold 10 as the test set, to allow easy comparison of results between experiments.
+Authors recommend always using fold 10 as the test set,
+to allow easy comparison of results between experiments.
 
 ## Hardware platform
 
@@ -891,43 +904,50 @@ Only SB-CNN and LD-CNN are close.
 
 
 ![Performance of existing CNN models using log-mel features on Urbansound8k dataset. Green region shows the region which satisfies our model requirements.\label{existing-models-perf}](./plots/urbansound8k-existing-models-logmel.png)
+`FIXME: plot is clipping text at bottom and top, need more margins`
+
 
 
 ### Compared models
 
-SB-CNN and LD-CNN are the two candidates for a baseline model,
+SB-CNN and LD-CNN are the two best candidates for a baseline model,
 being the only two that are close to the desired performance characteristic.
-SB-CNN also utilizes a CNN architecture similar to the literature on efficient CNN models,
-with small uniformly sized kernels followed by max pooling. 
-LD-CNN on the other hand uses full-height layers in the start, and has already been optimized
-but without reaching fully the performance needed.
-For these reasons SB-CNN was used as the base architecture.
+SB-CNN utilizes a CNN architecture similar to the literature on efficient CNN models,
+with small uniformly sized kernels (5x5) followed by max pooling. 
+LD-CNN on the other hand uses less conventional full-height layers in the start,
+with two heads that take both mel-spectrogram and delta-melspectrogram as inputs.
+This requires twice as much RAM as a single input, and the convolutions in the CNN
+should be able to learn delta-type features if needed. 
+For these reasons SB-CNN was used as the base architecture for experiments.
 
 \ref{existing-models-perf}
 
-Would like to determine the effects of using more computationally efficient
-convolutional blocks, in particular depthwise-separable and spatially-separable.
+The baseline model has a few minor modifications from the original SB-CNN model:
+
+Max pooling is 3x2 instead of 4x2. Without this change the layers become negative sized
+due to the reduced input feature size (60 mel filter bands instead of 128).
+Batch Normalization was added to each convolutional block.
+
+Would like to evaluate the effects of using more computationally efficient
+convolutional blocks, in particular depthwise-separable and spatially-separable convolutions.
+
+`TODO: table of models to test, parameters`
+`TODO: images of each compared architecture. Overall / convolutional blocks`
+
+
 Residual connections are not evaluated, as the networks are relatively shallow.
-Grouped convolutions are not evaluated, as they were only added to TensorFlow
-in April 2019[@TensorFlowGroupConvolutionPR], and are not supported by our version Keras and X-CUBE-AI.
+Grouped convolutions are not evaluated, as they were only added to TensorFlow very recently[@TensorFlowGroupConvolutionPR], and are not supported by our version of Keras and X-CUBE-AI.
 
-`TODO: images of RAM usage per layer`
-
-Some minor modifications was done to the SB-CNN model compared to original.
-The max pooling was changed from 4x2 to 3x2 to accomodate the reduced number of mel filter bands (60 instead of 128).
-Batch Normalization was also added.
+To get the RAM utilization within limits, striding is used as the downsampling strategy. 
+Since the stride in Keras/Tensorflow must be uniform, 2x2 is used instead of 3x2.
 
 
+`TODO: write about RAM optimization in X-CUBE-AI`
 In the SB-CNN architecture X-CUBE-AI will fuse the layers Conv2D -> BN -> MaxPooling2D 
 into a single operation.
 This drastically reduces RAM usage, from `TODO` to...
-
-
-Unfortunately this optimization is not implemented for depthwise-separable layers.
-To get the RAM utilization within limits, striding is used as the downsampling strategy. 
-Since the stride in Keras/Tensorflow must be uniform.
-
-`TODO: images of each compared architecture. Overall / convolutional blocks`
+`TODO: images of RAM usage per layer`
+Unfortunately this optimization is not implemented for all cases. (`FIXME: WHICH`)
 
 
 Some other models were also attempted.
@@ -936,42 +956,22 @@ DenseNet. X-CUBE-AI conversion fails. `INTERNAL ERROR: 'refcount'`
 MobileNet. Had to replace Relu6() with ReLu.
 EffNet. Had to replace LeakyReLU with ReLu.
 
-
-
 ST FP-SENSING1 function pack[@FP-AI-SENSING1]
-
-
-`FIXME: plot is clipping text at bottom and top, need more margins`
 
 
 \newpage
 # Methods
 
-
-## Models evaluated
-<!---
-Find out effect of better convolutional blocks on accuracy vs inference time.
-(and striding)
-(wide versus deep)
-(different voting overlaps)
--->
-
-
-
-Adjust number of convolutions to make MACC approximately equal within groups.
-Ref Google paper keyword spotting. tstride/fstride?
-
-
 ## Model pipeline
 
-![Overview of classification pipeline](./img/classification-pipeline.png)
+![Overview of classification pipeline \label{classification-pipeline}](./img/classification-pipeline.png)
 
 ## Preprocessing
 
 Mel-spectrograms is used as the input feature.
 The most compact and most computationally efficient featureset in use by existing methods was by LD-CNN,
-which used 31 frames @ 22050 Hz with 60 mels bands.
-This achieved results near the state-of-art, so we opted to use the same.
+which used windows of 31 frames @ 22050 Hz (720 ms) with 60 mels bands.
+This has achieved results near the state-of-art, so we opted to use the same.
 
 
 \begin{table}
@@ -985,25 +985,35 @@ This achieved results near the state-of-art, so we opted to use the same.
 During preprocessing we also perform Data Augmentation.
 Time-stretching and Pitch-shifting following [@SB-CNN], for a total of 12 variations per sample.
 
-The preprocessed mel-spectrograms are stored as compressed Numpy arrays.
+The preprocessed mel-spectrograms are stored on disk as Numpy arrays for use during training.
 
-Each window of mel-spectrogram frames is normalized by subtracting
+During training time each window of mel-spectrogram frames is normalized by subtracting
 the mean of the window and dividing by the standard deviation.
 
 ## Training
 
 `?! Include Hyperparameter search ?`
 
-10-fold cross-validation using the pre-assigned folds of the Urbansound8k dataset and fold 10 as the held-out test set.
+The pre-assigned folds of the Urbansound8k dataset was used,
+with 9-fold cross-validation during training and fold 10 as the held-out test set.
 
-Training is done with minibatches of size of `TODO`.
-In each batch, audio clips from training set are selected randomly.
+Training are done on individual windows, with each window inheriting the
+label of the audio clip it belongs to.
+
+In each minibatch, audio clips from training set are selected randomly.
 And for each sample, a time window is selected from a random position.
+This effectively implements time-shifting data augmentation.
 `TODO: ref SB?`
+
+In order to evaluate the model on the entire audio clip, an additional
+pass over the validation set is done which combines predictions from multiple time-windows
+as shown in Figure \ref{classification-pipeline}.
 
 As the optimizer, Stocastic Gradient Decent (SGD) with Nesterov momentum set to 0.9 is used.
 Learning rate of `TODO`.
 Each model is trained for up to 50 epochs.
+
+A summary of experiment settings can be seen in Table \ref{table:experiment-settings}.
 
 Training was performed on a NVidia GTX2060 GPU with 6GB of RAM to reduce experiment time,
 however the models can be trained on any device supported by TensorFlow and a minimum of 1GB RAM.
@@ -1016,23 +1026,19 @@ for each of the cross-validation folds.
 The selected models are then evaluated on the test set.
 
 In addition to the original Urbansound8k test set,
-we also evaluate the models on two simplified variations:
+we also evaluate the models performance on two simplified variations:
 
 - Only clips where target sound is in the foreground
-- Grouping into 5 more coarsely classes 
+- Grouping into 5 more coarse classes 
 
 `TODO: table of group membership`
 
-## Execution time
+## Inference time
 
 The SystemPerformance application skeleton from X-CUBE-AI is used to record the
 average inference time per sample on the STM32L476 microcontroller.
-
-<!---
-TODO
-9. Measure current draw
-(10. Try different voting overlaps)
--->
+This accounts for potential variations in number of MACC/second for different models,
+which would be ignored if only relying on the theoretical MACC number. 
 
 
 \newpage
@@ -1066,19 +1072,22 @@ What is the battery lifetime. BOM
 
 would this be good enough to be useful for classifying noise assessment?
 
-might not be neccesary to go as fine-grained as 10 classes
-Road noise, people/social noise, construction noise.
-could this be done as post-processing on these 10 classes?
-
-could do only the `foreground` classes. Since the predominant sound
-
-
 class accuracies
 confusion 
-top3 performance
+
+
+Foreground only
+Since the predominant sound
+
+Grouped evaluation
+Road noise, people/social noise, construction noise.
+
+
 
 Possible to use slightly bigger microcontroller.
 Able to double Flash. Up to 1024kB RAM, 8x. Approx 8x CPU.
+
+Hardware accelerators.
 
 
 ## Further work
@@ -1089,9 +1098,8 @@ Use fixed-point / SIMD optimimized CNN implementation.
 CNN quantizations for efficient integer inference. 
 [@IncrementalNetworkQuantization]
 
-Reduce number of mels.
-Reduce samplerate to 8kHz (eGRU).
-
+Reduce number of mels further.
+Reduce samplerate to 16kHz or 8kHz (eGRU).
 
 
 

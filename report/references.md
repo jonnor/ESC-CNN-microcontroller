@@ -430,8 +430,27 @@ Code at http://github.com/TomVeniat/SANAS
 
 # Efficient CNNs
 
+## Image models
 
-Explanations
+MobileNet
+Figure 4 shows log linear dependence between accuracy and computation.
+
+MobileNetV2
+ReLU6 as the non-linearity. Designed for with low-precision computation (8 bit fixed-point). y = min(max(x, 0), 6).
+Combined with SSDLite, gives similar object detection performance as YOLOv2 at 10% model size and 5% compute.
+200ms on Pixel1 phone using TensorFlow Lite.
+
+
+
+CondenseNet: An Efficient DenseNet using Learned Group Convolutions.
+https://arxiv.org/abs/1711.09224
+More efficient than MobileNet and ShuffleNets.
+
+[FD-MobileNet: Improved MobileNet with a Fast Downsampling Strategy](https://arxiv.org/abs/1802.03750). February 2018.
+1.1x inference speedup over MobileNet. And 1.82x over ShuffleNet.
+
+
+## Explanations
 
 [3 Small But Powerful Convolutional Networks](https://towardsdatascience.com/3-small-but-powerful-convolutional-networks-27ef86faa42d).
 Explains MobileNet, ShuffleNet, EffNet.
