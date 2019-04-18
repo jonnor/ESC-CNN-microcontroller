@@ -258,66 +258,57 @@ For machine learning, it must be exist in a digital representation.
 The acoustic data is converted to analog electric signals by a microphone and
 then digitized using an Analog-to-Digital-Converter (ADC).
 
-    TODO: IMAGE, replace with own work
+`TODO: image of digital audio pipeline. From acoustical event to digital representation`
 
 ![From acoustical sound to digital and back. Source: [@ProcessingTutorial]](./images/digital-sound-processingorg.png)
 
 In the digitization process, the signal is quantized in time at a certain sampling frequency,
 and the amplitude quantized at a certain bitdepth.
-A typical sampling frequency is 44100 Hz, and bitdepth 16 bit. With these parameters,
-the acoustic sound can be reconstructed without perceivable differences by humans.
+A typical sampling frequency is 44100 Hz, and bitdepth 16 bit.
+With these parameters, the acoustic sound can be reconstructed without perceivable differences by humans.
 
-Digital sound can be stored uncompressed (PCM .wav), using lossless compression (.flac)
-or using lossy compression (.mp3). Lossy compression removes information and may add artifacts,
-and is best avoided for machine learning tasks.
-Recordings can be multi-channel but for acoustic events
+In this representation, sound is a 1 dimensional sequence of numbers.
+This is sometimes referred to as a *waveform*. 
+
+Digital sound can be stored uncompressed (example: PCM WAV),
+using lossless compression (example: FLAC)
+or using lossy compression (example: MP3).
+Lossy compression removes information that are indistinguishable to the human hear
+and can compress better than lossless.
+It however adds compression artifacts, and is usually avoided for machine learning tasks.
+
+Recordings can have multiple channels of audio but for machine learning on audio
 single-channel (mono) data is still the most common.
-
 
 ### Spectrograms
 
-To process and analyze the audio data it is often represented as *frames*, small groups of samples across time.
-Frames can be produced in real-time, by collecting N samples at a time,
-or by splitting up audio files after they have been recorded.
+Acoustic events.
+Frequency analysis can reveal.
 
-In a frame based approach, a frame is the smallest unit of time processed by the machine learning algorithm.
-Therefore the frame length must be set long enough to contain enough relevant information,
-but not so long that temporal variations disappear. For speech, a typical choice of frame length is 25ms.
-Similar frame lengths are often adopted for acoustic events, unless there are specific concerns.
+A common way to transform audio waveform into a spectrogram is by using the
+Short Time Fourier Transform (STFT).
 
-    TODO: IMAGE, replace with own work
+The STFT operates by splitting the audio up in small consecutive chunks.
+
+The splitting is often computed with 50% overlap, and by applying a window function before computing the FFT.
+The window function
+
+In the Fourier Transform, and thus in the STFT, there is a tradeoff between frequency resolution.
+The longer the FFT window the better the frequency resolution, but the temporal resolution is reduced.
+For speech a typical choice of window length is 25ms.
+Similar frame lengths are often adopted for acoustic events. `TODO: references`
 
 ![Computing frames from an audio signal, using windows functions. Based on image by [@AudioFraming]](./images/frames.png)
 
-Frames often use overlapping samples at the start and end.
-Without overlap, acoustic event that happens partially in one frame results in different signals than when appearing in the middle.
-The overlap can be specified as percentage of the frame length (overlap percentage).
-or as a number of samples (hop length). Overlap can for instance be 50%.
-A window function is applied to ensure that the signal level stays constant also in overlapping sections.
-
-A raw Short Time Fourier Transform can contain 1024 or more bins, often with strong correlation across multiple bins.
-To reduce dimensionality, the STFT spectrogram is often processed with a filter-bank of 40-128 frequency bands.
-
-Some filter-bank alternatives are 1/3 octave bands, the Bark scale, Gammatone and the Mel scale.
-All these have filters spacing that increase with frequency, mimicking the human auditory system.
-
-## Mel-spectrogram
-
-A spectrogram processed with triangular filters evenly spaced on the Mel scale is called a Mel-spectrogram.
 
 
-![Comparison of different filter responses. Mel, Gammatone, 1/3-octave](./pyplots/filterbanks.png)
-
-
-    TODO: image of normalized mel-spectrogram
-
-    TODO: image of spectrogram and mel-spectrogram of a sound sample
 
 ## Machine learning
 
 ```
 Supervised learning
 Classification
+Parameters versus hyperparameters
 Training set
 Validation set
 Test set
@@ -329,42 +320,98 @@ Training time versus inference/prediction time
 `TODO: image of train/val/test set split`
 
 
-## Machine Learning for Audio Classification
+## Audio Classification
 
-### Feature representations
+Feature representations
 
-Note that speech recognition tasks often use Mel-Filter Cepstral Coefficients (MFCC),
-which is computed by performing a Discrete Cosine Transform (DCT) on a mel-spectrogram.
+### Mel-spectrogram
+
+For machine learning it is desirable to reduce the dimensions of inputs as much as possible.
+To do this on spectrograms the STFT spectrogram is often reduced to 30-128 frequency bands using a filter-bank.
+Several different filter-bank alternatives have been investigated for audio classification tasks,
+such as 1/3 octave bands, the Bark scale, Gammatone and the Mel scale.
+All these have filters spacing that increase with frequency, mimicking the human auditory system.
+See Figure \ref{figure:filterbanks}
+
+![Comparison of different filter responses. Mel, Gammatone, 1/3-octave \label{figure:filterbanks}](./pyplots/filterbanks.png)
+
+
+The most commonly used for audio classification is the Mel scale.
+The spectrogram that results for applying a Mel-scale filter-bank is often called a Mel-spectrogram.
+`TODO: references`
+
+`TODO: image of mel-spectrogram`
+
+Mel-Filter Cepstral Coefficients (MFCC) is a feature representation
+computed by performing a Discrete Cosine Transform (DCT) on a mel-spectrogram.
+This further reduces dimensionality to just 13-20 bands and reduces correlation between each band.
+This has been shown to work well for speech, but can perform worse on general sound classification tasks.
+`TODO: reference Stowell birds`
+
+### Preprocessing
+
+Audio has a very large dynamic range
+
+To reduce this dynamic range, a compressive transform is applied.
+log is the most common
+
+`TODO: image of normalized mel-spectrogram`
+
 
 ### Analysis windows
 
-Windowed voting
+When recording sound, it forms a continious, never-ending stream of data.
+The machine learning classifier however generally needs a fixed-size feature vector. 
+Also when playing back a recorded file, the file may be much longer than
+the sounds that are of interest.
 
-Mean
-Majority
-Overlap
+`TODO: image of analysis windows`
+
+To solve these problems, the audio stream is split up into analysis windows,
+typically with a length a bit longer than the target sound.
+The windows can follow eachother with no overlap,
+or move forward by a number less than the window length (overlap).
+With overlap a target sound will couple of times, each time shifted.
+This can improve classification accuracy. 
+
+A short analysis window has the benefit of reducing the feature size of the classifier,
+which uses less memory and possibly allow to reduce the model complexity,
+which may in turn allow to make better use of a limited dataset. 
+
+When the length of audio clips is not evenly divisible by length of analysis windows,
+the last window is zero padded. 
+
+### Weak labeling
+
+Sometimes there is a mismatch between the desired length of analysis window,
+and the labeled clips available in the training data.
+For example a dataset may consist of labeled audio clips with a length of 10 seconds,
+and the desired analysis window be 1 second.
+When a dataset is labeled only with the presence of a sound at a coarse timescale,
+without information about where exactly the relevant sound(s) appears.
+it is referred to as *weakly annotated* or *weakly labeled* data.
+
+If one assumes that the sound of interest occur thoughout the entire audio clip,
+a simple solution is to let each analysis window inherit the label of the audio clip as-is.
+
+If this assumption is problematic, the task can be approached as a Multiple Instance Learning (MIL) problem.
+Dedicated MIL techniques for audio classification have been explored in the literature.
+`TODO: reference MMM etc`
+
+
+### Aggregating analysis windows
+
+When evaluating on a test-set where audio clips are 10 seconds,
+but the model classifies analysis windows of 1 second
+the individual predictions must be aggregate into one prediction for the clip.
+
+A simple technique is *majority voting*,
+where the overall prediction is the class that occurs most often across individual predictions.
+
+With *Probabalistic voting*, the probabilities of individual predictions are averaged together,
+and the output prediction the class with overall highest probability.
 
 `TODO: image showing how voting is performed` 
-
-Weak labeling
-
-Many acoustic events are short in duration, for instance a door slamming.
-Other acoustic events only happen intermittently, like the the frog vocalizations in previous example.
-
-Under supervised learning, ideally each and every of the acoustic events instances in the training data
-would be labeled with their start and end time. This is called 'strong labels'.
-However aquiring strong labels requires careful attention to detail by the annotator and is costly.
-
-Therefore, often per-event time-based labels are not available.
-Instead fixed-length audio clips are only marked whether an event occurs at least once, or not at all.
-This is called a 'weak label' or 'weakly annotated' data.
-
-When performing event detection, with small time windows (compared to annotated audio clips) as input,
-the missing time information means there is not a direct label for this input.
-This is known as a Multiple Instance Learning (MIL) problem.
-Under MIL input instances are grouped into a 'bag', and the label exists on the bag
-instead of the individual instances.
-MIL formulations exist for many common machine learning algorithms.
 
 
 ### Data augmentation
@@ -376,31 +423,38 @@ Principle
 Commonly used Data Augmentation for audio/ESC
 -->
 
-Getting new labeled samples is hard and expensive
-Data Augmentation is a way to generate new samples from existing ones,
+Access to labeled samples is often a limiting factor in machine learning.
+
+Data Augmentation is a way to synthetically generate new labeled samples from existing ones,
 in order to expand the effective training set.
-Apply a transformation which modifies the data somehow,
-but in a way that does not change the label of the sample.
-(or in a way which the label change is predictable and can also be transformed)
+A simple form of data augmentation can be done by modifying the sample data slightly
+in a way such that the class of the sample is still the same.
 
-Common data augmentation techniques for audio include
-Time-shift, Pitch-shift and Time-stretch.
+Common data augmentation techniques for audio include Time-shift, Pitch-shift and Time-stretch.
+These are demonstrated in Figure \ref{figure:dataaugmentations}.
 
-`TODO: image of each of the augmenation techniques`
+![Common data augmentations for audio demonstrated on a dog bark ("woof woof"). Parameters exaggerated to show the effects more clearly. \label{figure:dataaugmentations}](./pyplots/dataaugmentations.png)
 
-<!--
-TODO: image of mixup`
--->
 
 Mixup[@Mixup] is another type of data augmentation technique
-where two samples from a different classed are mixed together to create a new sample.
-A mixup ratio `FFFFF` controls how much the sample data is mixed,
+where two samples from a different classes are mixed together to create a new sample.
+A mixup ratio $\lambda$ controls how much the sample data is mixed,
 and the labels of the new sample is a mix of labels of the two inputs samples.
 
-`TODO: add equation for mixup`
+`TODO: fix alignment and subscripts in equation`
 
-`TODO: Reference papers where mixup has been applied`
+<!--
+$$
+x̃ = λx i + (1 − λ)x j , where x i , x j are raw input vectors
+ỹ = λy i + (1 − λ)y j, where y i , y j are one-hot label encodings
+$$
+-->
 
+The authors argue that this encourages the model to behaving linearly in-between training examples.
+It has been shown to increase performance on audio tasks[@ESC-mixup][@AclNet][@Mixup-ASC].
+
+Data augmentation can be applied either to the raw audio waveform,
+or to preprocessed spectrograms.
 
 <!--
 DROP
@@ -410,13 +464,17 @@ Dynamic range compression
 
 ## Convolutional Neural Networks
 
-Neural Network
+`TODO: intro, why are they important`
 
-Fully connected, Dense layer.
+### Neural Networks
+
+Fully connected
+Dense layer.
 
 
-`TODO: image over overall architecture`
 
+
+### Convolutions
 
 Convolution operation
 Functions. Edge detection, median filtering
@@ -424,22 +482,24 @@ Depth. Higher-level features. Patterns of patterns
 
 A convolution filter (also called kernel) allows to express many common transformations
 on 1d or 2d data, like edge detection (horizontal/vertical) or smoothening filters (median). 
-But kernels kernel can be seen as parametric local feature detector can express more complex problem-specific
+Kernels can be seen as parametric local feature detector can express more complex problem-specific
 patterns, like a upward or downward diagonal from a bird chirp when applied to a spectrogram.
+
 Using a set of kernels in combination can detect many pattern variations.
 
+`TODO: image of typical CNN. VGG ?`
 
-Convolution over width, height, channels.
-So unlike what the name suggests a Convolution2D, is actually a 3D convolution.
-
-
+<!--
 [@BatchNormalization]
-
-
+-->
 
 ### Convolutions in 2D
 
-Moves spatially across the X and Y.
+Moves spatially across the width and height of input.
+
+Convolution moves in 2D width, height.
+channels.
+So unlike what the name suggests a Convolution2D, is actually a 3D convolution.
 
 
 ![Standard 3x3 convolutional block, input/output relationship. Source: Yusuke Uchida [@ConvolutionsIllustrated]](./img/conv-standard.png)
@@ -459,7 +519,10 @@ K_h kernel height
 
 Max, mean
 
-### Strided convolutions
+
+
+
+### Strided convolution
 
 Striding can be used to reduce spatial dimensionality,
 either as an alternative or compliment max/mean-pooling.
@@ -470,9 +533,9 @@ Used by ResNet.
 "Fully convolutional neural networks". Only Conv operations
 
 
-### Depthwise separable convolutions
+### Depthwise Separable convolution
 
-[@Xception]
+Used in [@Xception]
 
 ![Depthwise separable convolutions, input/output relationship](./img/conv-depthwise-separable.png)
 
@@ -492,7 +555,7 @@ $$ O_{ds} = O_pw + O_dw $$
 For example, with $K_w=K_h=3$ and $M=64$, the reduction is approximately $7.5x$.
 
 
-### Spatially separable convolutions
+### Spatially Separable convolution
 
 In a spatially separable convolution, a 2D convolution is factorized into two convolutions with 1D kernels.
 First a 2D convolution with $1xK_h$ is performed, followed by a 2D convolution with a $K_wx1$ kernel. 

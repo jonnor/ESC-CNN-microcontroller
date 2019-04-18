@@ -20,6 +20,7 @@ includes: pyincludes/urbansound8k-classes.tex \
     pyincludes/microcontrollers.tex \
     pyincludes/experiment-settings.tex \
     pyplots/filterbanks.png \
+    pyplots/dataaugmentations.png \
     plots/urbansound8k-examples.png \
     plots/urbansound8k-existing-models-logmel.tex \
     plots/urbansound8k-existing-models-logmel.png
