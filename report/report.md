@@ -306,22 +306,60 @@ Similar frame lengths are often adopted for acoustic events. `TODO: references`
 
 ## Machine learning
 
+Classification is a type of machine learning task where the goal is to
+learn a model which can accurately predict which class(es) that data belongs to.
+Examples usecases could be to determine from a image which breed a dog is,
+to predict from text whether - or to determine from audio what kind of sound is present.
+
+`TODO: image of a labeled dataset`
+
+In single-label classification, a sample can only belong to a single class. 
+In closed-set classification, the possible class is one of N predetermined classes.
+Many classification problems are treated as single-label and closed-set.
+
+
+Models used for classification are often trained using supervised learning. 
+Supervised learning uses a dataset where each sample is labeled with the right class.
+These labels are normally provided by manual annotation by humans inspecting the data.
+
+```TODO:
+Class balance
+metrics
 ```
-Supervised learning
-Classification
-
-Training set
-Validation set
-Test set
-k-fold cross validation
-
-Parameters versus hyperparameters
-Operations at training time versus inference/prediction time
-```
-
-The process is illustrated in Figure \ref{figure:crossvalidation}.
 
 ![Splitting datasets into train/validation/test sets and cross-validation \label{figure:crossvalidation}](./img/crossvalidation.png)
+
+The dataset is divided into multiple subsets that have different purposes.
+The *training* set is data that the training algorithm uses to optimize the model on.
+To estimate how well the model generalizes to new unseen data,
+predictions are made on the *validation set*. 
+The final performance of the trained model is evaluated on a *test set*,
+which has not been used in the training process.
+To get a better estimate of how the model performs it K-fold cross validation can be used,
+where K different training/validation splits are attempted.
+K is usually between 5 and 10.
+The overall process is illustrated in Figure \ref{figure:crossvalidation}.
+
+One common style of supervised learning processes is to start with an initial model with
+some parameters, make predictions using this model, compare these prediction with the labels to compute
+an error, and then update the parameters in order to attempt to reduce this error.
+This iterative process is illustrated in \ref{figure:training-inference}.
+
+The exact nature of the model parameters and parameter update algorithm
+depends on what kind of classifier and training system is used.
+For neural networks, see chapter `TODO: ref gradient descent`.
+
+In addition to the parameters learned by the training process,
+there are also *hyperparameters* which are parameters that cannot be learned by the training process,
+Examples are settings of the training system itself, but also the
+architecture and settings of predictive model itself can be seen as hyperparameters.
+Hyperparameters can be chosen by selecting different candidates,
+training to completion and evaluating performance on the validation set.
+
+![Relationship between training system and the predictive model being trained. \label{figure:training-inference}](./img/training-inference.png)
+
+Once training is completed, the predictive model can be used stand-alone, using the learned parameters.
+
 
 \newpage
 ## Audio Classification
@@ -418,7 +456,8 @@ the individual predictions must be aggregate into one prediction for the clip.
 A simple technique is *majority voting*,
 where the overall prediction is the class that occurs most often across individual predictions.
 
-With *Probabalistic voting*, the probabilities of individual predictions are averaged together,
+With *probabilistic voting* (or global mean pooling),
+the probabilities of individual predictions are averaged together,
 and the output prediction the class with overall highest probability.
 
 `TODO: image showing how voting is performed` 
@@ -433,7 +472,8 @@ Principle
 Commonly used Data Augmentation for audio/ESC
 -->
 
-Access to labeled samples is often a limiting factor in machine learning.
+Access to labeled samples is often a limited, because it is expensive to aquire.
+This can be a limiting factor for reaching good performance using supervised machine learning.
 
 Data Augmentation is a way to synthetically generate new labeled samples from existing ones,
 in order to expand the effective training set.
@@ -483,7 +523,10 @@ Cutout
 Fully connected
 Dense layer.
 
+### Training
 
+Gradient Decent
+Backpropagation
 
 
 ### Convolutions

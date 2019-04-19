@@ -17,11 +17,6 @@ Critical line
 - Make plots pretty in Results
 - Write basic Discussion and Conclusion
 
-
-THURSDAY18. 
-
-- Go through with Tyrone,Jarand
-
 MONDAY22. Send draft to OK
 
 
