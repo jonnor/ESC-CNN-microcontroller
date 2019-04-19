@@ -303,6 +303,7 @@ Similar frame lengths are often adopted for acoustic events. `TODO: references`
 
 
 
+
 ## Machine learning
 
 ```
@@ -319,7 +320,7 @@ Training time versus inference/prediction time
 
 `TODO: image of train/val/test set split`
 
-
+\newpage
 ## Audio Classification
 
 Feature representations
@@ -348,14 +349,20 @@ This further reduces dimensionality to just 13-20 bands and reduces correlation 
 This has been shown to work well for speech, but can perform worse on general sound classification tasks.
 `TODO: reference Stowell birds`
 
-### Preprocessing
+### Normalization
 
-Audio has a very large dynamic range
+Audio has a very large dynamic range.
+The human hearing has a lower threshold of hearing down to $20\mu\text{Pa}$ (0 dB SPL)
+and a pain threshold of over 20 Pa (120 dB SPL), a difference of 6 orders of magnitude[@smith1997scientist, ch.22].
+A normal conversation may be 60 dB SPL and a pnenumatic drill 110 dB SPL, a 4 orders of magnitude difference.
+It is common to compress the range of values in spectrograms by applying a log transform.
 
-To reduce this dynamic range, a compressive transform is applied.
-log is the most common
+In order to center the values, the mean (or median) of the spectrogram is often removed.
+Scaling the output to a range of 0-1 or -1,1 is also sometimes done.
+These changes have the effect of removing amplitude,
+forcing the model to focus on the patterns of the sound.
 
-`TODO: image of normalized mel-spectrogram`
+`TODO: image of normalized mel-spectrogram. Or feature distribution of datasets w/without normalization?`
 
 
 ### Analysis windows
@@ -441,14 +448,13 @@ where two samples from a different classes are mixed together to create a new sa
 A mixup ratio $\lambda$ controls how much the sample data is mixed,
 and the labels of the new sample is a mix of labels of the two inputs samples.
 
-`TODO: fix alignment and subscripts in equation`
+$$
+\begin{aligned}
+\tilde{x} &= \lambda x_i + (1 - \lambda)x_j & \text{  where } x_i, x_j \text{are raw input vectors} \\
+\tilde{y} &= \lambda y_i + (1 - \lambda)y_j & \text{  where } y_i, y_j \text{are one-hot label encodings}
+\end{aligned}
+$$
 
-<!--
-$$
-x̃ = λx i + (1 − λ)x j , where x i , x j are raw input vectors
-ỹ = λy i + (1 − λ)y j, where y i , y j are one-hot label encodings
-$$
--->
 
 The authors argue that this encourages the model to behaving linearly in-between training examples.
 It has been shown to increase performance on audio tasks[@ESC-mixup][@AclNet][@Mixup-ASC].
@@ -457,11 +463,14 @@ Data augmentation can be applied either to the raw audio waveform,
 or to preprocessed spectrograms.
 
 <!--
-DROP
-Frequency response
+Other data augmentation:
+
+Frequency response change
 Dynamic range compression
+Cutout
 -->
 
+\newpage
 ## Convolutional Neural Networks
 
 `TODO: intro, why are they important`
@@ -738,7 +747,7 @@ the model is able to reach 78.3% on Urbansound8k.
 
 ## Resource efficient Convolutional Neural Networks
 
-### For Environmental Sound Classification
+### Environmental Sound Classification
 
 There are also a few works on Environmental Sound Classification (ESC)
 that explicitly target making resource efficient models, measured
@@ -774,7 +783,7 @@ As of April 2019, eGRU was the only paper that could be found for the ESC task
 and the Urbansound8k dataset on a microcontroller.
 
 
-### For image classification
+### Image classification
 
 The development of more efficient Convolutional Neural Networks for
 image classification have received a lot of attention over the last few years.
@@ -817,7 +826,7 @@ followed by 2x1 striding in the 3x1 kernel.
 Evaluated on CIFAR10 and Street View House Numbers (SVHN) datasets
 it scored a bit better than Mobilenets and ShuffleNet. 
 
-### For speech detection
+### Speech detection
 
 Speech detection is a big application of audio processing and machine learning.
 In the Keyword Spotting (KWS) task the goal is to detect a keyword or phrase that
