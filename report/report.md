@@ -309,16 +309,19 @@ Similar frame lengths are often adopted for acoustic events. `TODO: references`
 ```
 Supervised learning
 Classification
-Parameters versus hyperparameters
+
 Training set
 Validation set
 Test set
 k-fold cross validation
 
-Training time versus inference/prediction time
+Parameters versus hyperparameters
+Operations at training time versus inference/prediction time
 ```
 
-`TODO: image of train/val/test set split`
+The process is illustrated in Figure \ref{figure:crossvalidation}.
+
+![Splitting datasets into train/validation/test sets and cross-validation \label{figure:crossvalidation}](./img/crossvalidation.png)
 
 \newpage
 ## Audio Classification
