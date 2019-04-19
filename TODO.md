@@ -6,10 +6,14 @@
 
 Critical line
 
-- BACKGROUND section. Information about CNNs, images
-- Background. Info about microcontrollers
+- Make images from paper notes
+- Background. Finish audio, spectrogram, mel-spectrogram sections
+- Background. Start writing Machine Learning section
+- Background. Finish ESC section introduction
+- Background. Fill out CNN section
+- Background. Finish info about microcontrollers
 - Finalize introduction. Health/import section, images
-- Materials. Add images of model comparisons
+- Materials. Add images of compared model
 - Make plots pretty in Results
 - Write basic Discussion and Conclusion
 
