@@ -127,7 +127,7 @@ Noise pollution the second environmental cause of health problems in Europe, aft
 
 Sleepers that are exposed to night noise levels above 40dB on average throughout
 the year can suffer health effects like sleep disturbance and awakenings.
-Above 55dB long-term average exposure, noise can trigger elevated blood pressure and lead to ischaemic heart disease.
+Above 55dB long-term average exposure, noise can trigger elevated blood pressure and lead to ischemic heart disease.
 The WHO has set a Night Noise Guideline level for Europe at 40 dB $L_{night}$.
 
 According to a report done on behalf of the European Commision[@RVIMTransportationNoise]
@@ -150,12 +150,12 @@ The SONYC[@SONYC] project in New York City had 56 sound sensors as of 2018.[@SON
 The Barcelona Noise Monitoring System[@BarcelonaNoiseMonitoring] had 86 sound sensors as of 2018.[@BarcelonaNoiseMonitoring2018].
 CENSE[@CENSE] project plans to install around 150 sensors in Lorient, France[@CENSESensor].
 
-To keep costs low and support a dense coverage, the sensor nodes are aften designed to operate wirelessly.
+To keep costs low and support a dense coverage, the sensor nodes are often designed to operate wirelessly.
 Communication is done using wireless radio technologies such as WiFi, GSM, NB-IoT or 6LoWPAN.
 Energy to power the sensor is harvested, either using solar power or from streetlight powered at night.
 A battery backup allows the sensor to continue operating also when energy is momentarily unavailable.
 
-These sensor networks enable continious logging of the sound level (Leq dB).
+These sensor networks enable continuous logging of the sound level (Leq dB).
 Typical measurement resolution are per-minute, per second or per 125ms.
 Sound level sensors in Europe are designed to specifications of IEC 61672-1 Sound Level Meters[@IECSoundLevelMeters],
 with an accuracy of either Class 2 or Class 1.
@@ -263,8 +263,8 @@ then digitized using an Analog-to-Digital-Converter (ADC).
 ![From acoustical sound to digital and back. Source: [@ProcessingTutorial]](./images/digital-sound-processingorg.png)
 
 In the digitization process, the signal is quantized in time at a certain sampling frequency,
-and the amplitude quantized at a certain bitdepth.
-A typical sampling frequency is 44100 Hz, and bitdepth 16 bit.
+and the amplitude quantized at a certain bit-depth.
+A typical sampling frequency is 44100 Hz, and bit-depth 16 bit.
 With these parameters, the acoustic sound can be reconstructed without perceivable differences by humans.
 
 In this representation, sound is a 1 dimensional sequence of numbers.
@@ -293,9 +293,9 @@ The STFT operates by splitting the audio up in small consecutive chunks.
 The splitting is often computed with 50% overlap, and by applying a window function before computing the FFT.
 The window function
 
-In the Fourier Transform, and thus in the STFT, there is a tradeoff between frequency resolution.
+In the Fourier Transform, and thus in the STFT, there is a trade-off between frequency resolution.
 The longer the FFT window the better the frequency resolution, but the temporal resolution is reduced.
-For speech a typical choice of window length is 25ms.
+For speech a typical choice of window length is 25 ms.
 Similar frame lengths are often adopted for acoustic events. `TODO: references`
 
 ![Computing frames from an audio signal, using windows functions. Based on image by [@AudioFraming]](./images/frames.png)
@@ -308,7 +308,7 @@ Similar frame lengths are often adopted for acoustic events. `TODO: references`
 
 Classification is a type of machine learning task where the goal is to
 learn a model which can accurately predict which class(es) that data belongs to.
-Examples usecases could be to determine from a image which breed a dog is,
+Examples use-cases could be to determine from a image which breed a dog is,
 to predict from text whether - or to determine from audio what kind of sound is present.
 
 `TODO: image of a labeled dataset`
@@ -395,7 +395,7 @@ This has been shown to work well for speech, but can perform worse on general so
 Audio has a very large dynamic range.
 The human hearing has a lower threshold of hearing down to $20\mu\text{Pa}$ (0 dB SPL)
 and a pain threshold of over 20 Pa (120 dB SPL), a difference of 6 orders of magnitude[@smith1997scientist, ch.22].
-A normal conversation may be 60 dB SPL and a pnenumatic drill 110 dB SPL, a 4 orders of magnitude difference.
+A normal conversation may be 60 dB SPL and a pneumatic drill 110 dB SPL, a 4 orders of magnitude difference.
 It is common to compress the range of values in spectrograms by applying a log transform.
 
 In order to center the values, the mean (or median) of the spectrogram is often removed.
@@ -408,7 +408,7 @@ forcing the model to focus on the patterns of the sound.
 
 ### Analysis windows
 
-When recording sound, it forms a continious, never-ending stream of data.
+When recording sound, it forms a continuous, never-ending stream of data.
 The machine learning classifier however generally needs a fixed-size feature vector. 
 Also when playing back a recorded file, the file may be much longer than
 the sounds that are of interest.
@@ -417,7 +417,7 @@ the sounds that are of interest.
 
 To solve these problems, the audio stream is split up into analysis windows,
 typically with a length a bit longer than the target sound.
-The windows can follow eachother with no overlap,
+The windows can follow each-other with no overlap,
 or move forward by a number less than the window length (overlap).
 With overlap a target sound will couple of times, each time shifted.
 This can improve classification accuracy. 
@@ -439,7 +439,7 @@ When a dataset is labeled only with the presence of a sound at a coarse timescal
 without information about where exactly the relevant sound(s) appears.
 it is referred to as *weakly annotated* or *weakly labeled* data.
 
-If one assumes that the sound of interest occur thoughout the entire audio clip,
+If one assumes that the sound of interest occur throughout the entire audio clip,
 a simple solution is to let each analysis window inherit the label of the audio clip as-is.
 
 If this assumption is problematic, the task can be approached as a Multiple Instance Learning (MIL) problem.
@@ -472,7 +472,7 @@ Principle
 Commonly used Data Augmentation for audio/ESC
 -->
 
-Access to labeled samples is often a limited, because it is expensive to aquire.
+Access to labeled samples is often a limited, because it is expensive to acquire.
 This can be a limiting factor for reaching good performance using supervised machine learning.
 
 Data Augmentation is a way to synthetically generate new labeled samples from existing ones,
@@ -494,7 +494,7 @@ and the labels of the new sample is a mix of labels of the two inputs samples.
 $$
 \begin{aligned}
 \tilde{x} &= \lambda x_i + (1 - \lambda)x_j & \text{  where } x_i, x_j \text{are raw input vectors} \\
-\tilde{y} &= \lambda y_i + (1 - \lambda)y_j & \text{  where } y_i, y_j \text{are one-hot label encodings}
+\tilde{y} &= \lambda y_i + (1 - \lambda)y_j & \text{  where } y_i, y_j \text{are labels one-hot encoded}
 \end{aligned}
 $$
 
@@ -536,7 +536,7 @@ Functions. Edge detection, median filtering
 Depth. Higher-level features. Patterns of patterns
 
 A convolution filter (also called kernel) allows to express many common transformations
-on 1d or 2d data, like edge detection (horizontal/vertical) or smoothening filters (median). 
+on 1D or 2D data, like edge detection (horizontal/vertical) or smoothening filters (median). 
 Kernels can be seen as parametric local feature detector can express more complex problem-specific
 patterns, like a upward or downward diagonal from a bird chirp when applied to a spectrogram.
 
@@ -595,7 +595,7 @@ Used in [@Xception]
 ![Depthwise separable convolutions, input/output relationship](./img/conv-depthwise-separable.png)
 
 While a regular convolution performs a convolution over both channels and the spatial extent,
-a Depthwise Separable convolution splits this into two convonlutions.
+a Depthwise Separable convolution splits this into two convolutions.
 First a Depthwise convolution over the spatial extent,
 followed by a a Pointwise convolution over the input channels.
 The pointwise convolution is sometimes called a 1x1 convolution,
@@ -714,7 +714,7 @@ DCASE challenges
 Compiled from Freesound.org data
 ! only 40 samples per class.
 
-Github repo has an excellent overview of attempted methods and their results.
+Github repository has an excellent overview of attempted methods and their results.
 
 * Best models achieving 86.50% accuracy.
 * Human accuracy estimated 81.30%.
@@ -779,7 +779,7 @@ a shape similar to mel-spectrograms.
 The model manages a 66.3% accuracy score on Urbansound8k[@EnvNet2] with raw audio input.
 
 
-In [@VeryDeepESC], authors evaluted a number of deep CNNs using only 1D convolutions.
+In [@VeryDeepESC], authors evaluated a number of deep CNNs using only 1D convolutions.
 Raw audio with 8kHz sample rate was used as the input.
 Their 18 layer model (M18) got a 71% accuracy on Urbansound8k,
 and the 11 layer version (M11) got 69%.
@@ -806,7 +806,7 @@ reache an accuracy of 70.5% on UrbandSound8k with a 288K parameters and 100M MAC
 LD-CNN[@LD-CNN] is a more efficient version of D-CNN.
 In order to reduce parameters the early layers use spatially separable convolutions,
 and the middle layers used dilated convolutions.
-As a result the model has 2.05MB of paramters, 50x fewer than D-CNN,
+As a result the model has 2.05MB of parameters, 50x fewer than D-CNN,
 while accuracy only dropped by 2% to 79% on Urbansound8k.
 
 AclNet [@AclNet] is a CNN architecture.
@@ -835,7 +835,7 @@ The development of more efficient Convolutional Neural Networks for
 image classification have received a lot of attention over the last few years.
 This is especially motivated by the ability to run models
 that give close to state-of-the-art performance on mobile phones and tablets.
-Since spectograms are 2D inputs that are similar to images, it is possible that some of these
+Since spectrograms are 2D inputs that are similar to images, it is possible that some of these
 techniques can transfer over to Environmental Sound Classification.
 
 SqueezeNet[@SqueezeNet] (2015) focused on reducing the size of model parameters.
@@ -847,7 +847,7 @@ The paper also found that a residual connection between blocks increased model p
 by 2.9% without adding parameters.
 
 Mobilenets[@Mobilenets] (2017) focused on reducing inference computations by
-using depthwise-separable convolutions.
+using Depthwise separable convolutions.
 A family of models with different complexity was created using two hyperparameters:
 a width multiplier $\alpha$ (0.0-1.0) which adjusts the number of filters in each convolutional layer,
 and the input image size.
@@ -879,7 +879,7 @@ In the Keyword Spotting (KWS) task the goal is to detect a keyword or phrase tha
 indicates that the user wants to enable speech control.
 Example phrases in commercially available products include "Hey Siri" for Apple devices
 or "OK Google" for Google devices.
-This is used both in smarthome devices such as Amazon Alexa, as well as smartwatches and mobile devices.
+This is used both in smart-home devices such as Amazon Alexa, as well as smartwatches and mobile devices.
 For this reason keyword spotting on low-power devices and microcontrollers
 is an area of active research.
 
@@ -890,12 +890,12 @@ could be used to create models that were significantly more effective.
 In the "Hello Edge"[@HelloEdge] paper (2017),
 different models were evaluated for keyword spotting on microcontrollers.
 Included were most standard deep learning model architectures
-such as Deep Neural Networks, Recurrent Neural Networks and Convolutional Neural Networks.
+such as Deep Neural Networks (DNN), Recurrent Neural Networks and Convolutional Neural Networks.
 They found that Depthwise Separable Convolutional Neural Network (DS-CNN) provided the best
 accuracy while requiring significantly lower memory and compute resources than other alternatives.
 Models were evaluated with three different performance limits.
 Their "Small" version with under 80KB, 6M ops/inference achieved 94.5% accuracy on the Google Speech Command dataset.
-A DNN version was demonstrated on a high-end microcontroller (ARM Cortex M7 @ 216 Mhz) using CMSIS-NN framework,
+A DNN version was demonstrated on a high-end microcontroller (ARM Cortex M7 at 216 Mhz) using CMSIS-NN framework,
 running keyword spotting at 10 inferences per second while utilizing only 12% CPU (rest sleeping).
 
 FastGRNN[@FastGRNN] (2018) is a Gated Recurrent Neural Network designed
@@ -904,8 +904,8 @@ It uses a simplified gating architecture with residual connection,
 and uses a three-stage training schedule that
 forces weights to be quantizated in a sparse and low-rank fashion. 
 When evaluated on Google Speech Command Set (12 classes),
-their smallest model of 5.5KB achieved 92% accuracy
-and ran in 242ms on a low-end microcontroller (ARM Cortex M0+ @ 48Mhz).
+their smallest model of 5.5 KB achieved 92% accuracy
+and ran in 242 ms on a low-end microcontroller (ARM Cortex M0+ at 48 Mhz).
 
 
 
@@ -947,7 +947,7 @@ to allow easy comparison of results between experiments.
 
 As the microcontroller we have chosen the STM32L476[@STM32L476] from STMicroelectronics.
 This is a mid-range device from ST32L4 series of ultra-low-power microcontroller.
-It has a ARM Cortex M4F running at 80MHz, with hardware floating-point unit (FPU)
+It has a ARM Cortex M4F running at 80 MHz, with hardware floating-point unit (FPU)
 and DSP instructions. It has 1024 kB of program memory (Flash), and 128 kB of RAM.
 
 For audio input both analog microphone and and digital microphones (I2S/PDM) are supported.
@@ -1000,7 +1000,7 @@ The machine learning models are implemented in Keras using the Tensorflow backen
 and are attached be found in the appendices.
 
 To perform feature extraction during training librosa[@librosa] was used.
-numpy and Pandas is used for general numperic computations and data management.
+numpy and Pandas is used for general numeric computations and data management.
 
 The training software has automated tests made with pytest,
 and uses Travis CI to execute the tests automatically for each change.
@@ -1028,7 +1028,7 @@ With 80 MHz CPU frequency this is approximately 9 MACC/second at 100% CPU utiliz
 | Flash use    |   512 kB  | `< 256 kB`   |
 | CPU usage    |   4.5 M MACC/s   | `< 0.5 M MACC/s`  |
 
-Table: Summary of device contraints for machine learning model
+Table: Summary of device constraints for machine learning model
 
 
 `TODO: link model review section`
@@ -1164,7 +1164,7 @@ however the models can be trained on any device supported by TensorFlow and a mi
 
 ## Evaluation
 
-Once training is completed, the model epoch with best perfomance on the validation set is selected
+Once training is completed, the model epoch with best performance on the validation set is selected
 for each of the cross-validation folds.
 The selected models are then evaluated on the test set.
 

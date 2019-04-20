@@ -8,14 +8,17 @@ Critical line
 
 - Make images from paper notes
 - Background. Finish audio, spectrogram, mel-spectrogram sections
-- Background. Start writing Machine Learning section
 - Background. Finish ESC section introduction
-- Background. Fill out CNN section
 - Background. Finish info about microcontrollers
 - Finalize introduction. Health/import section, images
+- Background. Fill out CNN section
 - Materials. Add images of compared model
 - Make plots pretty in Results
+- Add table(s) to Results
 - Write basic Discussion and Conclusion
+- Update Attachments
+- Do a spell checking pass
+- Do a grammar checking pass
 
 MONDAY22. Send draft to OK
 

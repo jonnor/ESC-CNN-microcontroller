@@ -696,7 +696,23 @@ LPRun. 270uA @ 2Mhz.
 LPSleep. 80uA @ 2Mhz. SAI/ADC still active
 
 
+# Presentation
 
+Outline
 
+- Coverpage
+- Demo
+- Motivation
+- Challenges
+- Working method.
+Independent study Audio Classification. DAT390, DCASE2018 conference
+Literature review. Summarized in report
+- How it works
+- Experiments
+- Results
+- Summary
+- Next steps
+ION. Forskningsraadet. Pilot Oslo Kommune
+Publishing
 
 
