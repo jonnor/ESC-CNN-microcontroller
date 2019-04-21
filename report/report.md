@@ -409,24 +409,23 @@ forcing the model to focus on the patterns of the sound.
 
 When recording sound, it forms a continuous, never-ending stream of data.
 The machine learning classifier however generally needs a fixed-size feature vector. 
-Also when playing back a recorded file, the file may be much longer than
+Also when playing back a finite-length recording, the file may be much longer than
 the sounds that are of interest.
-
-`TODO: image of analysis windows`
-
-To solve these problems, the audio stream is split up into analysis windows,
+To solve these problems, the audio stream is split up into analysis windows of fixed length,
 typically with a length a bit longer than the target sound.
 The windows can follow each-other with no overlap,
 or move forward by a number less than the window length (overlap).
 With overlap a target sound will couple of times, each time shifted.
 This can improve classification accuracy. 
 
+![Audio stream split into fixed-length analysis windows](./img/analysis-windows.png)
+
 A short analysis window has the benefit of reducing the feature size of the classifier,
-which uses less memory and possibly allow to reduce the model complexity,
+which uses less memory and possibly allows to reduce the model complexity,
 which may in turn allow to make better use of a limited dataset. 
 
 When the length of audio clips is not evenly divisible by length of analysis windows,
-the last window is zero padded. 
+the last window is zero padded.
 
 ### Weak labeling
 
