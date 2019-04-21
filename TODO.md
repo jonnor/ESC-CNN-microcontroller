@@ -6,15 +6,13 @@
 
 Critical line
 
-- Make images from paper notes
-- Background. Finish audio, spectrogram, mel-spectrogram sections
-- Background. Finish info about microcontrollers
 - Finalize introduction. Health/import section, images
 - Background. Fill out CNN section
 - Materials. Add images of compared model
 - Results. Make plots pretty in 
 - Results. Add table(s)
 - Write basic Discussion and Conclusion
+- Background. Images and references for Audio Classification chapter
 - Update Attachments
 
 MONDAY22. Send draft to OK

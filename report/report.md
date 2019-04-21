@@ -256,11 +256,10 @@ Open-set classification. Novelty detection, clustering
 Physically, sound is a variation in pressure over time.
 For machine learning, it must be exist in a digital representation.
 The acoustic data is converted to analog electric signals by a microphone and
-then digitized using an Analog-to-Digital-Converter (ADC).
+then digitized using an Analog-to-Digital-Converter (ADC),
+as illustrated in Figure \ref{figure:audio-aquisition}.
 
-`TODO: image of digital audio pipeline. From acoustical event to digital representation`
-
-![From acoustical sound to digital and back. Source: [@ProcessingTutorial]](./images/digital-sound-processingorg.png)
+![Conversion of sound into a digital representation \label{figure:audio-aquisition}](./img/audio-aquisition.png)
 
 In the digitization process, the signal is quantized in time at a certain sampling frequency,
 and the amplitude quantized at a certain bit-depth.
@@ -632,30 +631,53 @@ SKIP
 \newpage
 ## Microcontrollers
 
-    TODO: write 
-    What are microcontrollers
-    Where are they used
-    Special considerations. Autonomous operation. Low power. Low cost.
-    Number of shipments anually
+`TODO: couple of extra references`
 
+A microcontroller is a tiny computer integrated on a single chip,
+containing CPU, RAM, persistent storage (FLASH) as well
+as peripherals for communicating with the outside world.
 
-\begin{table}
-\input{pyincludes/microcontrollers.tex}
-\caption{Examples of available ARM microcontrollers and their characteristics}
-\label{table:microcontrollers}
-\end{table}
+Common forms of peripherals include General Purpose Input Output (GPIO) for digital input/output,
+Analog to Digital (ADC) converter for analog inputs,
+and high-speed serial communications for digital inter-system communication
+using protocols like I2C and SPI.
+For digital audio communication, specialized peripherals exists using the I2S or PDM protocols.
 
-Recommended prices from ST Microelectronics website for 1-10k unit orders.
+Microcontrollers are widely used across all forms of electronics,
+from household electronics and mobile devices, telecommunications infrastructure,
+cars and industrial systems.
+In 2017 over 25 billion microcontrollers were shipped,
+and is expected to grow by more than 50% over the next 5 years[@ICInsightsMCUSales].
 
+Examples of application processors from ST Microelectronics
+that could be used for audio processing is shown in Table \ref{table:microcontrollers}.
 Similar offerings are available from other manufacturers such as
 Texas Instruments, Freescale, Atmel, Nordic Semiconductors, NXP.
 
+\begin{table}
+\input{pyincludes/microcontrollers.tex}
+\caption{Examples of available STM32 microcontrollers and their characteristics. Details from ST Microelectronics website. }
+\label{table:microcontrollers}
+\end{table}
+
+<!--
+
+ARM expects ML-enabled devices (both using microcontrollers and microprocessors)
+to grow 10 times over 300 million units in 2018, and up to 3.2 billion in 2028.
+"A backward glance and a forward view" 2018
+
+![Internals of a STM32F103VGT6 microcontroller. Large uniform areas are RAM and FLASH, bottom lower corner has the CPU core. Source: Zeptobars.com[@STM32F103decap]](./img/STM32F103VGT6-LD.jpg)
+
+-->
 
 ### Machine learning on microcontrollers
 
-Due to the constraints of microcontroller hardware,
-most of the traditional machine learning frameworks cannot be used directly. 
-Instead dedicated tools are available for this niche, usually integrating with established frameworks.
+For sensor systems the primary usecase for Machine Learning
+is to train a model on a desktop or cloud system ("off-line" learning),
+then to deploy the model to the microcontroller to perform inference.
+Dedicated tools are available for converting models
+to something that can execute on a microcontroller,
+usually integrated with established machine learning frameworks.
 
 CMSIS-NN by ARM.
 A low-level library for ARM Cortex-M microcontrollers implementing basic neural network building blocks,
@@ -667,7 +689,7 @@ uTensor[@uTensor] by ARM. Allows to run a subset of TensorFlow models on ARM Cor
 designed for use with the mbed software platform.
 
 TensorFlow Lite for Microcontrollers, an experimental port of
-TensorFlow, announced at TensorFlow Developer Summit in March 2019[@LaunchingTensorflowLiteMicrocontrollers].
+TensorFlow[@TensorFlow], announced at TensorFlow Developer Summit in March 2019[@LaunchingTensorflowLiteMicrocontrollers].
 Its goal is to be compatible with TensorFlow Lite (for mobile devices etc),
 and reuse platform-specific libraries such as CMSIS-NN or uTensor in order to be as efficient as possible.
 
@@ -678,6 +700,16 @@ such as Bonsai[@Bonsai], ProtoNN[@ProtoNN] and FastGRNN[@FastGRNN].
 emlearn[@emlearn] by the author.
 Supports converting a subset of Scikit-Learn[@scikit-learn] and Keras[@Keras] models
 and run them using C code designed for microcontrollers.
+
+X-CUBE-AI[@X-CUBE-AI] by ST Microelectronics provides official support for inference with
+Neural Networks for their STM32 microcontrollers. 
+It is an add-on to the STM32CubeMX software development kit,
+and allows loading trained models from various formats, including:
+Keras (Tensorflow), Caffe[@Caffe] and PyTorch.
+In X-CUBE-AI 3.4, all computations are done in single-precision float.
+Model compression is supported by quantizing model weights by 4x or 8x,
+but only for fully-connected layers (not convolutional layers)[@X-CUBE-AI-manual, ch 6.1].
+
 
 ### Hardware accelerators for neural networks
 
@@ -747,6 +779,7 @@ and detection of vehicle related sounds[@DCASE2017Task4].
 
 
 <!--
+TODO: table with dataset statistics
 
 TUT Sound Events 2017[@TUT2017dataset] is a dataset used for the task
 "Sound event detection in real life audio" for the
@@ -944,8 +977,10 @@ and ran in 242 ms on a low-end microcontroller (ARM Cortex M0+ at 48 Mhz).
 \newpage
 # Materials
 
-## Urbansound8K dataset
+## Dataset
 
+The dataset used is Urbansound8K, described in chapter `TODO: ref`.
+The 10 classes can be seen in \ref{table:urbansound8k-classes}.
     
 \begin{table}
 \centering
@@ -954,6 +989,12 @@ and ran in 242 ms on a low-end microcontroller (ARM Cortex M0+ at 48 Mhz).
 \label{table:urbansound8k-classes}
 \end{table}
 
+The dataset comes pre-arranged into 10 folds.
+A single fold may contain multiple clips from the same source file,
+but the same source file is not used in multiple folds to prevent data leakage.
+Authors recommend always using fold 10 as the test set,
+to allow easy comparison of results between experiments.
+
 ![Spectrograms of sound clips from Urbansound8k dataset, selected for each class\label{urbansound8k-examples}](./plots/urbansound8k-examples.png)
 
 The target sound is rarely alone in the sound clip, and may be in the background,
@@ -961,11 +1002,6 @@ partially obscured by sounds outside the available classes.
 This makes Urbansound8k a relatively challenging dataset.
 For figure \ref{urbansound8k-examples} sounds with clear occurences of the target sound were chosen.
 
-The dataset comes pre-arranged into 10 folds.
-A single fold may contain multiple clips from the same source file,
-but the same source file is not used in multiple folds to prevent data leakage.
-Authors recommend always using fold 10 as the test set,
-to allow easy comparison of results between experiments.
 
 ## Hardware platform
 
@@ -997,20 +1033,13 @@ The entire setup can be seen in figure \ref{sensortile-devkit}.
 ## Software
 
 The STM32L476 microcontroller is supported by STM32CubeMX`TODO: ref` development package from ST Microelectronics.
-ST also provides the X-CUBE-AI`TODO: ref` addon for STM32CubeMX, which provides integrated support for Neural Networks.
+
 In this work, X-CUBE-AI version 3.4.0 was used. 
 
 
-The addon allows loading trained models from various formats, including:
-Keras (Tensorflow), Caffe and PyTorch.
 
 ![STM32CubeMX application with X-CUBE-AI addon after loading a Keras model](./img/stm32cubeai.png)
 
-`TODO: move some of this to background?`
-X-CUBE-AI supports model compression by quantizing model weights. Available settings for compression are 4x or 8x.
-In the version used, the compression is applied only to fully-connected layers (not to convolutional layers)[@X-CUBE-AI-manual, ch 6.1].
-All computations are done in single-precision float.
-The tool can perform basic validation of the compressed model. 
 
 A Python commandline script was created to streamline collecting model statistics using X-CUBE-AI,
 without having to manually use the STM32CubeMX user interface. See \ref{appendix:stm32convert}.
@@ -1198,8 +1227,6 @@ we also evaluate the models performance on two simplified variations:
 
 `TODO: table of group membership`
 
-## Inference time
-
 The SystemPerformance application skeleton from X-CUBE-AI is used to record the
 average inference time per sample on the STM32L476 microcontroller.
 This accounts for potential variations in number of MACC/second for different models,
@@ -1253,6 +1280,10 @@ Possible to use slightly bigger microcontroller.
 Able to double Flash. Up to 1024kB RAM, 8x. Approx 8x CPU.
 
 Hardware accelerators.
+
+
+# Conclusions
+
 
 
 ## Further work
