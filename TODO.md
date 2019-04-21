@@ -8,19 +8,20 @@ Critical line
 
 - Make images from paper notes
 - Background. Finish audio, spectrogram, mel-spectrogram sections
-- Background. Finish ESC section introduction
 - Background. Finish info about microcontrollers
 - Finalize introduction. Health/import section, images
 - Background. Fill out CNN section
 - Materials. Add images of compared model
-- Make plots pretty in Results
-- Add table(s) to Results
+- Results. Make plots pretty in 
+- Results. Add table(s)
 - Write basic Discussion and Conclusion
 - Update Attachments
+
+MONDAY22. Send draft to OK
+
 - Do a spell checking pass
 - Do a grammar checking pass
 
-MONDAY22. Send draft to OK
 
 
 ### Post

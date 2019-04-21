@@ -176,7 +176,7 @@ however this gave a 5 percentage points reduction in classification accuracy.
 
 Others have proposed to use neural networks to produce an audio "embedding" inspired
 by the success of world embeddings for Natural Language Processing.
-In VGGish model trained on Audioset[@VGGish] an a 8-bit, 128 dimensional embedding is used for 10 seconds clips,
+In VGGish[@VGGish] model trained on Audioset[@AudioSet] an a 8-bit, 128 dimensional embedding is used for 10 seconds clips,
 leading to a datarate of 102 bits per second.
 L^3 (Look, Listen, Learn)[@L3] similarly proposed an embedding with 512 dimensions.
 
@@ -702,25 +702,56 @@ They claim a 16x improvement in power efficiency over a ARM Cortex M7 chip[@GAP8
 \newpage
 ## Environmental Sound Classification
 
-`TODO: write about datasets`
+### Datasets
 
-Urbansound8k
-ESC-50 (and ESC-10) dataset.
-DCASE challenges
+The Urbansound taxonomy[@UrbanSound8k, ch 2] is a proposed taxonomy of sound sources,
+developed based on analysis of noise complaints in New York city between 2010 and 2014.
+The same authors also compiled the Urbansound dataset[@UrbanSound8k, ch 3],
+based on selecting and manually labeling content from the Freesound[@Freesound] repository.
+10 different classes from the Urbansound taxonomy were selected and
+1302 different recordings were annotated, for a total of 18.5 of labeled audio. 
+A curated subset with 8732 audio clips of maximum 4 seconds is known as *Urbansound8k*.
 
-[ESC-50: Dataset for Environmental Sound Classification](https://github.com/karoldvl/ESC-50).
-2k samples. 50 classes in 5 major categories.
-5 seconds each.
-Compiled from Freesound.org data
-! only 40 samples per class.
+YorNoise[@medhat2017masked] is a collection of vechicle noise.
+It has a total of 1527 samples, in two classes: road traffic (cars, trucks, busses) and rail (trains).
+The dataset follows the same design as Urbansound8k,
+and can be used standalone or as additional classes to Urbansound8k.
 
-Github repository has an excellent overview of attempted methods and their results.
+ESC-50[@ESC-50] is a small dataset of environmental sounds,
+consisting of 2000 samples across 50 classes from 5 major categories.
+The dataset was compiled using sounds from Freesound[@Freesound] online repository.
+A subset of 10 classes is also proposed, often called ESC-10.
+Human accuracy was estimated to be to 81.30% on ESC-50 and
+95.7% on ESC-10[@ESC-50, ch 3.1].
+The Github repository for ESC-50[@ESC-50-Github] contains a comprehensive summary
+of results on the dataset, with over 40 entries.
+As of April 2019, the best models achieve 86.50% accuracy,
+and all models with over 72% accuracy use some kind of Convolutional Neural Network.
 
-* Best models achieving 86.50% accuracy.
-* Human accuracy estimated 81.30%.
-* Baseline CNN at 64.50%. 
-* Baseline MFCC-RF, 44.30%.
-* Over 20 CNN variations attempted.
+AudioSet [@AudioSet] is a large general purpose ontology of sounds with 632 audio event classes.
+The accompanying dataset has over 2 million annotated clips based on sound from Youtube videos.
+Each clip is 10 seconds long. 527 classes from the ontology are covered.
+
+In DCASE2019 challenge (in progress, ends July 2019) task 5[@DCASE2019Task5]
+audio clips containing common noise categories are to be tagged.
+The tagging is formulated as a multi-label classification on 10 second clips.
+The dataset[@SONYC-UST] has 23 fine-grained classes across 8 categories
+with 2794 samples total.
+The data was collected from SONYC noise sensor network in New York city. 
+
+Several earlier DCASE challenge tasks and datasets
+have been on related topics to Environmental Sound Classification,
+such as Acoustic Scene Detection[@DCASE2017Task1],
+general-purpose tagging of sounds[@DCASE2018Task2],
+and detection of vehicle related sounds[@DCASE2017Task4].
+
+
+<!--
+
+TUT Sound Events 2017[@TUT2017dataset] is a dataset used for the task
+"Sound event detection in real life audio" for the
+Detection and Classification of Acoustic Scenes and Events (DCASE) challenge in 2017.
+-->
 
 
 ### Spectrogram-based models
@@ -915,13 +946,6 @@ and ran in 242 ms on a low-end microcontroller (ARM Cortex M0+ at 48 Mhz).
 
 ## Urbansound8K dataset
 
-The Urbansound8K dataset[@UrbanSound8k] was collected in 2014
-based on selecting and manually labeling content from the Freesound[@Freesound] repository.
-The dataset contains 8732 labeled sound clips with a total duration of 8.75 hours.
-Most clips are 4 seconds long, but shorter clips also exist.
-10 different classes are present, as shown in table \ref{table:urbansound8k-classes}.
-The classes are a subset of those found in the Urbansound taxonomy,
-which was developed based on analysis of noise complaints in New York city between 2010 and 2014.
     
 \begin{table}
 \centering
@@ -1005,10 +1029,8 @@ numpy and Pandas is used for general numeric computations and data management.
 The training software has automated tests made with pytest,
 and uses Travis CI to execute the tests automatically for each change.
 
-All the code used is available at https://github.com/jonnor/ESC-CNN-microcontroller.
+All the code used is available at \url{https://github.com/jonnor/ESC-CNN-microcontroller}
 
-
-`TODO: picture of training + deployment pipelines`
 
 ## Models
 

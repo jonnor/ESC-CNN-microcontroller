@@ -30,6 +30,10 @@ https://stackoverflow.com/questions/44466066/how-can-i-convert-a-trained-tensorf
 
 ### Urbansound8k
 
+In [@chu2009environmental] the authors conducted a listening test and found that 4 seconds
+were sufficient for subjects to identify environmental sounds
+with 82% accuracy.
+
 ### Dilated model.
 Reaching 64%-69% val accuracy on 35k samples, with 32,32,64,64 kernels.
 Significantly higher than train, indicates dropout is working well?
