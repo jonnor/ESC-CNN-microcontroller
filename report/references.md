@@ -734,6 +734,50 @@ Same classification down to 5 bits/word.
 0.814 MB for its 213,491 parameters in float32.
 12 MB RAM needed for activations.
 
+## Sensors
+
+### Detection of Anomalous Noise Events on Low-Capacity Acoustic Nodes for Dynamic Road Traffic Noise Mapping within an Hybrid WASN
+https://www.mdpi.com/1424-8220/18/4/1272/htm
+April 2018 
+
+Hybrid architecture, low-capacity and high-capacity nodes
+Anomalous Noise Event Detector (ANED) to run on low-capacity nodes, on microcontroller
+
+Experiments with considering 9 h and 8 min of real-life acoustic data from both urban and suburban environments,
+show the feasibility of the proposal both in terms of computational load and in classification accuracy.
+
+### Wireless Sensor Networks for Long-Term Monitoring of Urban Noise
+Sensors. September 2018
+Courtney Peckens, Cédric Porter and Taylor Rink
+
+A-weigthing filter in hardware
+Teensy microcontroller.
+Calculating Leq_T.
+Xbee tranciever
+
+Mel-filters
+Probability Density Functions
+Linear discriminator
+
+### Design aspects of acoustic sensor networks for environmental noise monitoring
+September 2016.
+https://www.sciencedirect.com/science/article/pii/S0003682X16300627
+
+Categorizes ESC sensors into 4 categories,
+based on Hardware Costs, Scalability, Flexibility, Accuracy.
+
+Evaluated different usecases.
+Noise annoyance, Illegal firework detection/localization, Noise reason monitoring for tram passings. 
+
+### Environmental noise monitoring using source classification in sensors
+https://www.sciencedirect.com/science/article/pii/S0003682X17307533
+2017
+Panu Maijalaa Zhao Shuyang ToniHeittola Tuomas Virtanen
+Raspberry PI.
+MFCC with GMM, ANN
+"In environmental sound classification, a training set with a few hours can currently be regarded as a large dataset"
+
+
 ## Machine Learning for hearing aids
 
 SoundSense Learn.
@@ -747,6 +791,12 @@ http://www.hearingreview.com/2018/05/real-life-applications-machine-learning-hea
 Uses samplerate 8kHz.
 eGRU_arch Urbansound8k score of 72%. Maybe 8kHz is enough?
 eGRU_opt UrbanSound8k 61.2%
+
+## WHO Noise Guidelines
+
+The definition of “community noise” used in the CNG in 1999 was also adapted. The GDG agreed to
+use the term “environmental noise” instead, and offered an operational definition of: “noise emitted
+from all sources except sources of occupational noise exposure in workplaces”.
 
 ## UM2526 - Getting started with X-CUBE-AI Expansion Package for Artificial Intelligence (AI)
 

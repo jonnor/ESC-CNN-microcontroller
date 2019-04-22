@@ -21,7 +21,6 @@ MONDAY22. Send draft to OK
 - Do a grammar checking pass
 
 
-
 ### Post
 
 Experiment
@@ -35,6 +34,11 @@ And wait for more confident ones (since we are doing continious monitoring)
 - Include git version in settings file
 - MAYBE: Fix train and validation generators to be single-pass? 
 - MAYBE: Profile to see what makes training slow
+
+Report
+
+- Fix review feedback
+- Write Abstract/Summary
 
 Code quality
 
@@ -53,11 +57,12 @@ Dissemination
 - Record a demo video
 - Write a blogpost
 
-Foo 
+Related
+
 - STM32AI: Test different FFT/mel sizes
 - STM32AI: Report/fix melspec preprocessing bug
 https://community.st.com/s/topic/0TO0X0000003iUqWAI/stm32-machine-learning-ai
-- Test USB audio input
+- Test USB audio input for classifying on device
 
 
 ## Done

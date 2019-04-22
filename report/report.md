@@ -5,10 +5,8 @@ Contributions
 
 - Demonstrate an ESC system running on a 5 USD microcontroller.
 Resulting in XX% accuracy on Urbansound8k dataset.
-- First evaluations of modern efficient CNNs such as
-MobileNet, SqueezeNet on Urbansound8k dataset 
-- Set of tools for STM32 CubeMX AI to overcome current limitations
-in the platform
+- Set of tools for STM32 CubeMX AI
+- 
 
 -->
 
@@ -25,15 +23,15 @@ Sources of noise.
     People talking
     Dogs barking
     Construction
-    Air Conditioner, Refridgerator
+    Air Conditioner, Refrigerator
     
 Health problems. Sleep disturbance, 
 Economic impact. Reduced value of 
-Types of noise. Occuptional. Environmental noise
+Types of noise. Occupational. Environmental noise
 Regulations
 
 
-Noise assesment
+Noise assessment
 Challenges.
     Local problem, multiple sources, time-dependent
     Perceptual/subjective evaluation
@@ -50,45 +48,13 @@ Privacy, GDPR
 
 
 Sound is everywhere around us, and a rich source of information about our surroundings.
-
-Like other animals, humans communicate 
-
-We use sound explicitly to communicate when we talk, offering observations, facts
+We use sound explicitly to communicate when we talk
 
 
-![Health impacts of noise at different severity levels[@NoiseStressConcept]](./img/noiseseverity.png)
+## Environmental noise
 
-
-## Importance
-
-When we talk, sound is a critical part of our communication, conveying not just statements
-but also information about.
-As we walk around 
-
-Sound can convey information also when 
-before we can see them
-alerted about dangerous situation
-
-Sound is used to communicate, be it by speech, audible gestures or computerized signals (
-
-car speeding up or slowing down
-fire alarm
-
-We communicate with eachother using sound when we talk, 
-
-communicating with intent
-
-side-effect of many human activities
-
-
-source of information
-understanding of the environment around us
-
-
-Since the industrial revolution, the human soundscape has become increasingly busy.
-
-mechanical and electromechanical devices
-Urbanization. Many more people in the same area
+Noise is unwanted sound.
+Environmental 
 
 transportation. Cars, railroads, aeroplanes
 construction. Drilling, cutting
@@ -96,41 +62,34 @@ machinery
 
 The sum of all the noise is referred to as Environmental noise.
 
-Environmental noise is the summary of noise pollution from outside,
-caused by transport, industrial and recreational activities.
+Environmental noise is the summary of noise pollution from all sources,
+such as transportation, construction, industry and recreational activities.
 
+(road, railroad, airplanes)
 
-## Regulation
+In addition to long-term sources there may also be short-term
+or intermitted.
 
-Environmental noise is a type of noise pollution, and is regulated.
-
-In the EU, Environmental noise is regulated Environmental Noise Directive (2002/49/EC)[@EuNoiseDirective].
-
-The purpose of the directive is to:
-
-* determine peoples exposure to environmental noise
-* ensuring that information on environmental noise and its effects is available to the public
-* preventing and reducing environmental noise where necessary
-* preserving environmental noise quality where it is good
-
-The Directive requires Member States to prepare and publish noise maps and noise management action plans every 5 years for
-urban areas and major road, railways and airports.
-
-The Directive does not set limit or target values, nor does it prescribe the measures to be included in the action plans.
-This is up to authorities of each individual Member State.
+Short term or occasional noise sourc
+es may be considered noise nuisance.
+such as from music venues may not be
 
 
 ## Health impact
 
-According to European Commission introduction on the Health effects of Noise [@EuNoiseHealthEffects],
+![Health impacts of noise at different severity levels[@NoiseStressConcept]](./img/noiseseverity.png)
+
+According to European Commission[@EuNoiseHealthEffects],
 Noise pollution the second environmental cause of health problems in Europe, after air pollution.
+
+`TODO: how many people affected`
 
 Sleepers that are exposed to night noise levels above 40dB on average throughout
 the year can suffer health effects like sleep disturbance and awakenings.
 Above 55dB long-term average exposure, noise can trigger elevated blood pressure and lead to ischemic heart disease.
 The WHO has set a Night Noise Guideline level for Europe at 40 dB $L_{night}$.
 
-According to a report done on behalf of the European Commision[@RVIMTransportationNoise]
+According to a report done on behalf of the European Commission[@RVIMTransportationNoise]
 
 "The exposure to transportation noise in Europe led in 2011 to about
 900 thousand cases of hypertension and 40 thousand hospital admissions due to cardiovascular disease and stroke"
@@ -138,21 +97,36 @@ and "the number of cases of premature mortality due to these diseases as a resul
 and "An estimated 8 million people experience sleep disturbance due to transportation noise and about 4 million perceive this as severe".
 
 
+### Regulation
+
+In the EU, Environmental noise is regulated by Environmental Noise Directive (2002/49/EC)[@EuNoiseDirective].
+The purpose of the directive is to:
+
+* Determine peoples exposure to environmental noise
+* Ensuring that information on environmental noise and its effects is available to the public
+* Preventing and reducing environmental noise where necessary
+* Preserving environmental noise quality where it is good
+
+Member States of the EU are required to every 5 years create noise maps and noise management action plans 
+for urban areas, major roads, railways and airports.
+
+
 ## Noise monitoring with Wireless Sensor Networks
 
-`TODO: add an image of noise in city, maybe with sensors`
-
-Several cities have started to deploy networks of sound sensors in order to understand and reduce noise issues.
-These consist of many sensor nodes positioned in the area of interest,
+Several cities have started to deploy networks of sound sensors in order to better understand and reduce noise issues.
+These sensor networks consist of many sensor nodes positioned in the area of interest,
 transmitting the data to a central system for storage and reporting.
 
-The SONYC[@SONYC] project in New York City had 56 sound sensors as of 2018.[@SONYC2019]
+Dublin City Noise project[@DublinCityNoise] has 14 sensors across the city since 2016.
+The Sounds of New York City (SONYC)[@SONYC] project had 56 sound sensors as of 2018.[@SONYC2019]
 The Barcelona Noise Monitoring System[@BarcelonaNoiseMonitoring] had 86 sound sensors as of 2018.[@BarcelonaNoiseMonitoring2018].
 CENSE[@CENSE] project plans to install around 150 sensors in Lorient, France[@CENSESensor].
 
-To keep costs low and support a dense coverage, the sensor nodes are often designed to operate wirelessly.
+![How sensor networks and data analysis integrates with citizens, experts and city agencies in Sounds of New York City[@SONYC-CPS]](./img/SONYC-CPS.png){ width=50% }
+
+To keep costs low and support a dense coverage, the sensor nodes are can be designed to operate wirelessly.
 Communication is done using wireless radio technologies such as WiFi, GSM, NB-IoT or 6LoWPAN.
-Energy to power the sensor is harvested, either using solar power or from streetlight powered at night.
+Energy to power the sensor is harvested, either using solar power or from streetlight power at night.
 A battery backup allows the sensor to continue operating also when energy is momentarily unavailable.
 
 These sensor networks enable continuous logging of the sound level (Leq dB).
@@ -161,14 +135,19 @@ Sound level sensors in Europe are designed to specifications of IEC 61672-1 Soun
 with an accuracy of either Class 2 or Class 1.
 The equivalent standard for North America is ANSI S1.4[@ANSISoundLevelMeters], and Type 1/2 accuracy.
 
-`TODO: write why knowing the noise source/type is useful`
+Sensors can also provide information that can be used to characterize the noise,
+for instance to identify the likely noise sources.
+This is desirable in order to understand the cause and possible interventions,
+which regulations the noise falls under, as well as what actors may be responsible. 
 
-Most sensors also aim to provide information that can be used to characterize the noise.
 This requires much more data than sound level measurements,
-making it challenging to transmit within the bandwidth and energy budget of a sensor.
+making it challenging to transmit within the bandwidth and energy budget of a wireless sensor.
 Recording and storing detailed audio data may also capture sensitive information and violate privacy requirements.
 
 To address these concerns several methods for efficiently coding the information before transmitting have been developed.
+See Figure \ref{figure:sensornetworks-coding} for an overview.
+
+![Different data transmission strategies for a sensor network for noise monitoring with noise source classification capability. \label{figure:sensornetworks-coding}](./img/sensornetworks.png)
 
 In [@AudioCodingSensorGrid], a compressed noise profile data is based on lossy compression of spectrograms is proposed.
 For 125ms time resolution the bitrate is between 400 and 1400 bits per second,
@@ -176,21 +155,21 @@ however this gave a 5 percentage points reduction in classification accuracy.
 
 Others have proposed to use neural networks to produce an audio "embedding" inspired
 by the success of world embeddings for Natural Language Processing.
-In VGGish[@VGGish] model trained on Audioset[@AudioSet] an a 8-bit, 128 dimensional embedding is used for 10 seconds clips,
+In VGGish[@VGGish] model trained on Audioset[@AudioSet]
+a 8-bit, 128 dimensional embedding is used for 10 seconds clips,
 leading to a datarate of 102 bits per second.
 L^3 (Look, Listen, Learn)[@L3] similarly proposed an embedding with 512 dimensions.
-
 The computation of such an embedding generally requires very large models and lots of compute resources.
 EdgeL^3[@EdgeL3] showed that the L^3 model can be compressed by up to 95%,
 however the authors state that more work is needed to fit the RAM constraints of desirable sensor hardware.
 
-The minimal amount of data transmissions would be to only send the detected noise category.
+The minimal amount of data transmissions would be achieved if only sending the detected noise category,
+requiring to perform the classification on the sensor.
 
 This motivates the problem statement of this thesis:
 
 > Can we classify environmental sounds directly on a wireless and battery-operated noise sensor?
 
-![Different strategies for data transmission in a sensor network for noise monitoring.](./img/sensornetworks.png)
 
 <!---
 Measuring noise
@@ -216,29 +195,7 @@ Sensor Networks for Noise Monitoring
 # Background
 
 <!---
-
-Digital Sound
-    Spectrograms
-    mel-spectrogram
-
-Machine Learning.
-    Fundamentals
-
-Machine Learning on sound   
-    **Classification**. Closed-set. Single label.
-    Anslysis windows
-    ?Weak labeling
-
-Environmental Sound Classification (ESC).
-    Definition, Datasets
-    General methods -> CNN
-
-Convolutional Neural Networks
-
-Microcontrollers
-
 Related works for our task...
-
 -->
 
 <!---
@@ -264,44 +221,46 @@ as illustrated in Figure \ref{figure:audio-aquisition}.
 In the digitization process, the signal is quantized in time at a certain sampling frequency,
 and the amplitude quantized at a certain bit-depth.
 A typical sampling frequency is 44100 Hz, and bit-depth 16 bit.
-With these parameters, the acoustic sound can be reconstructed without perceivable differences by humans.
-
+With these parameters, the acoustic sound can be reconstructed without perceivable differences
+to the human ear.
 In this representation, sound is a 1 dimensional sequence of numbers.
 This is sometimes referred to as a *waveform*. 
 
-Digital sound can be stored uncompressed (example: PCM WAV),
-using lossless compression (example: FLAC)
-or using lossy compression (example: MP3).
+Digital sound can be stored uncompressed (example format: WAV),
+using lossless compression (FLAC)
+or using lossy compression (MP3).
 Lossy compression removes information that are indistinguishable to the human hear
 and can compress better than lossless.
-It however adds compression artifacts, and is usually avoided for machine learning tasks.
+It however adds compression artifacts, and is best avoided for machine learning tasks.
 
 Recordings can have multiple channels of audio but for machine learning on audio
-single-channel (mono) data is still the most common.
+single-channel data (mono-aural) is still the most common.
 
 ### Spectrograms
 
-Acoustic events.
-Frequency analysis can reveal.
+Sounds of interest often have characteristic patterns not just in time (temporal signature)
+but also in frequency content (spectral signature).
+Therefore it is common to analyze the audio in a time-frequency representation (a *spectrogram*). 
 
-A common way to transform audio waveform into a spectrogram is by using the
-Short Time Fourier Transform (STFT).
+The standard way to transform audio waveform into a spectrogram is by using the Short Time Fourier Transform (STFT).
+The STFT operates by splitting the audio up in short consecutive chunks,
+and computing the Fast Fourier Transform (FFT) to estimate the frequency content for each chunk.
+To reduce artifacts at the boundary of chunks, they are overlapped (typically by 50%)
+and a window function (such as the Hann window) is applied before before computing the FFT.
 
-The STFT operates by splitting the audio up in small consecutive chunks.
-
-The splitting is often computed with 50% overlap, and by applying a window function before computing the FFT.
-The window function
-
-In the Fourier Transform, and thus in the STFT, there is a trade-off between frequency resolution.
-The longer the FFT window the better the frequency resolution, but the temporal resolution is reduced.
+There is a trade-off between frequency (spectral) resolution and time resolution with the STFT.
+The longer the FFT window the better the frequency resolution,
+but the poorer the temporal resolution.
 For speech a typical choice of window length is 25 ms.
-Similar frame lengths are often adopted for acoustic events. `TODO: references`
+Similar frame lengths are often adopted for acoustic events.
 
-![Computing frames from an audio signal, using windows functions. Based on image by [@AudioFraming]](./images/frames.png)
+`TODO: add references`
+`TODO: image of windowing / STFT process`
+![Computing a STFT spectrogram from an audio waveform](./images/frames.png)
 
-
-
-
+<!--
+Inspiration for TODO: image, https://dsp.stackexchange.com/questions/19311/stft-why-overlapping-the-window
+-->
 
 ## Machine learning
 
@@ -322,9 +281,13 @@ Supervised learning uses a dataset where each sample is labeled with the right c
 These labels are normally provided by manual annotation by humans inspecting the data.
 
 ```TODO:
-Class balance
-metrics
+describe metrics
 ```
+
+<!--
+SKIP
+- class im/balance
+-->
 
 ![Splitting datasets into train/validation/test sets and cross-validation \label{figure:crossvalidation}](./img/crossvalidation.png)
 
@@ -363,12 +326,12 @@ Once training is completed, the predictive model can be used stand-alone, using 
 \newpage
 ## Audio Classification
 
-Feature representations
 
 ### Mel-spectrogram
 
 For machine learning it is desirable to reduce the dimensions of inputs as much as possible.
-To do this on spectrograms the STFT spectrogram is often reduced to 30-128 frequency bands using a filter-bank.
+A STFT spectrogram often has considerable correlation between adjacent frequency bins,
+and is often reduced to 30-128 frequency bands using a filter-bank.
 Several different filter-bank alternatives have been investigated for audio classification tasks,
 such as 1/3 octave bands, the Bark scale, Gammatone and the Mel scale.
 All these have filters spacing that increase with frequency, mimicking the human auditory system.
@@ -399,8 +362,8 @@ It is common to compress the range of values in spectrograms by applying a log t
 
 In order to center the values, the mean (or median) of the spectrogram is often removed.
 Scaling the output to a range of 0-1 or -1,1 is also sometimes done.
-These changes have the effect of removing amplitude,
-forcing the model to focus on the patterns of the sound.
+These changes have the effect of removing amplitude variations,
+forcing the model to focus on the patterns of the sound regardless of amplitude.
 
 `TODO: image of normalized mel-spectrogram. Or feature distribution of datasets w/without normalization?`
 
@@ -518,16 +481,16 @@ Cutout
 
 ### Neural Networks
 
-Fully connected
-Dense layer.
+`TODO: describe Fully connected layer`
+`TODO: describe multi-layer`
+`TODO: describe non-linear activation functions`
 
 ### Training
 
-Gradient Decent
-Backpropagation
+`TODO: describe Backpropagation`
+`TODO: describe Gradient Decent`
 
-
-### Convolutions
+### Convolution
 
 Convolution operation
 Functions. Edge detection, median filtering
@@ -688,7 +651,7 @@ such as 2D convolutions, pooling and Gated Recurrent Units.
 It uses optimized fixed-point maths and SIMD instructions,
 which can be 4x faster and energy efficient than floating point[@CMSISNN].
 
-![Low level functions provided by CMSIS-NN (in gray) for use by higher level code[@CMSISNN]](./img/CMSIS-NN-functions.png)
+![Low level functions provided by CMSIS-NN (light gray) for use by higher level code (light blue)[@CMSISNN]](./img/CMSIS-NN-functions.png)
 
 uTensor[@uTensor] by ARM. Allows to run a subset of TensorFlow models on ARM Cortex-M devices,
 designed for use with the mbed software platform.
@@ -722,9 +685,11 @@ X-CUBE-AI 3.4 does not use CMSIS-NN.
 With the increasing interest in deploying neural networks on low-power microcontrollers,
 dedicated hardware acceleration units are also being developed.
 
-STMicroelectronics has stated that neural network accelerators will be available
+STMicroelectronics (ST) has stated that neural network accelerators will be available
 for their STM32 family of microcontrollers[@ST-DCNN-accelerator], based on their
 FD-SOI chip architecture[@ST-FD-SOI].
+
+![Architecture of Project Orlando by ST, system-on-chip with DSP and hardware accelerators for Machine Learning integrated with microcontroller (gray) [@ST-Orlando-MPSoc17]](./img/ST-Orlando-SoC.png){ height=20% }
 
 ARM has announced ARM Helium, an extended instruction set for the Cortex M
 family of microcontrollers that can be used to speed up neural networks[@ARMHeliumAnnouncement].
