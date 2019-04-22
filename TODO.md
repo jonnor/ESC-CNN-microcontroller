@@ -9,7 +9,7 @@ Critical line
 - Finalize introduction. Health/import section, images
 - Background. Fill out CNN section
 - Materials. Add images of compared model
-- Results. Make plots pretty in 
+- Results. Make plots pretty 
 - Results. Add table(s)
 - Write basic Discussion and Conclusion
 - Background. Images and references for Audio Classification chapter

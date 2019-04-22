@@ -555,7 +555,7 @@ channels.
 So unlike what the name suggests a Convolution2D, is actually a 3D convolution.
 
 
-![Standard 3x3 convolutional block, input/output relationship. Source: Yusuke Uchida [@ConvolutionsIllustrated]](./img/conv-standard.png)
+![Standard 3x3 convolutional block, input/output relationship. Imae: Yusuke Uchida[@ConvolutionsIllustrated]](./img/conv-standard.png)
 
 The computational complexity of such a convolution is $ O_conv = WHNK_wk_hM $,
 
@@ -590,7 +590,7 @@ Used by ResNet.
 
 Used in [@Xception]
 
-![Depthwise separable convolutions, input/output relationship](./img/conv-depthwise-separable.png)
+![Depthwise separable convolutions, input/output relationship. Image: Yusuke Uchida[@ConvolutionsIllustrated]](./img/conv-depthwise-separable.png)
 
 While a regular convolution performs a convolution over both channels and the spatial extent,
 a Depthwise Separable convolution splits this into two convolutions.
@@ -599,26 +599,30 @@ followed by a a Pointwise convolution over the input channels.
 The pointwise convolution is sometimes called a 1x1 convolution,
 since it is equivalent to a 2D convolution operation with a 1x1 kernel. 
 
-This factorization requires considerably fewer computations, but is somewhat less expressive.
-
 $$ O_{pw} = HWNM $$
 $$ O_{dw} = HWNK_wK_h $$
-$$ O_{ds} = O_pw + O_dw $$
+$$ O_{ds} = O_pw + O_dw = HWN(M + K_wK_h) $$
 
+This factorization requires considerably fewer computations compared to full 2D convolutions.
 For example, with $K_w=K_h=3$ and $M=64$, the reduction is approximately $7.5x$.
 
 
 ### Spatially Separable convolution
 
 In a spatially separable convolution, a 2D convolution is factorized into two convolutions with 1D kernels.
-First a 2D convolution with $1xK_h$ is performed, followed by a 2D convolution with a $K_wx1$ kernel. 
+First a 2D convolution with $1 x K_h$ kernel is performed, followed by a 2D convolution with a $K_w x 1$ kernel. 
 
-This reduces the number of computations and parameters, from $HWNM(K_wK_h)$ to $HWNM(K_w+K_h)$
+$$
+O_{ss} = HWNMK_w + HWNMK_h = HWNM(K_w+K_h)
+$$
 
-`TODO: images explaining convolution types.`
-`Ref Yusuke Uchida [@ConvolutionsIllustrated], used with permission under CC-BY`
+This reduces the number of computations and parameters over regular 2D convolutions
+by a ratio $(K_w+K_h)/(K_wK_h)$.
+With $K_w=K_h=3$, the reduction is 6/9 and with $K_w=K_h=5$ it is 10/25. 
 
-EffNet, 
+
+`TODO: image of spatially separable convolution`
+
 
 <!---
 SKIP
@@ -684,6 +688,8 @@ such as 2D convolutions, pooling and Gated Recurrent Units.
 It uses optimized fixed-point maths and SIMD instructions,
 which can be 4x faster and energy efficient than floating point[@CMSISNN].
 
+![Low level functions provided by CMSIS-NN (in gray) for use by higher level code[@CMSISNN]](./img/CMSIS-NN-functions.png)
+
 uTensor[@uTensor] by ARM. Allows to run a subset of TensorFlow models on ARM Cortex-M devices,
 designed for use with the mbed software platform.
 
@@ -708,6 +714,7 @@ Keras (Tensorflow), Caffe[@Caffe] and PyTorch.
 In X-CUBE-AI 3.4, all computations are done in single-precision float.
 Model compression is supported by quantizing model weights by 4x or 8x,
 but only for fully-connected layers (not convolutional layers)[@X-CUBE-AI-manual, ch 6.1].
+X-CUBE-AI 3.4 does not use CMSIS-NN.
 
 
 ### Hardware accelerators for neural networks
