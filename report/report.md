@@ -44,28 +44,10 @@ Smart-city concept, data-driven
 
 Privacy, GDPR
 => this thesis
--->
 
 
 Sound is everywhere around us, and a rich source of information about our surroundings.
 We use sound explicitly to communicate when we talk
-
-
-## Environmental noise
-
-Noise is unwanted sound.
-Environmental 
-
-transportation. Cars, railroads, aeroplanes
-construction. Drilling, cutting
-machinery
-
-The sum of all the noise is referred to as Environmental noise.
-
-Environmental noise is the summary of noise pollution from all sources,
-such as transportation, construction, industry and recreational activities.
-
-(road, railroad, airplanes)
 
 In addition to long-term sources there may also be short-term
 or intermitted.
@@ -74,30 +56,51 @@ Short term or occasional noise sourc
 es may be considered noise nuisance.
 such as from music venues may not be
 
+-->
 
-## Health impact
 
-![Health impacts of noise at different severity levels[@NoiseStressConcept]](./img/noiseseverity.png)
+<!--
+## Measuring noise
+Noise level is measured as Sound Pressure Level (SPL), most commonly expressed in decibel.
 
-According to European Commission[@EuNoiseHealthEffects],
-Noise pollution the second environmental cause of health problems in Europe, after air pollution.
+over the reference of 20*10-6 Pa
 
-`TODO: how many people affected`
+Sound levels change 
+Environmental noise is measured using continious equivalent sound level ($L_{eq_T}$) over
+a some time-period T.
+A common time-period used for health is 1 year. 
+The equivalent sound level is the sound level that which has the same
+energy
+
+
+It is common to distinguish between noise that occurs in the daytime ($L_{day}$),
+and at nighttime ($L_{night}$). 
+The yearly 
 
 Sleepers that are exposed to night noise levels above 40dB on average throughout
 the year can suffer health effects like sleep disturbance and awakenings.
 Above 55dB long-term average exposure, noise can trigger elevated blood pressure and lead to ischemic heart disease.
 The WHO has set a Night Noise Guideline level for Europe at 40 dB $L_{night}$.
 
-According to a report done on behalf of the European Commission[@RVIMTransportationNoise]
-
-"The exposure to transportation noise in Europe led in 2011 to about
-900 thousand cases of hypertension and 40 thousand hospital admissions due to cardiovascular disease and stroke"
-and "the number of cases of premature mortality due to these diseases as a result of noise exposure is about 10 thousand per year.",
-and "An estimated 8 million people experience sleep disturbance due to transportation noise and about 4 million perceive this as severe".
+-->
 
 
-### Regulation
+
+## Environmental noise
+
+Noise is a growing problem in urban areas, and due to increasing urbanization more and more people are affected.
+Major sources of noise include transportation, construction, industry and recreational activities.
+The sum of all the noise is referred to as Environmental noise or noise pollution.
+
+Noise pollution over sustained periods of time affects health and well-being in many ways.
+Noise can be a source of annoyance and increased stress, cause sleeping disturbance
+and in increase risk of heart diseases.
+WHO has estimated that in Europe 1.6 million healthy life years (Disability-Adjusted Life Years, DALY)
+are lost annually due to noise pollution[@WHONoiseBurden2018].
+
+This makes noise pollution the second environmental cause of health problems in Europe, after air pollution.
+
+![Health impacts of noise at different severity levels[@NoiseStressConcept]](./img/noiseseverity.png)
 
 In the EU, Environmental noise is regulated by Environmental Noise Directive (2002/49/EC)[@EuNoiseDirective].
 The purpose of the directive is to:
@@ -107,9 +110,12 @@ The purpose of the directive is to:
 * Preventing and reducing environmental noise where necessary
 * Preserving environmental noise quality where it is good
 
-Member States of the EU are required to every 5 years create noise maps and noise management action plans 
-for urban areas, major roads, railways and airports.
+Member States of the EU are required create noise maps and noise management action plans  every 5 years.
+These must cover all urban areas, major roads, railways and airports over a certain size.
 
+The noise maps are created using simulation of known noise sources (such as car traffic)
+with mathematical sound propagation models, based on estimates for traffic numbers.
+These maps only gives yearly average noise levels.
 
 ## Noise monitoring with Wireless Sensor Networks
 

@@ -334,6 +334,12 @@ Only theoretical N-operations shown, not actual runtime
 
 
 
+### Not All Ops Are Created Equal!
+https://arxiv.org/abs/1801.04326
+[@lai2018not]
+Found up to 5x difference in throughput/energy between different operations.
+
+
 # Efficient CNNs for Keyword Spotting
 
 ### Convolutional Neural Networks for Small-footprint Keyword Spotting 
@@ -776,6 +782,12 @@ Panu Maijalaa Zhao Shuyang ToniHeittola Tuomas Virtanen
 Raspberry PI.
 MFCC with GMM, ANN
 "In environmental sound classification, a training set with a few hours can currently be regarded as a large dataset"
+
+### Sound monitoring networks new style
+2011.
+1/3 octave bands.
+"Temporal contrast filters"
+Self-Organizing Maps
 
 
 ## Machine Learning for hearing aids
