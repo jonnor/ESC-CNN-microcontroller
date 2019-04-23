@@ -488,12 +488,15 @@ Cutout
 ### Neural Networks
 
 `TODO: describe Fully connected layer`
+
 `TODO: describe multi-layer`
+
 `TODO: describe non-linear activation functions`
 
 ### Training
 
 `TODO: describe Backpropagation`
+
 `TODO: describe Gradient Decent`
 
 ### Convolution
@@ -518,11 +521,7 @@ Using a set of kernels in combination can detect many pattern variations.
 ### Convolutions in 2D
 
 Moves spatially across the width and height of input.
-
-Convolution moves in 2D width, height.
-channels.
-So unlike what the name suggests a Convolution2D, is actually a 3D convolution.
-
+Convolution is
 
 ![Standard 3x3 convolutional block, input/output relationship. Imae: Yusuke Uchida[@ConvolutionsIllustrated]](./img/conv-standard.png)
 
@@ -539,25 +538,24 @@ K_h kernel height
 
 ### Pooling
 
-Max, mean
+`TODO: describe Max, mean pooling` 
 
-
-
+`TODO: image of pooling`
 
 ### Strided convolution
 
-Striding can be used to reduce spatial dimensionality,
-either as an alternative or compliment max/mean-pooling.
+Striding can be used to reduce spatial dimensionality, either as an alternative or compliment max/mean-pooling.
 
 ? vunerable to aliasing?
 
-Used by ResNet.
-"Fully convolutional neural networks". Only Conv operations
+`TODO: image of striding`
 
+<!--
+"Fully convolutional neural networks". Only Conv operations
+Used by ResNet.
+-->
 
 ### Depthwise Separable convolution
-
-Used in [@Xception]
 
 ![Depthwise separable convolutions, input/output relationship. Image: Yusuke Uchida[@ConvolutionsIllustrated]](./img/conv-depthwise-separable.png)
 
@@ -575,6 +573,9 @@ $$ O_{ds} = O_pw + O_dw = HWN(M + K_wK_h) $$
 This factorization requires considerably fewer computations compared to full 2D convolutions.
 For example, with $K_w=K_h=3$ and $M=64$, the reduction is approximately $7.5x$.
 
+<!--
+Used in [@Xception]
+-->
 
 ### Spatially Separable convolution
 
@@ -712,6 +713,7 @@ They claim a 16x improvement in power efficiency over a ARM Cortex M7 chip[@GAP8
 ## Environmental Sound Classification
 
 ### Datasets
+\label{chapter:datasets}
 
 The Urbansound taxonomy[@UrbanSound8k, ch 2] is a proposed taxonomy of sound sources,
 developed based on analysis of noise complaints in New York city between 2010 and 2014.
@@ -956,8 +958,9 @@ and ran in 242 ms on a low-end microcontroller (ARM Cortex M0+ at 48 Mhz).
 
 ## Dataset
 
-The dataset used is Urbansound8K, described in chapter `TODO: ref`.
-The 10 classes can be seen in \ref{table:urbansound8k-classes}.
+The dataset used is Urbansound8K, described in chapter \ref{chapter:datasets}.
+The 10 classes in the dataset are listed in Table \ref{table:urbansound8k-classes},
+and Figure \ref{figure:urbansound8k-examples} shows example audio spectrograms.
     
 \begin{table}
 \centering
@@ -966,18 +969,17 @@ The 10 classes can be seen in \ref{table:urbansound8k-classes}.
 \label{table:urbansound8k-classes}
 \end{table}
 
+![Spectrograms of sound clips from Urbansound8k dataset, selected for each class\label{figure:urbansound8k-examples}](./plots/urbansound8k-examples.png)
+
 The dataset comes pre-arranged into 10 folds.
 A single fold may contain multiple clips from the same source file,
 but the same source file is not used in multiple folds to prevent data leakage.
 Authors recommend always using fold 10 as the test set,
 to allow easy comparison of results between experiments.
 
-![Spectrograms of sound clips from Urbansound8k dataset, selected for each class\label{urbansound8k-examples}](./plots/urbansound8k-examples.png)
-
 The target sound is rarely alone in the sound clip, and may be in the background,
 partially obscured by sounds outside the available classes.
 This makes Urbansound8k a relatively challenging dataset.
-For figure \ref{urbansound8k-examples} sounds with clear occurences of the target sound were chosen.
 
 
 ## Hardware platform
@@ -1009,14 +1011,11 @@ The entire setup can be seen in figure \ref{sensortile-devkit}.
 
 ## Software
 
-The STM32L476 microcontroller is supported by STM32CubeMX`TODO: ref` development package from ST Microelectronics.
-
-In this work, X-CUBE-AI version 3.4.0 was used. 
-
-
+The STM32L476 microcontroller is supported by STM32CubeMX development package
+and the X-CUBE-AI neural network add-on from ST Microelectronics.
+Version 3.4.0 of X-CUBE-AI was used. 
 
 ![STM32CubeMX application with X-CUBE-AI addon after loading a Keras model](./img/stm32cubeai.png)
-
 
 A Python commandline script was created to streamline collecting model statistics using X-CUBE-AI,
 without having to manually use the STM32CubeMX user interface. See \ref{appendix:stm32convert}.
@@ -1024,15 +1023,13 @@ This tool provides equired Flash storage (in bytes), RAM usage
 and CPU usage (in Multiply-Accumulate operations per second, MAC/s) as JSON,
 and writes the generated C code to a specified directory.
 
-
 The training setup is implemented in Python.
 The machine learning models are implemented in Keras using the Tensorflow backend,
 and are attached be found in the appendices.
-
 To perform feature extraction during training librosa[@librosa] was used.
-numpy and Pandas is used for general numeric computations and data management.
+numpy and Pandas was used for general numeric computations and data management.
 
-The training software has automated tests made with pytest,
+The training setup has automated tests made with pytest,
 and uses Travis CI to execute the tests automatically for each change.
 
 All the code used is available at \url{https://github.com/jonnor/ESC-CNN-microcontroller}
@@ -1105,7 +1102,6 @@ convolutional blocks, in particular depthwise-separable and spatially-separable 
 `TODO: table of models to test, parameters`
 `TODO: images of each compared architecture. Overall / convolutional blocks`
 
-
 Residual connections are not evaluated, as the networks are relatively shallow.
 Grouped convolutions are not evaluated, as they were only added to TensorFlow very recently[@TensorFlowGroupConvolutionPR], and are not supported by our version of Keras and X-CUBE-AI.
 
@@ -1116,11 +1112,11 @@ Since the stride in Keras/Tensorflow must be uniform, 2x2 is used instead of 3x2
 `TODO: write about RAM optimization in X-CUBE-AI`
 In the SB-CNN architecture X-CUBE-AI will fuse the layers Conv2D -> BN -> MaxPooling2D 
 into a single operation.
-This drastically reduces RAM usage, from `TODO` to...
-`TODO: images of RAM usage per layer`
+This can drastically reduces RAM usage, from `TODO` to...
 Unfortunately this optimization is not implemented for all cases. (`FIXME: WHICH`)
+`TODO: images of RAM usage per layer`
 
-
+<!--
 Some other models were also attempted.
 
 DenseNet. X-CUBE-AI conversion fails. `INTERNAL ERROR: 'refcount'`
@@ -1128,14 +1124,13 @@ MobileNet. Had to replace Relu6() with ReLu.
 EffNet. Had to replace LeakyReLU with ReLu.
 
 ST FP-SENSING1 function pack[@FP-AI-SENSING1]
+-->
 
 
 \newpage
 # Methods
 
-## Model pipeline
-
-![Overview of classification pipeline \label{classification-pipeline}](./img/classification-pipeline.png)
+![Overview of the full model. The classifier runs on individual analysis windows, and predictions for the whole audio clip done using voting. \label{classification-pipeline}](./img/classification-pipeline.png)
 
 ## Preprocessing
 
@@ -1155,7 +1150,6 @@ This has achieved results near the state-of-art, so we opted to use the same.
 
 During preprocessing we also perform Data Augmentation.
 Time-stretching and Pitch-shifting following [@SB-CNN], for a total of 12 variations per sample.
-
 The preprocessed mel-spectrograms are stored on disk as Numpy arrays for use during training.
 
 During training time each window of mel-spectrogram frames is normalized by subtracting
@@ -1163,32 +1157,30 @@ the mean of the window and dividing by the standard deviation.
 
 ## Training
 
+<!--
 `?! Include Hyperparameter search ?`
+-->
 
 The pre-assigned folds of the Urbansound8k dataset was used,
 with 9-fold cross-validation during training and fold 10 as the held-out test set.
 
-Training are done on individual windows, with each window inheriting the
-label of the audio clip it belongs to.
+Training are done on individual windows,
+with each window inheriting the label of the audio clip it belongs to.
 
 In each minibatch, audio clips from training set are selected randomly.
-And for each sample, a time window is selected from a random position.
+And for each sample, a time window is selected from a random position[@SB-CNN].
 This effectively implements time-shifting data augmentation.
-`TODO: ref SB?`
 
 In order to evaluate the model on the entire audio clip, an additional
 pass over the validation set is done which combines predictions from multiple time-windows
 as shown in Figure \ref{classification-pipeline}.
 
 As the optimizer, Stocastic Gradient Decent (SGD) with Nesterov momentum set to 0.9 is used.
-Learning rate of `TODO`.
-Each model is trained for up to 50 epochs.
-
-A summary of experiment settings can be seen in Table \ref{table:experiment-settings}.
+Learning rate was set to 0.005 for all models. Each model is trained for up to 50 epochs.
+A complete summary of experiment settings can be seen in Table \ref{table:experiment-settings}.
 
 Training was performed on a NVidia GTX2060 GPU with 6GB of RAM to reduce experiment time,
 however the models can be trained on any device supported by TensorFlow and a minimum of 1GB RAM.
-
 
 ## Evaluation
 
@@ -1213,17 +1205,25 @@ which would be ignored if only relying on the theoretical MACC number.
 \newpage
 # Results
 
+`TODO: table with results`
+
+![Test accuracy of the different models](./img/models_accuracy.png){ height=30% }
+
+`TODO: add results with Baseline with Depthwise Separable`
+
+`TODO: add results of different amounts of conv kernels for DS-5x5`
+
+`TODO: add results with Effnet (spatially separable)`
+
+![Accuracy versus compute of different models](./img/models_efficiency.png){ height=30% }
+
+![Confusion matrix on Urbansound8k](./img/confusion_test.png){ height=30% }
+
+![Confusion matrix in reduced groups with only foreground sounds](./img/grouped_confusion_test_foreground.png){ height=30% }
+
+`TODO: add error analysis. Are misclassifications marked as low-confidence?`
+
 `TODO: plot training curves over epochs`
-
-![Test accuracy of the different models](./img/models_accuracy.png)
-
-
-![Accuracy versus compute of different models](./img/models_efficiency.png)
-
-![Confusion matrix on Urbansound8k](./img/confusion_test.png)
-
-![Confusion matrix in reduced groups with only foreground sounds](./img/grouped_confusion_test_foreground.png)
-
 
 \newpage
 # Discussion
@@ -1233,55 +1233,57 @@ Ref Problem
 > Can we classify environmental sounds directly on a wireless and battery-operated noise sensor?
 -->
 
+`TODO: make into coherent discussion`
+
+The Baseline model uses more CPU than our requirements, as expected.
+Also the base Strided model is outside the desirable range.
+
+Depthwise Separable combined with striding able to match the baseline performance.
+
+Best result 73%. Far from the state-of-the-art when not considering performance constraints
+Almost reaching level of PiczakCNN[@SB-CNN] with data augmentation (and better than without data augmetnation[@PiczakCNN]),
+with estimated 88M MAC/s, a factor 200x more.
+Indicator of huge differences in efficiency between different CNN architectures
+
+When considering only foreground sounds, accuracy increases significantly.
+
+When considering the reduced 5-group classification, accuracy increases.
+Some classifications are within group
+Still have significant confusion for some groups.
+
+
+Hardware accelerators.
+
 <!--
-TODO
+SKIP
+Possible to use slightly bigger microcontroller.
+Able to double Flash. Up to 1024kB RAM, 8x. Approx 8x CPU.
+
 What is the approx cost of system. BOM
 What is the battery lifetime. BOM
 -->
 
-would this be good enough to be useful for classifying noise assessment?
-
-class accuracies
-confusion 
-
-
-Foreground only
-Since the predominant sound
-
-Grouped evaluation
-Road noise, people/social noise, construction noise.
-
-
-
-Possible to use slightly bigger microcontroller.
-Able to double Flash. Up to 1024kB RAM, 8x. Approx 8x CPU.
-
-Hardware accelerators.
-
-
 # Conclusions
+
 
 
 
 ## Further work
 
 Use fixed-point / SIMD optimimized CNN implementation.
-4-5x possible. Ref CMSIS-NN
+4-5x speedup possible. Ref [@CMSIS-NN]
 
 CNN quantizations for efficient integer inference. 
 [@IncrementalNetworkQuantization]
 
-Reduce number of mels further.
-Reduce samplerate to 16kHz or 8kHz (eGRU).
-
+It is possible that the performance can be matched with 
+a lower samplerate and fewer mel-filter bands.
 
 
 
 <!---
 APPENDIX
-TODO: make be after references
 TODO: clean up the scripts, make fit on one/two page
-
 MAYBE: table with software versions? From requirements.txt
 -->
 
@@ -1293,20 +1295,16 @@ MAYBE: table with software versions? From requirements.txt
 fontsize=\footnotesize
 }
 
+`TODO: move appendix after references`
 
-\section{SB-CNN Keras model}
+\section{Keras model for SB-CNN (Baseline)}
 \pythoncode{../microesc/models/sbcnn.py}
 \label{listing:sbcnn}
 
 \newpage
-\section{LD-CNN Keras model}
-\pythoncode{../microesc/models/ldcnn.py}
+\section{Keras model for Strided}
+\pythoncode{../microesc/models/strided.py}
 \label{listing:ldcnn}
-
-\newpage
-\section{MobileNet Keras model}
-\label{appendix:mobilenet}
-\pythoncode{../microesc/models/mobilenet.py}
 
 \newpage
 \section{Script for converting models using X-CUBE-AI}

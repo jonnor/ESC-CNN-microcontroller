@@ -6,14 +6,14 @@
 
 Critical line
 
-- Finalize introduction. Health/import section, images
+- Update Attachments
+- Results. Add table(s)
+- Results. Make plots prettier 
+- Write basic Discussion and Conclusion
+
 - Background. Fill out CNN section
 - Materials. Add images of compared model
-- Results. Make plots pretty 
-- Results. Add table(s)
-- Write basic Discussion and Conclusion
 - Background. Images and references for Audio Classification chapter
-- Update Attachments
 
 MONDAY22. Send draft to OK
 
