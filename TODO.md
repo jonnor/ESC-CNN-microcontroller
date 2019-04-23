@@ -1,22 +1,21 @@
 
+- Structure of paper. Order of chapters OK?
+- If any information is missing
+- If any sections should be taken out
+- If the Method,Results seems to be OK
+
 
 ## TODO
 
-### Draft 1
+### Draft 2
 
 Critical line
 
-- Update Attachments
-- Results. Add table(s)
 - Results. Make plots prettier 
-- Write basic Discussion and Conclusion
-
+- Finish Discussion and Conclusion
 - Background. Fill out CNN section
 - Materials. Add images of compared model
 - Background. Images and references for Audio Classification chapter
-
-MONDAY22. Send draft to OK
-
 - Do a spell checking pass
 - Do a grammar checking pass
 

@@ -1091,7 +1091,6 @@ For these reasons SB-CNN was used as the base architecture for experiments.
 \ref{existing-models-perf}
 
 The baseline model has a few minor modifications from the original SB-CNN model:
-
 Max pooling is 3x2 instead of 4x2. Without this change the layers become negative sized
 due to the reduced input feature size (60 mel filter bands instead of 128).
 Batch Normalization was added to each convolutional block.
@@ -1100,14 +1099,19 @@ Would like to evaluate the effects of using more computationally efficient
 convolutional blocks, in particular depthwise-separable and spatially-separable convolutions.
 
 `TODO: table of models to test, parameters`
+
 `TODO: images of each compared architecture. Overall / convolutional blocks`
 
 Residual connections are not evaluated, as the networks are relatively shallow.
-Grouped convolutions are not evaluated, as they were only added to TensorFlow very recently[@TensorFlowGroupConvolutionPR], and are not supported by our version of Keras and X-CUBE-AI.
+Grouped convolutions are not evaluated, as they are not supported by our version of Keras and X-CUBE-AI.
+They were added to TensorFlow very recently[@TensorFlowGroupConvolutionPR].
 
 To get the RAM utilization within limits, striding is used as the downsampling strategy. 
 Since the stride in Keras/Tensorflow must be uniform, 2x2 is used instead of 3x2.
 
+<!--
+
+-->
 
 `TODO: write about RAM optimization in X-CUBE-AI`
 In the SB-CNN architecture X-CUBE-AI will fuse the layers Conv2D -> BN -> MaxPooling2D 
@@ -1205,9 +1209,15 @@ which would be ignored if only relying on the theoretical MACC number.
 \newpage
 # Results
 
-`TODO: table with results`
 
 ![Test accuracy of the different models](./img/models_accuracy.png){ height=30% }
+
+\begin{table}
+\input{pyincludes/results.tex}
+\caption{Results for the compared models}
+\label{table:results}
+\end{table}
+
 
 `TODO: add results with Baseline with Depthwise Separable`
 
@@ -1233,26 +1243,32 @@ Ref Problem
 > Can we classify environmental sounds directly on a wireless and battery-operated noise sensor?
 -->
 
-`TODO: make into coherent discussion`
+`TODO: make into coherent flow`
 
 The Baseline model uses more CPU than our requirements, as expected.
 Also the base Strided model is outside the desirable range.
 
-Depthwise Separable combined with striding able to match the baseline performance.
+Depthwise Separable combined with striding (Strided-DS-5x5, Strided-DS-3x3)
+able to match the baseline performance, at a much lower computational cost.
 
 Best result 73%. Far from the state-of-the-art when not considering performance constraints
-Almost reaching level of PiczakCNN[@SB-CNN] with data augmentation (and better than without data augmetnation[@PiczakCNN]),
-with estimated 88M MAC/s, a factor 200x more.
+Probably below human-level accuracy. Ref ESC-50
+
+<!--
+Almost reaching level of PiczakCNN[@SB-CNN] with data augmentation,
+and better than without data augmentation[@PiczakCNN].
+With estimated 88M MAC/s, a factor 200x more.
 Indicator of huge differences in efficiency between different CNN architectures
+-->
 
 When considering only foreground sounds, accuracy increases significantly.
 
-When considering the reduced 5-group classification, accuracy increases.
-Some classifications are within group
-Still have significant confusion for some groups.
+When considering the reduced 5-group classification.
+Some misclassifications are within a group of classes, and this increases accuracy.
+Example...
+However still have significant confusion for some groups...
 
-
-Hardware accelerators.
+`TODO: update to reflect latest results`
 
 <!--
 SKIP
@@ -1265,20 +1281,35 @@ What is the battery lifetime. BOM
 
 # Conclusions
 
+Able to demonstrate Environmental Sound Classification
+running on a low-power microcontroller suitable for use in a sensor node.
 
+The best model achieves a `` accuracy when evaluated on the Urbansound8k dataset,
+using `XX %` of the CPU capacity.
 
+`TODO: evaluate`
+??? is the perf high enough to be useful in practice?
+??? When considering foreground/grouped, and class of errors
 
 ## Further work
-
-Use fixed-point / SIMD optimimized CNN implementation.
-4-5x speedup possible. Ref [@CMSIS-NN]
 
 CNN quantizations for efficient integer inference. 
 [@IncrementalNetworkQuantization]
 
-It is possible that the performance can be matched with 
-a lower samplerate and fewer mel-filter bands.
+Use fixed-point / SIMD optimimized CNN implementation.
+4-5x speedup possible. Ref [@CMSIS-NN]
 
+It is possible that the performance level of `<75%`
+can be matched with a lower sample-rate and fewer mel-filter bands.
+
+Hybrid methods.
+Perform classification on-device, but also
+allow to send a feature representation.
+Maybe for a subset of classification candidates
+
+In the coming years, hardware accelerators for
+Convolutional Neural Networks are expected to become available.
+Significantly better power efficiency and compute power.
 
 
 <!---

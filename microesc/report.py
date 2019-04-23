@@ -113,12 +113,6 @@ def plot_accuracy_vs_compute(experiments, ylim=(0.65, 0.85)):
     numpy.testing.assert_allclose(df.test_acc_mean, df.accuracy)
     df['experiment'] = df.index
 
-    # FIXME: unhardcode
-    df.voting_overlap = 0.5
-    df.window_length = 0.72
-    df['classifications_per_second'] = 1 / (df.window_length * (1-df.voting_overlap))
-    df['utilization'] = df.duration_avg * df.classifications_per_second
-
     #perf_metric = 'maccs_frame'
     perf_metric = 'utilization'
 
@@ -243,13 +237,26 @@ def main():
     df['test_acc_mean'] = acc
     df = df.sort_index()
 
+    # TODO: add std-dev
+    df['foreground_test_acc_mean'] = df.confusions_test_foreground.apply(get_accuracies).mean(axis=1)
+    df['background_test_acc_mean'] = df.confusions_test_background.apply(get_accuracies).mean(axis=1)
+
+    # FIXME: unhardcode
+    df.voting_overlap = 0.5
+    df.window_length = 0.72
+    df['classifications_per_second'] = 1 / (df.window_length * (1-df.voting_overlap))
+    df['utilization'] = df.duration_avg * df.classifications_per_second
+
+    #df['grouped_test_acc_mean'] = grouped_confusion(df.confusions_test, groups).apply(get_accuracies).mean(axis=1)
+    #df['grouped_foreground_test_acc_mean'] = grouped_confusion(df.confusions_test_foreground, groups).apply(get_accuracies).mean(axis=1)
+
     # FIXME: this should come from the results
     models = pandas.read_csv('models.csv')
     models.index = [ str(i) for i in models.index ]
     df = df.join(models)
     # TODO: also add experiment info
 
-    print('res\n', df[['test_acc_mean', 'maccs_frame']])
+    print('res\n', df[['test_acc_mean', 'maccs_frame', 'foreground_test_acc_mean', 'background_test_acc_mean']])
 
     def save(fig, name):
         p = os.path.join(out_dir, name)
@@ -272,6 +279,10 @@ def main():
     group_cm, groupnames = grouped_confusion(cm, groups)
     fig = plot_confusion(group_cm, groupnames, percent=True)
     save(fig, 'grouped_confusion_test_foreground.png')
+
+    confusion_columns = [ c for c in df.columns if c.startswith('confusion') ]
+    df = df.drop(confusion_columns, axis=1)
+    df.to_csv(os.path.join(out_dir, 'results.csv'))
 
 if __name__ == '__main__':
     main()
