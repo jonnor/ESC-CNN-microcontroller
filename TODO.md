@@ -29,6 +29,7 @@ Experiment
 If we only consider high-confidence outputs, are we more precise? How much does recall drop?
 If model knows its own limitations, we can ignore low confidence results.
 And wait for more confident ones (since we are doing continious monitoring)
+- Support specifying settings path in experiments
 - Write all settings/parameters to a file when ran
 - Include git version in settings file
 - MAYBE: Fix train and validation generators to be single-pass? 
