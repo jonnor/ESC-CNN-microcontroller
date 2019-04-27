@@ -3,7 +3,7 @@
 import numpy as np
 from keras.models import Model
 from keras.layers import Dense, Dropout, Activation, Flatten, BatchNormalization, Input
-from keras.layers import MaxPooling2D, SeparableConv2D, Conv2D, DepthwiseConv2D
+from keras.layers import MaxPooling2D, SeparableConv2D, Conv2D, DepthwiseConv2D, ZeroPadding2D
 
 
 def add_common(x, name):
@@ -36,6 +36,11 @@ def conv_bottleneck_ds(x, kernel, filters, downsample, name,
 
     MobileNetV2 style
     """
+
+    if padding == 'valid':
+        pad = ((0, kernel[0]//2), (0, kernel[0]//2))
+        x = ZeroPadding2D(padding=pad, name=name+'pad')(x)
+
     x = Conv2D(int(filters*bottleneck), (1,1),
                 padding='same', strides=downsample,
                 name=name+'_pw')(x)
@@ -58,6 +63,10 @@ def conv_effnet(x, kernel, filters, downsample, name,
 
     ch_in = int(filters*bottleneck)
     ch_out = filters
+
+    if padding == 'valid':
+        pad = ((0, kernel//2), (0, kernel//2))
+        x = ZeroPadding2D(padding=pad, name=name+'pad')(x)
 
     x = Conv2D(ch_in, (1, 1), strides=downsample,
             padding=padding, use_bias=bias, name=name+'pw')(x)
