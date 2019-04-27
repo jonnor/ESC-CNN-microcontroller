@@ -29,7 +29,7 @@ default_model_settings = dict(
     n_stages=3,
     n_blocks_per_stage=1,
     voting='mean',
-    voting_overlap=0.5,
+    voting_overlap=0.0,
 )
 
 names = set().union(*[

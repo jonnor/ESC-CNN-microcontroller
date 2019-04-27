@@ -13,4 +13,4 @@ train_samples: 30000
 val_samples: 5000
 learning_rate: 0.005
 voting: 'mean'
-voting_overlap: 0.5
+voting_overlap: 0.0
