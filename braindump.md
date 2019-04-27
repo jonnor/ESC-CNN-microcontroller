@@ -168,6 +168,50 @@ Across most folds.
 
 SB-CNN 128mel 3 sec 16kHz 50% vote overlap on the other hand was very similar, as expected.
 
+### 16 kHz
+
+Can reach at least 72% val
+
+    python train.py --settings experiments/16k30_256hop.yaml --conv_size=3x3  --downsample_size=2x4 --conv_block=depthwise_separable
+
+    Epoch 28/50
+    75/75 [==============================] - 53s 711ms/step - loss: 1.7626 - acc: 0.3819 - val_loss: 1.4058 - val_acc: 0.6210
+
+    Epoch 00028: saving model to ./data/models/unknown-20190424-1453-ed2a-fold0/e28-v1.41.t1.76.model.hdf5
+    voted_val_acc: 0.6816
+
+    Epoch 31/50
+    75/75 [==============================] - 53s 706ms/step - loss: 1.7569 - acc: 0.3848 - val_loss: 1.3921 - val_acc: 0.6348
+
+    Epoch 00031: saving model to ./data/models/unknown-20190424-1453-ed2a-fold0/e31-v1.39.t1.76.model.hdf5
+    voted_val_acc: 0.6999
+
+    Epoch 00048: saving model to ./data/models/unknown-20190424-1453-ed2a-fold0/e48-v1.32.t1.69.model.hdf5
+    voted_val_acc: 0.7113
+    Epoch 49/50
+    75/75 [==============================] - 52s 689ms/step - loss: 1.6900 - acc: 0.4004 - val_loss: 1.2917 - val_acc: 0.6337
+
+    Epoch 00049: saving model to ./data/models/unknown-20190424-1453-ed2a-fold0/e49-v1.29.t1.69.model.hdf5
+    voted_val_acc: 0.6735
+    Epoch 50/50
+    75/75 [==============================] - 52s 690ms/step - loss: 1.6830 - acc: 0.4051 - val_loss: 1.2508 - val_acc: 0.6731
+
+    Epoch 00050: saving model to ./data/models/unknown-20190424-1453-ed2a-fold0/e50-v1.25.t1.68.model.hdf5
+    voted_val_acc: 0.7205
+
+
+However does max 63% with this strided model 
+
+    [jon@jon-thinkpad thesis]$ python train.py --settings experiments/16k30_256hop.yaml --conv_size=3x3  --downsample_size=2x4 --conv_block=depthwise_separable --model strided
+
+
+    Epoch 49/50
+    75/75 [==============================] - 34s 460ms/step - loss: 1.7501 - acc: 0.3760 - val_loss: 1.4669 - val_acc: 0.5940
+
+    Epoch 00049: saving model to ./data/models/unknown-20190424-1602-8cd3-fold0/e49-v1.47.t1.75.model.hdf5
+    voted_val_acc: 0.6323
+
+
 
 ### Effects of different overlap in voting
 

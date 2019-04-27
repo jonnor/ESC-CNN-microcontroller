@@ -4,18 +4,35 @@
 - If any sections should be taken out
 - If the Method,Results seems to be OK
 
+Feedback.
+
+- More Figure text. Should be self-explanatory. Axis etc ! no interpretation
+- 
+
 
 ## TODO
 
 ### Draft 2
 
-Critical line
+Update results
 
 - Results. Make plots prettier 
 - Finish Discussion and Conclusion
+- Do error analysis.
+If we only consider high-confidence outputs, are we more precise? How much does recall drop?
+Plot histogram of confidence scores, grouped by correct classifications and incorrect classifications?
+If model knows its own limitations, we can ignore low confidence results.
+And wait for more confident ones (since we are doing continious monitoring)
+
+
+Finish background
+
 - Background. Fill out CNN section
-- Materials. Add images of compared model
 - Background. Images and references for Audio Classification chapter
+
+- Materials. Add images of compared model
+
+- Incorporate feedback from OK
 - Do a spell checking pass
 - Do a grammar checking pass
 
@@ -24,11 +41,6 @@ Critical line
 
 Experiment
 
-- Switch to zero overlap voting?
-- Do error analysis.
-If we only consider high-confidence outputs, are we more precise? How much does recall drop?
-If model knows its own limitations, we can ignore low confidence results.
-And wait for more confident ones (since we are doing continious monitoring)
 - Support specifying settings path in experiments
 - Write all settings/parameters to a file when ran
 - Include git version in settings file
@@ -44,11 +56,6 @@ Code quality
 
 - Add end2end tests
 - Check windowing functions, esp last frame and padding
-
-Maybe
-
-- Add a test with 16kHz / 30 mels?
-- Add test with 3x3 kernels
 
 Dissemination
 
