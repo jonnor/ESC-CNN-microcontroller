@@ -14,28 +14,56 @@ Feedback.
 
 ### Draft 2
 
-Update results
+Incorporate feedback
 
-- Results. Make plots prettier 
-- Finish Discussion and Conclusion
+- Fix all typos
+- Improve figure texts
+- Restructure backbround
+
+Results
+
+- Include latest results
+- Make plots a bit prettier 
 - Do error analysis.
 If we only consider high-confidence outputs, are we more precise? How much does recall drop?
 Plot histogram of confidence scores, grouped by correct classifications and incorrect classifications?
 If model knows its own limitations, we can ignore low confidence results.
 And wait for more confident ones (since we are doing continious monitoring)
+```
+Mer diskusjon på slutten rundt den praktiske betydningen av feilklassifiseringene som gjøres.
+Hva vil dette bety for anvendelsen av systemet?
+Rangere fra «tidlig utvikling» til «nær deployment».
+```
 
+- Finish Discussion and Conclusion
+- Add picture of demo setup
 
 Finish background
 
 - Background. Fill out CNN section
-- Background. Images and references for Audio Classification chapter
+- Add missing images and references
 
-- Materials. Add images of compared model
+Materials
 
-- Incorporate feedback from OK
+- Add images of compared model
+
+Final
+
 - Do a spell checking pass
-- Do a grammar checking pass
+- Do a grammar checking pass. LanguageTool + Grammarly
+- Ask review pass with M
+- Send to OK for feedback
+- Send to J. for review
+- Send to M for review
 
+### Next
+
+Acknoledgements
+
+- Kristian
+- Oliver
+- Marianna
+- John
 
 ### Post
 
@@ -63,6 +91,7 @@ Dissemination
 - Project image, title page
 - Record a demo video
 - Write a blogpost
+- Publish on Arxiv? cs.LG cs.SD eess.AS stat.ML
 
 Related
 
@@ -70,6 +99,8 @@ Related
 - STM32AI: Report/fix melspec preprocessing bug
 https://community.st.com/s/topic/0TO0X0000003iUqWAI/stm32-machine-learning-ai
 - Test USB audio input for classifying on device
+
+
 
 
 ## Done
