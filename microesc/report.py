@@ -103,7 +103,7 @@ def plot_accuracy_comparison(experiments, ylim=(0.65, 0.85)):
 
     return fig
 
-def plot_accuracy_vs_compute(experiments, ylim=(0.65, 0.85)):
+def plot_accuracy_vs_compute(experiments, ylim=(0.65, 0.85), perf_metric='utilization'):
     # TODO: color experiment groups
     # TODO: add error bars?
 
@@ -113,9 +113,6 @@ def plot_accuracy_vs_compute(experiments, ylim=(0.65, 0.85)):
     numpy.testing.assert_allclose(df.test_acc_mean, df.accuracy)
     df['experiment'] = df.index
 
-    #perf_metric = 'maccs_frame'
-    perf_metric = 'utilization'
-
     fig, ax = plt.subplots(1)
     df.plot.scatter(ax=ax, x=perf_metric, y='accuracy', logx=True)
 
@@ -123,20 +120,20 @@ def plot_accuracy_vs_compute(experiments, ylim=(0.65, 0.85)):
     ax.set_ylim(ylim)
     ax.set_ylabel('Accuracy')
 
-    # mark feasible regions
-    alpha = 0.2
-    ax.axvspan(xmin=0, xmax=0.5, alpha=alpha, color='green')
-    ax.axvspan(xmin=0.5, xmax=1.0, alpha=alpha, color='orange')
-    xmax = df.utilization.max()*2.0
-    ax.axvspan(xmin=1.0, xmax=xmax, alpha=alpha, color='red')
-    ax.set_xlim(ax.get_xlim()[0], xmax)
-    
-    def format_utilization(tick_val, tick_pos):
-        return '{:d}%'.format(int(tick_val*100))
+    if perf_metric == 'utilization':
+        # mark feasible regions
+        alpha = 0.2
+        ax.axvspan(xmin=0, xmax=0.5, alpha=alpha, color='green')
+        ax.axvspan(xmin=0.5, xmax=1.0, alpha=alpha, color='orange')
+        xmax = df.utilization.max()*2.0
+        ax.axvspan(xmin=1.0, xmax=xmax, alpha=alpha, color='red')
+        ax.set_xlim(ax.get_xlim()[0], xmax)
+        
+        def format_utilization(tick_val, tick_pos):
+            return '{:d}%'.format(int(tick_val*100))
 
-    ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(format_utilization))
-    ax.set_xlabel('CPU utilization')
-
+        ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(format_utilization))
+        ax.set_xlabel('CPU utilization')
 
     # Add markers
     def add_labels(row):
@@ -180,11 +177,6 @@ def load_results(input_dir, confusion_suffix='.confusion.npz'):
     model_stats.set_index('experiment', inplace=True)
     df = df.join(model_stats)
 
-    # device performance
-    dev = load_device_results(input_dir)
-    df = df.join(dev)
-    numpy.testing.assert_allclose(df.macc, df.maccs_frame)
-
     return df
 
 def load_device_results(results_dir, suffix='.device.json'):
@@ -220,6 +212,7 @@ def parse(args):
         help='%(default)s')
     a('--out', dest='out_dir', default='./report/img',
         help='%(default)s')
+    a('--skip-device', dest='skip_device', action='store_true')
 
     parsed = parser.parse_args(args)
 
@@ -241,11 +234,8 @@ def main():
     df['foreground_test_acc_mean'] = df.confusions_test_foreground.apply(get_accuracies).mean(axis=1)
     df['background_test_acc_mean'] = df.confusions_test_background.apply(get_accuracies).mean(axis=1)
 
-    # FIXME: unhardcode
-    df.voting_overlap = 0.5
-    df.window_length = 0.72
-    df['classifications_per_second'] = 1 / (df.window_length * (1-df.voting_overlap))
-    df['utilization'] = df.duration_avg * df.classifications_per_second
+
+
 
     #df['grouped_test_acc_mean'] = grouped_confusion(df.confusions_test, groups).apply(get_accuracies).mean(axis=1)
     #df['grouped_foreground_test_acc_mean'] = grouped_confusion(df.confusions_test_foreground, groups).apply(get_accuracies).mean(axis=1)
@@ -256,6 +246,19 @@ def main():
     df = df.join(models)
     # TODO: also add experiment info
 
+    # FIXME: unhardcode
+    df.voting_overlap = 0.5
+    df.window_length = 0.72
+    df['classifications_per_second'] = 1 / (df.window_length * (1-df.voting_overlap))
+
+    # device performance
+    if not args.skip_device:
+        dev = load_device_results(input_dir)
+        df = df.join(dev)
+        numpy.testing.assert_allclose(df.macc, df.maccs_frame)
+
+        df['utilization'] = df.duration_avg * df.classifications_per_second
+
     print('res\n', df[['test_acc_mean', 'maccs_frame', 'foreground_test_acc_mean', 'background_test_acc_mean']])
 
     def save(fig, name):
@@ -265,7 +268,8 @@ def main():
     fig = plot_accuracy_comparison(df)
     save(fig, 'models_accuracy.png')
 
-    fig = plot_accuracy_vs_compute(df)
+    perf_metric = 'maccs_frame' if args.skip_device else 'utilization'
+    fig = plot_accuracy_vs_compute(df, perf_metric=perf_metric)
     save(fig, 'models_efficiency.png')
 
     classnames = urbansound8k.classnames
