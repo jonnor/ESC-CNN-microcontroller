@@ -201,10 +201,6 @@ Sensor Networks for Noise Monitoring
 # Background
 
 <!---
-Related works for our task...
--->
-
-<!---
 DROP
 
 Acoustic Scene Classification. Context-dependent compute
@@ -217,8 +213,8 @@ Open-set classification. Novelty detection, clustering
 ## Digital sound
 
 Physically, sound is a variation in pressure over time.
-For machine learning, it must be exist in a digital representation.
-The acoustic data is converted to analog electric signals by a microphone and
+To process the sound with machine learning, it must be converted to a digital format.
+The acoustic data is first converted to analog electric signals by a microphone and
 then digitized using an Analog-to-Digital-Converter (ADC),
 as illustrated in Figure \ref{figure:audio-aquisition}.
 
@@ -226,65 +222,83 @@ as illustrated in Figure \ref{figure:audio-aquisition}.
 
 In the digitization process, the signal is quantized in time at a certain sampling frequency,
 and the amplitude quantized at a certain bit-depth.
-A typical sampling frequency is 44100 Hz, and bit-depth 16 bit.
-With these parameters, the acoustic sound can be reconstructed without perceivable differences
-to the human ear.
-In this representation, sound is a 1 dimensional sequence of numbers.
-This is sometimes referred to as a *waveform*. 
+A typical sampling frequency is 44100 Hz and bit-depth 16 bit,
+as used in the Audio CD format[@AudioCDspecification].
+With such parameters the majority of human perceivable information in the acoustic sound is captured.
+In this representation sound is a 1 dimensional sequence of numbers, sometimes referred to as a *waveform*.
+This is the format utilized by case A) in Figure {figure::sensornetworks-coding2} from the introduction.
 
-Digital sound can be stored uncompressed (example format: WAV),
-using lossless compression (FLAC)
-or using lossy compression (MP3).
+Digital sound can be stored uncompressed (example format: WAV PCM[@WAVspecification]),
+using lossless compression (FLAC[@FLACHomepage])
+or using lossy compression (MP3[@MP3Standard]).
 Lossy compression removes information that are indistinguishable to the human hear
 and can compress better than lossless.
 It however adds compression artifacts, and is best avoided for machine learning tasks.
 
 Recordings can have multiple channels of audio but for machine learning on audio
-single-channel data (mono-aural) is still the most common.
+single-channel data (mono-aural) is still common.
 
 ### Spectrograms
 
 Sounds of interest often have characteristic patterns not just in time (temporal signature)
 but also in frequency content (spectral signature).
-Therefore it is common to analyze the audio in a time-frequency representation (a *spectrogram*). 
+Therefore it is common to analyze the audio in a time-frequency representation (a *spectrogram*).
 
-The standard way to transform audio waveform into a spectrogram is by using the Short Time Fourier Transform (STFT).
+A common way to compute a spectrogram from an audio waveform is by using the Short Time Fourier Transform (STFT).
+`FIXME: referanse STFT`
 The STFT operates by splitting the audio up in short consecutive chunks,
 and computing the Fast Fourier Transform (FFT) to estimate the frequency content for each chunk.
 To reduce artifacts at the boundary of chunks, they are overlapped (typically by 50%)
 and a window function (such as the Hann window) is applied before before computing the FFT.
+With the appropriate choice of window function and overlap, the STFT is invertible[@STFTmodifications].
 
-There is a trade-off between frequency (spectral) resolution and time resolution with the STFT.
-The longer the FFT window the better the frequency resolution,
-but the poorer the temporal resolution.
-For speech a typical choice of window length is 25 ms.
-Similar frame lengths are often adopted for acoustic events.
-
-`TODO: add references`
-`TODO: image of windowing / STFT process`
-![Computing a STFT spectrogram from an audio waveform](./images/frames.png)
-
+`FIXME: image of windowing / STFT process`
 <!--
 Inspiration for TODO: image, https://dsp.stackexchange.com/questions/19311/stft-why-overlapping-the-window
 -->
 
+There is a trade-off between frequency (spectral) resolution and time resolution with the STFT.
+The longer the FFT window the better the frequency resolution,
+but the poorer the temporal resolution.
+For speech a typical choice of window length is 25 ms. `FIXME: referanse`
+Similar frame lengths are often adopted for acoustic events. `FIXME: referanse`
+The STFT returns complex numbers describing phase and magnitude of each frequency bin.
+A spectrogram squaring the absolute of the magnitude, and discards the phase information.
+The lack of phase information means that the spectrogram is not strictly invertible,
+though estimations exist[@GriffinLimSpectrogramInversion][@MCNNSpectrogramInversion].
+
+
 ## Machine learning
 
-Classification is a type of machine learning task where the goal is to
-learn a model which can accurately predict which class(es) that data belongs to.
-Examples use-cases could be to determine from a image which breed a dog is,
-to predict from text whether - or to determine from audio what kind of sound is present.
+`TODO: two-lines introduction`
 
-`TODO: image of a labeled dataset`
+### Classification
+
+Classification is a type of machine learning task where the goal is to
+train a model which can accurately predict which class(es) that data belongs to.
+Examples use-cases could be to determine from an image which breed a dog is,
+to predict from text whether it is positive or negative towards the subject matter
+- or to determine from audio what kind of sound is present.
+
+`TODO: image of classification tasks`
 
 In single-label classification, a sample can only belong to a single class. 
 In closed-set classification, the possible class is one of N predetermined classes.
 Many classification problems are treated as single-label and closed-set.
 
 
-Models used for classification are often trained using supervised learning. 
-Supervised learning uses a dataset where each sample is labeled with the right class.
-These labels are normally provided by manual annotation by humans inspecting the data.
+Models used for classification are often trained using *supervised learning*. 
+Supervised learning uses a training dataset where each sample is labeled with the right class.
+These labels are normally provided by manual annotation by humans inspecting the data,
+a time-itensive and costly process.
+
+`TODO: image of a labeled dataset`
+
+In *unsupervised learning*, models are trained without access to labeled data.
+This is less commonly used for classification tasks, but often for cluster analysis (automatic discovery of sample groups).
+*Semi-supervised learning* techniques combines supervised and unsupervised learning,
+using a small labeled dataset combined with a larger set of unlabeled data.
+This can yield better models when unlabeled data is abundant, but labeled data is scarse.
 
 ```TODO:
 describe metrics
@@ -295,43 +309,59 @@ SKIP
 - class im/balance
 -->
 
+### Training process
+
 ![Splitting datasets into train/validation/test sets and cross-validation \label{figure:crossvalidation}](./img/crossvalidation.png)
 
-The dataset is divided into multiple subsets that have different purposes.
-The *training* set is data that the training algorithm uses to optimize the model on.
+The goal of the classification model is to make good predictions *on unseen data*.
+The samples available in the dataset only represents some particular examples
+of this underlying (hidden) distribution of data. 
+Care must be taken to avoid learning peculiarities that are specific to the training samples
+and not representative of general patterns.
+A model that fails this generalization critera is often said to be *overfitting*,
+while a model that fails to learn any predictive patterns is said to be *underfitting*.
+
+<!-- MAYBE: Mention bias/variance tradeoff?  -->
+
+To address this challenge the dataset is divided into multiple subsets that have different purposes.
+The *training set* is data that the training algorithm uses to optimize the model on.
 To estimate how well the model generalizes to new unseen data,
 predictions are made on the *validation set*. 
 The final performance of the trained model is evaluated on a *test set*,
 which has not been used in the training process.
-To get a better estimate of how the model performs it K-fold cross validation can be used,
+To get a better estimate of how the model performs K-fold cross validation can be used,
 where K different training/validation splits are attempted.
-K is usually between 5 and 10.
+K is usually set to a value between 5 and 10.
 The overall process is illustrated in Figure \ref{figure:crossvalidation}.
 
-One common style of supervised learning processes is to start with an initial model with
-some parameters, make predictions using this model, compare these prediction with the labels to compute
+One common style of supervised learning processes is to:
+start with an base model and initialize its parameters (often randomly),
+then make predictions using this model, compare these prediction with the labels to compute
 an error, and then update the parameters in order to attempt to reduce this error.
 This iterative process is illustrated in \ref{figure:training-inference}.
 
-The exact nature of the model parameters and parameter update algorithm
-depends on what kind of classifier and training system is used.
-For neural networks, see chapter `TODO: ref gradient descent`.
+Example of such a iterative training process is Gradient Descent of Neural Networks,
+described in chapter `TODO: ref gradient descent`.
 
-In addition to the parameters learned by the training process,
-there are also *hyperparameters* which are parameters that cannot be learned by the training process,
-Examples are settings of the training system itself, but also the
-architecture and settings of predictive model itself can be seen as hyperparameters.
-Hyperparameters can be chosen by selecting different candidates,
-training to completion and evaluating performance on the validation set.
+*Hyperparameters* are settings (parameters) used in the training process that
+are set, but not used as optimization during training.
+Hyperparameters can be chosen by selecting different candidate settings,
+training model(s) to completion with these settings,
+and evaluating performance on the validation set.
+When performed systematically this is known as a hyperparameter search.
+<!-- MAYBE: include
+Common strategies include random search, combinatorial (gridsearch) and Baysian Optimization.
+-->
 
 ![Relationship between training system and the predictive model being trained. \label{figure:training-inference}](./img/training-inference.png)
 
-Once training is completed, the predictive model can be used stand-alone, using the learned parameters.
+Once training is completed, the predictive model with the the learned parameters can be used on new data. 
 
 
 \newpage
 ## Audio Classification
 
+`TODO: two sentences introduction`
 
 ### Mel-spectrogram
 
