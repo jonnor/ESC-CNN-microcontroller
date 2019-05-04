@@ -16,9 +16,7 @@ Feedback.
 
 Incorporate feedback
 
-- Fix all typos
-- Improve figure texts
-- Restructure backbround
+- Restructure background
 
 Results
 
@@ -49,6 +47,8 @@ Materials
 
 Final
 
+- Do a figure/table captions pass.
+Do they explain the figure setup/contents OK?
 - Do a spell checking pass
 - Do a grammar checking pass. LanguageTool + Grammarly
 - Ask review pass with M
