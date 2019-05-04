@@ -15,20 +15,6 @@ Resulting in XX% accuracy on Urbansound8k dataset.
 # Introduction
 
 <!---
-Sound
-    Importance. 
-
-Noise
-Sources of noise.
-    People talking
-    Dogs barking
-    Construction
-    Air Conditioner, Refrigerator
-    
-Health problems. Sleep disturbance, 
-Economic impact. Reduced value of 
-Types of noise. Occupational. Environmental noise
-Regulations
 
 
 Noise assessment
@@ -44,17 +30,6 @@ Smart-city concept, data-driven
 
 Privacy, GDPR
 => this thesis
-
-
-Sound is everywhere around us, and a rich source of information about our surroundings.
-We use sound explicitly to communicate when we talk
-
-In addition to long-term sources there may also be short-term
-or intermitted.
-
-Short term or occasional noise sourc
-es may be considered noise nuisance.
-such as from music venues may not be
 
 -->
 
@@ -94,28 +69,39 @@ The sum of all the noise is referred to as Environmental noise or noise pollutio
 
 Noise pollution over sustained periods of time affects health and well-being in many ways.
 Noise can be a source of annoyance and increased stress, cause sleeping disturbance
-and in increase risk of heart diseases.
+and increase risk of heart diseases.
 WHO has estimated that in Europe 1.6 million healthy life years (Disability-Adjusted Life Years, DALY)
 are lost annually due to noise pollution[@WHONoiseBurden2018].
-
 This makes noise pollution the second environmental cause of health problems in Europe, after air pollution.
 
 ![Health impacts of noise at different severity levels[@NoiseStressConcept]](./img/noiseseverity.png)
 
+`FIXME: top triangle has poor text contrast.`
+
 In the EU, Environmental noise is regulated by Environmental Noise Directive (2002/49/EC)[@EuNoiseDirective].
 The purpose of the directive is to:
 
-* Determine peoples exposure to environmental noise
+* Determine people's exposure to environmental noise
 * Ensuring that information on environmental noise and its effects is available to the public
 * Preventing and reducing environmental noise where necessary
 * Preserving environmental noise quality where it is good
 
-Member States of the EU are required create noise maps and noise management action plans  every 5 years.
+Member States of the EU are required create noise maps and noise management action plans every 5 years.
 These must cover all urban areas, major roads, railways and airports over a certain size.
 
 The noise maps are created using simulation of known noise sources (such as car traffic)
 with mathematical sound propagation models, based on estimates for traffic numbers.
-These maps only gives yearly average noise levels.
+These maps only give yearly average noise levels.
+
+<!--
+TODO: Add paragraph about noise nuisance.
+In addition to the health effects of long-term noise source,
+inhabitants can also be bothered by short-term. 
+
+TODO: add info about reduced property value
+
+MAYBE: mention occupational noise?
+-->
 
 ## Noise monitoring with Wireless Sensor Networks
 
@@ -123,44 +109,58 @@ Several cities have started to deploy networks of sound sensors in order to bett
 These sensor networks consist of many sensor nodes positioned in the area of interest,
 transmitting the data to a central system for storage and reporting.
 
-Dublin City Noise project[@DublinCityNoise] has 14 sensors across the city since 2016.
-The Sounds of New York City (SONYC)[@SONYC] project had 56 sound sensors as of 2018.[@SONYC2019]
-The Barcelona Noise Monitoring System[@BarcelonaNoiseMonitoring] had 86 sound sensors as of 2018.[@BarcelonaNoiseMonitoring2018].
-CENSE[@CENSE] project plans to install around 150 sensors in Lorient, France[@CENSESensor].
+Examples of established projects are Dublin City Noise[@DublinCityNoise] with 14 sensors across the city since 2016.
+The Sounds of New York City (SONYC)[@SONYC] project had 56 sound sensors installed as of 2018[@SONYC2019],
+and the Barcelona Noise Monitoring System[@BarcelonaNoiseMonitoring] had 86 sound sensors[@BarcelonaNoiseMonitoring2018].
+Future projects include CENSE[@CENSE], which plans to install around 150 sensors in Lorient, France[@CENSESensor].
 
-![How sensor networks and data analysis integrates with citizens, experts and city agencies in Sounds of New York City[@SONYC-CPS]](./img/SONYC-CPS.png){ width=50% }
+![Illustration of how Sounds of New York City[@SONYC-CPS] system combines sensor networks and citizen reporting with data analysis and to present city experts and agencies with a visual interactive dashboard "Noise Mission Control".](./img/SONYC-CPS.png){ width=50% }
 
 To keep costs low and support a dense coverage, the sensor nodes are can be designed to operate wirelessly.
 Communication is done using wireless radio technologies such as WiFi, GSM, NB-IoT or 6LoWPAN.
-Energy to power the sensor is harvested, either using solar power or from streetlight power at night.
+The sensor harvests its energy, commonly using solar power or from streetlights powered at night.
 A battery backup allows the sensor to continue operating also when energy is momentarily unavailable.
 
-These sensor networks enable continuous logging of the sound level (Leq dB).
+These sensor networks enable continuous logging of the sound level.
+(Leq dB) `TODO: explain Leq dB`
 Typical measurement resolution are per-minute, per second or per 125ms.
-Sound level sensors in Europe are designed to specifications of IEC 61672-1 Sound Level Meters[@IECSoundLevelMeters],
-with an accuracy of either Class 2 or Class 1.
-The equivalent standard for North America is ANSI S1.4[@ANSISoundLevelMeters], and Type 1/2 accuracy.
+In Europe sound level sensors are designed to specifications of IEC 61672-1 Sound Level Meters[@IECSoundLevelMeters].
+The equivalent standard for North America is ANSI S1.4[@ANSISoundLevelMeters].
 
 Sensors can also provide information that can be used to characterize the noise,
 for instance to identify the likely noise sources.
-This is desirable in order to understand the cause and possible interventions,
-which regulations the noise falls under, as well as what actors may be responsible. 
+This is desirable in order to understand the cause of noise,
+identify which regulations the noise falls under, which actors may be responsible,
+and to initiate possible interventions.
 
 This requires much more data than sound level measurements,
-making it challenging to transmit within the bandwidth and energy budget of a wireless sensor.
-Recording and storing detailed audio data may also capture sensitive information and violate privacy requirements.
+making it challenging to transmit the amount of data within the bandwidth and energy budget of a wireless sensor.
+The sensor may also capture sensitive information and violate privacy requirements by
+recording and storing such detailed data.
 
-To address these concerns several methods for efficiently coding the information before transmitting have been developed.
+To address these concerns several methods for efficiently coding the information before transmitting to the server have been developed.
 See Figure \ref{figure:sensornetworks-coding} for an overview.
 
-![Different data transmission strategies for a sensor network for noise monitoring with noise source classification capability. \label{figure:sensornetworks-coding}](./img/sensornetworks.png)
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1.0\textwidth]{./img/sensornetworks.png}
+\caption{Different data transmission strategies for a noise sensor network with noise source classification capability.
+A) Sensor sends raw audio data with classification on server.
+B) Sensor sends spectrograms as a intermediate audio representation. Classification on server.
+C) Sensor sends neural network audio embeddings as intermediate audio representation. Classification on server.
+D) Sensor performs classification on device and sends result to server. No audio or intermediate needs to be transmitted.
+}
+\label{figure:sensornetworks-coding}
+\end{figure}
 
-In [@AudioCodingSensorGrid], a compressed noise profile data is based on lossy compression of spectrograms is proposed.
+
+In [@AudioCodingSensorGrid], authors propose a compressed noise profile based on lossy compression of spectrograms.
 For 125ms time resolution the bitrate is between 400 and 1400 bits per second,
 however this gave a 5 percentage points reduction in classification accuracy.
+This is shown as case B. of Figure {figure:sensornetworks-coding}.
 
 Others have proposed to use neural networks to produce an audio "embedding" inspired
-by the success of world embeddings for Natural Language Processing.
+by the success of world embeddings for Natural Language Processing (case C. of Figure {figure:sensornetworks-coding}).
 In VGGish[@VGGish] model trained on Audioset[@AudioSet]
 a 8-bit, 128 dimensional embedding is used for 10 seconds clips,
 leading to a datarate of 102 bits per second.
@@ -170,7 +170,7 @@ EdgeL^3[@EdgeL3] showed that the L^3 model can be compressed by up to 95%,
 however the authors state that more work is needed to fit the RAM constraints of desirable sensor hardware.
 
 The minimal amount of data transmissions would be achieved if only sending the detected noise category,
-requiring to perform the classification on the sensor.
+requiring to perform the classification on the sensor, case D. of figure {figure:sensornetworks-coding}.
 
 This motivates the problem statement of this thesis:
 

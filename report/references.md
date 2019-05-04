@@ -189,7 +189,13 @@ Means combination of low + high frequency patterns will have be learned by later
 
 `cnn-one-fstride4` in Google Keyword Spotting paper does essentially this.
 
+### End-to-End Environmental Sound Classification using a 1D Convolutional Neural Network
+https://arxiv.org/abs/1904.08990
+April 2019
 
+Gammatone initialization of 1D filterbank.
+Reached 89% accuracy
+1 second time-window performed best. 500ms,1s,2s compared
 
 ### Very deep convolutional neural networks for raw waveforms
 2016
