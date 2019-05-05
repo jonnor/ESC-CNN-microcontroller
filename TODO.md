@@ -14,10 +14,6 @@ Feedback.
 
 ### Draft 2
 
-Incorporate feedback
-
-- Restructure background
-
 Results
 
 - Do error analysis.
@@ -31,21 +27,24 @@ Hva vil dette bety for anvendelsen av systemet?
 Rangere fra «tidlig utvikling» til «nær deployment».
 ```
 
-- 
-- Include latest results
-- Make plots a bit prettier 
+- Measure runtime on device for latest models
+- Move results output to report/results
+- Split plots into different architectures, and different Strided-DS widths 
+- Use Strided-DS-24 as chosen model (confusion matrix etc), instead of auto "best"
+- Make plots a bit prettier
 
 - Finish Discussion and Conclusion
 - Add picture of demo setup
 
-Finish background
+Background
 
-- Background. Fill out CNN section
+- Fill out NN/CNN section
 - Add missing images and references
+- Restructure chapters according to OK feedback
 
 Materials
 
-- Add images of compared model
+- Add images of compared models
 
 Final
 
