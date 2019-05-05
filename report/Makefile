@@ -19,6 +19,7 @@ plots/%.png: plot.py
 includes: pyincludes/urbansound8k-classes.tex \
     pyincludes/microcontrollers.tex \
     pyincludes/experiment-settings.tex \
+    pyincludes/models.tex \
     pyincludes/results.tex \
     pyplots/filterbanks.png \
     pyplots/dataaugmentations.png \

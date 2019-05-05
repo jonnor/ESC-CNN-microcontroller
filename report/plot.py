@@ -30,7 +30,7 @@ def model_table(data_path):
     
     table = pandas.DataFrame()
     table['Accuracy (%)'] = df.accuracy*100
-    table['Multiply-Adds / second'] = [ "{}M".format(int(v/1e6)) for v in df.macc_s ]
+    table['MACC / second'] = [ "{}M".format(int(v/1e6)) for v in df.macc_s ]
     table['Model parameters'] = [ "{}k".format(int(v/1e3)) for v in df.params ]
     #table['Data augmentation'] = df.augmentation
     table = table.sort_values('Accuracy (%)', ascending=False)
@@ -167,7 +167,7 @@ def main():
 
     ext = os.path.splitext(plotname)[1]
     if ext == '.png':
-        out.savefig(out_path)
+        out.savefig(out_path, bbox_inches='tight')
     elif ext == '.tex':
         with open(out_path, 'w') as f:
             f.write(out)

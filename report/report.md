@@ -692,9 +692,9 @@ CMSIS-NN by ARM is a low-level library for ARM Cortex-M microcontrollers impleme
 such as 2D convolutions, pooling and Gated Recurrent Units.
 It uses optimized fixed-point maths and SIMD (Single Instruction Multiple Data) instructions to
 perform 4x 8-bit operations at a time.
-This allows it to be up to 4x faster and 5x more energy efficient than floating point[@CMSISNN].
+This allows it to be up to 4x faster and 5x more energy efficient than floating point[@CMSIS-NN].
 
-![Low level functions provided by CMSIS-NN (light gray) for use by higher level code (light blue)[@CMSISNN]](./img/CMSIS-NN-functions.png)
+![Low level functions provided by CMSIS-NN (light gray) for use by higher level code (light blue)[@CMSIS-NN]](./img/CMSIS-NN-functions.png)
 
 uTensor[@uTensor] by ARM allows to run a subset of TensorFlow models on ARM Cortex-M devices,
 designed for use with the ARM mbed software platform[@MbedHomepage].
@@ -725,6 +725,12 @@ Model compression is supported by quantizing model weights by 4x or 8x,
 but only for fully-connected layers (not convolutional layers)[@X-CUBE-AI-manual, ch 6.1].
 X-CUBE-AI 3.4 does not use CMSIS-NN.
 
+<!---
+MAYBE: Add section about FGPA
+iCE40 ultraplus.
+sensAI platform
+https://www.latticesemi.com/en/Solutions/Solutions/SolutionsDetails02/sensAI
+-->
 
 ### Hardware accelerators for neural networks
 
@@ -899,9 +905,7 @@ A width multiplier allows to adjust model complexity by changing the number of k
 and a number of model variations were tested.
 Data augmentation and mixup is applied, and gave up to 5% boost.
 Evaluated on ESC-50, the best performing model gets 85.65% accuracy, very close to state-of-the-art.
-The smallest model had 7.3M MACs with 15k parameters and got 75% accuracy on ESC-50.
-
-`FIXME: define MAC / MACC / mult-adds`
+The smallest model had 7.3M MACC with 15k parameters and got 75% accuracy on ESC-50.
 
 eGRU[@eGRU] demonstrates a Recurrent Neural Network based on a modified Gated Recurrent Unit.
 The feature representation used was raw STFT spectrogram from 8Khz audio.
@@ -936,8 +940,8 @@ using Depthwise separable convolutions.
 A family of models with different complexity was created using two hyperparameters:
 a width multiplier $\alpha$ (0.0-1.0) which adjusts the number of filters in each convolutional layer,
 and the input image size.
-On ImageNet, MobileNet-160 $\alpha=0.5$ with 76M MAC performs better than SqueezeNet with 1700M MAC,
-a 22x reduction. The smallest tested model was 0.25 MobileNet-128, with 15M mult-adds and 200k parameters.
+On ImageNet, MobileNet-160 $\alpha=0.5$ with 76M MACC performs better than SqueezeNet with 1700M MACC,
+a 22x reduction. The smallest tested model was 0.25 MobileNet-128, with 15M MACC and 200k parameters.
 
 ![Convolutional blocks of Effnet, ShuffleNet and Mobilenet. Illustration based on Effnet paper[@Effnet]](./img/conv-blocks-imagenets.png)
 
@@ -947,7 +951,7 @@ a random channel shuffle.
 
 SqueezeNext[@SqueezeNext] (2018) is based on SqueezeNet but
 uses spatially separable convolution (1x3 and 3x1) to improve inference time.
-While the MAC count was higher than MobileNet, they claim better inference
+While the MACC count was higher than MobileNet, they claim better inference
 time and power consumption on their simulated hardware accelerator.
 
 Effnet[@Effnet] (2018) also uses spatial separable convolutions,
@@ -1066,7 +1070,7 @@ Version 3.4.0 of X-CUBE-AI was used.
 A Python commandline script was created to streamline collecting model statistics using X-CUBE-AI,
 without having to manually use the STM32CubeMX user interface. See \ref{appendix:stm32convert}.
 This tool provides required Flash storage (in bytes), RAM usage
-and CPU usage (in Multiply-Accumulate operations, MAC) as JSON,
+and CPU usage (in Multiply-Accumulate operations, MACC) as JSON,
 and writes the generated C code to a specified directory.
 
 The training setup is implemented in Python.
@@ -1089,19 +1093,24 @@ The candidate models must fit the constraints of our hardware platform,
 and leave sufficient resources for other parts of an application to run on the device.
 To do so, we allocate a maximum 50% of each the CPU, RAM, and FLASH capacity to the model.
 
-`FIXME: make MACC/MAC/mult-adds consistent`
 ST estimates that an ARM Cortex M4F type device uses approximately 9 cycles/MACC[@X-CUBE-AI-manual].
 With 80 MHz CPU frequency this is approximately 9 MACC/second at 100% CPU utilization.
+Together with the RAM and FLASH from the microcontroller specficiations,
+this gives the hard constraints on the model summarized in Table \ref{table:model-constraints}.
 
 
-|  Resource    | Maximum (50% utilization)   | Desirable    |
-| -------      |:---------:|:------------:|
-| RAM usage    |   64 kB   | `< 32 kB`    |
-| Flash use    |   512 kB  | `< 256 kB`   |
-| CPU usage    |   4.5 M MACC/s   | `< 0.5 M MACC/s`  |
+|  Resource    | Maximum (50% capacity) |
+| -------      |:---------:|
+| RAM usage    |   64 kB   | 
+| FLASH use    |   512 kB  |
+| CPU usage    |   4.5 M MACC/s |
 
-Table: Summary of device constraints for machine learning model
+Table: Summary of hard device constraints for models \label{table:model-constraints}
 
+For each of these aspects it is highly beneficial to be well below the hard constraints:
+If the FLASH and RAM usage can be reduced to half or one-fourth,
+cost of the microcontroller is reduced by almost 2/4x.
+If CPU usage can be reduced to one-tenth, that can reduce power consumption by up to 10 times.
 
 `TODO: link model review section`
 
@@ -1118,8 +1127,6 @@ Even the smallest existing models require significantly more than the available 
 \caption{Existing methods and their results on Urbansound8k}
 \label{table:urbansound8k-existing-models-logmel}
 \end{table}
-
-`FIXME: make MACC/MAC/mult-adds consistent`
 
 ![Performance of existing CNN models using log-mel features on Urbansound8k dataset. Green area bottom left shows the region which satisfies our model requirements.\label{existing-models-perf}](./plots/urbansound8k-existing-models-logmel.png)
 
@@ -1144,30 +1151,39 @@ due to the reduced input feature size (60 mel filter bands instead of 128).
 Batch Normalization was added to each convolutional block.
 
 From this baseline architecture, several model variations are created in order to evaluate
-the effects of using more convolutional blocks.
-In particular depthwise-separable and spatially-separable convolutions are tested,
-as well as replacing max-pooling with strided convolutions.
-
-`TODO: table of models to test, parameters`
-
-`TODO: images of each compared architecture. Overall / convolutional blocks`
-
-Residual connections are not tested, as the networks are relatively shallow.
-Grouped convolutions are not tested, as they are not supported by our version of Keras, TensorFlow and X-CUBE-AI.
-
-
-Since the stride in Keras/Tensorflow must be uniform, 2x2 is used instead of 3x2.
-
+the effects of using different convolutional blocks and as well as replacing
+max-pooling with strided convolutions.
+First the baseline was modified with just depthwise-separable (nicknamed Baseline-DS),
+or striding (nicknamed Stride-5x5).
+Since the stride height and width in Keras/Tensorflow must be uniformly, 2x2 is used instead of 3x2 from max-pooling.
+Three different convolution blocks are tested on top of the strided model:
+Depthwise Separable (Stride-DS-5x5),
+Bottleneck with Depthwise Separable (Stride-BN-DS-5x5)
+and Effnet block (Stride-Effnet-5x5).
+These blocks are illustrated in `FIXME: ref picture`.
 For EffNet, LeakyReLU was with ReLu since LeakyReLU is not supported by X-CUBE-AI 3.4.
+Additionally a version of strided with depthwise separable convolution with 3x3 kernel size (Stride-DS-3x3) is tested. 
+This results in 7 different models, as seen in Table \ref{table:models}.
+For all models the number of layers and filters were set as high as possible within violating any
+of the device constraints.
+
+\begin{table}[h]
+\input{pyincludes/models.tex}
+\caption{Model architectures compared. B=Number of convolution blocks, F=Filters in each convolution block, DS=Depthwise Separable, BN=Bottleneck}
+\label{table:models}
+\end{table}
+
+`TODO: image SB-CNN and Strided`
+`TODO: image of the different convolutional blocks`
+
+Residual connections were not tested, as the networks are relatively shallow.
+Grouped convolutions were not tested, as they are not supported by X-CUBE-AI 3.4.
+
 
 <!--
-`TODO: write about RAM optimization in X-CUBE-AI`
+`MAYBE: write about RAM optimization in X-CUBE-AI`
 In the SB-CNN architecture X-CUBE-AI will fuse the layers Conv2D -> BN -> MaxPooling2D into a single operation.
 To get the RAM utilization within limits, striding is used as the downsampling strategy.
-This can drastically reduces RAM usage, from `TODO` to...
-Unfortunately this optimization is not implemented for all cases. (`FIXME: WHICH`)
-`TODO: images of RAM usage per layer`
-
 -->
 
 <!--
@@ -1242,24 +1258,28 @@ for each of the cross-validation folds.
 The selected models are then evaluated on the test set.
 
 In addition to the original Urbansound8k test set,
-we also evaluate the models performance on two simplified variations:
+the model performance is evaluated on two simplified variations:
 
 - Only clips where target sound is in the foreground
-- Grouping into 5 more coarse classes 
+- Grouping into 5 coarser classes
 
 `TODO: table of group membership`
+
+Also explored is the consequence of introduce an "unknown" class for low-confidence predictions:
+Predictions where the highest probability is below a certain threshold
+are assigned to the unknown class instead of the original 10 classes.
 
 The SystemPerformance application skeleton from X-CUBE-AI is used to record the
 average inference time per sample on the STM32L476 microcontroller.
 This accounts for potential variations in number of MACC/second for different models,
-which would be ignored if only relying on the theoretical MACC number. 
+which would be ignored if only relying on the theoretical MACC number.
 
 
 \newpage
 # Results
 
 
-![Test accuracy of the different models](./img/models_accuracy.png){ height=30% }
+![Test accuracy of the different models](./results/models_accuracy.png){ height=30% }
 
 \begin{table}
 \input{pyincludes/results.tex}
@@ -1274,13 +1294,13 @@ which would be ignored if only relying on the theoretical MACC number.
 
 `TODO: add results with Effnet (spatially separable)`
 
-![Accuracy versus compute of different models](./img/models_efficiency.png){ height=30% }
+![Accuracy versus compute of different models](./results/models_efficiency.png){ height=30% }
 
 `FIXME: change confusion matrix color scale to show nuances in 0-20% range`
 
-![Confusion matrix on Urbansound8k](./img/confusion_test.png){ height=30% }
+![Confusion matrix on Urbansound8k](./results/confusion_test.png){ height=30% }
 
-![Confusion matrix in reduced groups with only foreground sounds](./img/grouped_confusion_test_foreground.png){ height=30% }
+![Confusion matrix in reduced groups with only foreground sounds](./results/grouped_confusion_test_foreground.png){ height=30% }
 
 `TODO: add error analysis. Are misclassifications marked as low-confidence?`
 
@@ -1346,23 +1366,44 @@ using `XX %` of the CPU capacity.
 
 ## Further work
 
-CNN quantizations for efficient integer inference. 
-[@IncrementalNetworkQuantization]
+Some further work is identified in two major area:
+Increasing model efficiency on the Environmenal Sound Classifiction tasks,
+and, practical challenges with applying on-edge classification of noise in sensor networks. 
 
-Use fixed-point / SIMD optimimized CNN implementation.
-4-5x speedup possible. Ref [@CMSIS-NN]
+Utilizing larger amounts of training data might
+be able to increase performance of the models.
+transfer learning or semi-supervised learning,
+or applying stronger data augmentation techniques (such as Mixup).
 
-It is possible that the performance level of `<75%`
-can be matched with a lower sample-rate and fewer mel-filter bands.
+`TODO: add some references`
 
-Hybrid methods.
+Applying quantization should be able to further improve efficiency of the models. 
+A first step would be to make use of the optimized CMSIS-NN library[@CMSIS-NN],
+which utilizes 8-bit integer operations.
+However there are also promising results showing that CNNs can be
+effectively implemented with as little as 2 bits[@andri2016yodann][@miyashita2016convolutional][@IncrementalNetworkQuantization],
+and without using any multiplications[@leng2018extremely][@cintra2018low].
+
+Low-power hardware accelerators for Convolutional Neural Networks will hopefully
+become available over the next few years.
+This may enable larger models at the same power budget,
+or to reduce power consumption at a given predictive performance level. 
+End-to-end CNN models using raw audio as input becomes extra interesting with such a co-processor,
+since it allows also the filterbank processing to be offloaded from the general purpose CPU.
+
+`TODO: write some section about challenges`
+Collecting training data
+Out-of-domain data, detecting
+
+How to collect 
+
 Perform classification on-device, but also
 allow to send a feature representation.
+Hybrid methods.
+
 Maybe for a subset of classification candidates
 
-In the coming years, hardware accelerators for
-Convolutional Neural Networks are expected to become available.
-Significantly better power efficiency and compute power.
+
 
 
 <!---

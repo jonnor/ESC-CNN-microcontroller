@@ -2,6 +2,7 @@
 import os.path
 import sys
 import json
+import math
 
 import numpy
 import seaborn
@@ -86,7 +87,7 @@ def get_accuracies(confusions):
     assert len(accs) == 9, len(accs) 
     return pandas.Series(accs) 
 
-def plot_accuracy_comparison(experiments, ylim=(0.65, 0.85), figsize=(12, 4)):
+def plot_accuracy_comparison(experiments, ylim=(0.65, 0.80), figsize=(12, 4)):
 
     df = experiments.copy()
     df.index = experiments.nickname
@@ -103,7 +104,7 @@ def plot_accuracy_comparison(experiments, ylim=(0.65, 0.85), figsize=(12, 4)):
 
     return fig
 
-def plot_accuracy_vs_compute(experiments, ylim=(0.65, 0.85),
+def plot_accuracy_vs_compute(experiments, ylim=(0.65, 0.80),
                                 perf_metric='utilization', figsize=(12,8)):
     # TODO: color experiment groups
     # TODO: add error bars?
@@ -211,7 +212,7 @@ def parse(args):
         help='%(default)s')
     a('--results', dest='results_dir', default='./data/results',
         help='%(default)s')
-    a('--out', dest='out_dir', default='./report/img',
+    a('--out', dest='out_dir', default='./report/results',
         help='%(default)s')
     a('--skip-device', dest='skip_device', action='store_true')
 
@@ -245,10 +246,10 @@ def main():
     models = pandas.read_csv('models.csv')
     models.index = [ str(i) for i in models.index ]
     df = df.join(models)
-    # TODO: also add experiment info
 
+    # TODO: also add experiment settings
     # FIXME: unhardcode
-    df.voting_overlap = 0.5
+    df.voting_overlap = 0.0
     df.window_length = 0.72
     df['classifications_per_second'] = 1 / (df.window_length * (1-df.voting_overlap))
 
@@ -259,6 +260,8 @@ def main():
         numpy.testing.assert_allclose(df.macc, df.maccs_frame)
 
         df['utilization'] = df.duration_avg * df.classifications_per_second
+    else:
+        df['utilization'] = 0.0
 
     print('res\n', df[['nickname', 'test_acc_mean', 'maccs_frame', 'foreground_test_acc_mean', 'background_test_acc_mean']])
 

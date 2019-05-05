@@ -1,14 +1,8 @@
 
-- Structure of paper. Order of chapters OK?
-- If any information is missing
-- If any sections should be taken out
-- If the Method,Results seems to be OK
+Feedback needed
 
-Feedback.
-
-- More Figure text. Should be self-explanatory. Axis etc ! no interpretation
-- 
-
+- CNN/NN section
+- Results/Discussion/Conclusion
 
 ## TODO
 
@@ -16,35 +10,25 @@ Feedback.
 
 Results
 
-- Do error analysis.
-If we only consider high-confidence outputs, are we more precise? How much does recall drop?
-Plot histogram of confidence scores, grouped by correct classifications and incorrect classifications?
-If model knows its own limitations, we can ignore low confidence results.
-And wait for more confident ones (since we are doing continious monitoring)
-```
-Mer diskusjon på slutten rundt den praktiske betydningen av feilklassifiseringene som gjøres.
-Hva vil dette bety for anvendelsen av systemet?
-Rangere fra «tidlig utvikling» til «nær deployment».
-```
-
-- Measure runtime on device for latest models
 - Move results output to report/results
+- Measure runtime on device for latest models
 - Split plots into different architectures, and different Strided-DS widths 
 - Use Strided-DS-24 as chosen model (confusion matrix etc), instead of auto "best"
 - Make plots a bit prettier
 
+- Include error analysis
 - Finish Discussion and Conclusion
 - Add picture of demo setup
+
+Materials
+
+- Add images of compared models
 
 Background
 
 - Fill out NN/CNN section
 - Add missing images and references
 - Restructure chapters according to OK feedback
-
-Materials
-
-- Add images of compared models
 
 Final
 
@@ -57,34 +41,25 @@ Do they explain the figure setup/contents OK?
 - Send to J. for review
 - Send to M for review
 
-### Next
+### Draft 3
 
-Acknoledgements
+- Fix test/validation sets.
+- Remove duplicated 24 filter model
+- MAYBE: Profile to see what makes training slow
+
+Abstract
+
+- Write it!
+
+Add Acknowledgements
 
 - Kristian
 - Oliver
 - Marianna
 - John
 
-### Post
+### After report
 
-Experiment
-
-- Support specifying settings path in experiments
-- Write all settings/parameters to a file when ran
-- Include git version in settings file
-- MAYBE: Fix train and validation generators to be single-pass? 
-- MAYBE: Profile to see what makes training slow
-
-Report
-
-- Fix review feedback
-- Write Abstract/Summary
-
-Code quality
-
-- Add end2end tests
-- Check windowing functions, esp last frame and padding
 
 Dissemination
 
@@ -101,7 +76,14 @@ Related
 https://community.st.com/s/topic/0TO0X0000003iUqWAI/stm32-machine-learning-ai
 - Test USB audio input for classifying on device
 
+Experiment
 
+- MAYBE: Fix train and validation generators to be single-pass? 
+
+Code quality
+
+- Add end2end tests
+- Check windowing functions, esp last frame and padding
 
 
 ## Done
