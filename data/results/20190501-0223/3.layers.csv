@@ -1,0 +1,10 @@
+,name,type,shape_in,shape_out,size_in,size_out,activations,weights
+0,input_2,InputLayer,"(60, 31, 1)","(60, 31, 1)",1860,1860,1860,
+1,conv0,Conv2D,"(60, 31, 1)","(30, 16, 24)",1860,11520,11520,240
+4,conv1_ds,SeparableConv2D,"(30, 16, 24)","(15, 8, 36)",11520,4320,2880,
+7,conv2_ds,SeparableConv2D,"(15, 8, 36)","(8, 4, 54)",4320,1728,1152,
+10,conv3_ds,SeparableConv2D,"(8, 4, 54)","(3, 1, 81)",1728,243,162,
+14,dense_3,Dense,"(243,)","(64,)",243,64,64,15616
+15,activation_3,Activation,"(64,)","(64,)",64,64,64,
+17,dense_4,Dense,"(64,)","(10,)",64,10,10,650
+19,activation_4,Activation,"(10,)","(10,)",10,10,10,

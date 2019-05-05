@@ -86,12 +86,12 @@ def get_accuracies(confusions):
     assert len(accs) == 9, len(accs) 
     return pandas.Series(accs) 
 
-def plot_accuracy_comparison(experiments, ylim=(0.65, 0.85)):
+def plot_accuracy_comparison(experiments, ylim=(0.65, 0.85), figsize=(12, 4)):
 
     df = experiments.copy()
     df.index = experiments.nickname
     acc = df.confusions_test.apply(get_accuracies).T
-    fig, ax = plt.subplots(1)
+    fig, ax = plt.subplots(1, figsize=figsize)
     
     acc.boxplot(ax=ax)
 
@@ -103,7 +103,8 @@ def plot_accuracy_comparison(experiments, ylim=(0.65, 0.85)):
 
     return fig
 
-def plot_accuracy_vs_compute(experiments, ylim=(0.65, 0.85), perf_metric='utilization'):
+def plot_accuracy_vs_compute(experiments, ylim=(0.65, 0.85),
+                                perf_metric='utilization', figsize=(12,8)):
     # TODO: color experiment groups
     # TODO: add error bars?
 
@@ -113,7 +114,7 @@ def plot_accuracy_vs_compute(experiments, ylim=(0.65, 0.85), perf_metric='utiliz
     numpy.testing.assert_allclose(df.test_acc_mean, df.accuracy)
     df['experiment'] = df.index
 
-    fig, ax = plt.subplots(1)
+    fig, ax = plt.subplots(1, figsize=figsize)
     df.plot.scatter(ax=ax, x=perf_metric, y='accuracy', logx=True)
 
     # Y axis
@@ -140,7 +141,7 @@ def plot_accuracy_vs_compute(experiments, ylim=(0.65, 0.85), perf_metric='utiliz
         xy = row[perf_metric], row.accuracy
         label = "{}".format(row.nickname) 
         ax.annotate(label, xy,
-                    xytext=(3,3),
+                    xytext=(5,20),
                     textcoords='offset points',
                     size=10,
                     rotation=25,
@@ -259,7 +260,7 @@ def main():
 
         df['utilization'] = df.duration_avg * df.classifications_per_second
 
-    print('res\n', df[['test_acc_mean', 'maccs_frame', 'foreground_test_acc_mean', 'background_test_acc_mean']])
+    print('res\n', df[['nickname', 'test_acc_mean', 'maccs_frame', 'foreground_test_acc_mean', 'background_test_acc_mean']])
 
     def save(fig, name):
         p = os.path.join(out_dir, name)

@@ -20,8 +20,6 @@ Incorporate feedback
 
 Results
 
-- Include latest results
-- Make plots a bit prettier 
 - Do error analysis.
 If we only consider high-confidence outputs, are we more precise? How much does recall drop?
 Plot histogram of confidence scores, grouped by correct classifications and incorrect classifications?
@@ -32,6 +30,10 @@ Mer diskusjon på slutten rundt den praktiske betydningen av feilklassifiseringe
 Hva vil dette bety for anvendelsen av systemet?
 Rangere fra «tidlig utvikling» til «nær deployment».
 ```
+
+- 
+- Include latest results
+- Make plots a bit prettier 
 
 - Finish Discussion and Conclusion
 - Add picture of demo setup
