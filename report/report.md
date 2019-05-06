@@ -508,54 +508,149 @@ Cutout
 -->
 
 \newpage
-## Convolutional Neural Networks
+## Neural Networks
 
 `TODO: intro, why are they important`
 
-### Neural Networks
+### Structure
 
 `TODO: describe Fully connected layer`
+Dense
+Input is 1-dimensional.
+If multi-dimensional input (like an image) is to be used, it must be flattened to a 1D vector.
 
-`TODO: describe multi-layer`
+`TODO: describe multi-layer network`
+Multi-layer Perceptron (MLP)
 
-`TODO: describe non-linear activation functions`
 
-### Training
+
+### Activation functions
+
+To be able to express non-linear relationships between input and output,
+non-linear activation functions are applied after fully-connected layers.
+When non-linearity is used,
+a neural network becomes an universal function approximator[@cybenko1989approximation].
+
+Commonly used general-purpose non-linear activation functions are tanh and ReLu[@ReLu].
+
+<!--
+The derivative of tanh quickly gets close to 0 for large and small inputs.
+This can cause a vanishing gradient problem.
+
+The derivative of ReLu is 0 for inputs smaller than 0.
+This can cause 'dead' neurons, where
+Many variations on the base ReLu have been proposed to address this issue, such as
+Leaky ReLU[@LeakyReLu], Parametric ReLu (PReLU)[@PReLu] and Exponential Linear Unit (ELU)[@ELU].
+-->
+
+Sigmoid and softmax are commonly used at the output stage
+of a neural network for classification, as they convert the input to a probabilty-like $(0,1)$ range.
+Sigmoid is used for binary classification,
+and Softmax used for multi-class classification.
+
+![Commonly used activation functions in neural networks](./img/activation-functions.png)
+
+
+### Training Neural Networks
 
 `TODO: describe Backpropagation`
+determine gradient (direction) of error
+chain-rule
+
 
 `TODO: describe Gradient Decent`
 
-### Convolution
+Stocastic Gradient Descent
+Mini-batch Gradient Decent.
 
-Convolution operation
-Functions. Edge detection, median filtering
-Depth. Higher-level features. Patterns of patterns
-
-A convolution filter (also called kernel) allows to express many common transformations
-on 1D or 2D data, like edge detection (horizontal/vertical) or smoothening filters (median). 
-Kernels can be seen as parametric local feature detector can express more complex problem-specific
-patterns, like a upward or downward diagonal from a bird chirp when applied to a spectrogram.
-
-Using a set of kernels in combination can detect many pattern variations.
-
-`TODO: image of typical CNN. VGG ?`
+Update rule.
+Learning rate
 
 <!--
+Vanishing gradient
+Exploding gradient
+
 [@BatchNormalization]
 -->
 
-### Convolutions in 2D
+### Convolutional layers 
 
-Moves spatially in 2 dimensions, across the width and height of input.
-Convolution is
+An alternative to fully-connected layers that allows for 2D (or 3D) input
+and exploit the spatial relationship in the input are convolutional layers.
 
-![Standard 3x3 convolutional block, input/output relationship. Imae: Yusuke Uchida[@ConvolutionsIllustrated]](./img/conv-standard.png)
+Convolution operation
+
+A convolution filter (also called kernel) allows to express many common transformations
+on 1D or 2D data, like edge detection (horizontal/vertical) or smoothening filters (median). 
+
+Convolution kernels are therefore generic local feature detectors,
+and can be trained to detect specific features of the dataset.
+
+In a 2D convolution, the kernel scans across the width and height of input.
+Convolution is performed across channels !!
+
+Using a set of $M$ kernels in combination can detect many pattern variations.
+
+`TODO: image of 2D convolution`
+
+![Standard 3x3 convolutional block, input/output relationship. Image by Yusuke Uchida[@ConvolutionsIllustrated]](./img/conv-standard.png)
 
 The computational complexity of such a convolution is $ O_conv = WHNK_wk_hM $, with
 input height $H$, input width $W$, $M$ output channels$ and a 2D kernel of size $K_w$x$K_h$.
 
+### Convolutional Neural Network
+
+![The LeNet-5 architecture illustrated. From the original paper[@lecun1998gradient] \label{fig:lenet-5}](./img/lenet5.png)
+
+A Convolutional Neural Network (CNN) is one that uses convolutional layers
+in addition to (or instead of) Dense layers.
+One of the early examples of a CNN model was LeNet5 (1998)[@lecun1998gradient],
+which was succesfully applied to recognition of handwritten digits.
+As seen in Figure \ref{fig:lenet-5}, the architecture uses
+two convolutional layers (with subsampling after each),
+followed by two fully-connected layers and then the output layer.
+
+Architectures with more layer ("deeper") based on very similar structure have been
+shown to work well also on more complex tasks, like VGGNet (2014)[@VGGNet]
+on the 1000-class image recognition task ImageNet[@ImageNet].
+
+<!--
+Many variations of this basic CNN model have been developed,
+-->
+
+### Subsampling
+
+Besides the convolution filters, the other critical part that makes CNNs
+effective is to gradually subsample the data as it moves through the convolutional layers.
+This forces the model to learn bigger (relative to the original input space) 
+and more complex features (patterns of patterns) in later layers.
+<!-- TODO: ref-->
+
+A pooling layer (as seen in LeNet5 architecture) is one way of accomplishing this.
+With *average pooling*
+With *max pooling* the 
+
+<!--
+Pooling said to help model be translation invariant.
+-->
+
+`TODO: image of pooling`
+
+Another way of subsampling is by increasing the stride of the convolutions.
+Strided convolution
+
+Striding can be used to reduce spatial dimensionality, either as an alternative or compliment max/mean-pooling.
+
+? vunerable to aliasing?
+
+`TODO: image of striding`
+
+
 ### Spatially Separable convolution
+
+While CNNs have relatively few number of parameters, compared to fully-connected layers,
+the convolutional kernels still require a lot of computations.
+Several alternative convolution layers have been proposed to address this.
 
 In a spatially separable convolution, a 2D convolution is factorized into two convolutions with 1D kernels.
 First a 2D convolution with $1 x K_h$ kernel is performed, followed by a 2D convolution with a $K_w x 1$ kernel,
@@ -575,7 +670,7 @@ With $K_w=K_h=3$, the reduction is 6/9 and with $K_w=K_h=5$ it is 10/25.
 
 ![Depthwise separable convolutions, input/output relationship. Image: Yusuke Uchida[@ConvolutionsIllustrated]](./img/conv-depthwise-separable.png)
 
-While standard convolution performs a convolution over both channels and the spatial extent,
+While a standard convolutional layer performs a convolution over both channels and the spatial extent,
 a Depthwise Separable convolution splits this into two convolutions.
 First a *Depthwise Convolution* over the spatial extent only,
 followed by a *Pointwise Convolution* over the input channels.
@@ -589,44 +684,18 @@ $$ O_{ds} = O_{pw} + O_{dw} = HWN(M + K_wK_h) $$
 This factorization requires considerably fewer computations compared to full 2D convolutions.
 For example, with kernels size $K_w=K_h=3$ and $M=64$ channels, the reduction is approximately $7.5x$.
 
-<!--
-Used in [@Xception]
--->
-
-
-`TODO: image of spatially separable convolution`
-
-### Pooling
-
-`TODO: describe Max, mean pooling` 
-
-`TODO: image of pooling`
-
-### Strided convolution
-
-Striding can be used to reduce spatial dimensionality, either as an alternative or compliment max/mean-pooling.
-
-? vunerable to aliasing?
-
-`TODO: image of striding`
-
-<!--
-"Fully convolutional neural networks". Only Conv operations
-Used by ResNet.
--->
-
-
 <!---
 SKIP
 - Residual connections/networks
 - Grouped convolutions. HWNK²M/G
 ? Global Average Pooling
+"Fully convolutional neural networks". Only Conv operations. Used by ResNet.
 -->
 
 \newpage
 ## Microcontrollers
 
-`TODO: couple of extra references`
+<!-- TODO: couple of extra references -->
 
 A microcontroller is a tiny computer integrated on a single chip,
 containing CPU, RAM, persistent storage (FLASH) as well
@@ -674,8 +743,8 @@ Dedicated tools are available for converting models
 to something that can execute on a microcontroller,
 usually integrated with established machine learning frameworks.
 
-CMSIS-NN by ARM is a low-level library for ARM Cortex-M microcontrollers implementing basic neural network building blocks,
-such as 2D convolutions, pooling and Gated Recurrent Units.
+CMSIS-NN by ARM is a low-level library for ARM Cortex-M microcontrollers implementing
+basic neural network building blocks, such as 2D convolutions, pooling and Gated Recurrent Units.
 It uses optimized fixed-point maths and SIMD (Single Instruction Multiple Data) instructions to
 perform 4x 8-bit operations at a time.
 This allows it to be up to 4x faster and 5x more energy efficient than floating point[@CMSIS-NN].
