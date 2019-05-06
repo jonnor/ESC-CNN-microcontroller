@@ -19,25 +19,63 @@ from . import features, urbansound8k, common, models, stats
 from . import settings as Settings
 
 
-def dataframe_generator(X, Y, loader, batchsize=10, n_classes=10):
-    """
-    Keras generator for lazy-loading data based on a pandas.DataFrame
-    
-    X: data column(s)
-    Y: target column
-    loader: function will be passed batches of X to load actual training data
-    """
-        
-    assert len(X) == len(Y), 'X and Y must be equal length'
 
-    while True:
-        idx = numpy.random.choice(len(X), size=batchsize, replace=False)
-        rows = X.iloc[idx, :].iterrows()
-        data = [ loader(d) for _, d in rows ]
-        y = Y.iloc[idx]
-        y = keras.utils.to_categorical(y, num_classes=n_classes)
-        batch = (numpy.array(data), numpy.array(y))
-        yield batch
+class Generator(keras.utils.Sequence):
+
+    def __init__(self, x_set, y_set, feature_dir, settings, n_classes=10, augment=False):
+        self.x, self.y = x_set, y_set
+        self.batch_size = settings['batch']
+        self.n_classes = n_classes
+        self.augment = augment
+        self.n_augmentations = settings['augmentations'] if self.augment else 1
+        self.feature_dir = feature_dir
+        self.feature_settings = features.settings(settings)
+        self.settings = settings
+
+    def _load(self, sample):
+        def load_chunk(chunk):
+            return features.load_sample(chunk,
+                            self.feature_settings,
+                            feature_dir=self.feature_dir,
+                            start_time=chunk.start,
+                            window_frames=self.settings['frames'],
+                            augment=self.augment)
+
+        # FIXME: use time-shifting augmentation, randomize starts
+        wins = features.load_windows(sample,
+            self.settings,
+            loader=load_chunk,
+            overlap=self.settings['voting_overlap'],
+            start=0)
+
+        d = numpy.stack(wins)
+        s = (6, d.shape[1], d.shape[2], d.shape[3])
+        windows = numpy.zeros(shape=s)
+        windows[:d.shape[0], :, :, :] = d
+
+        #print('lo', len(wins), d.shape, windows.shape)
+        return windows
+
+    def __len__(self):
+        np = numpy
+        return int(np.ceil(len(self.x) / float(self.batch_size))) * self.n_augmentations
+    
+    def __getitem__(self, idx):
+        # FIXME: take augmentation into account
+        from_idx = idx * self.batch_size
+        to_idx = (idx + 1) * self.batch_size
+        #print('b', from_idx, to_idx)
+
+        X = self.x.iloc[from_idx:to_idx]
+        y = self.y.iloc[from_idx:to_idx]
+
+        #print('xx', X.shape, y.shape)
+
+        data = [ self._load(d) for _, d in X.iterrows() ]
+        y = keras.utils.to_categorical(y, num_classes=self.n_classes)
+        batch = (numpy.stack(data), numpy.array(y))
+        #print('x', batch[0].shape)
+        return batch
 
 
 class LogCallback(keras.callbacks.Callback):
@@ -72,33 +110,46 @@ class LogCallback(keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs):
         logs = logs.copy()
     
-        more = self.score() # uses current model
+        more = self.score(epoch, logs) # uses current model
         for k, v in more.items():
             logs[k] = v
 
         self.write_entry(epoch, logs)
 
 
+def build_multi_instance(base, windows=6, bands=32, frames=72, channels=1):
+    from keras import Model
+    from keras.layers import Input, TimeDistributed, GlobalAveragePooling1D
+    
+    input_shape = (windows, bands, frames, channels)
+    
+    input = Input(shape=input_shape)
+    x = input # BatchNormalization()(input)
+    x = TimeDistributed(base)(x)
+    x = GlobalAveragePooling1D()(x)
+    model = Model(input,x)
+    return model
 
 
-def train_model(out_dir, train, val, model,
-                loader, val_loader, settings, seed=1):
+def train_model(out_dir, fold, builder,
+                feature_dir, settings):
     """Train a single model"""    
 
     frame_samples = settings['hop_length']
-    train_samples = settings['train_samples']
     window_frames = settings['frames']
-    val_samples = settings['val_samples']
     epochs = settings['epochs']
     batch_size = settings['batch']
     learning_rate = settings.get('learning_rate', 0.01)
 
-    assert len(train) > len(val) * 5, 'training data should be much larger than validation'
+    def generator(data, augment):
+        return Generator(data, data.classID, feature_dir=feature_dir, settings=settings, augment=augment)
 
-    def top3(y_true, y_pred):
-        return keras.metrics.top_k_categorical_accuracy(y_true, y_pred, k=3)
+    model = builder()
+    model = build_multi_instance(model, bands=settings['n_mels'], frames=window_frames, windows=6)
+    model.summary()
 
     optimizer = keras.optimizers.SGD(lr=learning_rate, momentum=settings['nesterov_momentum'], nesterov=True)
+
     model.compile(loss='categorical_crossentropy',
                   optimizer=optimizer,
                   metrics=['accuracy'])
@@ -107,30 +158,23 @@ def train_model(out_dir, train, val, model,
     checkpoint = keras.callbacks.ModelCheckpoint(model_path, monitor='val_acc', mode='max',
                                          period=1, verbose=1, save_best_only=False)
 
-    def voted_score():
-        y_pred = features.predict_voted(settings, model, val,
-                        loader=val_loader, method=settings['voting'], overlap=settings['voting_overlap'])
-        class_pred = numpy.argmax(y_pred, axis=1)
-        acc = sklearn.metrics.accuracy_score(val.classID, class_pred)
+    def voted_score(epoch, logs):
         d = {
-            'voted_val_acc': acc,
+            'voted_val_acc': logs['val_acc'], # XXX: legacy compat
         }
-        for k, v in d.items():
-            print("{}: {:.4f}".format(k, v))
         return d
+
     log_path = os.path.join(out_dir, 'train.csv')
     log = LogCallback(log_path, voted_score)
 
-
-    train_gen = dataframe_generator(train, train.classID, loader=loader, batchsize=batch_size)
-    val_gen = dataframe_generator(val, val.classID, loader=val_loader, batchsize=batch_size)
+    train_gen = generator(fold[0], augment=False) # FIXME: enable augmentation
+    val_gen = generator(fold[1], augment=False)
 
     callbacks_list = [checkpoint, log]
-    hist = model.fit_generator(train_gen, validation_data=val_gen,
-                        steps_per_epoch=math.ceil(train_samples/batch_size),
-                        validation_steps=math.ceil(val_samples/batch_size),
+    hist = model.fit_generator(train_gen,
+                        validation_data=val_gen,
                         callbacks=callbacks_list,
-                        epochs=epochs, verbose=1)
+                        epochs=epochs, verbose=1, workers=1)
 
     df = history_dataframe(hist)
     history_path = os.path.join(out_dir, 'history.csv')
@@ -230,14 +274,7 @@ def main():
     features.maybe_download(feature_settings, feature_dir)
 
     data = urbansound8k.load_dataset()
-    train_data, val_data = load_training_data(data, fold)
-
-    def load(sample, validation):
-        augment = not validation and train_settings['augment'] != 0
-        d = features.load_sample(sample, feature_settings, feature_dir=feature_dir,
-                        window_frames=model_settings['frames'],
-                        augment=augment, normalize=exsettings['normalize'])
-        return d
+    fold_data = load_training_data(data, fold)
 
     def build_model():
         m = models.build(exsettings)
@@ -261,10 +298,10 @@ def main():
     print('Training model', name)
     print('Settings', json.dumps(exsettings))
 
-    h = train_model(output_dir, train_data, val_data,
-                      model=m,
-                      loader=functools.partial(load, validation=False),
-                      val_loader=functools.partial(load, validation=True),
+   
+    h = train_model(output_dir, fold_data,
+                      builder=build_model,
+                      feature_dir = feature_dir,
                       settings=exsettings)
 
 
