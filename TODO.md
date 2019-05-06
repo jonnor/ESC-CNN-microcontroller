@@ -8,17 +8,6 @@ Feedback needed
 
 ### Draft 2
 
-Results
-
-- Split plots into different architectures, and different Strided-DS widths 
-- Measure runtime on device for latest models
-- Use Strided-DS-24 as chosen model (confusion matrix etc), instead of auto "best"
-- Make plots a bit prettier
-
-- Include error analysis
-- Finish Discussion and Conclusion
-- Add picture of demo setup
-
 Materials
 
 - Add images of compared models
@@ -28,6 +17,16 @@ Background
 - Fill out NN/CNN section
 - Add missing images and references
 - Restructure chapters according to OK feedback
+
+Results
+
+- Measure runtime on device for latest models
+- Use Strided-DS-24 as chosen model (confusion matrix etc), instead of auto "best"
+- Make plots a bit prettier
+
+- Include error analysis
+- Finish Discussion and Conclusion
+- Add picture of demo setup
 
 Final
 
