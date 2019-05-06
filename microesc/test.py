@@ -203,7 +203,7 @@ def main():
     print("Found {} experiments across {} folds", n_folds, n_experiments)
 
     best = pick_best(history)
-    print('Best models\n', best[['epoch', 'voted_val_acc']])
+    print('Best models\n', best[['epoch', 'fold', 'voted_val_acc']])
 
     print('Computing model info')
     def get_stats(row):

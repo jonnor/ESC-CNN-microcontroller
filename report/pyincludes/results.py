@@ -7,6 +7,9 @@ import yaml
 df = pandas.read_csv('results/results.csv')
 print(df)
 
+width_variations = df.nickname.str.startswith('Stride-DS-5x5-')
+df = df[width_variations != True]
+
 table = pandas.DataFrame({
     'Model': df.nickname,
     'CPU (%)': (df.utilization * 100).astype(int),
@@ -15,7 +18,7 @@ table = pandas.DataFrame({
     'BG Accuracy': (df.background_test_acc_mean * 100).round(1),
 }, index=df.index)
 
-out = table.to_latex(header=True, index=True)
+out = table.to_latex(header=True, index=False)
 print(out)
 
 outpath = sys.argv[1] 

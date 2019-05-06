@@ -10,9 +10,8 @@ Feedback needed
 
 Results
 
-- Move results output to report/results
-- Measure runtime on device for latest models
 - Split plots into different architectures, and different Strided-DS widths 
+- Measure runtime on device for latest models
 - Use Strided-DS-24 as chosen model (confusion matrix etc), instead of auto "best"
 - Make plots a bit prettier
 
@@ -45,6 +44,7 @@ Do they explain the figure setup/contents OK?
 
 - Fix test/validation sets.
 - Remove duplicated 24 filter model
+- Plot performance of models relative to fold
 - MAYBE: Profile to see what makes training slow
 
 Abstract

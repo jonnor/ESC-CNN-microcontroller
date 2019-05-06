@@ -87,7 +87,7 @@ def get_accuracies(confusions):
     assert len(accs) == 9, len(accs) 
     return pandas.Series(accs) 
 
-def plot_accuracy_comparison(experiments, ylim=(0.65, 0.80), figsize=(12, 4)):
+def plot_accuracy_comparison(experiments, ylim=(0.60, 0.80), figsize=(12, 4)):
 
     df = experiments.copy()
     df.index = experiments.nickname
@@ -104,7 +104,7 @@ def plot_accuracy_comparison(experiments, ylim=(0.65, 0.80), figsize=(12, 4)):
 
     return fig
 
-def plot_accuracy_vs_compute(experiments, ylim=(0.65, 0.80),
+def plot_accuracy_vs_compute(experiments, ylim=(0.60, 0.80),
                                 perf_metric='utilization', figsize=(12,8)):
     # TODO: color experiment groups
     # TODO: add error bars?
@@ -228,15 +228,15 @@ def main():
     out_dir = args.out_dir
 
     df = load_results(input_dir)
-    acc = df.confusions_test.apply(get_accuracies).mean(axis=1)
-    df['test_acc_mean'] = acc
+
+    df['val_acc_mean'] = df.confusions_val.apply(get_accuracies).mean(axis=1)
+    df['test_acc_mean'] = df.confusions_test.apply(get_accuracies).mean(axis=1)
     df = df.sort_index()
 
     # TODO: add std-dev
+    df['foreground_val_acc_mean'] = df.confusions_val_foreground.apply(get_accuracies).mean(axis=1)
     df['foreground_test_acc_mean'] = df.confusions_test_foreground.apply(get_accuracies).mean(axis=1)
     df['background_test_acc_mean'] = df.confusions_test_background.apply(get_accuracies).mean(axis=1)
-
-
 
 
     #df['grouped_test_acc_mean'] = grouped_confusion(df.confusions_test, groups).apply(get_accuracies).mean(axis=1)
@@ -263,18 +263,22 @@ def main():
     else:
         df['utilization'] = 0.0
 
-    print('res\n', df[['nickname', 'test_acc_mean', 'maccs_frame', 'foreground_test_acc_mean', 'background_test_acc_mean']])
+    print('res\n', df[['nickname', 'maccs_frame', 'test_acc_mean', 'val_acc_mean']])
 
     def save(fig, name):
         p = os.path.join(out_dir, name)
         fig.savefig(p, bbox_inches='tight', pad_inches=0)
 
-    fig = plot_accuracy_comparison(df)
+
+    # Split the variations from all models
+    width_variations = df.nickname.str.startswith('Stride-DS-5x5-')
+    fig = plot_accuracy_comparison(df[width_variations != True])
     save(fig, 'models_accuracy.png')
 
     perf_metric = 'maccs_frame' if args.skip_device else 'utilization'
     fig = plot_accuracy_vs_compute(df, perf_metric=perf_metric)
     save(fig, 'models_efficiency.png')
+
 
     classnames = urbansound8k.classnames
     best = df.sort_values('test_acc_mean', ascending=False).head(1).iloc[0]

@@ -1282,17 +1282,11 @@ which would be ignored if only relying on the theoretical MACC number.
 ![Test accuracy of the different models](./results/models_accuracy.png){ height=30% }
 
 \begin{table}
+\centering
 \input{pyincludes/results.tex}
 \caption{Results for the compared models}
 \label{table:results}
 \end{table}
-
-
-`TODO: add results with Baseline with Depthwise Separable`
-
-`TODO: add results of different amounts of conv kernels for DS-5x5`
-
-`TODO: add results with Effnet (spatially separable)`
 
 ![Accuracy versus compute of different models](./results/models_efficiency.png){ height=30% }
 
@@ -1302,7 +1296,9 @@ which would be ignored if only relying on the theoretical MACC number.
 
 ![Confusion matrix in reduced groups with only foreground sounds](./results/grouped_confusion_test_foreground.png){ height=30% }
 
-`TODO: add error analysis. Are misclassifications marked as low-confidence?`
+`TODO: add error analysis plots`
+
+`TODO: plot MAC versus compute time`
 
 `TODO: plot training curves over epochs`
 
