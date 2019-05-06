@@ -60,7 +60,7 @@ def plot_filterbank_oct(ax, fs=44100):
         db = 20*numpy.log10(numpy.abs(h)+1e-9)
         ax.plot(w, db)
 
-    ax.set_title('Third-octave')
+    ax.set_title('1/3 octave')
     ax.set_ylabel('Attenuation (dB)')
     ax.set_ylim(-60, 5)
     ax.set_xlim(20.0, 20e3) 
@@ -104,14 +104,16 @@ def plot_filterbank_mel(ax, n_mels=32, n_fft=4097, fmin=10, fmax=22050, fs=44100
 
 def main():
 
-    fig, (gt_ax, oct_ax, mel_ax) = plt.subplots(3, sharex=True, sharey=True, figsize=(12, 8))
+    fig, (gt_ax, oct_ax, mel_ax) = plt.subplots(3, sharex=True, sharey=True, figsize=(12, 5))
     axes = fig.gca()
     plot_filterbank_gammatone(gt_ax);
     plot_filterbank_mel(mel_ax);
     plot_filterbank_oct(oct_ax);
-    axes.set_ylim([-50, 5])
+    axes.set_ylim([-40, 3])
     axes.set_xlim([100, 20000])
     #axes.set_xscale('log')
+
+    fig.tight_layout()
 
     out = (__file__).replace('.py', '.png')
     fig.savefig(out, bbox_inches='tight')

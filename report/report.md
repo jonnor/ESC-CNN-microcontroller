@@ -164,13 +164,13 @@ by the success of world embeddings for Natural Language Processing (case C. of F
 In VGGish[@VGGish] model trained on Audioset[@AudioSet]
 a 8-bit, 128 dimensional embedding is used for 10 seconds clips,
 leading to a datarate of 102 bits per second.
-L^3 (Look, Listen, Learn)[@L3] similarly proposed an embedding with 512 dimensions.
+$L^3$ (Look, Listen, Learn)[@L3] similarly proposed an embedding with 512 dimensions.
 The computation of such an embedding generally requires very large models and lots of compute resources.
-EdgeL^3[@EdgeL3] showed that the L^3 model can be compressed by up to 95%,
+$EdgeL^3$[@EdgeL3] showed that the L^3 model can be compressed by up to 95%,
 however the authors state that more work is needed to fit the RAM constraints of desirable sensor hardware.
 
 The minimal amount of data transmissions would be achieved if only sending the detected noise category,
-requiring to perform the classification on the sensor, case D. of figure {figure:sensornetworks-coding}.
+requiring to perform the classification on the sensor, case D. of figure \ref{figure:sensornetworks-coding}.
 
 This motivates the problem statement of this thesis:
 
@@ -311,7 +311,6 @@ SKIP
 
 ### Training process
 
-![Splitting datasets into train/validation/test sets and cross-validation \label{figure:crossvalidation}](./img/crossvalidation.png)
 
 The goal of the classification model is to make good predictions *on unseen data*.
 The samples available in the dataset only represents some particular examples
@@ -334,6 +333,8 @@ where K different training/validation splits are attempted.
 K is usually set to a value between 5 and 10.
 The overall process is illustrated in Figure \ref{figure:crossvalidation}.
 
+![Splitting datasets into train/validation/test sets and cross-validation \label{figure:crossvalidation}](./img/crossvalidation.png)
+
 One common style of supervised learning processes is to:
 start with an base model and initialize its parameters (often randomly),
 then make predictions using this model, compare these prediction with the labels to compute
@@ -342,6 +343,8 @@ This iterative process is illustrated in \ref{figure:training-inference}.
 
 Example of such a iterative training process is Gradient Descent of Neural Networks,
 described in chapter `TODO: ref gradient descent`.
+
+![Relationship between training system and the predictive model being trained. \label{figure:training-inference}](./img/training-inference.png)
 
 *Hyperparameters* are settings (parameters) used in the training process that
 are set, but not used as optimization during training.
@@ -353,7 +356,7 @@ When performed systematically this is known as a hyperparameter search.
 Common strategies include random search, combinatorial (gridsearch) and Baysian Optimization.
 -->
 
-![Relationship between training system and the predictive model being trained. \label{figure:training-inference}](./img/training-inference.png)
+
 
 Once training is completed, the predictive model with the the learned parameters can be used on new data. 
 
@@ -371,17 +374,13 @@ Therefore one would like to reduce the dimensions of inputs as much as possible.
 A STFT spectrogram often has considerable correlation (redundant information) between adjacent frequency bins,
 and is often reduced to 30-128 frequency bands using a filter-bank.
 Several different filter-bank alternatives have been investigated for audio classification tasks,
-such as 1/3 octave bands, the Bark scale, Gammatone and the Mel scale. `TODO: reference`
-All these have filters spacing that increase with frequency, mimicking the human auditory system. `TODO: reference`
+such as 1/3 octave bands, the Bark scale, Gammatone and the Mel scale. <!-- TODO: reference`-->
+All these have filters spacing that increase with frequency, mimicking the human auditory system. <!-- TODO: reference -->
 See Figure \ref{figure:filterbanks}.
 
-![Comparison of different filter responses. Mel, Gammatone, 1/3-octave \label{figure:filterbanks}](./pyplots/filterbanks.png)
+![Comparison of different filterbank responses: Mel, Gammatone, 1/3-octave. \label{figure:filterbanks}](./pyplots/filterbanks.png)
 
-`FIXME: make plot half the height`
-`FIXME: mention log scaling`
-`FIXME: make label 1/3 octave`
-
-The most commonly used for audio classification is the Mel scale. `TODO: reference`
+The Mel scaled filters is commonly used for audio classification. `TODO: reference`
 The spectrogram that results for applying a Mel-scale filter-bank is often called a Mel-spectrogram.
 
 `TODO: image of mel-spectrogram`
@@ -437,18 +436,17 @@ the last window is zero padded.
 Sometimes there is a mismatch between the desired length of analysis window,
 and the labeled clips available in the training data.
 For example a dataset may consist of labeled audio clips with a length of 10 seconds,
-while the desired analysis window is 1 second.
+while the desired output is every 1 seconds.
 When a dataset is labeled only with the presence of a sound at a coarse timescale,
 without information about where exactly the relevant sound(s) appears
-it is referred to as *weakly annotated* or *weakly labeled* data.
-`TODO: reference. `
+it is referred to as *weakly annotated* or *weakly labeled* data[@ComputationalAnalysisSound, ch 14.2.4.1].
 
 If one assumes that the sound of interest occurs throughout the entire audio clip,
 a simple solution is to let each analysis window inherit the label of the audio clip as-is,
 and to train on individual analysis windows.
 If this assumption is problematic, the task can be approached as a Multiple Instance Learning (MIL) problem.
 Under MIL each training sample is a bag of instances (in this case, all analysis windows in an audio clip),
-and the label is associated with this bag.
+and the label is associated with this bag[@MultipleInstanceLearning2008].
 The model is then supposed to learn the relationship between individual instances and the label.
 Several MIL techniques have been explored for audio classification and audio event detection[@WeaklyLabeledAEDMIL][@AdaptivePoolingWeaklyLabeled][@morfi2018dcase].
 
@@ -466,17 +464,10 @@ With *soft voting* or *probabalistic voting*,
 the probabilities of individual predictions are averaged together,
 and the output prediction is the class with overall highest probability.
 
-`TODO: image showing how voting is performed` 
+<!-- TODO: image showing how voting is performed --> 
 
 
 ### Data augmentation
-
-<!--
-Motivation
-Principle
-(General examples)
-Commonly used Data Augmentation for audio/ESC
--->
 
 Access to labeled samples is often limited, because it is expensive to acquire.
 This can be a limiting factor for reaching good performance using supervised machine learning.
@@ -556,21 +547,54 @@ Using a set of kernels in combination can detect many pattern variations.
 
 ### Convolutions in 2D
 
-Moves spatially across the width and height of input.
+Moves spatially in 2 dimensions, across the width and height of input.
 Convolution is
 
 ![Standard 3x3 convolutional block, input/output relationship. Imae: Yusuke Uchida[@ConvolutionsIllustrated]](./img/conv-standard.png)
 
-The computational complexity of such a convolution is $ O_conv = WHNK_wk_hM $,
+The computational complexity of such a convolution is $ O_conv = WHNK_wk_hM $, with
+input height $H$, input width $W$, $M$ output channels$ and a 2D kernel of size $K_w$x$K_h$.
 
-```
-H input height
-W input width
-N input channels
-M output channels
-K_w kernel width
-K_h kernel height
-```
+### Spatially Separable convolution
+
+In a spatially separable convolution, a 2D convolution is factorized into two convolutions with 1D kernels.
+First a 2D convolution with $1 x K_h$ kernel is performed, followed by a 2D convolution with a $K_w x 1$ kernel,
+as illustrated in Figure \ref{fig:spatially-separable-convolution}. The number of operations is
+
+$$
+O_{ss} = HWNMK_w + HWNMK_h = HWNM(K_w+K_h)
+$$
+
+This reduces the number of computations and parameters over regular 2D convolutions
+by a ratio $(K_w+K_h)/(K_wK_h)$.
+With $K_w=K_h=3$, the reduction is 6/9 and with $K_w=K_h=5$ it is 10/25. 
+
+![Spatially Separable 2D convolution versus standard 2D convolution \label{fig:spatially-separable-convolution}](./img/spatially-separable-convolution.png)
+
+### Depthwise Separable convolution
+
+![Depthwise separable convolutions, input/output relationship. Image: Yusuke Uchida[@ConvolutionsIllustrated]](./img/conv-depthwise-separable.png)
+
+While standard convolution performs a convolution over both channels and the spatial extent,
+a Depthwise Separable convolution splits this into two convolutions.
+First a *Depthwise Convolution* over the spatial extent only,
+followed by a *Pointwise Convolution* over the input channels.
+The pointwise convolution is sometimes called a 1x1 convolution,
+since it is equivalent to a 2D convolution operation with a 1x1 kernel. 
+
+$$ O_{pw} = HWNM $$
+$$ O_{dw} = HWNK_wK_h $$
+$$ O_{ds} = O_{pw} + O_{dw} = HWN(M + K_wK_h) $$
+
+This factorization requires considerably fewer computations compared to full 2D convolutions.
+For example, with kernels size $K_w=K_h=3$ and $M=64$ channels, the reduction is approximately $7.5x$.
+
+<!--
+Used in [@Xception]
+-->
+
+
+`TODO: image of spatially separable convolution`
 
 ### Pooling
 
@@ -590,44 +614,6 @@ Striding can be used to reduce spatial dimensionality, either as an alternative 
 "Fully convolutional neural networks". Only Conv operations
 Used by ResNet.
 -->
-
-### Depthwise Separable convolution
-
-![Depthwise separable convolutions, input/output relationship. Image: Yusuke Uchida[@ConvolutionsIllustrated]](./img/conv-depthwise-separable.png)
-
-While a regular convolution performs a convolution over both channels and the spatial extent,
-a Depthwise Separable convolution splits this into two convolutions.
-First a Depthwise convolution over the spatial extent,
-followed by a a Pointwise convolution over the input channels.
-The pointwise convolution is sometimes called a 1x1 convolution,
-since it is equivalent to a 2D convolution operation with a 1x1 kernel. 
-
-$$ O_{pw} = HWNM $$
-$$ O_{dw} = HWNK_wK_h $$
-$$ O_{ds} = O_{pw} + O_{dw} = HWN(M + K_wK_h) $$
-
-This factorization requires considerably fewer computations compared to full 2D convolutions.
-For example, with $K_w=K_h=3$ and $M=64$, the reduction is approximately $7.5x$.
-
-<!--
-Used in [@Xception]
--->
-
-### Spatially Separable convolution
-
-In a spatially separable convolution, a 2D convolution is factorized into two convolutions with 1D kernels.
-First a 2D convolution with $1 x K_h$ kernel is performed, followed by a 2D convolution with a $K_w x 1$ kernel. 
-
-$$
-O_{ss} = HWNMK_w + HWNMK_h = HWNM(K_w+K_h)
-$$
-
-This reduces the number of computations and parameters over regular 2D convolutions
-by a ratio $(K_w+K_h)/(K_wK_h)$.
-With $K_w=K_h=3$, the reduction is 6/9 and with $K_w=K_h=5$ it is 10/25. 
-
-
-`TODO: image of spatially separable convolution`
 
 
 <!---
