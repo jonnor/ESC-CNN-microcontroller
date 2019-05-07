@@ -16,15 +16,24 @@ Background
 
 - ...Fill out NN/CNN section
 
+- Send to OK for feedback
+- Send to J. for review
+- Send to M for review
+
 ### Draft 3
+
+- Fix test/validation setup
+- Remove duplicated 24 filter model
+- Run all the models
 
 Results
 
+- Include error analysis
+- Plot performance of models relative to fold
 - Measure runtime on device for latest models
 - Use Strided-DS-24 as chosen model (confusion matrix etc), instead of auto "best"
 - Make plots a bit prettier
 
-- Include error analysis
 - Finish Discussion and Conclusion
 - Add picture of demo setup
 
@@ -34,17 +43,7 @@ Final
 Do they explain the figure setup/contents OK?
 - Do a spell checking pass
 - Do a grammar checking pass. LanguageTool + Grammarly
-- Ask review pass with M
-- Send to OK for feedback
-- Send to J. for review
-- Send to M for review
 
-### Draft 3
-
-- Fix test/validation sets.
-- Remove duplicated 24 filter model
-- Plot performance of models relative to fold
-- MAYBE: Profile to see what makes training slow
 
 Abstract
 
