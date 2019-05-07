@@ -210,65 +210,7 @@ Open-set classification. Novelty detection, clustering
 -->
 
 
-## Digital sound
-
-Physically, sound is a variation in pressure over time.
-To process the sound with machine learning, it must be converted to a digital format.
-The acoustic data is first converted to analog electric signals by a microphone and
-then digitized using an Analog-to-Digital-Converter (ADC),
-as illustrated in Figure \ref{figure:audio-aquisition}.
-
-![Conversion of sound into a digital representation \label{figure:audio-aquisition}](./img/audio-aquisition.png)
-
-In the digitization process, the signal is quantized in time at a certain sampling frequency,
-and the amplitude quantized at a certain bit-depth.
-A typical sampling frequency is 44100 Hz and bit-depth 16 bit,
-as used in the Audio CD format[@AudioCDspecification].
-With such parameters the majority of human perceivable information in the acoustic sound is captured.
-In this representation sound is a 1 dimensional sequence of numbers, sometimes referred to as a *waveform*.
-This is the format utilized by case A) in Figure {figure::sensornetworks-coding2} from the introduction.
-
-Digital sound can be stored uncompressed (example format: WAV PCM[@WAVspecification]),
-using lossless compression (FLAC[@FLACHomepage])
-or using lossy compression (MP3[@MP3Standard]).
-Lossy compression removes information that are indistinguishable to the human hear
-and can compress better than lossless.
-It however adds compression artifacts, and is best avoided for machine learning tasks.
-
-Recordings can have multiple channels of audio but for machine learning on audio
-single-channel data (mono-aural) is still common.
-
-### Spectrograms
-
-Sounds of interest often have characteristic patterns not just in time (temporal signature)
-but also in frequency content (spectral signature).
-Therefore it is common to analyze the audio in a time-frequency representation (a *spectrogram*).
-
-A common way to compute a spectrogram from an audio waveform is by using the Short Time Fourier Transform (STFT).
-`FIXME: referanse STFT`
-The STFT operates by splitting the audio up in short consecutive chunks,
-and computing the Fast Fourier Transform (FFT) to estimate the frequency content for each chunk.
-To reduce artifacts at the boundary of chunks, they are overlapped (typically by 50%)
-and a window function (such as the Hann window) is applied before before computing the FFT.
-With the appropriate choice of window function and overlap, the STFT is invertible[@STFTmodifications].
-
-`FIXME: image of windowing / STFT process`
-<!--
-Inspiration for TODO: image, https://dsp.stackexchange.com/questions/19311/stft-why-overlapping-the-window
--->
-
-There is a trade-off between frequency (spectral) resolution and time resolution with the STFT.
-The longer the FFT window the better the frequency resolution,
-but the poorer the temporal resolution.
-For speech a typical choice of window length is 25 ms. `FIXME: referanse`
-Similar frame lengths are often adopted for acoustic events. `FIXME: referanse`
-The STFT returns complex numbers describing phase and magnitude of each frequency bin.
-A spectrogram squaring the absolute of the magnitude, and discards the phase information.
-The lack of phase information means that the spectrogram is not strictly invertible,
-though estimations exist[@GriffinLimSpectrogramInversion][@MCNNSpectrogramInversion].
-
-
-## Machine learning
+## Machine Learning
 
 `TODO: two-lines introduction`
 
@@ -361,153 +303,7 @@ Common strategies include random search, combinatorial (gridsearch) and Baysian 
 Once training is completed, the predictive model with the the learned parameters can be used on new data. 
 
 
-\newpage
-## Audio Classification
 
-`TODO: two sentences introduction`
-
-### Mel-spectrogram
-
-The more complex the input to a machine learning system is,
-the more processing power is needed both for training and for inference.
-Therefore one would like to reduce the dimensions of inputs as much as possible.
-A STFT spectrogram often has considerable correlation (redundant information) between adjacent frequency bins,
-and is often reduced to 30-128 frequency bands using a filter-bank.
-Several different filter-bank alternatives have been investigated for audio classification tasks,
-such as 1/3 octave bands, the Bark scale, Gammatone and the Mel scale. <!-- TODO: reference`-->
-All these have filters spacing that increase with frequency, mimicking the human auditory system. <!-- TODO: reference -->
-See Figure \ref{figure:filterbanks}.
-
-![Comparison of different filterbank responses: Mel, Gammatone, 1/3-octave. \label{figure:filterbanks}](./pyplots/filterbanks.png)
-
-The Mel scaled filters is commonly used for audio classification. `TODO: reference`
-The spectrogram that results for applying a Mel-scale filter-bank is often called a Mel-spectrogram.
-
-`TODO: image of mel-spectrogram`
-
-Mel-Filter Cepstral Coefficients (MFCC) is a feature representation
-computed by performing a Discrete Cosine Transform (DCT) on a mel-spectrogram.
-This further reduces dimensionality to just 13-20 bands with low correlation between each band.
-MFCC have been very popular in speech recognition tasks[@anusuya2011front],
-however in general sound classification tasks mel-spectrograms tend to perform better[@huzaifah2017comparison][@StowellBirdUnsupervisedFeatureLearning]. 
-
-### Normalization
-
-Audio has a very large dynamic range.
-The human hearing has a lower threshold of hearing down to $20\mu\text{Pa}$ (0 dB SPL)
-and a pain threshold of over 20 Pa (120 dB SPL), a difference of 6 orders of magnitude[@smith1997scientist, ch.22].
-A normal conversation may be 60 dB SPL and a pneumatic drill 110 dB SPL, a 4 orders of magnitude difference.
-It is common to compress the range of values in spectrograms by applying a log transform.
-
-In order to center the values, the mean (or median) of the spectrogram can be removed.
-Scaling the output to a range of 0-1 or -1,1 is also sometimes done.
-These changes have the effect of removing amplitude variations,
-forcing the model to focus on the patterns of the sound regardless of amplitude.
-
-`TODO: image of normalized mel-spectrogram. Or feature distribution of datasets w/without normalization?`
-
-
-### Analysis windows
-
-When recording sound, it forms a continuous, never-ending stream of data.
-The machine learning classifier however generally needs a fixed-size feature vector. 
-Also when playing back a finite-length recording, the file may be many times longer than
-the sounds that are of interest.
-To solve these problems, the audio stream is split up into analysis windows of fixed length,
-that are classified independently.
-The length of the window is typically a little longer than the longest target sound.
-The windows can follow each-other with no overlap,
-or move forward by a number less than the window length (overlap).
-With overlap a target sound will be classified a couple of times,
-at a slightly different position inside the analysis window each time.
-This can improve classification accuracy.
-
-![Audio stream split into fixed-length analysis windows without overlap](./img/analysis-windows.png)
-
-A short analysis window has the benefit of reducing the feature size of the classifier,
-which uses less memory and possibly allows to reduce the model complexity,
-and in turn allow to make better use of a limited dataset. 
-
-When the length of audio clips is not evenly divisible by length of analysis windows,
-the last window is zero padded.
-
-### Weak labeling
-
-Sometimes there is a mismatch between the desired length of analysis window,
-and the labeled clips available in the training data.
-For example a dataset may consist of labeled audio clips with a length of 10 seconds,
-while the desired output is every 1 seconds.
-When a dataset is labeled only with the presence of a sound at a coarse timescale,
-without information about where exactly the relevant sound(s) appears
-it is referred to as *weakly annotated* or *weakly labeled* data[@ComputationalAnalysisSound, ch 14.2.4.1].
-
-If one assumes that the sound of interest occurs throughout the entire audio clip,
-a simple solution is to let each analysis window inherit the label of the audio clip as-is,
-and to train on individual analysis windows.
-If this assumption is problematic, the task can be approached as a Multiple Instance Learning (MIL) problem.
-Under MIL each training sample is a bag of instances (in this case, all analysis windows in an audio clip),
-and the label is associated with this bag[@MultipleInstanceLearning2008].
-The model is then supposed to learn the relationship between individual instances and the label.
-Several MIL techniques have been explored for audio classification and audio event detection[@WeaklyLabeledAEDMIL][@AdaptivePoolingWeaklyLabeled][@morfi2018dcase].
-
-
-### Aggregating analysis windows
-
-When evaluating on a test-set where audio clips are 10 seconds,
-but the model classifies analysis windows of 1 second
-the individual predictions must be aggregated into one prediction for the clip.
-
-A simple technique to achieve this is *majority voting*,
-where the overall prediction is the class that occurs most often across individual predictions.
-
-With *soft voting* or *probabalistic voting*,
-the probabilities of individual predictions are averaged together,
-and the output prediction is the class with overall highest probability.
-
-<!-- TODO: image showing how voting is performed --> 
-
-
-### Data augmentation
-
-Access to labeled samples is often limited, because it is expensive to acquire.
-This can be a limiting factor for reaching good performance using supervised machine learning.
-
-Data Augmentation is a way to synthetically generate new labeled samples from existing ones,
-in order to expand the effective training set.
-A simple form of data augmentation can be done by modifying the sample data slightly.
-Common data augmentation techniques for audio include Time-shift, Pitch-shift and Time-stretch.
-These are demonstrated in Figure \ref{figure:dataaugmentations}.
-
-![Common data augmentations for audio demonstrated on a dog bark ("woof woof"). Figure shows log-scaled linear spectrograms before and after applying the augmentation. Parameters are exaggerated to show the effects more clearly. \label{figure:dataaugmentations}](./pyplots/dataaugmentations.png)
-
-Mixup[@Mixup] is another type of data augmentation technique
-where two samples from different classes are mixed together to create a new sample.
-A mixup ratio $\lambda$ controls how much the sample data is mixed,
-and the labels of the new sample is mixed in the same way.
-
-$$
-\begin{aligned}
-\tilde{x} &= \lambda x_i + (1 - \lambda)x_j & \text{  where } x_i, x_j \text{are raw input vectors} \\
-\tilde{y} &= \lambda y_i + (1 - \lambda)y_j & \text{  where } y_i, y_j \text{are labels one-hot encoded}
-\end{aligned}
-$$
-
-
-The authors argue that this encourages the model to behave linearly in-between training examples.
-It has been shown to increase performance on audio tasks[@ESC-mixup][@AclNet][@Mixup-ASC].
-
-Data augmentation can be applied either to the raw audio waveform,
-or to preprocessed spectrograms.
-
-<!--
-Other data augmentation:
-
-Frequency response change
-Dynamic range compression
-Cutout
--->
-
-\newpage
 ## Neural Networks
 
 `TODO: intro, why are they important`
@@ -548,7 +344,7 @@ of a neural network for classification, as they convert the input to a probabilt
 Sigmoid is used for binary classification,
 and Softmax used for multi-class classification.
 
-![Commonly used activation functions in neural networks](./img/activation-functions.png)
+![Commonly used activation functions in neural networks. Input along X axis, output along Y.](./img/activation-functions.png)
 
 
 ### Training Neural Networks
@@ -711,125 +507,292 @@ SKIP
 "Fully convolutional neural networks". Only Conv operations. Used by ResNet.
 -->
 
+### Efficient CNNs for Image Classification
+
+The development of more efficient Convolutional Neural Networks for
+image classification have received a lot of attention over the last few years.
+This is especially motivated by the ability to run models
+that give close to state-of-the-art performance on mobile phones and tablets.
+Since spectrograms are 2D inputs that are similar to images, it is possible that some of these
+techniques can transfer over to Environmental Sound Classification.
+
+SqueezeNet[@SqueezeNet] (2015) focused on reducing the size of model parameters.
+It demonstrated AlexNet[@AlexNet]-level accuracy on ImageNet challenge using 50x fewer parameters,
+and the parameters can be compressed to under 0.5MB in size compared to 240MB for AlexNet.
+It replaced most 3x3 convolutions in a convolution block with 1x1 convolutions,
+and reduce the number of channels using "Squeeze" layers consisting only of 1x1 convolutions.
+The paper also found that a residual connection between blocks increased model performance
+by 2.9% without adding parameters.
+
+Mobilenets[@Mobilenets] (2017) focused on reducing inference computations by
+using Depthwise separable convolutions.
+A family of models with different complexity was created using two hyperparameters:
+a width multiplier $\alpha$ (0.0-1.0) which adjusts the number of filters in each convolutional layer,
+and the input image size.
+On ImageNet, MobileNet-160 $\alpha=0.5$ with 76M MACC performs better than SqueezeNet with 1700M MACC,
+a 22x reduction. The smallest tested model was 0.25 MobileNet-128, with 15M MACC and 200k parameters.
+
+![Convolutional blocks of Effnet, ShuffleNet and Mobilenet. Illustration based on Effnet paper[@Effnet]](./img/conv-blocks-imagenets.png)
+
+Shufflenet[@Shufflenet] (2017) uses group convolutions in order to reduce computations.
+In order to mix information between different groups of convolutions it introduces
+a random channel shuffle.
+
+SqueezeNext[@SqueezeNext] (2018) is based on SqueezeNet but
+uses spatially separable convolution (1x3 and 3x1) to improve inference time.
+While the MACC count was higher than MobileNet, they claim better inference
+time and power consumption on their simulated hardware accelerator.
+
+Effnet[@Effnet] (2018) also uses spatial separable convolutions,
+but additionally performs the downsampling in a separable fashion:
+first a 1x2 max pooling after the 1x3 kernel,
+followed by 2x1 striding in the 3x1 kernel.
+Evaluated on CIFAR10 and Street View House Numbers (SVHN) datasets
+it scored a bit better than Mobilenets and ShuffleNet. 
+
+
 \newpage
-## Microcontrollers
+## Audio Classification
 
-<!-- TODO: couple of extra references -->
+`TODO: two sentences introduction`
 
-A microcontroller is a tiny computer integrated on a single chip,
-containing CPU, RAM, persistent storage (FLASH) as well
-as peripherals for communicating with the outside world.
+### Digital sound
 
-Common forms of peripherals include General Purpose Input Output (GPIO) for digital input/output,
-Analog to Digital (ADC) converter for analog inputs,
-and high-speed serial communications for digital inter-system communication
-using protocols like I2C and SPI.
-For digital audio communication, specialized peripherals exists using the I2S or PDM protocols.
+Physically, sound is a variation in pressure over time.
+To process the sound with machine learning, it must be converted to a digital format.
+The acoustic data is first converted to analog electric signals by a microphone and
+then digitized using an Analog-to-Digital-Converter (ADC),
+as illustrated in Figure \ref{figure:audio-aquisition}.
 
-Microcontrollers are widely used across all forms of electronics, such as
-household electronics and mobile devices, telecommunications infrastructure,
-cars and industrial systems.
-In 2017 over 25 billion microcontrollers were shipped,
-and is expected to grow by more than 50% over the next 5 years[@ICInsightsMCUSales].
+![Conversion of sound into a digital representation \label{figure:audio-aquisition}](./img/audio-aquisition.png)
 
-Examples of microcontrollers (from ST Microelectronics)
-that could be used for audio processing is shown in Table \ref{table:microcontrollers}.
-Similar offerings are available from other manufacturers such as
-Texas Instruments, Freescale, Atmel, Nordic Semiconductors, NXP.
+In the digitization process, the signal is quantized in time at a certain sampling frequency,
+and the amplitude quantized at a certain bit-depth.
+A typical sampling frequency is 44100 Hz and bit-depth 16 bit,
+as used in the Audio CD format[@AudioCDspecification].
+With such parameters the majority of human perceivable information in the acoustic sound is captured.
+In this representation sound is a 1 dimensional sequence of numbers, sometimes referred to as a *waveform*.
+This is the format utilized by case A) in Figure {figure::sensornetworks-coding2} from the introduction.
 
-\begin{table}[h]
-\input{pyincludes/microcontrollers.tex}
-\caption{Examples of available STM32 microcontrollers and their characteristics. Details from ST Microelectronics website. }
-\label{table:microcontrollers}
-\end{table}
+Digital sound can be stored uncompressed (example format: WAV PCM[@WAVspecification]),
+using lossless compression (FLAC[@FLACHomepage])
+or using lossy compression (MP3[@MP3Standard]).
+Lossy compression removes information that are indistinguishable to the human hear
+and can compress better than lossless.
+It however adds compression artifacts, and is best avoided for machine learning tasks.
+
+Recordings can have multiple channels of audio but for machine learning on audio
+single-channel data (mono-aural) is still common.
+
+### Spectrograms
+
+Sounds of interest often have characteristic patterns not just in time (temporal signature)
+but also in frequency content (spectral signature).
+Therefore it is common to analyze the audio in a time-frequency representation (a *spectrogram*).
+
+A common way to compute a spectrogram from an audio waveform is by using the Short Time Fourier Transform (STFT).
+`FIXME: referanse STFT`
+The STFT operates by splitting the audio up in short consecutive chunks,
+and computing the Fast Fourier Transform (FFT) to estimate the frequency content for each chunk.
+To reduce artifacts at the boundary of chunks, they are overlapped (typically by 50%)
+and a window function (such as the Hann window) is applied before before computing the FFT.
+With the appropriate choice of window function and overlap, the STFT is invertible[@STFTmodifications].
+
+`FIXME: image of windowing / STFT process`
+<!--
+Inspiration for TODO: image, https://dsp.stackexchange.com/questions/19311/stft-why-overlapping-the-window
+-->
+
+There is a trade-off between frequency (spectral) resolution and time resolution with the STFT.
+The longer the FFT window the better the frequency resolution,
+but the poorer the temporal resolution.
+For speech a typical choice of window length is 25 ms. `FIXME: referanse`
+Similar frame lengths are often adopted for acoustic events. `FIXME: referanse`
+The STFT returns complex numbers describing phase and magnitude of each frequency bin.
+A spectrogram squaring the absolute of the magnitude, and discards the phase information.
+The lack of phase information means that the spectrogram is not strictly invertible,
+though estimations exist[@GriffinLimSpectrogramInversion][@MCNNSpectrogramInversion].
+
+### Mel-spectrogram
+
+The more complex the input to a machine learning system is,
+the more processing power is needed both for training and for inference.
+Therefore one would like to reduce the dimensions of inputs as much as possible.
+A STFT spectrogram often has considerable correlation (redundant information) between adjacent frequency bins,
+and is often reduced to 30-128 frequency bands using a filter-bank.
+Several different filter-bank alternatives have been investigated for audio classification tasks,
+such as 1/3 octave bands, the Bark scale, Gammatone and the Mel scale. <!-- TODO: reference`-->
+All these have filters spacing that increase with frequency, mimicking the human auditory system. <!-- TODO: reference -->
+See Figure \ref{figure:filterbanks}.
+
+![Comparison of different filterbank responses: Mel, Gammatone, 1/3-octave. \label{figure:filterbanks}](./pyplots/filterbanks.png)
+
+The Mel scaled filters is commonly used for audio classification. `TODO: reference`
+The spectrogram that results for applying a Mel-scale filter-bank is often called a Mel-spectrogram.
+
+`TODO: image of mel-spectrogram`
+
+Mel-Filter Cepstral Coefficients (MFCC) is a feature representation
+computed by performing a Discrete Cosine Transform (DCT) on a mel-spectrogram.
+This further reduces dimensionality to just 13-20 bands with low correlation between each band.
+MFCC have been very popular in speech recognition tasks[@anusuya2011front],
+however in general sound classification tasks mel-spectrograms tend to perform better[@huzaifah2017comparison][@StowellBirdUnsupervisedFeatureLearning]. 
+
+### Normalization
+
+Audio has a very large dynamic range.
+The human hearing has a lower threshold of hearing down to $20\mu\text{Pa}$ (0 dB SPL)
+and a pain threshold of over 20 Pa (120 dB SPL), a difference of 6 orders of magnitude[@smith1997scientist, ch.22].
+A normal conversation may be 60 dB SPL and a pneumatic drill 110 dB SPL, a 4 orders of magnitude difference.
+It is common to compress the range of values in spectrograms by applying a log transform.
+
+In order to center the values, the mean (or median) of the spectrogram can be removed.
+Scaling the output to a range of 0-1 or -1,1 is also sometimes done.
+These changes have the effect of removing amplitude variations,
+forcing the model to focus on the patterns of the sound regardless of amplitude.
+
+`TODO: image of normalized mel-spectrogram. Or feature distribution of datasets w/without normalization?`
+
+
+### Analysis windows
+
+When recording sound, it forms a continuous, never-ending stream of data.
+The machine learning classifier however generally needs a fixed-size feature vector. 
+Also when playing back a finite-length recording, the file may be many times longer than
+the sounds that are of interest.
+To solve these problems, the audio stream is split up into analysis windows of fixed length,
+that are classified independently.
+The length of the window is typically a little longer than the longest target sound.
+The windows can follow each-other with no overlap,
+or move forward by a number less than the window length (overlap).
+With overlap a target sound will be classified a couple of times,
+at a slightly different position inside the analysis window each time.
+This can improve classification accuracy.
+
+![Audio stream split into fixed-length analysis windows without overlap](./img/analysis-windows.png)
+
+A short analysis window has the benefit of reducing the feature size of the classifier,
+which uses less memory and possibly allows to reduce the model complexity,
+and in turn allow to make better use of a limited dataset. 
+
+When the length of audio clips is not evenly divisible by length of analysis windows,
+the last window is zero padded.
+
+### Weak labeling
+
+Sometimes there is a mismatch between the desired length of analysis window,
+and the labeled clips available in the training data.
+For example a dataset may consist of labeled audio clips with a length of 10 seconds,
+while the desired output is every 1 seconds.
+When a dataset is labeled only with the presence of a sound at a coarse timescale,
+without information about where exactly the relevant sound(s) appears
+it is referred to as *weakly annotated* or *weakly labeled* data[@ComputationalAnalysisSound, ch 14.2.4.1].
+
+If one assumes that the sound of interest occurs throughout the entire audio clip,
+a simple solution is to let each analysis window inherit the label of the audio clip as-is,
+and to train on individual analysis windows.
+If this assumption is problematic, the task can be approached as a Multiple Instance Learning (MIL) problem.
+Under MIL each training sample is a bag of instances (in this case, all analysis windows in an audio clip),
+and the label is associated with this bag[@MultipleInstanceLearning2008].
+The model is then supposed to learn the relationship between individual instances and the label.
+Several MIL techniques have been explored for audio classification and audio event detection[@WeaklyLabeledAEDMIL][@AdaptivePoolingWeaklyLabeled][@morfi2018dcase].
+
+
+### Aggregating analysis windows
+
+When evaluating on a test-set where audio clips are 10 seconds,
+but the model classifies analysis windows of 1 second
+the individual predictions must be aggregated into one prediction for the clip.
+
+A simple technique to achieve this is *majority voting*,
+where the overall prediction is the class that occurs most often across individual predictions.
+
+With *soft voting* or *probabalistic voting*,
+the probabilities of individual predictions are averaged together,
+and the output prediction is the class with overall highest probability.
+
+<!-- TODO: image showing how voting is performed --> 
+
+
+### Data augmentation
+
+Access to labeled samples is often limited, because it is expensive to acquire.
+This can be a limiting factor for reaching good performance using supervised machine learning.
+
+Data Augmentation is a way to synthetically generate new labeled samples from existing ones,
+in order to expand the effective training set.
+A simple form of data augmentation can be done by modifying the sample data slightly.
+Common data augmentation techniques for audio include Time-shift, Pitch-shift and Time-stretch.
+These are demonstrated in Figure \ref{figure:dataaugmentations}.
+
+![Common data augmentations for audio demonstrated on a dog bark ("woof woof"). Figure shows log-scaled linear spectrograms before and after applying the augmentation. Parameters are exaggerated to show the effects more clearly. \label{figure:dataaugmentations}](./pyplots/dataaugmentations.png)
+
+Mixup[@Mixup] is another type of data augmentation technique
+where two samples from different classes are mixed together to create a new sample.
+A mixup ratio $\lambda$ controls how much the sample data is mixed,
+and the labels of the new sample is mixed in the same way.
+
+$$
+\begin{aligned}
+\tilde{x} &= \lambda x_i + (1 - \lambda)x_j & \text{  where } x_i, x_j \text{are raw input vectors} \\
+\tilde{y} &= \lambda y_i + (1 - \lambda)y_j & \text{  where } y_i, y_j \text{are labels one-hot encoded}
+\end{aligned}
+$$
+
+
+The authors argue that this encourages the model to behave linearly in-between training examples.
+It has been shown to increase performance on audio tasks[@ESC-mixup][@AclNet][@Mixup-ASC].
+
+Data augmentation can be applied either to the raw audio waveform,
+or to preprocessed spectrograms.
 
 <!--
+Other data augmentation:
 
-ARM expects ML-enabled devices (both using microcontrollers and microprocessors)
-to grow 10 times over 300 million units in 2018, and up to 3.2 billion in 2028.
-"A backward glance and a forward view" 2018
-
-![Internals of a STM32F103VGT6 microcontroller. Large uniform areas are RAM and FLASH, bottom lower corner has the CPU core. Source: Zeptobars.com[@STM32F103decap]](./img/STM32F103VGT6-LD.jpg)
-
+Frequency response change
+Dynamic range compression
+Cutout
 -->
 
-### Machine learning on microcontrollers
+### Efficient CNNs for Speech Detection
 
-For sensor systems the primary usecase for Machine Learning
-is to train a model on a desktop or cloud system ("off-line" learning),
-then to deploy the model to the microcontroller to perform inference.
-Dedicated tools are available for converting models
-to something that can execute on a microcontroller,
-usually integrated with established machine learning frameworks.
+Speech detection is a big application of Audio Classification,
+and there has been research focused on efficient models for use
+in smartwatches, mobile devices and smart-home devices (Amazon Alexa et.c.).
+In the Keyword Spotting (KWS) the goal is to detect a keyword or phrase that
+indicates that the user wants to enable speech control.
+Being an audio classification task that is often done on low-power microcontrollers,
+some of the explored techniques may transfer over to the Environmental Sound Classification task.
 
-CMSIS-NN by ARM is a low-level library for ARM Cortex-M microcontrollers implementing
-basic neural network building blocks, such as 2D convolutions, pooling and Gated Recurrent Units.
-It uses optimized fixed-point maths and SIMD (Single Instruction Multiple Data) instructions to
-perform 4x 8-bit operations at a time.
-This allows it to be up to 4x faster and 5x more energy efficient than floating point[@CMSIS-NN].
+In [@sainath2015convolutional] (2015) authors evaluated variations of
+small-footprints CNNs for keyword spotting. They found that using large strides in time or frequency 
+could be used to create models that were significantly more computationally effective.
 
-![Low level functions provided by CMSIS-NN (light gray) for use by higher level code (light blue)[@CMSIS-NN]](./img/CMSIS-NN-functions.png)
+In the "Hello Edge"[@HelloEdge] paper (2017),
+different models were evaluated for keyword spotting on microcontrollers.
+Included were most standard deep learning model architectures
+such as Deep Neural Networks (DNN), Recurrent Neural Networks and Convolutional Neural Networks.
+They found that Depthwise Separable Convolutional Neural Network (DS-CNN) provided the best
+accuracy while requiring significantly lower memory and compute resources than other alternatives.
+Models were evaluated with three different performance limits.
+Their "Small" version with under 80KB, 6M ops/inference achieved 94.5% accuracy on the Google Speech Command dataset.
+A DNN version was demonstrated on a high-end microcontroller (ARM Cortex M7 at 216 Mhz) using CMSIS-NN framework,
+running keyword spotting at 10 inferences per second while utilizing only 12% CPU (rest sleeping).
 
-uTensor[@uTensor] by ARM allows to run a subset of TensorFlow models on ARM Cortex-M devices,
-designed for use with the ARM mbed software platform[@MbedHomepage].
-
-TensorFlow Lite for Microcontrollers is an experimental port of
-TensorFlow[@TensorFlow], announced at TensorFlow Developer Summit in March 2019[@LaunchingTensorflowLiteMicrocontrollers].
-Its goal is to be compatible with TensorFlow Lite (for mobile devices etc),
-and to support multiple hardware and software platforms (not just ARM Cortex).
-Thei plan to reuse platform-specific libraries such as CMSIS-NN or uTensor
-in order to be as efficient as possible.
-
-EdgeML by Microsoft Research India[@EdgeMLGithub] is a research project
-and open source code repository which contains novel algorithms
-developed especially for microcontrollers,
-such as Bonsai[@Bonsai], ProtoNN[@ProtoNN] and FastGRNN[@FastGRNN].
-
-emlearn[@emlearn] by the author is a Python library that
-supports converting a subset of Scikit-Learn[@scikit-learn] and Keras[@Keras] models
-and run them using C code designed for microcontrollers.
-
-X-CUBE-AI[@X-CUBE-AI] by ST Microelectronics provides official support for
-performing inference with Neural Networks on their STM32 microcontrollers. 
-It is an add-on to the STM32CubeMX[@STM32CubeMX] software development kit,
-and allows loading trained models from various formats, including:
-Keras (Tensorflow), Caffe[@Caffe] and PyTorch.
-In X-CUBE-AI 3.4, all computations are done in single-precision float.
-Model compression is supported by quantizing model weights by 4x or 8x,
-but only for fully-connected layers (not convolutional layers)[@X-CUBE-AI-manual, ch 6.1].
-X-CUBE-AI 3.4 does not use CMSIS-NN.
-
-<!---
-MAYBE: Add section about FGPA
-iCE40 ultraplus.
-sensAI platform
-https://www.latticesemi.com/en/Solutions/Solutions/SolutionsDetails02/sensAI
--->
-
-### Hardware accelerators for neural networks
-
-With the increasing interest in deploying neural networks on low-power microcontrollers,
-dedicated hardware acceleration units are also being developed.
-
-STMicroelectronics (ST) has stated that neural network accelerators will be available
-for their STM32 family of microcontrollers[@ST-DCNN-accelerator], based on their
-FD-SOI chip architecture[@ST-FD-SOI].
-
-![Architecture of Project Orlando by ST, system-on-chip with DSP and hardware accelerators for Machine Learning integrated with microcontroller (gray) [@ST-Orlando-MPSoc17]](./img/ST-Orlando-SoC.png){ height=20% }
-
-ARM has announced ARM Helium, an extended instruction set for the Cortex M
-family of microcontrollers that can be used to speed up neural networks[@ARMHeliumAnnouncement].
-
-Kendryte K210 is a microcontroller based on the open RISC-V architecture
-that includes a convolutional neural network accelerator[@KendryteK210Datasheet]. 
-
-GreenWaves GAP8 is a RISC-V chip with 8 cores designed for parallel-processing.
-They claim a 16x improvement in power efficiency over a ARM Cortex M7 chip[@GAP8vsARM].
-
+FastGRNN[@FastGRNN] (2018) is a Gated Recurrent Neural Network designed
+for fast inference on audio tasks on microcontrollers.
+It uses a simplified gating architecture with residual connection,
+and uses a three-stage training schedule that
+forces weights to be quantizated in a sparse and low-rank fashion. 
+When evaluated on Google Speech Command Set (12 classes),
+their smallest model of 5.5 KB achieved 92% accuracy
+and ran in 242 ms on a low-end microcontroller (ARM Cortex M0+ at 48 Mhz).
 
 
 \newpage
 ## Environmental Sound Classification
+
+`TODO: introduction paragraph`
 
 ### Datasets
 \label{chapter:datasets}
@@ -952,10 +915,7 @@ Without data augmentation it achieves 69.1% accuracy on Urbansound8k.
 When combining data augmentation with a technique similar to mixup called between-class examples,
 the model is able to reach 78.3% on Urbansound8k.
 
-
-## Resource efficient Convolutional Neural Networks
-
-### Environmental Sound Classification
+### Resource efficient models
 
 There are also a few studies on Environmental Sound Classification (ESC)
 that explicitly target making resource efficient models, measured
@@ -992,85 +952,120 @@ As of April 2019, eGRU was the only paper that could be found for the ESC task
 and the Urbansound8k dataset on a microcontroller.
 
 
-### Image classification
+\newpage
+## Microcontrollers
 
-The development of more efficient Convolutional Neural Networks for
-image classification have received a lot of attention over the last few years.
-This is especially motivated by the ability to run models
-that give close to state-of-the-art performance on mobile phones and tablets.
-Since spectrograms are 2D inputs that are similar to images, it is possible that some of these
-techniques can transfer over to Environmental Sound Classification.
+<!-- TODO: couple of extra references -->
 
-SqueezeNet[@SqueezeNet] (2015) focused on reducing the size of model parameters.
-It demonstrated AlexNet[@AlexNet]-level accuracy on ImageNet challenge using 50x fewer parameters,
-and the parameters can be compressed to under 0.5MB in size compared to 240MB for AlexNet.
-It replaced most 3x3 convolutions in a convolution block with 1x1 convolutions,
-and reduce the number of channels using "Squeeze" layers consisting only of 1x1 convolutions.
-The paper also found that a residual connection between blocks increased model performance
-by 2.9% without adding parameters.
+A microcontroller is a tiny computer integrated on a single chip,
+containing CPU, RAM, persistent storage (FLASH) as well
+as peripherals for communicating with the outside world.
 
-Mobilenets[@Mobilenets] (2017) focused on reducing inference computations by
-using Depthwise separable convolutions.
-A family of models with different complexity was created using two hyperparameters:
-a width multiplier $\alpha$ (0.0-1.0) which adjusts the number of filters in each convolutional layer,
-and the input image size.
-On ImageNet, MobileNet-160 $\alpha=0.5$ with 76M MACC performs better than SqueezeNet with 1700M MACC,
-a 22x reduction. The smallest tested model was 0.25 MobileNet-128, with 15M MACC and 200k parameters.
+Common forms of peripherals include General Purpose Input Output (GPIO) for digital input/output,
+Analog to Digital (ADC) converter for analog inputs,
+and high-speed serial communications for digital inter-system communication
+using protocols like I2C and SPI.
+For digital audio communication, specialized peripherals exists using the I2S or PDM protocols.
 
-![Convolutional blocks of Effnet, ShuffleNet and Mobilenet. Illustration based on Effnet paper[@Effnet]](./img/conv-blocks-imagenets.png)
+Microcontrollers are widely used across all forms of electronics, such as
+household electronics and mobile devices, telecommunications infrastructure,
+cars and industrial systems.
+In 2017 over 25 billion microcontrollers were shipped,
+and is expected to grow by more than 50% over the next 5 years[@ICInsightsMCUSales].
 
-Shufflenet[@Shufflenet] (2017) uses group convolutions in order to reduce computations.
-In order to mix information between different groups of convolutions it introduces
-a random channel shuffle.
+Examples of microcontrollers (from ST Microelectronics)
+that could be used for audio processing is shown in Table \ref{table:microcontrollers}.
+Similar offerings are available from other manufacturers such as
+Texas Instruments, Freescale, Atmel, Nordic Semiconductors, NXP.
 
-SqueezeNext[@SqueezeNext] (2018) is based on SqueezeNet but
-uses spatially separable convolution (1x3 and 3x1) to improve inference time.
-While the MACC count was higher than MobileNet, they claim better inference
-time and power consumption on their simulated hardware accelerator.
+\begin{table}[h]
+\input{pyincludes/microcontrollers.tex}
+\caption{Examples of available STM32 microcontrollers and their characteristics. Details from ST Microelectronics website. }
+\label{table:microcontrollers}
+\end{table}
 
-Effnet[@Effnet] (2018) also uses spatial separable convolutions,
-but additionally performs the downsampling in a separable fashion:
-first a 1x2 max pooling after the 1x3 kernel,
-followed by 2x1 striding in the 3x1 kernel.
-Evaluated on CIFAR10 and Street View House Numbers (SVHN) datasets
-it scored a bit better than Mobilenets and ShuffleNet. 
+<!--
 
-### Speech detection
+ARM expects ML-enabled devices (both using microcontrollers and microprocessors)
+to grow 10 times over 300 million units in 2018, and up to 3.2 billion in 2028.
+"A backward glance and a forward view" 2018
 
-`FIXME: paragraph about how speech detection relates to Environmental Sound Classification`
+![Internals of a STM32F103VGT6 microcontroller. Large uniform areas are RAM and FLASH, bottom lower corner has the CPU core. Source: Zeptobars.com[@STM32F103decap]](./img/STM32F103VGT6-LD.jpg)
 
-Speech detection is a big application of audio processing and machine learning.
-In the Keyword Spotting (KWS) task the goal is to detect a keyword or phrase that
-indicates that the user wants to enable speech control.
-Example phrases in commercially available products include "Hey Siri" for Apple devices
-or "OK Google" for Google devices.
-This is used both in smart-home devices such as Amazon Alexa, as well as smartwatches and mobile devices.
-For this reason keyword spotting on low-power devices and microcontrollers
-is an area of active research.
+-->
 
-In [@sainath2015convolutional] (2015) authors evaluated variations of
-small-footprints CNNs for keyword spotting. They found that using large strides in time or frequency 
-could be used to create models that were significantly more effective.
+### Machine learning on microcontrollers
 
-In the "Hello Edge"[@HelloEdge] paper (2017),
-different models were evaluated for keyword spotting on microcontrollers.
-Included were most standard deep learning model architectures
-such as Deep Neural Networks (DNN), Recurrent Neural Networks and Convolutional Neural Networks.
-They found that Depthwise Separable Convolutional Neural Network (DS-CNN) provided the best
-accuracy while requiring significantly lower memory and compute resources than other alternatives.
-Models were evaluated with three different performance limits.
-Their "Small" version with under 80KB, 6M ops/inference achieved 94.5% accuracy on the Google Speech Command dataset.
-A DNN version was demonstrated on a high-end microcontroller (ARM Cortex M7 at 216 Mhz) using CMSIS-NN framework,
-running keyword spotting at 10 inferences per second while utilizing only 12% CPU (rest sleeping).
+For sensor systems the primary usecase for Machine Learning
+is to train a model on a desktop or cloud system ("off-line" learning),
+then to deploy the model to the microcontroller to perform inference.
+Dedicated tools are available for converting models
+to something that can execute on a microcontroller,
+usually integrated with established machine learning frameworks.
 
-FastGRNN[@FastGRNN] (2018) is a Gated Recurrent Neural Network designed
-for fast inference on audio tasks on microcontrollers.
-It uses a simplified gating architecture with residual connection,
-and uses a three-stage training schedule that
-forces weights to be quantizated in a sparse and low-rank fashion. 
-When evaluated on Google Speech Command Set (12 classes),
-their smallest model of 5.5 KB achieved 92% accuracy
-and ran in 242 ms on a low-end microcontroller (ARM Cortex M0+ at 48 Mhz).
+CMSIS-NN by ARM is a low-level library for ARM Cortex-M microcontrollers implementing
+basic neural network building blocks, such as 2D convolutions, pooling and Gated Recurrent Units.
+It uses optimized fixed-point maths and SIMD (Single Instruction Multiple Data) instructions to
+perform 4x 8-bit operations at a time.
+This allows it to be up to 4x faster and 5x more energy efficient than floating point[@CMSIS-NN].
+
+![Low level functions provided by CMSIS-NN (light gray) for use by higher level code (light blue)[@CMSIS-NN]](./img/CMSIS-NN-functions.png)
+
+uTensor[@uTensor] by ARM allows to run a subset of TensorFlow models on ARM Cortex-M devices,
+designed for use with the ARM mbed software platform[@MbedHomepage].
+
+TensorFlow Lite for Microcontrollers is an experimental port of
+TensorFlow[@TensorFlow], announced at TensorFlow Developer Summit in March 2019[@LaunchingTensorflowLiteMicrocontrollers].
+Its goal is to be compatible with TensorFlow Lite (for mobile devices etc),
+and to support multiple hardware and software platforms (not just ARM Cortex).
+Thei plan to reuse platform-specific libraries such as CMSIS-NN or uTensor
+in order to be as efficient as possible.
+
+EdgeML by Microsoft Research India[@EdgeMLGithub] is a research project
+and open source code repository which contains novel algorithms
+developed especially for microcontrollers,
+such as Bonsai[@Bonsai], ProtoNN[@ProtoNN] and FastGRNN[@FastGRNN].
+
+emlearn[@emlearn] by the author is a Python library that
+supports converting a subset of Scikit-Learn[@scikit-learn] and Keras[@Keras] models
+and run them using C code designed for microcontrollers.
+
+X-CUBE-AI[@X-CUBE-AI] by ST Microelectronics provides official support for
+performing inference with Neural Networks on their STM32 microcontrollers. 
+It is an add-on to the STM32CubeMX[@STM32CubeMX] software development kit,
+and allows loading trained models from various formats, including:
+Keras (Tensorflow), Caffe[@Caffe] and PyTorch.
+In X-CUBE-AI 3.4, all computations are done in single-precision float.
+Model compression is supported by quantizing model weights by 4x or 8x,
+but only for fully-connected layers (not convolutional layers)[@X-CUBE-AI-manual, ch 6.1].
+X-CUBE-AI 3.4 does not use CMSIS-NN.
+
+<!---
+MAYBE: Add section about FGPA
+iCE40 ultraplus.
+sensAI platform
+https://www.latticesemi.com/en/Solutions/Solutions/SolutionsDetails02/sensAI
+-->
+
+### Hardware accelerators for neural networks
+
+With the increasing interest in deploying neural networks on low-power microcontrollers,
+dedicated hardware acceleration units are also being developed.
+
+STMicroelectronics (ST) has stated that neural network accelerators will be available
+for their STM32 family of microcontrollers[@ST-DCNN-accelerator], based on their
+FD-SOI chip architecture[@ST-FD-SOI].
+
+![Architecture of Project Orlando by ST, system-on-chip with DSP and hardware accelerators for Machine Learning integrated with microcontroller (gray) [@ST-Orlando-MPSoc17]](./img/ST-Orlando-SoC.png){ height=20% }
+
+ARM has announced ARM Helium, an extended instruction set for the Cortex M
+family of microcontrollers that can be used to speed up neural networks[@ARMHeliumAnnouncement].
+
+Kendryte K210 is a microcontroller based on the open RISC-V architecture
+that includes a convolutional neural network accelerator[@KendryteK210Datasheet]. 
+
+GreenWaves GAP8 is a RISC-V chip with 8 cores designed for parallel-processing.
+They claim a 16x improvement in power efficiency over a ARM Cortex M7 chip[@GAP8vsARM].
 
 
 

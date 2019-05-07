@@ -14,9 +14,9 @@ Materials
 
 Background
 
-- Fill out NN/CNN section
-- Add missing images and references
-- Restructure chapters according to OK feedback
+- ...Fill out NN/CNN section
+
+### Draft 3
 
 Results
 
