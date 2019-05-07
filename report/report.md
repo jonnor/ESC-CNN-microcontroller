@@ -315,6 +315,17 @@ Dense
 Input is 1-dimensional.
 If multi-dimensional input (like an image) is to be used, it must be flattened to a 1D vector.
 
+Activations
+Bias
+
+
+<!--
+\begin{eqnarray} 
+a^{l} = \sigma(w^l a^{l-1}+b^l).
+\tag{25}
+\end{eqnarray}
+-->
+
 `TODO: describe multi-layer network`
 Multi-layer Perceptron (MLP)
 
@@ -349,18 +360,75 @@ and Softmax used for multi-class classification.
 
 ### Training Neural Networks
 
-`TODO: describe Backpropagation`
-determine gradient (direction) of error
-chain-rule
+Probabalistic classification
+Decision function. argmax
+
+loss function
+Cross-entropy (log loss)
+As predicted probability gets close to zero, (negative) log-loss goes towards infinity
+Overall is the mean of log-loss across a set of predictions.
+
+Categorical cross-entropy is an extension of binary cross-entropy to multiple classes.
+
+`TODO: picture of loss in binary cross entropy`
+
+<!--
+Logistic loss
+Hinge loss. Not smooth and differentiable
+
+Mean Squared Error
+Mean Absolute Error
+-->
+
+
+Gradient is a partial-derivative with respects to its inputs.
+measure how much the output of a function changes if you change the inputs a little bit
 
 
 `TODO: describe Gradient Decent`
 
-Stocastic Gradient Descent
-Mini-batch Gradient Decent.
+Requires continious, smooth loss function, convex (only one minimum)
+
+Large steps when gradient is large, smaller steps when gradient is small
+
+Batch Gradient Descent.
+Stocastic Gradient Descent. Update
+Mini-batch Gradient Decent. Update parameters every $B$ samples
+Batch size hyperparameter
+
+Epoch. One pass through entire training set
 
 Update rule.
-Learning rate
+Learning rate. Hyperparameter
+Too small and might not overcome saddle points
+Too big and might oscillate and always overshoot minimum
+
+The key to training multi-layer neural networks is *backpropagation*.
+
+[@BackpropagationNeuralNetworks]
+
+Forward pass
+
+<!--
+Backpropagation algorithm in 4 steps
+http://neuralnetworksanddeeplearning.com/chap2.html#the_backpropagation_algorithm
+-->
+
+`TODO: describe Backpropagation`
+
+<!--
+The Hadamard product. Elementwise multiplication of vectors
+(s \odot t)_j = s_j t_j
+-->
+Derive partial-derivative of cost function with respect to *any* weight (or bias) in the network. 
+chain-rule
+
+error in each layer
+
+Computes the partial-derivative for a single training example
+Average over samples in the batch
+
+Backpropagation requires the derivatives of activation functions to be known at network design time.
 
 <!--
 Vanishing gradient
