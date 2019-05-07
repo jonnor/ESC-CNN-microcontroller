@@ -593,10 +593,12 @@ Using a set of $M$ kernels in combination can detect many pattern variations.
 
 `TODO: image of 2D convolution`
 
-![Standard 3x3 convolutional block, input/output relationship. Image by Yusuke Uchida[@ConvolutionsIllustrated]](./img/conv-standard.png)
-
-The computational complexity of such a convolution is $ O_conv = WHNK_wk_hM $, with
+The computational complexity of a 2D convolution is $ O_conv = WHNK_wk_hM $, with
 input height $H$, input width $W$, $M$ output channels$ and a 2D kernel of size $K_w$x$K_h$.
+
+<!--
+TODO: mention full versus valid
+-->
 
 ### Convolutional Neural Network
 
@@ -626,25 +628,37 @@ This forces the model to learn bigger (relative to the original input space)
 and more complex features (patterns of patterns) in later layers.
 <!-- TODO: ref-->
 
-A pooling layer (as seen in LeNet5 architecture) is one way of accomplishing this.
-With *average pooling*
-With *max pooling* the 
+A pooling layer is one way of accomplishing this,
+and was used in the LeNet5 and VGGNet architectures.
+A 2D pooling operation has $K_w$x$K_h$ sized filter,
+and scans over the image width and height.
+The stride is normally set to the same size of the operation.
+Each channel is processed independently.
+It outputs 1 element for each scanned location in the image.
+With *average pooling*, the output is the average value of the input.
+With *max pooling*, the output is the maximum value of the input (Figure \ref{fig:maxpooling}).
+
+![Max pooling operation. Different positions of the filter are colorized, with the maximum value in each position circled. \label{fig:maxpooling}](./img/maxpooling.png)
 
 <!--
 Pooling said to help model be translation invariant.
 -->
 
-`TODO: image of pooling`
-
 Another way of subsampling is by increasing the stride of the convolutions.
-Strided convolution
+If a kernel has a stride of 2 (as in Figure \ref{fig:strided-convolution}),
+then the output of of the convolution will be reduced by half.
+Striding is usually applied in the first convolution in a layer,
+and reduces the number of computations compared to pooling because fewer inputs need to be computed. 
 
-Striding can be used to reduce spatial dimensionality, either as an alternative or compliment max/mean-pooling.
+![Strided convolution. The kernel input (marked in red) moves by stride=2, effectively subsampling the input image \label{fig:strided-convolution}](./img/strided-convolution.png)
 
-? vunerable to aliasing?
+Striding was used to replace most pooling operations in ResNet[@ResNet] (2015),
+which beat human-level performance on the ImageNet task.
 
-`TODO: image of striding`
 
+<!--
+MAYBE: equation for operations for strided convolution 
+-->
 
 ### Spatially Separable convolution
 
@@ -668,14 +682,19 @@ With $K_w=K_h=3$, the reduction is 6/9 and with $K_w=K_h=5$ it is 10/25.
 
 ### Depthwise Separable convolution
 
-![Depthwise separable convolutions, input/output relationship. Image: Yusuke Uchida[@ConvolutionsIllustrated]](./img/conv-depthwise-separable.png)
+![Input/output relationship of standard 3x3 convolution versus Depthwise Separable convolution. Image based on illustrations by Yusuke Uchida[@ConvolutionsIllustrated] \label{fig:depthwise-separable-convolution}](./img/depthwise-separable-convolution.png)
 
-While a standard convolutional layer performs a convolution over both channels and the spatial extent,
-a Depthwise Separable convolution splits this into two convolutions.
+While a standard convolutional layer performs a convolution over both channels and the spatial extent
+a Depthwise Separable convolution splits this into two convolutions:
 First a *Depthwise Convolution* over the spatial extent only,
 followed by a *Pointwise Convolution* over the input channels.
+The diffence is illustrated in Figure \ref{fig:depthwise-separable-convolution}.
+
 The pointwise convolution is sometimes called a 1x1 convolution,
 since it is equivalent to a 2D convolution operation with a 1x1 kernel. 
+
+<!-- XXX: add numbering to equations and reference them -->
+<!-- XXX: put this into one equation environment, so image doe not cut through -->
 
 $$ O_{pw} = HWNM $$
 $$ O_{dw} = HWNK_wK_h $$

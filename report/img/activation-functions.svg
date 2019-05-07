@@ -16,7 +16,10 @@
    version="1.1"
    id="svg8"
    inkscape:version="0.92.4 5da689c313, 2019-01-14"
-   sodipodi:docname="activation-functions.svg">
+   sodipodi:docname="activation-functions.svg"
+   inkscape:export-filename="/home/jon/school/thesis/report/img/activation-functions.png"
+   inkscape:export-xdpi="300.35001"
+   inkscape:export-ydpi="300.35001">
   <defs
      id="defs2">
     <clipPath
@@ -50,8 +53,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.7114704"
-     inkscape:cx="436.17162"
-     inkscape:cy="171.45212"
+     inkscape:cx="440.56182"
+     inkscape:cy="154.54641"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
