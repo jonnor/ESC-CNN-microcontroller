@@ -22,8 +22,6 @@ Background
 
 ### Draft 3
 
-- Fix test/validation setup
-- Remove duplicated 24 filter model
 - Run all the models
 
 Results

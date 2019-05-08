@@ -396,6 +396,11 @@ Stocastic Gradient Descent. Update
 Mini-batch Gradient Decent. Update parameters every $B$ samples
 Batch size hyperparameter
 
+1. Sample a batch of data
+2. Forward propagate the to compute output probabilities, calculate loss
+3. Backpropagate the errors to compute error gradients in entire network
+4. Update each weight by moving a small amount against the gradient
+
 Epoch. One pass through entire training set
 
 Update rule.
@@ -439,50 +444,79 @@ Exploding gradient
 
 ### Convolutional layers 
 
-An alternative to fully-connected layers that allows for 2D (or 3D) input
-and exploit the spatial relationship in the input are convolutional layers.
+Convolutional layers are an alternative to fully-connected layers that allows
+for 2D input and that can exploits the spatial relationship in such data.
 
-Convolution operation
+In addition to the width and height the input also has a third dimension, the number of *channels*.
+The different channels can contain arbitrary kinds of data,
+but common for the first layer would be 3 channels with an RGB color image,
+or 1 channel for grayscale images or audio spectrogram.
 
-A convolution filter (also called kernel) allows to express many common transformations
-on 1D or 2D data, like edge detection (horizontal/vertical) or smoothening filters (median). 
 
-Convolution kernels are therefore generic local feature detectors,
-and can be trained to detect specific features of the dataset.
+To perform 2D convolution, a filter (or *kernel*) of fixed size $K_w$x$K_h$ is swept across the 2D input of a channel.
+For each location, the kernel multiplies the input data with the *kernel weights* and sums to a single value
+that becomes the output value. This is shown in Figure \ref{fig:convolution-2d}.
 
-In a 2D convolution, the kernel scans across the width and height of input.
-Convolution is performed across channels !!
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1.0\textwidth]{./img/convolution-2d.png}
+\caption{2D convolution for a single channel.
+Red outlines show how the filter moves across the input image.
+Filter weights shown in red numbers, input numbers in blue.
+Green dots illustrate locations of outputs wrt inputs.
+}
+\label{fig:convolution-2D}
+\end{figure}
 
-Using a set of $M$ kernels in combination can detect many pattern variations.
+This convolution process allows to express many useful transformations on 2D data,
+by simply selecting different weights in the kernel.
+Simple examples are edge detection (horizontal/vertical/diagonal) or smoothening filters (mean/Gaussian). 
+And since the kernels weights in a convolutional layer are trained,
+they learn to detect local features specific to the training data.
 
-`TODO: image of 2D convolution`
+With multiple input channels, the same kernel is applied over all the input channels,
+and all the results at one location, and the bias, are summed together to become the output.
+Multiple convolution filters are normally used per layer,
+to produce a $M$ new output channels with different features from the $N$ input channels.
 
-The computational complexity of a 2D convolution is $ O_conv = WHNK_wk_hM $, with
-input height $H$, input width $W$, $M$ output channels$ and a 2D kernel of size $K_w$x$K_h$.
+In Figure \ref{fig-convolution-2d} each location of the kernel has the entire kernel inside the input area.
+This is called "valid" convolution, and the resulting output will be smaller by $\left\lceil{k/2}\right\rceil$ on each side.
+If the input is instead padded by this amount when moving the kernel, the output will be the same size as the input.
+This is called "full" convolution.
 
 <!--
-TODO: mention full versus valid
+`TODO: image of valid versus full convolution` 
 -->
+
+The number of learnable parameters in a 2D convolutional layer with bias is
+$ P_conv = M(K_wK_h + 1) $, with $M$ filters and a kernel of size $K_w$x$K_h$.
+Commonly used kernel sizes are 3x3 to 7x7.
+
+In the fully-connected layer there was $(N+1)*M$ parameters for $N$ inputs and $M$ neurons.
+For 2D images N is height*width*channels, so even for small image grayscale inputs (N=100x100x1=10000)
+a convolutional layer has much fewer parameters.
+
+The computational complexity of a 2D convolution is $ O_conv = WHNK_wk_hM $,
+with input height $H$, input width $W$, $N$ input channels, $M$ output channels$
+and a 2D kernel of size $K_w$x$K_h$.
+
 
 ### Convolutional Neural Network
 
 ![The LeNet-5 architecture illustrated. From the original paper[@lecun1998gradient] \label{fig:lenet-5}](./img/lenet5.png)
 
-A Convolutional Neural Network (CNN) is one that uses convolutional layers
-in addition to (or instead of) Dense layers.
+A Convolutional Neural Network (CNN) is a neural network that uses convolutional layers
+in addition to (or instead of) fully-connected layers.
 One of the early examples of a CNN model was LeNet5 (1998)[@lecun1998gradient],
-which was succesfully applied to recognition of handwritten digits.
+which was successfully applied to recognition of handwritten digits.
 As seen in Figure \ref{fig:lenet-5}, the architecture uses
 two convolutional layers (with subsampling after each),
 followed by two fully-connected layers and then the output layer.
 
-Architectures with more layer ("deeper") based on very similar structure have been
+Architectures with more layers based on very similar structures have been
 shown to work well also on more complex tasks, like VGGNet (2014)[@VGGNet]
 on the 1000-class image recognition task ImageNet[@ImageNet].
 
-<!--
-Many variations of this basic CNN model have been developed,
--->
 
 ### Subsampling
 
