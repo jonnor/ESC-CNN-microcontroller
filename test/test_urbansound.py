@@ -3,6 +3,7 @@ import os.path
 import shutil
 
 import numpy
+import pytest
 
 from microesc import preprocess, urbansound8k, features, report
 
@@ -65,3 +66,39 @@ def test_grouped_confusion():
 
     # danger, only one class
     assert(gcm[3][3] == 82)
+
+
+folds = urbansound8k
+CORRECT_FOLDS={
+    '8val-9train': ((0,1,2,3,4,5,6,7), (8,), (9,)),
+}
+WRONG_FOLDS={
+    'train too short': ((0,1,2), (3,), (4,)),
+    'out-of-bounds train': ((0,1,2,3,4,5,6,7), (4,), (5,)),
+    'out-of-bounds val': ((0,2,3,4,5,6,7,8), (10,), (5,)),
+}
+
+@pytest.mark.parametrize('example', CORRECT_FOLDS.keys())
+def test_ensure_valid_fold_passes_correct(example):
+    fold = CORRECT_FOLDS[example]
+    folds.ensure_valid_fold(fold)
+
+@pytest.mark.parametrize('example', WRONG_FOLDS.keys())
+def test_ensure_valid_fold_detects_wrong(example):
+    fold = WRONG_FOLDS[example]
+    with pytest.raises(AssertionError) as e_info:
+        folds.ensure_valid_fold(fold)
+
+def test_folds_idx():
+    f = folds.folds_idx(10)
+    print('\n'+'\n'.join([ str(i) for i in f ]))
+    assert f[0][2][0] == 0, "first test fold should be 0" 
+    assert f[-1][2][0] == 9, "last test fold should be 9" 
+
+
+def test_folds():
+    data = urbansound8k.load_dataset()
+    f = urbansound8k.folds(data)
+    assert len(f) == 10
+
+

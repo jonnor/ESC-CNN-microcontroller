@@ -138,7 +138,7 @@ def parse(args):
         help='Only run a pre-flight check')
     a('--jobs', type=int, default=5,
         help='Number of parallel jobs')
-    a('--folds', type=int, default=9,
+    a('--folds', type=int, default=10,
         help='Number of folds to test')
 
     a('--start', type=int, default=0,
@@ -160,7 +160,8 @@ def main():
     experiments = experiments.loc[range(args.start, stop)]
 
     overrides = {}
-    folds = list(range(0, args.folds))
+    folds = list(range(1, args.folds+1))
+    assert max(folds) <= 10
     if args.check:
         batches = 2
         overrides['batch'] = 10

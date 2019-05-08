@@ -106,18 +106,35 @@ def evaluate_model(predictor, model_path, val_data, test_data):
     out['test'] = out['test_foreground'] + out['test_background']
     return out
 
-def evaluate(models, folds, testset, predictor, out_dir, dry_run=False):
+def evaluate(models, folds_data, predictor, out_dir, dry_run=False):
 
     def eval_experiment(df):
         results = {}
         by_fold = df.sort_index(level="fold", ascending=True)
 
         for idx, row in by_fold.iterrows():
-            print('Testing model {} fold={}'.format(row['experiment'], row['fold']))
-
+            fold = row['fold']
+            assert fold > 0, 'fold number should be 1 indexed'
+            print('Testing model {} fold={}'.format(row['experiment'], fold))
+            
             model_path = row['model_path']
-            val = folds[row['fold']][1]
-            test = testset
+            val = folds_data[fold-1][1]
+            test = folds_data[fold-1][2]
+            test_folds = test.fold.unique()
+            assert len(test_folds) == 1 
+            assert test_folds[0] == fold
+            val_folds = val.fold.unique()
+            assert len(val_folds) == 1 
+            assert val_folds[0] != fold 
+
+            train_data = folds_data[fold-1][0]
+            train_files = set(train_data.slice_file_name.unique())
+            assert len(train_files) > 7000, len(train_files)
+            test_files = set(test.slice_file_name.unique())
+            assert len(test_files) > 700
+            common_files = train_files.intersection(test_files)
+            assert len(common_files) == 0, common_files
+
             if dry_run:
                 val = test[0:20]
                 test = test[0:20]
@@ -173,21 +190,13 @@ def main():
 
     urbansound8k.maybe_download_dataset(args.datasets_dir)
     data = urbansound8k.load_dataset()
-    folds, test = urbansound8k.folds(data)
+    folds = urbansound8k.folds(data)
     exsettings = common.load_settings_path(args.settings_path)
     frames = exsettings['frames']
     voting = exsettings['voting']
     overlap = exsettings['voting_overlap']
     settings = features.settings(exsettings)
 
-
-    all_folds = pandas.concat([f[0] for f in folds])
-    train_files = set(all_folds.slice_file_name.unique())
-    test_files = set(test.slice_file_name.unique())
-    assert len(train_files) > 7000
-    assert len(test_files) > 700
-    common_files = train_files.intersection(test_files)
-    assert len(common_files) == 0
 
     def load_sample(sample):
         return features.load_sample(sample, settings, start_time=sample.start,
@@ -219,7 +228,7 @@ def main():
     model_stats.to_csv(os.path.join(out_dir, 'stm32stats.csv'))
 
     print('Testing models...')
-    results = evaluate(best, folds, test, predictor=predict, out_dir=out_dir, dry_run=args.check)
+    results = evaluate(best, folds, predictor=predict, out_dir=out_dir, dry_run=args.check)
 
 
 if __name__ == '__main__':

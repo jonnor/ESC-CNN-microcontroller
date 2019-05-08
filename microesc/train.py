@@ -81,7 +81,7 @@ class LogCallback(keras.callbacks.Callback):
 
 
 
-def train_model(out_dir, fold, builder,
+def train_model(out_dir, train, val, builder,
                 loader, val_loader, settings, seed=1):
     """Train a single model"""    
 
@@ -93,7 +93,7 @@ def train_model(out_dir, fold, builder,
     batch_size = settings['batch']
     learning_rate = settings.get('learning_rate', 0.01)
 
-    train, val = fold
+    assert len(train) > len(val) * 5, 'training data should be much larger than validation'
 
     def top3(y_true, y_pred):
         return keras.metrics.top_k_categorical_accuracy(y_true, y_pred, k=3)
@@ -159,7 +159,7 @@ def parse(args):
     common.add_arguments(parser)
     Settings.add_arguments(parser)
 
-    a('--fold', type=int, default=0,
+    a('--fold', type=int, default=1,
         help='')
     a('--skip_model_check', action='store_true', default=False,
         help='Skip checking whether model fits on STM32 device')
@@ -181,6 +181,17 @@ def setup_keras():
     session_config = tf.ConfigProto(gpu_options=tf.GPUOptions(allow_growth=True))
     sess = tf.Session(config=session_config)
     B.set_session(sess)
+
+def load_training_data(data, fold):
+    assert fold >= 1 # should be 1 indexed
+    folds = urbansound8k.folds(data)
+    assert len(folds) == 10
+    train_data = folds[fold-1][0]
+    val_data = folds[fold-1][1]
+    test_folds = folds[fold-1][2].fold.unique()
+    assert len(test_folds) == 1
+    assert test_folds[0] == fold, (test_folds[0], '!=', fold) # by convention, test fold is fold number
+    return train_data, val_data
 
 def main():
     setup_keras()
@@ -216,10 +227,8 @@ def main():
 
     features.maybe_download(feature_settings, feature_dir)
 
-
     data = urbansound8k.load_dataset()
-    folds, test = urbansound8k.folds(data)
-    assert len(folds) == 9
+    train_data, val_data = load_training_data(data, fold)
 
     def load(sample, validation):
         augment = not validation and train_settings['augment'] != 0
@@ -245,7 +254,7 @@ def main():
     print('Training model', name)
     print('Settings', json.dumps(exsettings))
 
-    h = train_model(output_dir, folds[fold],
+    h = train_model(output_dir, train_data, val_data,
                       builder=build_model,
                       loader=functools.partial(load, validation=False),
                       val_loader=functools.partial(load, validation=True),

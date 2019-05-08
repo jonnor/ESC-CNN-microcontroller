@@ -3,6 +3,7 @@ import os.path
 import urllib.request
 import tarfile
 
+import numpy
 import pandas
 
 here = os.path.dirname(__file__)
@@ -74,17 +75,70 @@ def sample_path(sample, dataset_path = None):
     return os.path.join(dataset_path, 'audio', 'fold'+str(sample.fold), sample.slice_file_name)
 
 
-# Use fold=10 for testing, as recommended by Urbansound8k dataset authors
+# Split the 10 folds into training, testing, and
 def folds(data):
-    test_fold = 10
-    train = data[data.fold != test_fold]
-    test = data[data.fold == test_fold]
+    fold_idxs = folds_idx(n_folds=10) 
+    assert len(fold_idxs) == 10
 
     folds = []
-    for fold in range(1, 10):
-        assert fold != test_fold
-        fold_train = train[train.fold != fold]
-        fold_val = train[train.fold == fold]
-        folds.append((fold_train, fold_val))
+    for fold in fold_idxs:
+        train, val, test = fold
+
+        # our folds are 1-indexed instead of 0...
+        train = numpy.array(train) + 1
+        val = numpy.array(val) + 1
+        test = numpy.array(test) + 1
+        fold_train = data[data.fold.isin(train)]
+        fold_val = data[data.fold.isin(val)]
+        fold_test = data[data.fold.isin(test)]
+
+        # post-condition
+        train_folds = set(fold_train.fold.unique())
+        val_folds = set(fold_val.fold.unique())
+        test_folds = set(fold_test.fold.unique())
+        assert len(train_folds) == 8, len(train_folds)
+        assert train_folds.intersection(val_folds) == set()
+        assert train_folds.intersection(test_folds) == set()
+        assert val_folds.intersection(test_folds) == set()
+
+        folds.append((fold_train, fold_val, fold_test))
         
-    return folds, test
+    return folds
+
+
+def ensure_valid_fold(fold, n_folds=10):
+    train, val, test = fold
+    assert len(train) == n_folds-2, len(train)
+    assert 0 <= train[0] < n_folds, train[0]
+    assert len(val) == 1, len(val)
+    assert 0 <= val[0] < n_folds, val[0]
+    assert len(test) == 1, len(test)
+    assert 0 <= test[0] < n_folds, test[0]
+    assert test[0] != val[0]
+    test_overlap = set(train).intersection(set(test))
+    val_overlap =  set(train).intersection(set(val))
+    assert test_overlap == set(), test_overlap
+    assert val_overlap == set(), val_overlap
+    assert sorted(train + val + test) == list(range(0, n_folds))
+    return True
+
+def folds_idx(n_folds):
+    """Generate fold indices for cross-validation.
+    Each fold has 1 validation, 1 test set and the remaining train"""
+    test_fold = 10
+
+    folds = []
+    all_folds = list(range(0, n_folds))
+    for idx in range(0, n_folds):
+        test = [ all_folds[idx] ]
+        # using Python negative index support for lists to wrap around at edges of array
+        val =  [ all_folds[idx-1] ]
+        train = list(set(all_folds).difference(set(test+val)))
+        fold = ( train, val, test )
+        ensure_valid_fold(fold)
+        folds.append(fold)
+
+    assert len(folds) == n_folds, len(folds)
+    return folds
+
+
