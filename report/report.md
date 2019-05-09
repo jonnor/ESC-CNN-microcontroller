@@ -283,9 +283,6 @@ then make predictions using this model, compare these prediction with the labels
 an error, and then update the parameters in order to attempt to reduce this error.
 This iterative process is illustrated in \ref{figure:training-inference}.
 
-Example of such a iterative training process is Gradient Descent of Neural Networks,
-described in chapter `TODO: ref gradient descent`.
-
 ![Relationship between training system and the predictive model being trained. \label{figure:training-inference}](./img/training-inference.png)
 
 *Hyperparameters* are settings (parameters) used in the training process that
@@ -298,47 +295,73 @@ When performed systematically this is known as a hyperparameter search.
 Common strategies include random search, combinatorial (gridsearch) and Baysian Optimization.
 -->
 
-
-
 Once training is completed, the predictive model with the the learned parameters can be used on new data. 
-
-
 
 ## Neural Networks
 
-`TODO: intro, why are they important`
+Artificial Neural Networks are a family of machine learning methods,
+loosely inspired by the biological neurons in the brains of humans and other animals.
+Some of the foundations date such as the Perceptron[@Perceptron] dates back to the 1950ies,
+but it was not until around 2010 that neural networks started to become
+the preferred choice for many machine learning applications.
+
 
 ### Structure
 
-`TODO: describe Fully connected layer`
-Dense
-Input is 1-dimensional.
+A basic and illustrative type of a Neural Network is the Multi-Layer Perceptron (MLP),
+shown in Figure \ref{fig:multilayer-perceptron}.
+It consists of an input layer, one or more hidden layers, and an output layer.
+
+\begin{figure}[h]
+  \centering
+     \includegraphics[]{./img/multilayer-perceptron.png}
+\caption{Multi-layer Perceptron with 2 hidden layers
+}
+\label{fig:multilayer-perceptron}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[]{./img/artificial-neuron.png}
+\caption{Computational principle of an artificial neuron
+}
+\label{fig:artificial-neuron}
+\end{figure}
+
+Each layer consists of a number of neurons.
+The neurons of one layer is connected to each of the neurons in the preceeding layer.
+This type of layer is therefore known as a fully-connected layer.
+The input to the network is a 1-dimensional vector.
 If multi-dimensional input (like an image) is to be used, it must be flattened to a 1D vector.
 
-Activations
-Bias
-
-
-<!--
-\begin{eqnarray} 
-a^{l} = \sigma(w^l a^{l-1}+b^l).
-\tag{25}
-\end{eqnarray}
--->
-
-`TODO: describe multi-layer network`
-Multi-layer Perceptron (MLP)
+Each neuron computes its output as a weighted sum of the inputs,
+offset by a bias and followed by an activation function $f$,
+as illustrated in \ref{fig:artificial-neuron}.
+In the simplest case the activation function is the identity function.
+This lets the layer express any linear function.
 
 
 
 ### Activation functions
 
 To be able to express non-linear relationships between input and output,
-non-linear activation functions are applied after fully-connected layers.
-When non-linearity is used,
-a neural network becomes an universal function approximator[@cybenko1989approximation].
+non-linear activation functions are applied.
+When non-linearity is used, a neural network becomes an universal function approximator[@cybenko1989approximation].
 
 Commonly used general-purpose non-linear activation functions are tanh and ReLu[@ReLu].
+Sigmoid and softmax are commonly used at the output stage
+of a neural network for classification, as they convert the input to a probabilty-like $(0,1)$ range.
+Sigmoid is used for binary classification, and Softmax for multi-class classification.
+To get a discrete class from these continious probability values, a decision function is applied.
+The simplest decision function for single-label multi-class classification is to take the largest value,
+using the argmax function.
+
+An illustration of the mentioned activation functions can be seen in \ref{fig:activation-functions}.
+
+![Commonly used activation functions in neural networks. Input along X axis, output along Y. \label{fig:activation-functions}](./img/activation-functions.png)
+
+Increasing the number of neurons and the number of hidden layers
+increases the capacity of the network to learn more complex functions.
 
 <!--
 The derivative of tanh quickly gets close to 0 for large and small inputs.
@@ -350,27 +373,22 @@ Many variations on the base ReLu have been proposed to address this issue, such 
 Leaky ReLU[@LeakyReLu], Parametric ReLu (PReLU)[@PReLu] and Exponential Linear Unit (ELU)[@ELU].
 -->
 
-Sigmoid and softmax are commonly used at the output stage
-of a neural network for classification, as they convert the input to a probabilty-like $(0,1)$ range.
-Sigmoid is used for binary classification,
-and Softmax used for multi-class classification.
-
-![Commonly used activation functions in neural networks. Input along X axis, output along Y.](./img/activation-functions.png)
-
-
 ### Training Neural Networks
 
-Probabalistic classification
-Decision function. argmax
+`FIXME: complete, make coherent`
 
-loss function
-Cross-entropy (log loss)
+Neural Networks are trained through numerical optimization of an objective function (loss function),
+most commonly with optimization for supervised learning is mini-batch Gradient Descent with Backpropagation.
+
+The choise of loss function depends on the problem.
+For classification the cross-entropy (log loss) function is often applied.
 As predicted probability gets close to zero, (negative) log-loss goes towards infinity
-Overall is the mean of log-loss across a set of predictions.
-
+Overall loss is the mean of log-loss across a set of predictions.
 Categorical cross-entropy is an extension of binary cross-entropy to multiple classes.
 
 `TODO: picture of loss in binary cross entropy`
+
+`FIXME: mention One-hot encoding?`
 
 <!--
 Logistic loss
@@ -381,34 +399,28 @@ Mean Absolute Error
 -->
 
 
-Gradient is a partial-derivative with respects to its inputs.
-measure how much the output of a function changes if you change the inputs a little bit
+A gradient is a partial-derivative with respects to its inputs.
+Measure how much the output of a function changes if you change the inputs a little bit.
 
-
-`TODO: describe Gradient Decent`
 
 Requires continious, smooth loss function, convex (only one minimum)
-
 Large steps when gradient is large, smaller steps when gradient is small
 
-Batch Gradient Descent.
-Stocastic Gradient Descent. Update
 Mini-batch Gradient Decent. Update parameters every $B$ samples
 Batch size hyperparameter
+
+
+Epoch. One pass through entire training set
+
+Learning rate. Hyperparameter
+
+
+The key to training multi-layer neural networks is *backpropagation*.
 
 1. Sample a batch of data
 2. Forward propagate the to compute output probabilities, calculate loss
 3. Backpropagate the errors to compute error gradients in entire network
 4. Update each weight by moving a small amount against the gradient
-
-Epoch. One pass through entire training set
-
-Update rule.
-Learning rate. Hyperparameter
-Too small and might not overcome saddle points
-Too big and might oscillate and always overshoot minimum
-
-The key to training multi-layer neural networks is *backpropagation*.
 
 [@BackpropagationNeuralNetworks]
 
@@ -430,16 +442,24 @@ chain-rule
 
 error in each layer
 
+<!--
+
 Computes the partial-derivative for a single training example
 Average over samples in the batch
 
 Backpropagation requires the derivatives of activation functions to be known at network design time.
+-->
 
 <!--
 Vanishing gradient
 Exploding gradient
 
+Too small and might not overcome saddle points
+Too big and might oscillate and always overshoot minimum
+
 [@BatchNormalization]
+Regularization
+Dropout
 -->
 
 ### Convolutional layers 
@@ -451,7 +471,6 @@ In addition to the width and height the input also has a third dimension, the nu
 The different channels can contain arbitrary kinds of data,
 but common for the first layer would be 3 channels with an RGB color image,
 or 1 channel for grayscale images or audio spectrogram.
-
 
 To perform 2D convolution, a filter (or *kernel*) of fixed size $K_w$x$K_h$ is swept across the 2D input of a channel.
 For each location, the kernel multiplies the input data with the *kernel weights* and sums to a single value
@@ -465,7 +484,7 @@ Red outlines show how the filter moves across the input image.
 Filter weights shown in red numbers, input numbers in blue.
 Green dots illustrate locations of outputs wrt inputs.
 }
-\label{fig:convolution-2D}
+\label{fig:convolution-2d}
 \end{figure}
 
 This convolution process allows to express many useful transformations on 2D data,
@@ -474,18 +493,21 @@ Simple examples are edge detection (horizontal/vertical/diagonal) or smoothening
 And since the kernels weights in a convolutional layer are trained,
 they learn to detect local features specific to the training data.
 
+<!-- TODO: image of convolved image -->
+
 With multiple input channels, the same kernel is applied over all the input channels,
 and all the results at one location, and the bias, are summed together to become the output.
 Multiple convolution filters are normally used per layer,
 to produce a $M$ new output channels with different features from the $N$ input channels.
 
-In Figure \ref{fig-convolution-2d} each location of the kernel has the entire kernel inside the input area.
+In Figure \ref{fig:convolution-2d} each location of the kernel has the entire kernel inside the input area.
 This is called "valid" convolution, and the resulting output will be smaller by $\left\lceil{k/2}\right\rceil$ on each side.
 If the input is instead padded by this amount when moving the kernel, the output will be the same size as the input.
 This is called "full" convolution.
 
 <!--
 `TODO: image of valid versus full convolution` 
+MAYBE: mention that conv and fully-connected can be coverted
 -->
 
 The number of learnable parameters in a 2D convolutional layer with bias is
@@ -542,7 +564,7 @@ With *max pooling*, the output is the maximum value of the input (Figure \ref{fi
 Pooling said to help model be translation invariant.
 -->
 
-Another way of subsampling is by increasing the stride of the convolutions.
+Another way of subsampling is by increasing the stride of the convolutions[@AllConvolutionalNet].
 If a kernel has a stride of 2 (as in Figure \ref{fig:strided-convolution}),
 then the output of of the convolution will be reduced by half.
 Striding is usually applied in the first convolution in a layer,
@@ -550,7 +572,7 @@ and reduces the number of computations compared to pooling because fewer inputs 
 
 ![Strided convolution. The kernel input (marked in red) moves by stride=2, effectively subsampling the input image \label{fig:strided-convolution}](./img/strided-convolution.png)
 
-Striding was used to replace most pooling operations in ResNet[@ResNet] (2015),
+Striding was used to replace most of the pooling operations in ResNet[@ResNet] (2015),
 which beat human-level performance on the ImageNet task.
 
 
