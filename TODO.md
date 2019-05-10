@@ -6,34 +6,38 @@ Feedback needed
 
 ## TODO
 
-### Draft 2
 
-Materials
+### Draft 2.1
 
-- Add images of compared models
-
-Background
-
-- ...Fill out NN/CNN section
-
-- Send to OK for feedback
+- Address OK feedback
 - Send to J. for review
 - Send to M for review
 
 ### Draft 3
 
-- Run all the models
+- Materials: Add images of compared models
 
 Results
 
-- Include error analysis
-- Plot performance of models relative to fold
+- Include latest results
 - Measure runtime on device for latest models
 - Use Strided-DS-24 as chosen model (confusion matrix etc), instead of auto "best"
+- Finish basic Discussion and Conclusion
 - Make plots a bit prettier
-
-- Finish Discussion and Conclusion
 - Add picture of demo setup
+
+Abstract
+
+- Write it!
+
+- Send to OK for feedback
+
+### Draft 4
+
+Improve
+
+- Plot performance of models relative to fold
+- Include error analysis
 
 Final
 
@@ -41,13 +45,9 @@ Final
 Do they explain the figure setup/contents OK?
 - Do a spell checking pass
 - Do a grammar checking pass. LanguageTool + Grammarly
+- Fix Github link, to be to final branch
 
-
-Abstract
-
-- Write it!
-
-Add Acknowledgements
+Add Acknowledgements?
 
 - Kristian
 - Oliver

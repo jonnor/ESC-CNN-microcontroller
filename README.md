@@ -1,5 +1,5 @@
 
-# Environmental Sound Classification on microcontrollers using Convolutional Neural Networks
+# Environmental Sound Classification on Microcontrollers using Convolutional Neural Networks
 
 ## Status
 **Work-in-progress**

@@ -306,9 +306,9 @@ but it was not until around 2010 that neural networks started to become
 the preferred choice for many machine learning applications.
 
 
-### Structure
+### Multi-Layer Perceptron
 
-A basic and illustrative type of a Neural Network is the Multi-Layer Perceptron (MLP),
+A basic and illustrative type of Neural Network is the Multi-Layer Perceptron (MLP),
 shown in Figure \ref{fig:multilayer-perceptron}.
 It consists of an input layer, one or more hidden layers, and an output layer.
 
@@ -332,7 +332,7 @@ Each layer consists of a number of neurons.
 The neurons of one layer is connected to each of the neurons in the preceeding layer.
 This type of layer is therefore known as a fully-connected layer.
 The input to the network is a 1-dimensional vector.
-If multi-dimensional input (like an image) is to be used, it must be flattened to a 1D vector.
+If the data is multi-dimensional (like an image) is to be used, it must be flattened to a 1D vector.
 
 Each neuron computes its output as a weighted sum of the inputs,
 offset by a bias and followed by an activation function $f$,
@@ -340,6 +340,9 @@ as illustrated in \ref{fig:artificial-neuron}.
 In the simplest case the activation function is the identity function.
 This lets the layer express any linear function.
 
+Making predictions with a neural network is done by applying the data
+as inputs to the first layer, then computing all the following layers until the final outputs.
+This is often called *forward propagation*.
 
 
 ### Activation functions
@@ -375,78 +378,87 @@ Leaky ReLU[@LeakyReLu], Parametric ReLu (PReLU)[@PReLu] and Exponential Linear U
 
 ### Training Neural Networks
 
-`FIXME: complete, make coherent`
+Neural Networks are trained through numerical optimization of an objective function (loss function).
+For supervised learning the standard method is mini-batch Gradient Descent with Backpropagation.
 
-Neural Networks are trained through numerical optimization of an objective function (loss function),
-most commonly with optimization for supervised learning is mini-batch Gradient Descent with Backpropagation.
-
-The choise of loss function depends on the problem.
 For classification the cross-entropy (log loss) function is often applied.
-As predicted probability gets close to zero, (negative) log-loss goes towards infinity
-Overall loss is the mean of log-loss across a set of predictions.
-Categorical cross-entropy is an extension of binary cross-entropy to multiple classes.
+As predicted probability of the true class gets close to zero, the (negative) log-loss goes towards infinity.
+Figure \ref{fig:log-loss}
 
 `TODO: picture of loss in binary cross entropy`
+Categorical cross-entropy is an extension of binary cross-entropy to multiple classes.
+Other loss functions are Logistic Loss, Mean Squared Error and Mean Absolute Error.
 
-`FIXME: mention One-hot encoding?`
+Making predictions with a forward pass of the neural network
+and computing the loss function allows to estimates how well or how poorly
+the current model performs.
+In order to find out how the model parameters should be changed in order to perform better,
+*Gradient Descent* is applied.
+The gradient of a function expresses how much and in which direction its output varies
+with small changes to its inputs.
+This is computed as the partial derivative of the function.
+
 
 <!--
-Logistic loss
-Hinge loss. Not smooth and differentiable
-
-Mean Squared Error
-Mean Absolute Error
+MAYBE: mention momentum
+[@SaddlePointNeuralNetworks]
 -->
 
 
-A gradient is a partial-derivative with respects to its inputs.
-Measure how much the output of a function changes if you change the inputs a little bit.
+`TODO: image of 1-D loss landscape and Gradient Descent`
 
+The key to calculating the gradients in a multi-layer neural networks
+is *backpropagation*[@BackpropagationNeuralNetworks].
+Backpropagation works by propagating the error in the last layers "back" towards the input,
+using the partial derivative with respect to the inputs from the layer before it. 
+This makes it possible to compute the gradients for each of the weights (and biases) in the network[@EfficientBackProp, ch 1.3].
+Once the gradients are known, the weights are updated by taking a step in the negative direction of the gradient.
+The step is kept small by multiplying with the *learning rate*,
+a hyperparameter in the range of $\num{e-7}$ to $\num{e-2}$.
+Too small learning rates can lead to the model getting stuck in bad minima,
+while too large learning rates can cause training to not converge[@EfficientBackProp, ch 1.5.1].
 
-Requires continious, smooth loss function, convex (only one minimum)
-Large steps when gradient is large, smaller steps when gradient is small
+In *mini-batch* Gradient Descent the training data is processed in multiple fixed size batches of data,
+and the loss function and model parameters updates are computed per batch.
+This means that not all the training data has to be kept in memory at the same time,
+which allows to train on very large datasets.
+The batch size is a hyperparameter, and must be set high enough for the batch loss
+to be a reasonable estimate of the loss on the full training set,
+but small enough for the batch to fit into memory.
 
-Mini-batch Gradient Decent. Update parameters every $B$ samples
-Batch size hyperparameter
+One pass through the entire training set is called an *epoch*,
+and training normally consists of many epochs.
 
+The mini-batch Gradient Descent optimization with backpropagation
+can be summarized in the following procedure:
 
-Epoch. One pass through entire training set
-
-Learning rate. Hyperparameter
-
-
-The key to training multi-layer neural networks is *backpropagation*.
-
-1. Sample a batch of data
-2. Forward propagate the to compute output probabilities, calculate loss
+1. Sample a mini-batch of data
+2. Forward propagate the data to compute output probabilities, calculate loss
 3. Backpropagate the errors to compute error gradients in entire network
 4. Update each weight by moving a small amount against the gradient
+5. Go to 1) until all batches of all epochs are completed
 
-[@BackpropagationNeuralNetworks]
+Gradient Descent is not guaranteed to find a globally optimal minima,
+but with suitable choices of hyperparameters can normally find local minima that are good-enough.
+It has also been argued that a global optimum on the training set might
+not be desirable, as it is unlikely to geneneralize well[@LossSurfaceNeuralNetworks].
 
-Forward pass
+
+<!--
+MAYBE: mention One-hot encoding?
+-->
 
 <!--
 Backpropagation algorithm in 4 steps
 http://neuralnetworksanddeeplearning.com/chap2.html#the_backpropagation_algorithm
 -->
 
-`TODO: describe Backpropagation`
-
 <!--
-The Hadamard product. Elementwise multiplication of vectors
-(s \odot t)_j = s_j t_j
--->
-Derive partial-derivative of cost function with respect to *any* weight (or bias) in the network. 
-chain-rule
-
-error in each layer
-
-<!--
-
 Computes the partial-derivative for a single training example
 Average over samples in the batch
 
+Requires continious, smooth loss function, convex (only one minimum)
+Large steps when gradient is large, smaller steps when gradient is small
 Backpropagation requires the derivatives of activation functions to be known at network design time.
 -->
 
@@ -501,7 +513,8 @@ Multiple convolution filters are normally used per layer,
 to produce a $M$ new output channels with different features from the $N$ input channels.
 
 In Figure \ref{fig:convolution-2d} each location of the kernel has the entire kernel inside the input area.
-This is called "valid" convolution, and the resulting output will be smaller by $\left\lceil{k/2}\right\rceil$ on each side.
+This is called convolution with "valid" padding,
+and the resulting output will be smaller by $\left\lceil{k/2}\right\rceil$ on each side.
 If the input is instead padded by this amount when moving the kernel, the output will be the same size as the input.
 This is called "full" convolution.
 
@@ -1495,6 +1508,9 @@ which would be ignored if only relying on the theoretical MACC number.
 
 `TODO: plot training curves over epochs`
 
+`FIXME: add a picture of demo setup`
+
+
 \newpage
 # Discussion
 
@@ -1511,7 +1527,8 @@ Also the base Strided model is outside the desirable range.
 Depthwise Separable combined with striding (Strided-DS-5x5, Strided-DS-3x3)
 able to match the baseline performance, at a much lower computational cost.
 
-Best result 73%. Far from the state-of-the-art when not considering performance constraints
+Best result 73%.
+Far from the state-of-the-art when not considering performance constraints
 Probably below human-level accuracy. Ref ESC-50
 
 <!--
@@ -1528,9 +1545,18 @@ Some misclassifications are within a group of classes, and this increases accura
 Example...
 However still have significant confusion for some groups...
 
+Classification is done on 4 second intervals (as that is what is available in Urbansound8k)
+In a noise monitoring situation this is probably way too fine grained.
+A detailed time-line might desire per minute resolution.
+Overall picture might be OK with 15 minute or maybe even hourly summarization.
+predominant sound source
+
+
+Is the easiest-to-classify sound is the loudest
+/ contributing the most to the increased sound level?
+
 `TODO: update to reflect latest results`
 
-`FIXME: add a picture of demo setup`
 
 <!--
 SKIP
@@ -1548,6 +1574,8 @@ running on a low-power microcontroller suitable for use in a sensor node.
 
 The best model achieves a `` accuracy when evaluated on the Urbansound8k dataset,
 using `XX %` of the CPU capacity.
+And under 50% of RAM and FLASH. 
+
 
 `TODO: evaluate`
 ??? is the perf high enough to be useful in practice?
@@ -1561,8 +1589,12 @@ and, practical challenges with applying on-edge classification of noise in senso
 
 Utilizing larger amounts of training data might
 be able to increase performance of the models.
-transfer learning or semi-supervised learning,
+Transfer learning[@PretrainingSpeechCommandRecognition],
 or applying stronger data augmentation techniques (such as Mixup).
+
+In a continious monitoring scenario, semi-supervised learning
+could be powerful in order to utilize abundant unlabeled data. 
+
 
 `TODO: add some references`
 
@@ -1580,17 +1612,17 @@ or to reduce power consumption at a given predictive performance level.
 End-to-end CNN models using raw audio as input becomes extra interesting with such a co-processor,
 since it allows also the filterbank processing to be offloaded from the general purpose CPU.
 
+
+Active Learning
+
 `TODO: write some section about challenges`
 Collecting training data
 Out-of-domain data, detecting
 
-How to collect 
-
-Perform classification on-device, but also
-allow to send a feature representation.
 Hybrid methods.
-
-Maybe for a subset of classification candidates
+Perform classification on-device, but also
+allow to send a feature representation, or raw data.
+Active learning to decide what to send?
 
 
 

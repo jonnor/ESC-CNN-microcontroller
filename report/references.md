@@ -890,3 +890,66 @@ Supports several quantization strategies.
 * Dynamic Fixed Point: A modified fixed-point format.
 * Power-of-two parameters: Layers with power-of-two parameters don’t need any multipliers, when implemented in hardware
 
+
+# Semi-supervised learning
+
+## https://github.com/bensteers/semi-supervised-sound
+
+tested Expectation Maximization on Urbansound8k.
+! not using predefined 10 folds. So some data leakage happening
+For low numbers of labeled samples (`<10%`),
+found up to 10% absolute accuracy increase in performance with semi-supervised.
+Used a RandomForest classifier.
+MFCC baseline performed much worse than AudioSet embeddings.
+No data augmentation was applied.
+
+
+## Semi-supervised Learning Helps in Sound Event Classification
+https://mediatum.ub.tum.de/doc/1137922/1137922.pdf
+2012
+
+## Semi-Supervised Active Learning for Sound Classification in Hybrid Learning Environments
+Published 2016
+
+Combination of confidence-based Active Learning and Self-Training.
+Delivers the candidates with lower scores to human annotators,
+and those with high scores are automatically labeled by the machine.
+A reduction of 52.2% in human labeled instances.
+
+Used http://www.findsounds.com/types.html for sounds.
+! accessed 2011.
+A Zenodo dataset is available.
+Total 15 hours of sound, 7 categories.
+Using low-level descriptors with Linear SVM
+
+# Active Learning
+
+## ACTIVE LEARNING FOR SOUND EVENT CLASSIFICATION BY CLUSTERING UNLABELED DATA
+https://tutcris.tut.fi/portal/files/13594844/active_learning_sound.pdf
+2017
+
+K-medoids clustering is performed on unlabeled sound segments,
+and medoids of clusters are presented to annotators for labeling.
+Outperforms random sampling, certainty-based active learning and semi-supervised learning.
+MFCC as feature representation.
+Symmetric KL divergence as dissimilarity measurement.
+Largest clusters are labeled first.
+Proposed method used generally 50%-60% less labeling budget.
+Higher confusion on wrong labels.
+
+
+```
+@inproceedings{shuyang2017active,
+  title={Active learning for sound event classification by clustering unlabeled data},
+  author={Shuyang, Zhao and Heittola, Toni and Virtanen, Tuomas},
+  booktitle={2017 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
+  pages={751--755},
+  year={2017},
+  organization={IEEE}
+}
+```
+
+
+
+
+
