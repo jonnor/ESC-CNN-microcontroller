@@ -11,7 +11,7 @@ script:
   - which pandoc
   - pandoc -v
   - cd report && make
-  - pdfinfo merged.pdf
+  - pdfinfo report.pdf
   - cd -
   - PYTHONPATH=./ pytest -v --capture=no
   - cd firmware/perftest && make
