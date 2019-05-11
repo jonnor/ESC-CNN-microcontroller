@@ -19,7 +19,7 @@ def load_model_info(jobs_dir, job_dir):
     df = pandas.read_csv(hist_path)
 
     df['epoch'] = df.epoch + 1
-    df['fold'] = int(fold[-1])
+    df['fold'] = int(fold.lstrip('fold'))
     df['experiment'] = experiment
     df['run'] = '-'.join([date, time, rnd])
     
@@ -129,7 +129,7 @@ def evaluate(models, folds_data, predictor, out_dir, dry_run=False):
 
             train_data = folds_data[fold-1][0]
             train_files = set(train_data.slice_file_name.unique())
-            assert len(train_files) > 7000, len(train_files)
+            assert len(train_files) > 6500, len(train_files)
             test_files = set(test.slice_file_name.unique())
             assert len(test_files) > 700
             common_files = train_files.intersection(test_files)

@@ -84,7 +84,7 @@ def print_accuracies(accs, title):
 
 def get_accuracies(confusions):
     accs = [ cm_accuracy(confusions[f]) for f in range(0, len(confusions)) ]
-    assert len(accs) == 9, len(accs) 
+    assert len(accs) == 10, len(accs) 
     return pandas.Series(accs) 
 
 def plot_accuracy_comparison(experiments, ylim=(0.60, 0.80), figsize=(12, 4)):
