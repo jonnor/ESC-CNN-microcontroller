@@ -121,9 +121,9 @@ A battery backup allows the sensor to continue operating also when energy is mom
 
 These sensor networks enable continuous logging of the sound pressure level,
 measured in Decibel (dB SPL) over a reference pressure level (typically \num{20e-6}\si{Pa} ).
-Since the sound pressure level is continiously varying, it is summarized over a specified time-period
-using Equivalent Continious Sound Level ($L_{eq}$).
-Typical measurement resolution are per-minute, per second or per 125ms.
+Since the sound pressure level is continuously varying, it is summarized over a specified time-period
+using Equivalent Continuous Sound Level ($L_{eq}$).
+Typical measurement resolution are per-minute, per second or per 125 ms.
 Measurements often use A-weighting to approximate the sensitivity of the human ear at different frequencies.
 In Europe sound level sensors are designed to specifications of IEC 61672-1 Sound Level Meters[@IECSoundLevelMeters],
 and the standard for North America is ANSI S1.4[@ANSISoundLevelMeters].
@@ -157,7 +157,7 @@ D) Sensor performs classification on device and sends result to server. No audio
 
 
 In [@AudioCodingSensorGrid], authors propose a compressed noise profile based on lossy compression of spectrograms.
-For 125ms time resolution the bitrate is between 400 and 1400 bits per second,
+For 125ms time resolution the bit-rate is between 400 and 1400 bits per second,
 however this gave a 5 percentage points reduction in classification accuracy.
 This is shown as case B. of Figure \ref{figure:sensornetworks-coding}.
 
@@ -174,7 +174,7 @@ however the authors state that more work is needed to fit the RAM constraints of
 
 The minimal amount of data transmissions would be achieved if the detected noise category was sent,
 requiring to perform the entire classification on the sensor.
-This is hown as case D. of Figure \ref{figure:sensornetworks-coding}.
+This is shown as case D. of Figure \ref{figure:sensornetworks-coding}.
 Such an approach could also eliminate the need to send personally identifiable data to a centralized server.
 
 This motivates the problem statement of this thesis:
@@ -223,12 +223,12 @@ Instead the algorithms learns to perform the desired function from provided data
 
 *Supervised learning* uses a training dataset where each sample is labeled with the correct output.
 These labels are normally provided by manual annotation by humans inspecting the data,
-a time-itensive and costly process.
+a time-intensive and costly process.
 In *unsupervised learning*, models are trained without access to labeled data.
 but often for cluster analysis (automatic discovery of sample groups).
 
 Supervised learning techniques can be used for regression and for classification.
-In regression where the goal is to predict a continious real-valued variable,
+In regression where the goal is to predict a continuous real-valued variable,
 and for classification a discrete variable.
 
 ### Classification
@@ -268,7 +268,7 @@ The samples available in the dataset only represents some particular examples
 of this underlying (hidden) distribution of data. 
 Care must be taken to avoid learning peculiarities that are specific to the training samples
 and not representative of general patterns.
-A model that fails this generalization critera is often said to be *overfitting*,
+A model that fails this generalization criteria is often said to be *overfitting*,
 while a model that fails to learn any predictive patterns is said to be *underfitting*.
 
 <!-- MAYBE: Mention bias/variance tradeoff?  -->
@@ -338,10 +338,10 @@ It consists of an input layer, one or more hidden layers, and an output layer.
 \end{figure}
 
 Each layer consists of a number of neurons.
-The neurons of one layer is connected to each of the neurons in the preceeding layer.
+The neurons of one layer is connected to each of the neurons in the preceding layer.
 This type of layer is therefore known as a fully-connected layer.
 The input to the network is a 1-dimensional vector.
-If the data is multi-dimensional (like an image) is to be used, it must be flattened to a 1D vector.
+If the data is multi-dimensional (like an image) is to be used, it must be flattened to a 1-D vector.
 
 Each neuron computes its output as a weighted sum of the inputs,
 offset by a bias and followed by an activation function $f$,
@@ -362,7 +362,7 @@ When non-linearity is used, a neural network becomes a universal function approx
 
 Commonly used general-purpose non-linear activation functions are tanh and ReLu[@ReLu].
 Sigmoid and softmax are commonly used at the output stage
-of a neural network for classification, as they convert the input to a probabilty-like $(0,1)$ range.
+of a neural network for classification, as they convert the input to a probability-like $(0,1)$ range.
 Sigmoid is used for binary classification, and Softmax for multi-class classification.
 To get a discrete class from these continuous probability values, a decision function is applied.
 The simplest decision function for single-label multi-class classification is to take the largest value,
@@ -715,9 +715,9 @@ Physically, sound is a variation in pressure over time.
 To process the sound with machine learning, it must be converted to a digital format.
 The acoustic data is first converted to analog electric signals by a microphone and
 then digitized using an Analog-to-Digital-Converter (ADC),
-as illustrated in Figure \ref{figure:audio-aquisition}.
+as illustrated in Figure \ref{figure:audio-acquisition}.
 
-![Conversion of sound into a digital representation \label{figure:audio-aquisition}](./img/audio-aquisition.png)
+![Conversion of sound into a digital representation \label{figure:audio-acquisition}](./img/audio-aquisition.png)
 
 In the digitization process, the signal is quantized in time at a certain sampling frequency,
 and the amplitude quantized at a certain bit-depth.
@@ -725,7 +725,7 @@ A typical sampling frequency is 44100 Hz and bit-depth 16 bit,
 as used in the Audio CD format[@AudioCDspecification].
 With such parameters the majority of human perceivable information in the acoustic sound is captured.
 In this representation sound is a 1 dimensional sequence of numbers, sometimes referred to as a *waveform*.
-This is the format utilized by case A) in Figure {figure::sensornetworks-coding2} from the introduction.
+This is the format utilized by case A) in Figure {figure:sensornetworks-coding} from the introduction.
 
 Digital sound can be stored uncompressed (example format: WAV PCM[@WAVspecification]),
 using lossless compression (FLAC[@FLACHomepage])
@@ -859,7 +859,7 @@ the individual predictions must be aggregated into one prediction for the clip.
 A simple technique to achieve this is *majority voting*,
 where the overall prediction is the class that occurs most often across individual predictions.
 
-With *soft voting* or *probabalistic voting*,
+With *soft voting* or *probabilistic voting*,
 the probabilities of individual predictions are averaged together,
 and the output prediction is the class with overall highest probability.
 
@@ -935,7 +935,7 @@ FastGRNN[@FastGRNN] (2018) is a Gated Recurrent Neural Network designed
 for fast inference on audio tasks on microcontrollers.
 It uses a simplified gating architecture with residual connection,
 and uses a three-stage training schedule that
-forces weights to be quantizated in a sparse and low-rank fashion. 
+forces weights to be quantized in a sparse and low-rank fashion. 
 When evaluated on Google Speech Command Set (12 classes),
 their smallest model of 5.5 KB achieved 92% accuracy
 and ran in 242 ms on a low-end microcontroller (ARM Cortex M0+ at 48 Mhz).
@@ -957,8 +957,8 @@ based on selecting and manually labeling content from the Freesound[@Freesound] 
 1302 different recordings were annotated, for a total of 18.5 hours of labeled audio. 
 A curated subset with 8732 audio clips of maximum 4 seconds is known as *Urbansound8k*.
 
-YorNoise[@medhat2017masked] is a collection of vechicle noise.
-It has a total of 1527 samples, in two classes: road traffic (cars, trucks, busses) and rail (trains).
+YorNoise[@medhat2017masked] is a collection of vehicle noise.
+It has a total of 1527 samples, in two classes: road traffic (cars, trucks, buses) and rail (trains).
 The dataset follows the same design as Urbansound8k,
 and can be used standalone or as additional classes to Urbansound8k.
 
@@ -1011,7 +1011,7 @@ It uses 2 channels of log-melspectrograms, both the plain spectrogram values
 and the first-order difference (delta spectrogram).
 The model uses 2 convolutional layers, first with size 57x6 (frequency x time) and then 1x3,
 followed by two fully connected layers with 5000 neurons each.
-The paper evaluates short (950ms) versus long (2.3 seconds)
+The paper evaluates short (950 ms) versus long (2.3 seconds)
 analysis windows, and majority voting versus probability voting.
 Performance on Urbansound8k ranged from 69% to 73%.
 It was found that probability voting and long windows perform slightly better[@PiczakCNN].
@@ -1054,7 +1054,7 @@ which is then classified using standard 2D convolutional layers.
 The architecture is illustrated in Figure \ref{figure:envnet}.
 They show that the resulting spectrograms have frequency responses with
 a shape similar to mel-spectrograms.
-The model archieves a 66.3% accuracy score on Urbansound8k[@EnvNet2] with raw audio input.
+The model achieves a 66.3% accuracy score on Urbansound8k[@EnvNet2] with raw audio input.
 
 
 In [@VeryDeepESC], authors evaluated a number of deep CNNs using only 1D convolutions.
@@ -1063,7 +1063,7 @@ Their 18 layer model (M18) got a 71% accuracy on Urbansound8k,
 and the 11 layer version (M11) got 69%.
 
 EnvNet2[@EnvNet2] (2018) is like EnvNet but with 13 layers total instead of 7,
-and using 44.1 kHz input samplerate instead of 16kHz.
+and using 44.1 kHz input sample-rate instead of 16 kHz.
 Without data augmentation it achieves 69.1% accuracy on Urbansound8k.
 When combining data augmentation with a technique similar to mixup called between-class examples,
 the model is able to reach 78.3% on Urbansound8k.
@@ -1241,7 +1241,7 @@ and Figure \ref{figure:urbansound8k-examples} shows example audio spectrograms.
 
 ![Spectrograms of sound clips from Urbansound8k dataset, selected for each class\label{figure:urbansound8k-examples}](./plots/urbansound8k-examples.png)
 
-The dataset comes pre-arranged into 10 folds for cross-validation.
+The dataset comes prearranged into 10 folds for cross-validation.
 A single fold may contain multiple clips from the same source file,
 but the same source file is not used in multiple folds to prevent data leakage.
 
@@ -1330,8 +1330,6 @@ If the FLASH and RAM usage can be reduced to half or one-fourth,
 cost of the microcontroller is reduced by almost 2/4x.
 If CPU usage can be reduced to one-tenth, that can reduce power consumption by up to 10 times.
 
-`TODO: link model review section`
-
 Models from the existing literature (reviewed in chapter \ref{chapter:esc-models}) are summarized
 in Table \ref{table:urbansound8k-existing-models-logmel}
 and shown with respect to these model constraints
@@ -1394,7 +1392,7 @@ of the device constraints.
 \label{table:models}
 \end{table}
 
-`TODO: image SB-CNN and Strided`
+`TODO: image of Baseline and Strided`
 `TODO: image of the different convolutional blocks`
 
 Residual connections were not tested, as the networks are relatively shallow.
@@ -1420,7 +1418,7 @@ ST FP-SENSING1 function pack[@FP-AI-SENSING1]
 ## Preprocessing
 
 Mel-spectrograms are used as the input feature.
-The most compact and most computationally efficient featureset in use by existing methods was by LD-CNN,
+The most compact and most computationally efficient feature-set in use by existing methods was by LD-CNN,
 which used windows of 31 frames @ 22050 Hz (720 ms) with 60 mel-filter bands.
 This has achieved results near the state-of-art, so we opted to use the same.
 
@@ -1446,12 +1444,12 @@ the mean of the window and dividing by the standard deviation.
 `?! Include Hyperparameter search ?`
 -->
 
-The pre-assigned folds of the Urbansound8k dataset was used,
+The preassigned folds of the Urbansound8k dataset was used,
 with 9-fold cross-validation during training and fold 10 as the held-out test set.
 
 Training is done on individual analysis windows,
 with each window inheriting the label of the audio clip it belongs to.
-In each minibatch, audio clips from training set are selected randomly.
+In each mini-batch, audio clips from training set are selected randomly.
 And for each audio clip, a time window is selected from a random position[@SB-CNN].
 This effectively implements time-shifting data augmentation.
 
@@ -1459,7 +1457,7 @@ In order to evaluate the model on the entire audio clip, an additional
 pass over the validation set is done which combines predictions from multiple time-windows
 as shown in Figure \ref{classification-pipeline}.
 
-`TODO: add Nesterov momentum to settings`
+`FIXME: add Nesterov momentum to settings`
 As the optimizer, Stocastic Gradient Decent (SGD) with Nesterov momentum set to 0.9 is used.
 Learning rate was set to 0.005 for all models. Each model is trained for up to 100 epochs.
 A complete summary of experiment settings can be seen in Table \ref{table:experiment-settings}.
@@ -1593,13 +1591,13 @@ And under 50% of RAM and FLASH.
 
 
 `TODO: evaluate`
-??? is the perf high enough to be useful in practice?
-??? When considering foreground/grouped, and class of errors
+`??? is the perf high enough to be useful in practice?`
+`??? When considering foreground/grouped, and class of errors`
 
 ## Further work
 
 Some further work is identified in two major areas:
-Increasing model efficiency on the Environmenal Sound Classifiction tasks and
+Increasing model efficiency on the Environmental Sound Classification tasks and
 practical challenges with applying on-edge classification of noise in sensor networks. 
 
 Utilizing larger amounts of training data might
@@ -1629,7 +1627,7 @@ adaptive sampling, and possibly Active Learning?
 Normally such training and evaluation data is transferred as raw PCM audio,
 which inefficient in terms of bandwidth.
 Could low-power audio coding be applied to compress the data,
-while still enablomg reliable human labeling and use as evaluation/training data?
+while still enable reliable human labeling and use as evaluation/training data?
  
 It is also desirable to reduce how often classification is needed.
 Could this benefit from an adaptive sampling strategy?
