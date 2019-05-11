@@ -145,6 +145,8 @@ def load_sample(sample, settings, feature_dir, window_frames,
             mels = librosa.core.power_to_db(mels, top_db=80)
             mels -= numpy.mean(mels)
             mels /= ( numpy.std(mels) + 1e-9)
+        else:
+            mels = librosa.core.power_to_db(mels, top_db=80, ref=0.0)
     else:
         print('Warning: Sample {} with start {} has 0 length'.format(sample, start_time))
 
@@ -152,7 +154,7 @@ def load_sample(sample, settings, feature_dir, window_frames,
     if window_frames is None:
         padded = mels
     else:
-        padded = numpy.full((n_mels, window_frames), 0)    
+        padded = numpy.full((n_mels, window_frames), 0.0, dtype=float)
         inp = mels[:, 0:min(window_frames, mels.shape[1])]
         padded[:, 0:inp.shape[1]] = inp
 
