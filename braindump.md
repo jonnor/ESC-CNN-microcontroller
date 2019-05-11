@@ -50,86 +50,12 @@ dilated32
 
 ! did not train correctly on Google Colab?
 
-#### SB-CNN
-Trains much faster than Dilated. Approx 1 minute per epoch of 35k samples.
-First version seems to peak at 60% validation during train.
-Afterwards windowed validation is up to 63% and test is 65/67%. 
-More resonable confusion matrix than Dilated, less being classified as Drilling,
-but still more on testing set versus training set.
+### Strided model
 
-With augmentations, seems to also peak at 59.5% validation during train.
-Testing accuracy also does not improve. Overregularized?
+For DS-5x5 12, going from 0.5 dropout to 0.25 increases perf from 65% to 72%
 
-  MACC / frame: 3 199 214
-  ROM size:     197.60 KBytes
-  RAM size:     27.29 KBytes (Minimum: 27.29 KBytes)
+python train.py --model strided --conv_block depthwise_separable --epochs 100 --downsample_size=2x2 --filters 12 --dropout 0.25
 
-ROM and RAM is OK.
-A lot of MACCs... Might be approx 0.5 second inference time?
-
-#### Multiple instance on SB-CNN
-Quite fast. 1 minute per epoch.
-
-! the train acc is average of all batches in epoch.
-So when a lot of learning happens within an epoch, val_acc will be higher
-! calling fit_generator() or model.compile() does not reset training!
-
-When using GlobalMeanPooling and default RMSprop
-With batchsize=10, starts overfitting at 30% val
-With batchsize=25, starts overfitting at 35% val
-With batchsize=50, seems to start overfitting at 45%
-With batchsize=100, seems to start overfitting at 47%
-
-When using GlobalMaxPooling
-With batchsize=100, hit 61% val_acc.
-Progress seems a bit noisy, often overfitting with val_acc near 50%
-Struggling a lot with children playing and street music
-
-Ideas for trainingset expansion techniques for MIM?
-Swap windows internally in sample. No change with GlobalAveragePooling?
-Replace window with one from another same-class samples
-Take a window from sample of same class, mix it into our window? 
-
-"Adaptive pooling operators for weakly labeled sound event detection". 2018
-Proposes auto-pool, mixing min/max/average pooling with learned parameters.
-But still has a hyperparamter lambda that must be tuned.
-Evaluted on URBAN-SED, a Sound Event Detection dataset based on Urbansound8k.
-Said to apply generally to MIM problems.
-
-SB-CNN 10MACC reaches 75% with lr=0.001. 
-0.003 and 0.005 only reaches 72-73%
-
-effnet 0.7MACC reaches 66% with lr=0.01
-69% with lr=0.005
-But RAM usage too high!
-When using strides=(2,2) in first layer, only gets to 51%
-
-#### DenseNet
-
-dropout=0.0, depth=10, block=3, growth=12, pooling='avg' (45k parameters)
-seems to reach around 65% on validation during training.
-However is overfitting, large gap to train loss.
-
-Takes almost 10 minutes per epoch for 20k samples
-
-growth=10 makes val_acc drop to 25% !!
-dropout=0.5 makes drop to 50% val_acc, still overfitting ??
-growth=16 also seems to overfit after 1 epoch. 50% val
-
-Probably this network is way to deep for our dataset.
-
-With depth=4, block=3 trains fast. 1 min per epoch.
-But seems hard to get val_acc over 54%
-!! when depth=4, dropouts are not present?
-
-With depth=7,blocks=2,dropout=0.5 trains to 60% val_acc
-pooling='avg', dropout=0.5, growth=30, reduction=0.5
-trains to 62% val_acc with 0.0001 learning rate.
-Does not look to overfit, but still only did 55% on testset.
-A lot of misclassifications into children_playing 
-
-!!! DenseNet models faile to validate in STM32CubeMXAI.
-No explanation why 
 
 ## Kubernetes
 
@@ -200,7 +126,7 @@ Can reach at least 72% val
     voted_val_acc: 0.7205
 
 
-However does max 63% with this strided model 
+However does max 63% with this strided model ?
 
     [jon@jon-thinkpad thesis]$ python train.py --settings experiments/16k30_256hop.yaml --conv_size=3x3  --downsample_size=2x4 --conv_block=depthwise_separable --model strided
 

@@ -33,6 +33,7 @@ def build(settings):
         'conv_block',
         'downsample_size',
         'n_stages',
+        'dropout',
         'n_blocks_per_stage',
         'filters',
     ]

@@ -28,6 +28,7 @@ default_model_settings = dict(
     filters=24,
     n_stages=3,
     n_blocks_per_stage=1,
+    dropout=0.5,
     voting='mean',
     voting_overlap=0.0,
 )
