@@ -1,12 +1,11 @@
 model,conv_block,n_stages,conv_size,downsample_size,filters,modelcheck,nickname
 sbcnn,conv,3,5x5,3x2,24,skip,Baseline
+sbcnn,depthwise_separable,3,5x5,3x2,24,,Baseline-DS
 strided,conv,3,5x5,2x2,22,,Stride-5x5
 strided,depthwise_separable,3,5x5,2x2,24,,Stride-DS-5x5
+strided,effnet,3,5x5,2x2,22,,Stride-Effnet-5x5
 strided,depthwise_separable,4,3x3,2x2,24,,Stride-DS-3x3
 strided,bottleneck_ds,3,5x5,2x2,22,,Stride-BN-DS-5x5
-strided,depthwise_separable,3,5x5,2x2,24,,Stride-DS-5x5-24
 strided,depthwise_separable,3,5x5,2x2,20,,Stride-DS-5x5-20
 strided,depthwise_separable,3,5x5,2x2,16,,Stride-DS-5x5-16
 strided,depthwise_separable,3,5x5,2x2,12,,Stride-DS-5x5-12
-sbcnn,depthwise_separable,3,5x5,3x2,24,,Baseline-DS
-strided,effnet,3,5x5,2x2,22,,Stride-Effnet-5x5
