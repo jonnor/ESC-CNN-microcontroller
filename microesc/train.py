@@ -81,7 +81,7 @@ class LogCallback(keras.callbacks.Callback):
 
 
 
-def train_model(out_dir, train, val, builder,
+def train_model(out_dir, train, val, model,
                 loader, val_loader, settings, seed=1):
     """Train a single model"""    
 
@@ -98,7 +98,6 @@ def train_model(out_dir, train, val, builder,
     def top3(y_true, y_pred):
         return keras.metrics.top_k_categorical_accuracy(y_true, y_pred, k=3)
 
-    model = builder()
     model.compile(loss='categorical_crossentropy',
                   optimizer=keras.optimizers.SGD(lr=learning_rate, momentum=0.9, nesterov=True),
                   metrics=['accuracy'])
@@ -163,6 +162,8 @@ def parse(args):
         help='')
     a('--skip_model_check', action='store_true', default=False,
         help='Skip checking whether model fits on STM32 device')
+    a('--load', default='',
+        help='Load a already trained model')
 
     a('--name', type=str, default='',
         help='')
@@ -241,7 +242,12 @@ def main():
         m = models.build(exsettings)
         return m
 
-    m = build_model()
+    load_model = args['load']
+    if load_model:
+        print('Loading existing model', load_model)
+        m = keras.models.load_model(load_model)
+    else:
+        m = build_model()
     m.summary()
 
     if args['skip_model_check']:
@@ -255,7 +261,7 @@ def main():
     print('Settings', json.dumps(exsettings))
 
     h = train_model(output_dir, train_data, val_data,
-                      builder=build_model,
+                      model=m,
                       loader=functools.partial(load, validation=False),
                       val_loader=functools.partial(load, validation=True),
                       settings=exsettings)
