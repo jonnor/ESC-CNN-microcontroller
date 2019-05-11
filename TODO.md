@@ -24,12 +24,23 @@ Abstract
 - Write it!
 - Send to OK for feedback
 
+Report
+
+- Add short captions to figures, so List of Figures looks nice
+
 ### Draft 4
 
 Improve
 
 - Plot performance of models relative to fold
 - Include error analysis
+
+Add Acknowledgements?
+
+- Kristian
+- Oliver
+- Marianna
+- John
 
 Final
 
@@ -38,13 +49,7 @@ Do they explain the figure setup/contents OK?
 - Do a spell checking pass
 - Do a grammar checking pass. LanguageTool + Grammarly
 - Fix Github link, to be to final branch
-
-Add Acknowledgements?
-
-- Kristian
-- Oliver
-- Marianna
-- John
+- Make sure final page is EVEN number
 
 ### After report
 

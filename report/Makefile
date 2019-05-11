@@ -29,7 +29,7 @@ includes: pyincludes/urbansound8k-classes.tex \
 
 
 report.pdf: report.md includes
-	pandoc --include-before-body=cover.latex --include-before-body=abstract.latex --include-after-body=end.latex --bibliography=references.bib -V documentclass=report -V papersize:a4 -V geometry:margin=1.0in -V fontsize=12pt -H preamble.tex --csl ieee.csl --toc -Vlof -Vlot --pdf-engine-opt=-shell-escape --number-sections -s report.md -o report.pdf
+	pandoc --include-before-body=cover.latex --include-before-body=abstract.latex --include-after-body=end.latex --bibliography=references.bib -V papersize:a4 -V geometry:margin=1.0in -V fontsize=12pt -H preamble.tex --csl ieee.csl --toc -Vlof -Vlot --pdf-engine-opt=-shell-escape --number-sections -s report.md -o report.pdf
 
 status.pdf: status.md
 	pandoc -t beamer -s status.md -o status.pdf --slide-level=2 --mathml

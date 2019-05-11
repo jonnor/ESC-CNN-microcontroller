@@ -1,5 +1,20 @@
 
-<!---
+---
+documentclass: report
+classoption: twoside
+title-meta: Environmental Sound Classification on Microcontrollers using Convolutional Neural Networks
+author:
+- Jon Nordby
+keywords:
+- Machine Learning
+- Convolutional Neural Networks
+- Environmental Sound Classification
+- Audio Classification
+- Embedded Systems
+- Wireless Sensor Networks 
+---
+
+<!--
 
 Contributions
 
@@ -14,7 +29,7 @@ Resulting in XX% accuracy on Urbansound8k dataset.
 \newpage
 # Introduction
 
-<!---
+<!--
 
 
 Noise assessment
@@ -74,7 +89,12 @@ WHO has estimated that in Europe 1.6 million healthy life years (Disability-Adju
 are lost annually due to noise pollution[@WHONoiseBurden2018].
 This makes noise pollution the second environmental cause of health problems in Europe, after air pollution.
 
-![Health impacts of noise at different severity levels[@NoiseStressConcept]](./img/noiseseverity.svg)
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{./img/noiseseverity.png}
+\caption[Health impacts of noise]{Health impacts of noise at different severity levels[@NoiseStressConcept]}
+\label{figure:sensornetworks-coding}
+\end{figure}
 
 In the EU, Environmental noise is regulated by Environmental Noise Directive (2002/49/EC)[@EuNoiseDirective].
 The purpose of the directive is to:
@@ -144,9 +164,9 @@ before transmitting to the server have been developed.
 Figure \ref{figure:sensornetworks-coding} shows an overview of the different approaches.
 
 \begin{figure}[h]
-  \centering
-    \includegraphics[width=1.0\textwidth]{./img/sensornetworks.png}
-\caption{Different data transmission strategies for a noise sensor network with noise source classification capability.
+\centering
+\includegraphics[width=1.0\textwidth]{./img/sensornetworks.png}
+\caption[Data transmission strategies for noise classification sensor]{Different data transmission strategies for a noise sensor network with noise source classification capability.
 A) Sensor sends raw audio data with classification on server.
 B) Sensor sends spectrograms as a intermediate audio representation. Classification on server.
 C) Sensor sends neural network audio embeddings as intermediate audio representation. Classification on server.
@@ -1133,7 +1153,7 @@ Texas Instruments, Freescale, Atmel, Nordic Semiconductors, NXP.
 
 \begin{table}[h]
 \input{pyincludes/microcontrollers.tex}
-\caption{Examples of available STM32 microcontrollers and their characteristics. Details from ST Microelectronics website. }
+\caption[Examples of STM32 microcontrollers]{Examples of available STM32 microcontrollers and their characteristics. Details from ST Microelectronics website. }
 \label{table:microcontrollers}
 \end{table}
 
@@ -1209,7 +1229,10 @@ STMicroelectronics (ST) has stated that neural network accelerators will be avai
 for their STM32 family of microcontrollers[@ST-DCNN-accelerator], based on their
 FD-SOI chip architecture[@ST-FD-SOI].
 
+<!--
+SKIP: tall and akward image
 ![Architecture of Project Orlando by ST, system-on-chip with DSP and hardware accelerators for Machine Learning integrated with microcontroller (gray) [@ST-Orlando-MPSoc17]](./img/ST-Orlando-SoC.png){ height=20% }
+-->
 
 ARM has announced ARM Helium, an extended instruction set for the Cortex M
 family of microcontrollers that can be used to speed up neural networks[@ARMHeliumAnnouncement].
@@ -1224,6 +1247,8 @@ They claim a 16x improvement in power efficiency over a ARM Cortex M7 chip[@GAP8
 
 
 \newpage
+<!-- https://tex.stackexchange.com/questions/6489/split-the-table-of-contents-in-two-pages -->
+\addtocontents{toc}{\protect\newpage}
 # Materials
 
 ## Dataset
@@ -1388,7 +1413,7 @@ of the device constraints.
 
 \begin{table}[h]
 \input{pyincludes/models.tex}
-\caption{Model architectures compared. B=Number of convolution blocks, F=Filters in each convolution block, DS=Depthwise Separable, BN=Bottleneck}
+\caption[Model architectures comparison]{Model architectures compared. B=Number of convolution blocks, F=Filters in each convolution block, DS=Depthwise Separable, BN=Bottleneck}
 \label{table:models}
 \end{table}
 
