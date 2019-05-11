@@ -1,20 +1,13 @@
 
 Feedback needed
 
-- CNN/NN section
 - Results/Discussion/Conclusion
 
 ## TODO
 
-
-### Draft 2.1
-
-- Address OK feedback
-- Send to J. for review
-- Send to M for review
-
 ### Draft 3
 
+- Make missing images
 - Materials: Add images of compared models
 
 Results
@@ -29,7 +22,6 @@ Results
 Abstract
 
 - Write it!
-
 - Send to OK for feedback
 
 ### Draft 4

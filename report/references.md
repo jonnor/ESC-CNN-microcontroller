@@ -339,6 +339,54 @@ Only theoretical N-operations shown, not actual runtime
 ! gives adds/multiplies formulas for each classifier type. Nice
 
 
+### Environment Sound Classification Using a Two-Stream CNN Based on Decision-Level Fusion
+https://www.mdpi.com/1424-8220/19/7/1733/pdf
+
+Trains two CNN models on different feature representations.
+Chroma+SpectralContrast+Tonnetx + { log-mel spectrogram, MFCC }
+Merges together using Dempster–Shafer.
+CNN of 4 to 6 layers tested. 4 performed best
+kernels 3x3, stride 2x2. 32,32,64,64. Second layer also has max-pooling
+41 frames at 20kHz
+FC backend with 1024 neurons.
+Standard librosa feature extraction parameters
+?? Claims performance on plain log-mel model as 95%. 0.03812 std-dev.
+!! The reason is not investigated.
+No mention of data augmentation 
+Says using 10-fold cross-validation, but not certain if it is the original from US8k
+
+### Classifying environmental sounds using image recognition networks
+Sept 2017
+https://www.sciencedirect.com/science/article/pii/S1877050917316599
+
+! Claims 90% on Urbansound8k
+! not using the 10 folds, but 5-folds
+
+### An Ensemble Stacked Convolutional Neural Network Model for Environmental Event Sound Recognition
+July 2018
+https://www.mdpi.com/2076-3417/8/7/1152/pdf
+
+Same feature extraction method as Piczak
+To types of networks;
+Melnet, log-mel and delta-log-mel
+RawNet:Raw audio
+5 conv layers, FC backend
+
+Uses a special data augmentation method
+multiple-width frequency-delta (MWFD) data augmentation method
+
+! Claims 90% on Urbansound8k, +-0.3 with mel CNN
+! claims 87% with raw audio
+
+
+### Acoustic scene classification using convolutional neural network and multiple-width frequency-delta data augmentation
+8 Jul 2016
+Extracting delta log-mel spectrograms at different widths
+Classifying 4 versions of this in addition to the standar log-mel spectrogram
+
+Increased accuracy by 4%, from 78% to 82% on
+DCASE 2016, acoustic scene classification
+
 
 ### Not All Ops Are Created Equal!
 https://arxiv.org/abs/1801.04326

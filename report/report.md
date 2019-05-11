@@ -74,9 +74,7 @@ WHO has estimated that in Europe 1.6 million healthy life years (Disability-Adju
 are lost annually due to noise pollution[@WHONoiseBurden2018].
 This makes noise pollution the second environmental cause of health problems in Europe, after air pollution.
 
-![Health impacts of noise at different severity levels[@NoiseStressConcept]](./img/noiseseverity.png)
-
-`FIXME: top triangle has poor text contrast.`
+![Health impacts of noise at different severity levels[@NoiseStressConcept]](./img/noiseseverity.svg)
 
 In the EU, Environmental noise is regulated by Environmental Noise Directive (2002/49/EC)[@EuNoiseDirective].
 The purpose of the directive is to:
@@ -91,14 +89,14 @@ These must cover all urban areas, major roads, railways and airports over a cert
 
 The noise maps are created using simulation of known noise sources (such as car traffic)
 with mathematical sound propagation models, based on estimates for traffic numbers.
-These maps only give yearly average noise levels.
+These maps only give yearly average noise levels for day, evening and night.
 
 <!--
-TODO: Add paragraph about noise nuisance.
+MAYBE: Add paragraph about noise nuisance.
 In addition to the health effects of long-term noise source,
 inhabitants can also be bothered by short-term. 
 
-TODO: add info about reduced property value
+MAYBE: add info about reduced property value
 
 MAYBE: mention occupational noise?
 -->
@@ -118,14 +116,17 @@ Future projects include CENSE[@CENSE], which plans to install around 150 sensors
 
 To keep costs low and support a dense coverage, the sensor nodes are can be designed to operate wirelessly.
 Communication is done using wireless radio technologies such as WiFi, GSM, NB-IoT or 6LoWPAN.
-The sensor harvests its energy, commonly using solar power or from streetlights powered at night.
+The sensor harvests its energy, often using solar power or from streetlights powered at night.
 A battery backup allows the sensor to continue operating also when energy is momentarily unavailable.
 
-These sensor networks enable continuous logging of the sound level.
-(Leq dB) `TODO: explain Leq dB`
+These sensor networks enable continuous logging of the sound pressure level,
+measured in Decibel (dB SPL) over a reference pressure level (typically \num{20e-6}\si{Pa} ).
+Since the sound pressure level is continiously varying, it is summarized over a specified time-period
+using Equivalent Continious Sound Level ($L_{eq}$).
 Typical measurement resolution are per-minute, per second or per 125ms.
-In Europe sound level sensors are designed to specifications of IEC 61672-1 Sound Level Meters[@IECSoundLevelMeters].
-The equivalent standard for North America is ANSI S1.4[@ANSISoundLevelMeters].
+Measurements often use A-weighting to approximate the sensitivity of the human ear at different frequencies.
+In Europe sound level sensors are designed to specifications of IEC 61672-1 Sound Level Meters[@IECSoundLevelMeters],
+and the standard for North America is ANSI S1.4[@ANSISoundLevelMeters].
 
 Sensors can also provide information that can be used to characterize the noise,
 for instance to identify the likely noise sources.
@@ -134,12 +135,13 @@ identify which regulations the noise falls under, which actors may be responsibl
 and to initiate possible interventions.
 
 This requires much more data than sound level measurements,
-making it challenging to transmit the amount of data within the bandwidth and energy budget of a wireless sensor.
+making it challenging to transmit the data within the bandwidth and energy budget of a wireless sensor.
 The sensor may also capture sensitive information and violate privacy requirements by
 recording and storing such detailed data.
 
-To address these concerns several methods for efficiently coding the information before transmitting to the server have been developed.
-See Figure \ref{figure:sensornetworks-coding} for an overview.
+To address these concerns several methods for efficiently coding the information
+before transmitting to the server have been developed.
+Figure \ref{figure:sensornetworks-coding} shows an overview of the different approaches.
 
 \begin{figure}[h]
   \centering
@@ -157,20 +159,23 @@ D) Sensor performs classification on device and sends result to server. No audio
 In [@AudioCodingSensorGrid], authors propose a compressed noise profile based on lossy compression of spectrograms.
 For 125ms time resolution the bitrate is between 400 and 1400 bits per second,
 however this gave a 5 percentage points reduction in classification accuracy.
-This is shown as case B. of Figure {figure:sensornetworks-coding}.
+This is shown as case B. of Figure \ref{figure:sensornetworks-coding}.
 
 Others have proposed to use neural networks to produce an audio "embedding" inspired
-by the success of world embeddings for Natural Language Processing (case C. of Figure {figure:sensornetworks-coding}).
+by the success of word embeddings[@rong2014word2vec] for Natural Language Processing.
+This is shown as case C. of Figure \ref{figure:sensornetworks-coding}).
 In VGGish[@VGGish] model trained on Audioset[@AudioSet]
-a 8-bit, 128 dimensional embedding is used for 10 seconds clips,
-leading to a datarate of 102 bits per second.
-$L^3$ (Look, Listen, Learn)[@L3] similarly proposed an embedding with 512 dimensions.
+a 8-bit, 128 dimensional embedding per 1 seconds clips,
+leading to a datarate of 1024 bits per second.
+$L^3$ (Look, Listen, Learn)[@LookListenLearn] similarly proposed an embedding with 512 dimensions.
 The computation of such an embedding generally requires very large models and lots of compute resources.
-$EdgeL^3$[@EdgeL3] showed that the L^3 model can be compressed by up to 95%,
+$EdgeL^3$[@EdgeL3] showed that the $L^3$ model can be compressed by up to 95%,
 however the authors state that more work is needed to fit the RAM constraints of desirable sensor hardware.
 
-The minimal amount of data transmissions would be achieved if only sending the detected noise category,
-requiring to perform the classification on the sensor, case D. of figure \ref{figure:sensornetworks-coding}.
+The minimal amount of data transmissions would be achieved if the detected noise category was sent,
+requiring to perform the entire classification on the sensor.
+This is hown as case D. of Figure \ref{figure:sensornetworks-coding}.
+Such an approach could also eliminate the need to send personally identifiable data to a centralized server.
 
 This motivates the problem statement of this thesis:
 
@@ -181,7 +186,6 @@ This motivates the problem statement of this thesis:
 Measuring noise
 
     Terminology. Sound Pressure Level
-    Frequency weighting
     Summarizaton. Eq SPL. L10, L90, Lmax, Lpeak
     Spectrograms. Time-frequency characteristics. 1/3 acoustic bands
     Equipment
@@ -212,39 +216,44 @@ Open-set classification. Novelty detection, clustering
 
 ## Machine Learning
 
-`TODO: two-lines introduction`
+Machine Learning is the use of algorithms and statistical models
+to effectively perform a task, without having to explicitly program the instructions
+for how to perform this task.
+Instead the algorithms learns to perform the desired function from provided data.
+
+*Supervised learning* uses a training dataset where each sample is labeled with the correct output.
+These labels are normally provided by manual annotation by humans inspecting the data,
+a time-itensive and costly process.
+In *unsupervised learning*, models are trained without access to labeled data.
+but often for cluster analysis (automatic discovery of sample groups).
+
+Supervised learning techniques can be used for regression and for classification.
+In regression where the goal is to predict a continious real-valued variable,
+and for classification a discrete variable.
 
 ### Classification
 
-Classification is a type of machine learning task where the goal is to
-train a model which can accurately predict which class(es) that data belongs to.
+Classification is a machine learning task where the goal is to
+train a model which can accurately predict which class(es) the data belongs to.
 Examples use-cases could be to determine from an image which breed a dog is,
 to predict from text whether it is positive or negative towards the subject matter
 - or to determine from audio what kind of sound is present.
-
-`TODO: image of classification tasks`
 
 In single-label classification, a sample can only belong to a single class. 
 In closed-set classification, the possible class is one of N predetermined classes.
 Many classification problems are treated as single-label and closed-set.
 
+`TODO: image of classification problem`
 
-Models used for classification are often trained using *supervised learning*. 
-Supervised learning uses a training dataset where each sample is labeled with the right class.
-These labels are normally provided by manual annotation by humans inspecting the data,
-a time-itensive and costly process.
+Metrics are used to evaluate how well the model performs at its task.
+Common metrics for classification include:
+*Accuracy* - the ratio of correct predictions to total predictions,
+*Precision* - number of correct positive results divided by the total number of positive predictons,
+*Recall* (Sensitivity) - number of correct positive results divided by the number of predictions that should have been positive.
 
-`TODO: image of a labeled dataset`
-
-In *unsupervised learning*, models are trained without access to labeled data.
-This is less commonly used for classification tasks, but often for cluster analysis (automatic discovery of sample groups).
-*Semi-supervised learning* techniques combines supervised and unsupervised learning,
-using a small labeled dataset combined with a larger set of unlabeled data.
-This can yield better models when unlabeled data is abundant, but labeled data is scarse.
-
-```TODO:
-describe metrics
-```
+For a given model there will be a tradeoff between Precision and Recall.
+For binary classification, the range of possible tradeoffs can be evaluated using a
+Receiver-Response Curve (ROC).
 
 <!--
 SKIP
@@ -278,7 +287,7 @@ The overall process is illustrated in Figure \ref{figure:crossvalidation}.
 ![Splitting datasets into train/validation/test sets and cross-validation \label{figure:crossvalidation}](./img/crossvalidation.png)
 
 One common style of supervised learning processes is to:
-start with an base model and initialize its parameters (often randomly),
+start with a base model and initialize its parameters (often randomly),
 then make predictions using this model, compare these prediction with the labels to compute
 an error, and then update the parameters in order to attempt to reduce this error.
 This iterative process is illustrated in \ref{figure:training-inference}.
@@ -295,13 +304,13 @@ When performed systematically this is known as a hyperparameter search.
 Common strategies include random search, combinatorial (gridsearch) and Baysian Optimization.
 -->
 
-Once training is completed, the predictive model with the the learned parameters can be used on new data. 
+Once training is completed, the predictive model with the learned parameters can be used on new data. 
 
 ## Neural Networks
 
 Artificial Neural Networks are a family of machine learning methods,
 loosely inspired by the biological neurons in the brains of humans and other animals.
-Some of the foundations date such as the Perceptron[@Perceptron] dates back to the 1950ies,
+Some of the foundations such as the Perceptron[@Perceptron] dates back to the 1950ies,
 but it was not until around 2010 that neural networks started to become
 the preferred choice for many machine learning applications.
 
@@ -349,19 +358,19 @@ This is often called *forward propagation*.
 
 To be able to express non-linear relationships between input and output,
 non-linear activation functions are applied.
-When non-linearity is used, a neural network becomes an universal function approximator[@cybenko1989approximation].
+When non-linearity is used, a neural network becomes a universal function approximator[@cybenko1989approximation].
 
 Commonly used general-purpose non-linear activation functions are tanh and ReLu[@ReLu].
 Sigmoid and softmax are commonly used at the output stage
 of a neural network for classification, as they convert the input to a probabilty-like $(0,1)$ range.
 Sigmoid is used for binary classification, and Softmax for multi-class classification.
-To get a discrete class from these continious probability values, a decision function is applied.
+To get a discrete class from these continuous probability values, a decision function is applied.
 The simplest decision function for single-label multi-class classification is to take the largest value,
 using the argmax function.
 
-An illustration of the mentioned activation functions can be seen in \ref{fig:activation-functions}.
+An illustration of the mentioned activation functions can be seen in Figure \ref{fig:activation-functions}.
 
-![Commonly used activation functions in neural networks. Input along X axis, output along Y. \label{fig:activation-functions}](./img/activation-functions.png)
+![Commonly used activation functions in neural networks. Input along X axis, output along Y. Range for Sigmoid is (0,1) and for Tanh (-1,1). \label{fig:activation-functions}](./img/activation-functions.svg)
 
 Increasing the number of neurons and the number of hidden layers
 increases the capacity of the network to learn more complex functions.
@@ -441,7 +450,7 @@ can be summarized in the following procedure:
 Gradient Descent is not guaranteed to find a globally optimal minima,
 but with suitable choices of hyperparameters can normally find local minima that are good-enough.
 It has also been argued that a global optimum on the training set might
-not be desirable, as it is unlikely to geneneralize well[@LossSurfaceNeuralNetworks].
+not be desirable, as it is unlikely to generalize well[@LossSurfaceNeuralNetworks].
 
 
 <!--
@@ -494,7 +503,7 @@ that becomes the output value. This is shown in Figure \ref{fig:convolution-2d}.
 \caption{2D convolution for a single channel.
 Red outlines show how the filter moves across the input image.
 Filter weights shown in red numbers, input numbers in blue.
-Green dots illustrate locations of outputs wrt inputs.
+Green dots illustrate locations of outputs with respect to inputs.
 }
 \label{fig:convolution-2d}
 \end{figure}
@@ -510,13 +519,14 @@ they learn to detect local features specific to the training data.
 With multiple input channels, the same kernel is applied over all the input channels,
 and all the results at one location, and the bias, are summed together to become the output.
 Multiple convolution filters are normally used per layer,
-to produce a $M$ new output channels with different features from the $N$ input channels.
+to produce $M$ new output channels with different features from the $N$ input channels.
 
 In Figure \ref{fig:convolution-2d} each location of the kernel has the entire kernel inside the input area.
 This is called convolution with "valid" padding,
-and the resulting output will be smaller by $\left\lceil{k/2}\right\rceil$ on each side.
+and the resulting output will be smaller by $\left\lceil{k/2}\right\rceil$ on each side,
+where $k$ is the kernel size.
 If the input is instead padded by this amount when moving the kernel, the output will be the same size as the input.
-This is called "full" convolution.
+This is called convolution with "full" padding.
 
 <!--
 `TODO: image of valid versus full convolution` 
@@ -524,14 +534,17 @@ MAYBE: mention that conv and fully-connected can be coverted
 -->
 
 The number of learnable parameters in a 2D convolutional layer with bias is
-$ P_conv = M(K_wK_h + 1) $, with $M$ filters and a kernel of size $K_w$x$K_h$.
+$P_{conv} = M(K_wK_h + 1)$, with $M$ filters and a kernel of size $K_w$x$K_h$.
 Commonly used kernel sizes are 3x3 to 7x7.
 
-In the fully-connected layer there was $(N+1)*M$ parameters for $N$ inputs and $M$ neurons.
-For 2D images N is height*width*channels, so even for small image grayscale inputs (N=100x100x1=10000)
+In the fully-connected layer there was $(N+1) \times M$ parameters for $N$ inputs and $M$ neurons.
+For 2D images $N=height \times width \times channels$, so even for small image grayscale inputs (N=100x100x1=10000)
 a convolutional layer has much fewer parameters.
 
-The computational complexity of a 2D convolution is $ O_conv = WHNK_wk_hM $,
+The computational complexity of a Neural Network is often measured
+in the number of Multiply-Accumulate operations (MACC).
+
+The computational complexity of a 2D convolution is $O_{conv} = WHNK_wk_hM$,
 with input height $H$, input width $W$, $N$ input channels, $M$ output channels$
 and a 2D kernel of size $K_w$x$K_h$.
 
@@ -595,7 +608,7 @@ MAYBE: equation for operations for strided convolution
 
 ### Spatially Separable convolution
 
-While CNNs have relatively few number of parameters, compared to fully-connected layers,
+While CNNs have relatively low number of parameters, compared to fully-connected layers,
 the convolutional kernels still require a lot of computations.
 Several alternative convolution layers have been proposed to address this.
 
@@ -607,9 +620,9 @@ $$
 O_{ss} = HWNMK_w + HWNMK_h = HWNM(K_w+K_h)
 $$
 
-This reduces the number of computations and parameters over regular 2D convolutions
-by a ratio $(K_w+K_h)/(K_wK_h)$.
-With $K_w=K_h=3$, the reduction is 6/9 and with $K_w=K_h=5$ it is 10/25. 
+This the number of computations and parameters compared with regular 2D convolutions
+is $(K_wK_h)/(K_w+K_h)$ times fewer.
+For example with $K_w=K_h=3$, $9/6=1.5$ and with $K_w=K_h=5$ = $25/10=2.5$. 
 
 ![Spatially Separable 2D convolution versus standard 2D convolution \label{fig:spatially-separable-convolution}](./img/spatially-separable-convolution.png)
 
@@ -634,7 +647,7 @@ $$ O_{dw} = HWNK_wK_h $$
 $$ O_{ds} = O_{pw} + O_{dw} = HWN(M + K_wK_h) $$
 
 This factorization requires considerably fewer computations compared to full 2D convolutions.
-For example, with kernels size $K_w=K_h=3$ and $M=64$ channels, the reduction is approximately $7.5x$.
+For example, with kernels size $K_w=K_h=3$ and $M=64$ channels, it takes approximately $7.5x$ fewer operations.
 
 <!---
 SKIP
@@ -691,7 +704,10 @@ it scored a bit better than Mobilenets and ShuffleNet.
 \newpage
 ## Audio Classification
 
-`TODO: two sentences introduction`
+In Audio Classification, the predictive models operate on audio (digital sound).
+Example tasks are wake-word or speech command detection in Speech Recognition,
+music genre or artist classification in Music Information Retrieval
+- and classification of environmental sounds.
 
 ### Digital sound
 
@@ -727,8 +743,7 @@ Sounds of interest often have characteristic patterns not just in time (temporal
 but also in frequency content (spectral signature).
 Therefore it is common to analyze the audio in a time-frequency representation (a *spectrogram*).
 
-A common way to compute a spectrogram from an audio waveform is by using the Short Time Fourier Transform (STFT).
-`FIXME: referanse STFT`
+A common way to compute a spectrogram from an audio waveform is by using the Short Time Fourier Transform (STFT)[@ShortTimeFourierTransformJos].
 The STFT operates by splitting the audio up in short consecutive chunks,
 and computing the Fast Fourier Transform (FFT) to estimate the frequency content for each chunk.
 To reduce artifacts at the boundary of chunks, they are overlapped (typically by 50%)
@@ -743,8 +758,8 @@ Inspiration for TODO: image, https://dsp.stackexchange.com/questions/19311/stft-
 There is a trade-off between frequency (spectral) resolution and time resolution with the STFT.
 The longer the FFT window the better the frequency resolution,
 but the poorer the temporal resolution.
-For speech a typical choice of window length is 25 ms. `FIXME: referanse`
-Similar frame lengths are often adopted for acoustic events. `FIXME: referanse`
+For speech a typical choice of window length is 20 ms.
+Similar frame lengths are often adopted for acoustic events.
 The STFT returns complex numbers describing phase and magnitude of each frequency bin.
 A spectrogram squaring the absolute of the magnitude, and discards the phase information.
 The lack of phase information means that the spectrogram is not strictly invertible,
@@ -764,7 +779,7 @@ See Figure \ref{figure:filterbanks}.
 
 ![Comparison of different filterbank responses: Mel, Gammatone, 1/3-octave. \label{figure:filterbanks}](./pyplots/filterbanks.png)
 
-The Mel scaled filters is commonly used for audio classification. `TODO: reference`
+The Mel scaled filters is commonly used for audio classification. <!-- TODO: reference -->
 The spectrogram that results for applying a Mel-scale filter-bank is often called a Mel-spectrogram.
 
 `TODO: image of mel-spectrogram`
@@ -977,7 +992,7 @@ and detection of vehicle related sounds[@DCASE2017Task4].
 
 
 <!--
-TODO: table with dataset statistics
+DROPPED: table with dataset statistics
 
 TUT Sound Events 2017[@TUT2017dataset] is a dataset used for the task
 "Sound event detection in real life audio" for the
@@ -986,6 +1001,7 @@ Detection and Classification of Acoustic Scenes and Events (DCASE) challenge in 
 
 
 ### Spectrogram-based models
+\label{chapter:esc-models}
 
 Many papers have used Convolutional Neural Networks (CNN) for Environmental Sound Classification.
 Approaches based on spectrograms and in particular log-scaled melspectrogram being the most common.
@@ -1171,7 +1187,7 @@ X-CUBE-AI[@X-CUBE-AI] by ST Microelectronics provides official support for
 performing inference with Neural Networks on their STM32 microcontrollers. 
 It is an add-on to the STM32CubeMX[@STM32CubeMX] software development kit,
 and allows loading trained models from various formats, including:
-Keras (Tensorflow), Caffe[@Caffe] and PyTorch.
+Keras (Tensorflow[@TensorFlow]), Caffe[@Caffe] and PyTorch[@PyTorch].
 In X-CUBE-AI 3.4, all computations are done in single-precision float.
 Model compression is supported by quantizing model weights by 4x or 8x,
 but only for fully-connected layers (not convolutional layers)[@X-CUBE-AI-manual, ch 6.1].
@@ -1212,7 +1228,6 @@ They claim a 16x improvement in power efficiency over a ARM Cortex M7 chip[@GAP8
 
 ## Dataset
 
-`FIXME: label ref does not work`
 The dataset used is Urbansound8K, described in chapter \ref{chapter:datasets}.
 The 10 classes in the dataset are listed in Table \ref{table:urbansound8k-classes},
 and Figure \ref{figure:urbansound8k-examples} shows example audio spectrograms.
@@ -1229,8 +1244,6 @@ and Figure \ref{figure:urbansound8k-examples} shows example audio spectrograms.
 The dataset comes pre-arranged into 10 folds for cross-validation.
 A single fold may contain multiple clips from the same source file,
 but the same source file is not used in multiple folds to prevent data leakage.
-Authors recommend always using fold 10 as the test set,
-to allow comparison of results between experiments.
 
 The target sound is rarely alone in the sound clip, and may be in the background,
 partially obscured by sounds outside the available classes.
@@ -1248,19 +1261,19 @@ For audio input both analog and digital microphones (I2S/PDM) are supported.
 The microcontroller can also send and receive audio over USB from a host computer.
 An SD card interface can be used to store recorded samples to collect a dataset.
 
-To develop for the STM32L476 microcontroller we selected the
-SensorTile development kit STEVAL-STLKT01V1[@STEVAL-STLKT01V1].
+To develop for the STM32L476 microcontroller the
+SensorTile development kit STEVAL-STLKT01V1[@STEVAL-STLKT01V1] was selected.
 The kit consists of a SensorTile module, an expansion board, and a portable docking board (not used).
 
 ![SensorTile module with functional blocks indicated. Module size is 13.5x13.5mm\label{sensortile-annotated}](./img/sensortile-annotated.jpg)
 
-The SensorTile module (see figure \ref{sensortile-annotated}) contains in addition to the microcontroller: a microphone,
+The SensorTile module (see Figure \ref{sensortile-annotated}) contains in addition to the microcontroller: a microphone,
 Bluetooth radio chip, and an Inertial Measurement Unit (accelerometer+gyroscope+compass).
 The on-board microphone was used during testing.
 
 An expansion board allows to connect and power the microcontroller over USB.
 The ST-Link V2 from a Nucleo STM32L476 board is used to program and debug the device.
-The entire setup can be seen in figure \ref{sensortile-devkit}.
+The entire setup can be seen in Figure \ref{sensortile-devkit}.
 
 ![Development setup of SensorTile kit\label{sensortile-devkit}](./img/sensortile-devkit.jpg)
 
@@ -1272,16 +1285,15 @@ Version 3.4.0 of X-CUBE-AI was used.
 
 ![STM32CubeMX application with X-CUBE-AI addon after loading a Keras model](./img/stm32cubeai.png)
 
-`FIXME: appendix reference does not wok`
 A Python commandline script was created to streamline collecting model statistics using X-CUBE-AI,
-without having to manually use the STM32CubeMX user interface. See \ref{appendix:stm32convert}.
+without having to manually use the STM32CubeMX user interface.
+It is attached in appendix \ref{appendix:stm32convert}.
 This tool provides required Flash storage (in bytes), RAM usage
-and CPU usage (in Multiply-Accumulate operations, MACC) as JSON,
+and CPU usage (MACC operations) as JSON,
 and writes the generated C code to a specified directory.
 
 The training setup is implemented in Python.
-The machine learning models are implemented in Keras using the Tensorflow backend,
-and are can be found in the appendices.
+The machine learning models are implemented in Keras using the Tensorflow backend.
 To perform feature extraction during training the librosa[@librosa] Python library was used.
 numpy and Pandas libraries were used for general numeric computations and data management.
 
@@ -1320,13 +1332,11 @@ If CPU usage can be reduced to one-tenth, that can reduce power consumption by u
 
 `TODO: link model review section`
 
-Models from the existing literature are summarized
+Models from the existing literature (reviewed in chapter \ref{chapter:esc-models}) are summarized
 in Table \ref{table:urbansound8k-existing-models-logmel}
 and shown with respect to these model constraints
 in Figure \label{existing-models-perf}.
 Even the smallest existing models require significantly more than the available resources. 
-
-`FIXME: make MACC/MAC/mult-adds consistent`
 
 \begin{table}
 \input{plots/urbansound8k-existing-models-logmel.tex}
@@ -1355,6 +1365,9 @@ The baseline model has a few minor modifications from the original SB-CNN model:
 Max pooling is 3x2 instead of 4x2. Without this change the layers become negative sized
 due to the reduced input feature size (60 mel filter bands instead of 128).
 Batch Normalization was added to each convolutional block.
+The Keras definition for baseline model can be found in appendix \ref{appendix:baseline-model}.
+
+`FIXME: rename BN to something else. BL? BTL? BTLN`
 
 From this baseline architecture, several model variations are created in order to evaluate
 the effects of using different convolutional blocks and as well as replacing
@@ -1368,7 +1381,9 @@ Bottleneck with Depthwise Separable (Stride-BN-DS-5x5)
 and Effnet block (Stride-Effnet-5x5).
 These blocks are illustrated in `FIXME: ref picture`.
 For EffNet, LeakyReLU was with ReLu since LeakyReLU is not supported by X-CUBE-AI 3.4.
-Additionally a version of strided with depthwise separable convolution with 3x3 kernel size (Stride-DS-3x3) is tested. 
+Additionally a version of strided with depthwise separable convolution with 3x3 kernel size (Stride-DS-3x3) is tested.
+The Keras definition the strided model(s) can be found in appendix \ref{appendix:strided-model}.
+
 This results in 7 different models, as seen in Table \ref{table:models}.
 For all models the number of layers and filters were set as high as possible within violating any
 of the device constraints.
@@ -1583,24 +1598,18 @@ And under 50% of RAM and FLASH.
 
 ## Further work
 
-Some further work is identified in two major area:
-Increasing model efficiency on the Environmenal Sound Classifiction tasks,
-and, practical challenges with applying on-edge classification of noise in sensor networks. 
+Some further work is identified in two major areas:
+Increasing model efficiency on the Environmenal Sound Classifiction tasks and
+practical challenges with applying on-edge classification of noise in sensor networks. 
 
 Utilizing larger amounts of training data might
-be able to increase performance of the models.
-Transfer learning[@PretrainingSpeechCommandRecognition],
+be able to increase performance of the models shown.
+Possible techniques for this are transfer learning[@PretrainingSpeechCommandRecognition],
 or applying stronger data augmentation techniques (such as Mixup).
 
-In a continious monitoring scenario, semi-supervised learning
-could be powerful in order to utilize abundant unlabeled data. 
-
-
-`TODO: add some references`
-
-Applying quantization should be able to further improve efficiency of the models. 
+Applying quantization should be able make the computations of the models more efficient.
 A first step would be to make use of the optimized CMSIS-NN library[@CMSIS-NN],
-which utilizes 8-bit integer operations.
+which utilizes 8-bit integer operations. 
 However there are also promising results showing that CNNs can be
 effectively implemented with as little as 2 bits[@andri2016yodann][@miyashita2016convolutional][@IncrementalNetworkQuantization],
 and without using any multiplications[@leng2018extremely][@cintra2018low].
@@ -1612,26 +1621,31 @@ or to reduce power consumption at a given predictive performance level.
 End-to-end CNN models using raw audio as input becomes extra interesting with such a co-processor,
 since it allows also the filterbank processing to be offloaded from the general purpose CPU.
 
+In a practical deployment of on-edge classification, it is still desirable to
+be able to collect some data for evaluation of performance and further training.
+This could be sampled at random. But could it be more effective to use some sort of
+adaptive sampling, and possibly Active Learning?
 
-Active Learning
-
-`TODO: write some section about challenges`
-Collecting training data
-Out-of-domain data, detecting
-
-Hybrid methods.
-Perform classification on-device, but also
-allow to send a feature representation, or raw data.
-Active learning to decide what to send?
+Normally such training and evaluation data is transferred as raw PCM audio,
+which inefficient in terms of bandwidth.
+Could low-power audio coding be applied to compress the data,
+while still enablomg reliable human labeling and use as evaluation/training data?
+ 
+It is also desirable to reduce how often classification is needed.
+Could this benefit from an adaptive sampling strategy?
+For example to primarily do classification for time-periods which exceed
+a sound level threshold, or to sample less often when the sound sources changes slowly.
 
 
 
 
 <!---
-APPENDIX
-TODO: clean up the scripts, make fit on one/two page
+DROP: clean up the scripts, make fit on one/two page
 MAYBE: table with software versions? From requirements.txt
 -->
+
+\renewcommand{\appendixpagename}{Appendix}
+\renewcommand{\appendixtocname}{Appendix}
 
 \begin{appendices}
 
@@ -1641,19 +1655,20 @@ MAYBE: table with software versions? From requirements.txt
 fontsize=\footnotesize
 }
 
-`TODO: move appendix after references`
 
-\section{Keras model for SB-CNN (Baseline)}
+\chapter{Keras model for Baseline}
+\label{appendix:baseline-model}
 \pythoncode{../microesc/models/sbcnn.py}
-\label{listing:sbcnn}
+
 
 \newpage
-\section{Keras model for Strided}
+\chapter{Keras model for Strided}
+\label{appendix:strided-model}
 \pythoncode{../microesc/models/strided.py}
-\label{listing:ldcnn}
+
 
 \newpage
-\section{Script for converting models using X-CUBE-AI}
+\chapter{Script for converting models using X-CUBE-AI}
 \label{appendix:stm32convert}
 \pythoncode{../microesc/stm32convert.py}
 
