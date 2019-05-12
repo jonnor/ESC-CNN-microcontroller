@@ -96,11 +96,11 @@ This makes noise pollution the second environmental cause of health problems in 
 \label{figure:sensornetworks-coding}
 \end{figure}
 
-In the EU, Environmental noise is regulated by Environmental Noise Directive (2002/49/EC)[@EuNoiseDirective].
+In the EU environmental noise is regulated by Environmental Noise Directive (2002/49/EC)[@EuNoiseDirective].
 The purpose of the directive is to:
 
 * Determine people's exposure to environmental noise
-* Ensuring that information on environmental noise and its effects is available to the public
+* Ensuring that information on environmental noise is available to the public
 * Preventing and reducing environmental noise where necessary
 * Preserving environmental noise quality where it is good
 
@@ -130,11 +130,11 @@ transmitting the data to a central system for storage and reporting.
 Examples of established projects are Dublin City Noise[@DublinCityNoise] with 14 sensors across the city since 2016.
 The Sounds of New York City (SONYC)[@SONYC] project had 56 sound sensors installed as of 2018[@SONYC2019],
 and the Barcelona Noise Monitoring System[@BarcelonaNoiseMonitoring] had 86 sound sensors[@BarcelonaNoiseMonitoring2018].
-Future projects include CENSE[@CENSE], which plans to install around 150 sensors in Lorient, France[@CENSESensor].
+The CENSE[@CENSE] projects plans to install around 150 sensors in Lorient, France[@CENSESensor].
 
 ![Illustration of how Sounds of New York City[@SONYC-CPS] system combines sensor networks and citizen reporting with data analysis and to present city experts and agencies with a visual interactive dashboard "Noise Mission Control".](./img/SONYC-CPS.png){ width=50% }
 
-To keep costs low and support a dense coverage, the sensor nodes are can be designed to operate wirelessly.
+To keep costs low and support a dense coverage, the sensor nodes can be designed to operate wirelessly.
 Communication is done using wireless radio technologies such as WiFi, GSM, NB-IoT or 6LoWPAN.
 The sensor harvests its energy, often using solar power or from streetlights powered at night.
 A battery backup allows the sensor to continue operating also when energy is momentarily unavailable.
@@ -143,7 +143,7 @@ These sensor networks enable continuous logging of the sound pressure level,
 measured in Decibel (dB SPL) over a reference pressure level (typically \num{20e-6}\si{Pa} ).
 Since the sound pressure level is continuously varying, it is summarized over a specified time-period
 using Equivalent Continuous Sound Level ($L_{eq}$).
-Typical measurement resolution are per-minute, per second or per 125 ms.
+Typical measurement resolution are per minute, per second or per 125 ms.
 Measurements often use A-weighting to approximate the sensitivity of the human ear at different frequencies.
 In Europe sound level sensors are designed to specifications of IEC 61672-1 Sound Level Meters[@IECSoundLevelMeters],
 and the standard for North America is ANSI S1.4[@ANSISoundLevelMeters].
@@ -179,11 +179,11 @@ D) Sensor performs classification on device and sends result to server. No audio
 In [@AudioCodingSensorGrid], authors propose a compressed noise profile based on lossy compression of spectrograms.
 For 125ms time resolution the bit-rate is between 400 and 1400 bits per second,
 however this gave a 5 percentage points reduction in classification accuracy.
-This is shown as case B. of Figure \ref{figure:sensornetworks-coding}.
+This is shown as case B) of Figure \ref{figure:sensornetworks-coding}.
 
 Others have proposed to use neural networks to produce an audio "embedding" inspired
 by the success of word embeddings[@rong2014word2vec] for Natural Language Processing.
-This is shown as case C. of Figure \ref{figure:sensornetworks-coding}).
+This is shown as case C) of Figure \ref{figure:sensornetworks-coding}.
 In VGGish[@VGGish] model trained on Audioset[@AudioSet]
 a 8-bit, 128 dimensional embedding per 1 seconds clips,
 leading to a datarate of 1024 bits per second.
@@ -194,7 +194,7 @@ however the authors state that more work is needed to fit the RAM constraints of
 
 The minimal amount of data transmissions would be achieved if the detected noise category was sent,
 requiring to perform the entire classification on the sensor.
-This is shown as case D. of Figure \ref{figure:sensornetworks-coding}.
+This is shown as case D) of Figure \ref{figure:sensornetworks-coding}.
 Such an approach could also eliminate the need to send personally identifiable data to a centralized server.
 
 This motivates the problem statement of this thesis:
@@ -239,13 +239,13 @@ Open-set classification. Novelty detection, clustering
 Machine Learning is the use of algorithms and statistical models
 to effectively perform a task, without having to explicitly program the instructions
 for how to perform this task.
-Instead the algorithms learns to perform the desired function from provided data.
+Instead the algorithms learn to perform the desired function from provided data.
 
 *Supervised learning* uses a training dataset where each sample is labeled with the correct output.
 These labels are normally provided by manual annotation by humans inspecting the data,
 a time-intensive and costly process.
 In *unsupervised learning*, models are trained without access to labeled data.
-but often for cluster analysis (automatic discovery of sample groups).
+This is often used for cluster analysis (automatic discovery of sample groups).
 
 Supervised learning techniques can be used for regression and for classification.
 In regression where the goal is to predict a continuous real-valued variable,
@@ -284,7 +284,7 @@ SKIP
 
 
 The goal of the classification model is to make good predictions *on unseen data*.
-The samples available in the dataset only represents some particular examples
+The samples available in the dataset only represent some particular examples
 of this underlying (hidden) distribution of data. 
 Care must be taken to avoid learning peculiarities that are specific to the training samples
 and not representative of general patterns.
@@ -308,11 +308,11 @@ The overall process is illustrated in Figure \ref{figure:crossvalidation}.
 
 One common style of supervised learning processes is to:
 start with a base model and initialize its parameters (often randomly),
-then make predictions using this model, compare these prediction with the labels to compute
+then make predictions using this model, compare these predictions with the labels to compute
 an error, and then update the parameters in order to attempt to reduce this error.
 This iterative process is illustrated in \ref{figure:training-inference}.
 
-![Relationship between training system and the predictive model being trained. \label{figure:training-inference}](./img/training-inference.png)
+![Relationship between training system and the predictive model being trained \label{figure:training-inference}](./img/training-inference.png)
 
 *Hyperparameters* are settings (parameters) used in the training process that
 are set, but not used as optimization during training.
@@ -330,7 +330,7 @@ Once training is completed, the predictive model with the learned parameters can
 
 Artificial Neural Networks are a family of machine learning methods,
 loosely inspired by the biological neurons in the brains of humans and other animals.
-Some of the foundations such as the Perceptron[@Perceptron] dates back to the 1950ies,
+Some of the foundations such as the Perceptron[@Perceptron] dates back to the 1950s,
 but it was not until around 2010 that neural networks started to become
 the preferred choice for many machine learning applications.
 
@@ -344,7 +344,7 @@ It consists of an input layer, one or more hidden layers, and an output layer.
 \begin{figure}[h]
   \centering
      \includegraphics[]{./img/multilayer-perceptron.png}
-\caption{Multi-layer Perceptron with 2 hidden layers
+\caption{Multi-Layer Perceptron with 2 hidden layers
 }
 \label{fig:multilayer-perceptron}
 \end{figure}
@@ -358,10 +358,11 @@ It consists of an input layer, one or more hidden layers, and an output layer.
 \end{figure}
 
 Each layer consists of a number of neurons.
-The neurons of one layer is connected to each of the neurons in the preceding layer.
+The neurons of one layer are connected to each of the neurons in the preceding layer.
 This type of layer is therefore known as a fully-connected layer.
 The input to the network is a 1-dimensional vector.
-If the data is multi-dimensional (like an image) is to be used, it must be flattened to a 1-D vector.
+If the data is multi-dimensional (like an image) is to be used,
+it must be flattened to a 1-D vector.
 
 Each neuron computes its output as a weighted sum of the inputs,
 offset by a bias and followed by an activation function $f$,
@@ -451,7 +452,7 @@ In *mini-batch* Gradient Descent the training data is processed in multiple fixe
 and the loss function and model parameters updates are computed per batch.
 This means that not all the training data has to be kept in memory at the same time,
 which allows to train on very large datasets.
-The batch size is a hyperparameter, and must be set high enough for the batch loss
+The batch size is a hyperparameter, and has to be set high enough for the batch loss
 to be a reasonable estimate of the loss on the full training set,
 but small enough for the batch to fit into memory.
 
@@ -640,7 +641,7 @@ $$
 O_{ss} = HWNMK_w + HWNMK_h = HWNM(K_w+K_h)
 $$
 
-This the number of computations and parameters compared with regular 2D convolutions
+The number of computations and parameters compared with regular 2D convolutions
 is $(K_wK_h)/(K_w+K_h)$ times fewer.
 For example with $K_w=K_h=3$, $9/6=1.5$ and with $K_w=K_h=5$ = $25/10=2.5$. 
 
@@ -744,14 +745,14 @@ and the amplitude quantized at a certain bit-depth.
 A typical sampling frequency is 44100 Hz and bit-depth 16 bit,
 as used in the Audio CD format[@AudioCDspecification].
 With such parameters the majority of human perceivable information in the acoustic sound is captured.
-In this representation sound is a 1 dimensional sequence of numbers, sometimes referred to as a *waveform*.
+In this representation sound is a one dimensional sequence of numbers, sometimes referred to as a *waveform*.
 This is the format utilized by case A) in Figure {figure:sensornetworks-coding} from the introduction.
 
 Digital sound can be stored uncompressed (example format: WAV PCM[@WAVspecification]),
 using lossless compression (FLAC[@FLACHomepage])
 or using lossy compression (MP3[@MP3Standard]).
-Lossy compression removes information that are indistinguishable to the human hear
-and can compress better than lossless.
+Lossy compression removes information that is indistinguishable to the human ear
+and can therefore compress better than lossless.
 It however adds compression artifacts, and is best avoided for machine learning tasks.
 
 Recordings can have multiple channels of audio but for machine learning on audio
@@ -761,7 +762,7 @@ single-channel data (mono-aural) is still common.
 
 Sounds of interest often have characteristic patterns not just in time (temporal signature)
 but also in frequency content (spectral signature).
-Therefore it is common to analyze the audio in a time-frequency representation (a *spectrogram*).
+Therefore it is common to analyze audio in a time-frequency representation (a *spectrogram*).
 
 A common way to compute a spectrogram from an audio waveform is by using the Short Time Fourier Transform (STFT)[@ShortTimeFourierTransformJos].
 The STFT operates by splitting the audio up in short consecutive chunks,
@@ -1182,16 +1183,18 @@ It uses optimized fixed-point maths and SIMD (Single Instruction Multiple Data) 
 perform 4x 8-bit operations at a time.
 This allows it to be up to 4x faster and 5x more energy efficient than floating point[@CMSIS-NN].
 
+<!-- FIXME: figure breaks paragraph -->
+
 ![Low level functions provided by CMSIS-NN (light gray) for use by higher level code (light blue)[@CMSIS-NN]](./img/CMSIS-NN-functions.png)
 
 uTensor[@uTensor] by ARM allows to run a subset of TensorFlow models on ARM Cortex-M devices,
-designed for use with the ARM mbed software platform[@MbedHomepage].
+designed for use with the ARM Mbed software platform[@MbedHomepage].
 
 TensorFlow Lite for Microcontrollers is an experimental port of
 TensorFlow[@TensorFlow], announced at TensorFlow Developer Summit in March 2019[@LaunchingTensorflowLiteMicrocontrollers].
-Its goal is to be compatible with TensorFlow Lite (for mobile devices etc),
+Its goal is to be compatible with TensorFlow Lite (for mobile devices et.c.),
 and to support multiple hardware and software platforms (not just ARM Cortex).
-Thei plan to reuse platform-specific libraries such as CMSIS-NN or uTensor
+They plan to reuse platform-specific libraries such as CMSIS-NN or uTensor
 in order to be as efficient as possible.
 
 EdgeML by Microsoft Research India[@EdgeMLGithub] is a research project
@@ -1199,7 +1202,7 @@ and open source code repository which contains novel algorithms
 developed especially for microcontrollers,
 such as Bonsai[@Bonsai], ProtoNN[@ProtoNN] and FastGRNN[@FastGRNN].
 
-emlearn[@emlearn] by the author is a Python library that
+Emlearn[@emlearn] by the author is a Python library that
 supports converting a subset of Scikit-Learn[@scikit-learn] and Keras[@Keras] models
 and run them using C code designed for microcontrollers.
 
@@ -1253,7 +1256,7 @@ They claim a 16x improvement in power efficiency over a ARM Cortex M7 chip[@GAP8
 
 ## Dataset
 
-The dataset used is Urbansound8K, described in chapter \ref{chapter:datasets}.
+The dataset used for the experiements is Urbansound8K, described in chapter \ref{chapter:datasets}.
 The 10 classes in the dataset are listed in Table \ref{table:urbansound8k-classes},
 and Figure \ref{figure:urbansound8k-examples} shows example audio spectrograms.
     
@@ -1284,7 +1287,7 @@ and DSP instructions. It has 1024 kB of program memory (Flash), and 128 kB of RA
 
 For audio input both analog and digital microphones (I2S/PDM) are supported.
 The microcontroller can also send and receive audio over USB from a host computer.
-An SD card interface can be used to store recorded samples to collect a dataset.
+A SD-card interface can be used to record samples to collect a dataset.
 
 To develop for the STM32L476 microcontroller the
 SensorTile development kit STEVAL-STLKT01V1[@STEVAL-STLKT01V1] was selected.
@@ -1320,27 +1323,29 @@ and writes the generated C code to a specified directory.
 The training setup is implemented in Python.
 The machine learning models are implemented in Keras using the Tensorflow backend.
 To perform feature extraction during training the librosa[@librosa] Python library was used.
-numpy and Pandas libraries were used for general numeric computations and data management.
+Numpy and Pandas libraries were used for general numeric computations and data management.
 
 The training setup has automated tests made with pytest,
 and uses Travis CI to execute the tests automatically for each change.
 
-All the code used is available at \url{https://github.com/jonnor/ESC-CNN-microcontroller}
+All the code is available at \url{https://github.com/jonnor/ESC-CNN-microcontroller}
 
 
 ## Models
 
 ### Model requirements
 
-The candidate models must fit the constraints of our hardware platform,
+The candidate models have to fit the constraints of our hardware platform,
 and leave sufficient resources for other parts of an application to run on the device.
-To do so, we allocate a maximum 50% of each the CPU, RAM, and FLASH capacity to the model.
+To do so, a maximum of 50% of the CPU, RAM, and FLASH capacity is allocated to the model.
 
 ST estimates that an ARM Cortex M4F type device uses approximately 9 cycles/MACC[@X-CUBE-AI-manual].
 With 80 MHz CPU frequency this is approximately 9 MACC/second at 100% CPU utilization.
-Together with the RAM and FLASH from the microcontroller specficiations,
+Together with the RAM and FLASH from the microcontroller specifications,
 this gives the hard constraints on the model summarized in Table \ref{table:model-constraints}.
 
+
+`FIXME: use standard table caption`
 
 |  Resource    | Maximum (50% capacity) |
 | -------      |:---------:|
@@ -1350,7 +1355,7 @@ this gives the hard constraints on the model summarized in Table \ref{table:mode
 
 Table: Summary of hard device constraints for models \label{table:model-constraints}
 
-For each of these aspects it is highly beneficial to be well below the hard constraints:
+For each of these aspects it is highly beneficial to be well below the hard constraints.
 If the FLASH and RAM usage can be reduced to half or one-fourth,
 cost of the microcontroller is reduced by almost 2/4x.
 If CPU usage can be reduced to one-tenth, that can reduce power consumption by up to 10 times.
@@ -1368,8 +1373,6 @@ Even the smallest existing models require significantly more than the available 
 \end{table}
 
 ![Performance of existing CNN models using log-mel features on Urbansound8k dataset. Green area bottom left shows the region which satisfies our model requirements.\label{existing-models-perf}](./plots/urbansound8k-existing-models-logmel.png)
-
-`FIXME: plot is clipping text at bottom and top, need more margins`
 
 
 ### Compared models
@@ -1403,7 +1406,7 @@ Depthwise Separable (Stride-DS-5x5),
 Bottleneck with Depthwise Separable (Stride-BN-DS-5x5)
 and Effnet block (Stride-Effnet-5x5).
 These blocks are illustrated in `FIXME: ref picture`.
-For EffNet, LeakyReLU was with ReLu since LeakyReLU is not supported by X-CUBE-AI 3.4.
+For EffNet, LeakyReLU was with ReLu since LeakyReLU is not supported by X-CUBE-AI, version 3.4.
 Additionally a version of strided with depthwise separable convolution with 3x3 kernel size (Stride-DS-3x3) is tested.
 The Keras definition the strided model(s) can be found in appendix \ref{appendix:strided-model}.
 
@@ -1421,7 +1424,7 @@ of the device constraints.
 `TODO: image of the different convolutional blocks`
 
 Residual connections were not tested, as the networks are relatively shallow.
-Grouped convolutions were not tested, as they are not supported by X-CUBE-AI 3.4.
+Grouped convolutions were not tested, as they are not supported by X-CUBE-AI version 3.4.
 
 
 <!--
@@ -1434,6 +1437,7 @@ To get the RAM utilization within limits, striding is used as the downsampling s
 ST FP-SENSING1 function pack[@FP-AI-SENSING1]
 -->
 
+<!-- TODO: introduction in method -->
 
 \newpage
 # Methods
@@ -1445,7 +1449,7 @@ ST FP-SENSING1 function pack[@FP-AI-SENSING1]
 Mel-spectrograms are used as the input feature.
 The most compact and most computationally efficient feature-set in use by existing methods was by LD-CNN,
 which used windows of 31 frames @ 22050 Hz (720 ms) with 60 mel-filter bands.
-This has achieved results near the state-of-art, so we opted to use the same.
+This has achieved results near the state-of-art, so the same settings were used.
 
 
 \begin{table}
@@ -1630,7 +1634,7 @@ be able to increase performance of the models shown.
 Possible techniques for this are transfer learning[@PretrainingSpeechCommandRecognition],
 or applying stronger data augmentation techniques (such as Mixup).
 
-Applying quantization should be able make the computations of the models more efficient.
+Applying quantization should make the computations of the models more efficient.
 A first step would be to make use of the optimized CMSIS-NN library[@CMSIS-NN],
 which utilizes 8-bit integer operations. 
 However there are also promising results showing that CNNs can be
@@ -1657,7 +1661,7 @@ while still enable reliable human labeling and use as evaluation/training data?
 It is also desirable to reduce how often classification is needed.
 Could this benefit from an adaptive sampling strategy?
 For example to primarily do classification for time-periods which exceed
-a sound level threshold, or to sample less often when the sound sources changes slowly.
+a sound level threshold, or to sample less often when the sound source changes slowly.
 
 
 

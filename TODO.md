@@ -46,10 +46,15 @@ Final
 
 - Do a figure/table captions pass.
 Do they explain the figure setup/contents OK?
+Short captions for the table of contents.
+Remove dots at the end. 2.2, 2.6, 2.16 etc
+- Double check refering style
 - Do a spell checking pass
 - Do a grammar checking pass. LanguageTool + Grammarly
 - Fix Github link, to be to final branch
 - Make sure final page is EVEN number
+
+
 
 ### After report
 

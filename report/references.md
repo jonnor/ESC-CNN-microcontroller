@@ -788,11 +788,34 @@ Same classification down to 5 bits/word.
 
 * VGGish. 128 dimensions, 8 quantized bit. Used as base for DCASE2019 challenge.
 * SoundNet.
-* L^3 (Look, Listen, Learn). 73.65% on Urbansound8k. 512 dimensions.
+* L^3 (Look, Listen, Learn).
+73.65% on Urbansound8k. 512 dimensions.
+
 * EdgeL3. Compressed version of L^3.
 70% compression. 72.64% on Urbansound8k.
 0.814 MB for its 213,491 parameters in float32.
 12 MB RAM needed for activations.
+
+### OpenL3
+May, 2019
+
+LOOK, LISTEN, AND LEARN MORE: DESIGN CHOICES FOR DEEP AUDIO EMBEDDINGS
+Trained on 296K videos from YouTube.
+Code for retrieving is available.
+
+6144 and 512-D embedding available.
+
+Tested using 2-layer NN
+Matches SOTA on Urbansound8k (79%), and close on ESC-50
+Good performance shown also for music tasks
+
+Uses mel-spectrograms instead of linear (original L3).
+Significantly outperforms VGGish and SoundNet embeddings.
+4M parameters model size
+
+Pretrained models available.
+Also as Python library, using Keras/TensorFlow.
+
 
 ## Sensors
 
