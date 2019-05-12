@@ -12,12 +12,17 @@ Feedback needed
 
 Results
 
-- Include latest results
-- Measure runtime on device for latest models
 - Use Strided-DS-24 as chosen model (confusion matrix etc), instead of auto "best"
 - Finish basic Discussion and Conclusion
 - Make plots a bit prettier
 - Add picture of demo setup
+
+Reprod
+
+- Tag a branch for submitted thesis
+- Upload models to GH
+- Results are from git commit `b49efa5dde48f9fd72a32eff4c751d9d0c0de712`
+- Include perftools Python script in appendix?
 
 Abstract
 

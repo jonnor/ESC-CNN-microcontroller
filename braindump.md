@@ -56,6 +56,22 @@ For DS-5x5 12, going from 0.5 dropout to 0.25 increases perf from 65% to 72%
 
 python train.py --model strided --conv_block depthwise_separable --epochs 100 --downsample_size=2x2 --filters 12 --dropout 0.25
 
+### Aggregation
+Low-pass filter over consequtive frames?
+Exponential Moving Average?
+
+## Testing
+
+Jackhammer
+https://annotator.freesound.org/fsd/explore/%252Fm%252F03p19w/
+https://freesound.org/people/Mark_Ian/sounds/131918/
+
+Dog bark
+https://annotator.freesound.org/fsd/explore/%252Fm%252F0bt9lr/
+http://freesound.org/s/365053
+
+
+
 
 ## Kubernetes
 

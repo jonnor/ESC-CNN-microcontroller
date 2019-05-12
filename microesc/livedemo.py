@@ -8,6 +8,7 @@ import time
 
 import numpy
 import serial
+import scipy.signal
 
 import matplotlib
 from matplotlib import pyplot as plt
@@ -75,47 +76,89 @@ def create_interactive():
     win = Gtk.Window()
     win.connect("delete-event", Gtk.main_quit)
     win.set_default_size(400, 300)
-    win.set_title("Embedding in GTK")
+    win.set_title("On-sensor Audio Classification")
 
-    f = matplotlib.figure.Figure(figsize=(5, 4), dpi=100)
-    ax = f.add_subplot(111)
-    t = numpy.arange(0.0, 3.0, 0.01)
-    s = numpy.sin(2*numpy.pi*t)
-
-    #ax.plot(t, s)
+    fig, (ax, text_ax) = plt.subplots(1, 2)
 
     sw = Gtk.ScrolledWindow()
     win.add(sw)
     # A scrolled window border goes outside the scrollbars and viewport
     sw.set_border_width(10)
 
-    canvas = FigureCanvas(f)  # a Gtk.DrawingArea
-    canvas.set_size_request(800, 600)
+    canvas = FigureCanvas(fig)  # a Gtk.DrawingArea
+    canvas.set_size_request(200, 400)
     sw.add_with_viewport(canvas)
 
-    predictions = numpy.random.random(10)
-    rects = ax.bar(numpy.arange(len(predictions)), predictions, align='center', alpha=0.5)
+    prediction_threshold = 0.35
 
-    return win, f, ax, rects
+    # Plots
+    predictions = numpy.zeros(11)
+    tt = numpy.arange(len(predictions))
+    rects = ax.barh(tt, predictions, align='center', alpha=0.5)
+    ax.set_yticks(tt)
+    ax.set_yticklabels(classnames)
+    ax.set_xlim(0, 1)
 
-def update_plot(ser, ax, fig, rects):
+    ax.axvline(prediction_threshold)
+    ax.yaxis.set_ticks_position('right')
+
+    # Text
+    text_ax.axes.get_xaxis().set_visible(False)
+    text_ax.axes.get_yaxis().set_visible(False)
+
+    text = text_ax.text(0.5, 0.2, "Unknown",
+        horizontalalignment='center',
+        verticalalignment='center',
+        fontsize=32,
+    )
+
+    def emwa(new, prev, alpha):
+        return alpha * new + (1 - alpha) * prev
+
+    prev = predictions
+    alpha = 0.2 # smoothing coefficient
+
+    window = numpy.zeros(shape=(4, 11))
+
+    from scipy.ndimage.interpolation import shift
+
+    def update_plot(predictions):
+
+        if len(predictions) < 10:
+            return
+
+        # add unknown class
+        predictions = numpy.concatenate([predictions, [0.0]])
+
+        window[:, :] = numpy.roll(window, 1, axis=0)
+        window[0, :] = predictions
+
+        predictions = numpy.mean(window, axis=0)
+
+        best_p = numpy.max(predictions)
+        best_c = numpy.argmax(predictions)
+        if best_p <= prediction_threshold:
+            best_c = 10
+            best_p = 0.0
+
+        for rect, h in zip(rects, predictions):
+            rect.set_width(h)
+
+        name = classnames[best_c]
+        text.set_text(name)
+
+        fig.tight_layout()
+        fig.canvas.draw()
+
+    return win, update_plot
+
+def fetch_predictions(ser):
     raw = ser.readline()
     line = raw.decode('utf-8')
     predictions = parse_input(line)
+    return predictions
 
-    if predictions:
-        best_p = numpy.max(predictions)
-        best_c = numpy.argmax(predictions)
-        name = classnames[best_c]
-        if best_p >= 0.35:
-            print('p', name, best_p)
 
-        for rect, h in zip(rects, predictions):
-            rect.set_height(h)
-
-    fig.canvas.draw()
-
-    return True
 
 def main():
     test_parse_preds()
@@ -123,14 +166,25 @@ def main():
     device = '/dev/ttyACM1'
     baudrate = 115200
 
-    window, fig, ax, rects = create_interactive()
+    window, plot = create_interactive()
     window.show_all()
+
+    def update(ser):
+        try:
+            preds = fetch_predictions(ser)
+        except Exception as e:
+            print('error', e)
+            return True
+
+        if preds is not None:
+            plot(preds)
+        return True
 
     with serial.Serial(device, baudrate, timeout=0.1) as ser:
         # avoid reading stale data
         thrash = ser.read(10000)
-       
-        GLib.timeout_add(200.0, update_plot, ser, ax, fig, rects)
+      
+        GLib.timeout_add(200.0, update, ser)
 
         Gtk.main() # WARN: blocking
 

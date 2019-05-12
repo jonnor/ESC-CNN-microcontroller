@@ -856,7 +856,7 @@ the last window is zero padded.
 Sometimes there is a mismatch between the desired length of analysis window,
 and the labeled clips available in the training data.
 For example a dataset may consist of labeled audio clips with a length of 10 seconds,
-while the desired output is every 1 seconds.
+while the desired output is every second.
 When a dataset is labeled only with the presence of a sound at a coarse timescale,
 without information about where exactly the relevant sound(s) appears
 it is referred to as *weakly annotated* or *weakly labeled* data[@ComputationalAnalysisSound, ch 14.2.4.1].
@@ -1611,6 +1611,13 @@ What is the battery lifetime. BOM
 
 # Conclusions
 
+<!--
+
+Recap what you did.
+Highlight the big accomplishments.
+Conclude. Wraps up your paper. Tie your research to the “real world.”
+-->
+
 Able to demonstrate Environmental Sound Classification
 running on a low-power microcontroller suitable for use in a sensor node.
 
@@ -1641,29 +1648,31 @@ However there are also promising results showing that CNNs can be
 effectively implemented with as little as 2 bits[@andri2016yodann][@miyashita2016convolutional][@IncrementalNetworkQuantization],
 and without using any multiplications[@leng2018extremely][@cintra2018low].
 
+<!--
 Low-power hardware accelerators for Convolutional Neural Networks will hopefully
 become available over the next few years.
 This may enable larger models at the same power budget,
 or to reduce power consumption at a given predictive performance level. 
 End-to-end CNN models using raw audio as input becomes extra interesting with such a co-processor,
 since it allows also the filterbank processing to be offloaded from the general purpose CPU.
+-->
 
-In a practical deployment of on-edge classification, it is still desirable to
-be able to collect some data for evaluation of performance and further training.
+In a practical deployment of on-sensor classification, it is still desirable to
+be able to collect *some* data for evaluation of performance and further training.
 This could be sampled at random. But could it be more effective to use some sort of
-adaptive sampling, and possibly Active Learning?
+adaptive sampling, possibly Active Learning?
 
+<!--
 Normally such training and evaluation data is transferred as raw PCM audio,
 which inefficient in terms of bandwidth.
 Could low-power audio coding be applied to compress the data,
 while still enable reliable human labeling and use as evaluation/training data?
- 
-It is also desirable to reduce how often classification is needed.
+--> 
+
+It is also very desirable to reduce how often classification is needed.
 Could this benefit from an adaptive sampling strategy?
 For example to primarily do classification for time-periods which exceed
 a sound level threshold, or to sample less often when the sound source changes slowly.
-
-
 
 
 <!---
