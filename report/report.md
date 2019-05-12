@@ -978,6 +978,15 @@ based on selecting and manually labeling content from the Freesound[@Freesound] 
 1302 different recordings were annotated, for a total of 18.5 hours of labeled audio. 
 A curated subset with 8732 audio clips of maximum 4 seconds is known as *Urbansound8k*.
 
+\begin{table}[h]
+\centering
+\scalebox{0.8}{
+\input{pyincludes/urbansound8k-classes.tex}
+}
+\caption{Classes found in the Urbansound8k dataset}
+\label{table:urbansound8k-classes}
+\end{table}
+
 YorNoise[@medhat2017masked] is a collection of vehicle noise.
 It has a total of 1527 samples, in two classes: road traffic (cars, trucks, buses) and rail (trains).
 The dataset follows the same design as Urbansound8k,
@@ -1256,18 +1265,15 @@ They claim a 16x improvement in power efficiency over a ARM Cortex M7 chip[@GAP8
 
 ## Dataset
 
-The dataset used for the experiements is Urbansound8K, described in chapter \ref{chapter:datasets}.
-The 10 classes in the dataset are listed in Table \ref{table:urbansound8k-classes},
-and Figure \ref{figure:urbansound8k-examples} shows example audio spectrograms.
-    
-\begin{table}
-\centering
-\input{pyincludes/urbansound8k-classes.tex}
-\caption{Classes found in the Urbansound8k dataset}
-\label{table:urbansound8k-classes}
-\end{table}
+The dataset used for the experiments is Urbansound8K, described in chapter \ref{chapter:datasets}.
+Figure \ref{figure:urbansound8k-examples} shows example audio spectrograms for each of the 10 classes.
 
-![Spectrograms of sound clips from Urbansound8k dataset, selected for each class\label{figure:urbansound8k-examples}](./plots/urbansound8k-examples.png)
+\begin{figure}[h]
+\centering
+\includegraphics{./plots/urbansound8k-examples.png}
+\caption[Spectrograms from Urbansound8k dataset]{Spectrograms of sound clips from Urbansound8k dataset, selected for each class }
+\label{figure:urbansound8k-examples}
+\end{figure}
 
 The dataset comes prearranged into 10 folds for cross-validation.
 A single fold may contain multiple clips from the same source file,
@@ -1276,7 +1282,6 @@ but the same source file is not used in multiple folds to prevent data leakage.
 The target sound is rarely alone in the sound clip, and may be in the background,
 partially obscured by sounds outside the available classes.
 This makes Urbansound8k a relatively challenging dataset.
-
 
 ## Hardware platform
 
@@ -1503,9 +1508,9 @@ was bottlenecked by the CPU or SSD when preparing the batches.
 
 Once training is completed, the model epoch with best performance on the validation set is selected
 for each of the cross-validation folds.
-The selected models are then evaluated on the test set.
+The selected models are then evaluated on the test set in each fold.
 
-In addition to the original Urbansound8k test set,
+In addition to the standard cross-validation for Urbansound8k,
 the model performance is evaluated on two simplified variations:
 
 - Only clips where target sound is in the foreground
@@ -1527,9 +1532,14 @@ which would be ignored if only relying on the theoretical MACC number.
 # Results
 
 
+## Model comparisons
+
 ![Test accuracy of the different models](./results/models_accuracy.png){ height=30% }
 
-\begin{table}
+`FIXME: add std-dev to table`
+`FIXME: sort table in same order as figure`
+
+\begin{table}[h]
 \centering
 \input{pyincludes/results.tex}
 \caption{Results for the compared models}
@@ -1540,17 +1550,34 @@ which would be ignored if only relying on the theoretical MACC number.
 
 `FIXME: change confusion matrix color scale to show nuances in 0-20% range`
 
+`TODO: plot MAC versus compute time`
+
+## Error analysis
+
 ![Confusion matrix on Urbansound8k](./results/confusion_test.png){ height=30% }
 
 ![Confusion matrix in reduced groups with only foreground sounds](./results/grouped_confusion_test_foreground.png){ height=30% }
 
 `TODO: add error analysis plots`
 
-`TODO: plot MAC versus compute time`
 
-`TODO: plot training curves over epochs`
+<!-- MAYBE: plot training curves over epochs -->
 
-`FIXME: add a picture of demo setup`
+## On-device testing
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.0\textwidth]{./img/demo-tightcrop.jpg}
+\caption[Testing model on device]{Model being tested on device. Sound is played back via headphones and classified on the microcontroller. Predictions are sent to computer and visualized on screen in real-time. }
+\label{figure:demo}
+\end{figure}
+
+The on-device demonstration used the SENSING1 application example as base,
+and modifications were made to send the predictions out over USB.
+This example code only supports mel-spectrogram preprocessing with 16 kHz sample-rate, 30 filters
+and 1024 samples FFT window with 512 hops, using max-normalization for the analysis windows.
+A Strided-DS-5x5 model was trained on fold 1-8 to match these feature settings.
+The model scored 72% on the associated validation-set, fold 9.
 
 
 \newpage
