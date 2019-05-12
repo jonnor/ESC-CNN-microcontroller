@@ -140,7 +140,8 @@ def load_sample(sample, settings, feature_dir, window_frames,
     # Normalize the window
     if mels.shape[1] > 0:
         if normalize == 'max':
-            mels = librosa.core.power_to_db(mels, top_db=80, ref=numpy.max)
+            mels /= (numpy.max(mels) + 1e-9)
+            mels = librosa.core.power_to_db(mels, top_db=80)
         elif normalize == 'meanstd':
             mels = librosa.core.power_to_db(mels, top_db=80)
             mels -= numpy.mean(mels)

@@ -235,7 +235,7 @@ def main():
         augment = not validation and train_settings['augment'] != 0
         d = features.load_sample(sample, feature_settings, feature_dir=feature_dir,
                         window_frames=model_settings['frames'],
-                        augment=augment)
+                        augment=augment, normalize=exsettings['normalize'])
         return d
 
     def build_model():

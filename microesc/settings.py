@@ -31,6 +31,7 @@ default_model_settings = dict(
     dropout=0.5,
     voting='mean',
     voting_overlap=0.0,
+    normalize='meanstd',
 )
 
 names = set().union(*[
