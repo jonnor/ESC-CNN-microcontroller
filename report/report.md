@@ -1518,9 +1518,11 @@ the model performance is evaluated on two simplified variations:
 
 `TODO: table of group membership`
 
+<!--
 Also explored is the consequence of introduce an "unknown" class for low-confidence predictions:
 Predictions where the highest probability is below a certain threshold
 are assigned to the unknown class instead of the original 10 classes.
+-->
 
 The SystemPerformance application skeleton from X-CUBE-AI is used to record the
 average inference time per sample on the STM32L476 microcontroller.
@@ -1666,11 +1668,11 @@ practical challenges with applying on-edge classification of noise in sensor net
 Utilizing larger amounts of training data might
 be able to increase performance of the models shown.
 Possible techniques for this are transfer learning[@PretrainingSpeechCommandRecognition],
-or applying stronger data augmentation techniques (such as Mixup).
+or applying stronger data augmentation techniques (such as Mixup[Mixup] or SpecAugment[@SpecAugment]).
 
-Applying quantization should make the computations of the models more efficient.
+Applying quantization should speed up the computations of the models.
 A first step would be to make use of the optimized CMSIS-NN library[@CMSIS-NN],
-which utilizes 8-bit integer operations. 
+which utilizes 8-bit integer operations and the SIMD unit in the ARM Cortex M4F.
 However there are also promising results showing that CNNs can be
 effectively implemented with as little as 2 bits[@andri2016yodann][@miyashita2016convolutional][@IncrementalNetworkQuantization],
 and without using any multiplications[@leng2018extremely][@cintra2018low].
@@ -1685,9 +1687,10 @@ since it allows also the filterbank processing to be offloaded from the general 
 -->
 
 In a practical deployment of on-sensor classification, it is still desirable to
-be able to collect *some* data for evaluation of performance and further training.
-This could be sampled at random. But could it be more effective to use some sort of
-adaptive sampling, possibly Active Learning?
+collect *some* data for evaluation of performance and further training.
+This could be sampled at random.
+But can an on-sensor implementation Active Learning[@ActiveLearningSonyc][@SemiSupervisedActiveLearning]
+make this process more efficient?
 
 <!--
 Normally such training and evaluation data is transferred as raw PCM audio,
@@ -1696,8 +1699,8 @@ Could low-power audio coding be applied to compress the data,
 while still enable reliable human labeling and use as evaluation/training data?
 --> 
 
-It is also very desirable to reduce how often classification is needed.
-Could this benefit from an adaptive sampling strategy?
+It is critical for power consumption to reduce how often on-sensor classification is performed.
+This should also benefit from an adaptive sampling strategy.
 For example to primarily do classification for time-periods which exceed
 a sound level threshold, or to sample less often when the sound source changes slowly.
 
