@@ -1371,13 +1371,13 @@ and shown with respect to these model constraints
 in Figure \label{existing-models-perf}.
 Even the smallest existing models require significantly more than the available resources. 
 
-\begin{table}
+\begin{table}[h]
 \input{plots/urbansound8k-existing-models-logmel.tex}
 \caption{Existing methods and their results on Urbansound8k}
 \label{table:urbansound8k-existing-models-logmel}
 \end{table}
 
-![Performance of existing CNN models using log-mel features on Urbansound8k dataset. Green area bottom left shows the region which satisfies our model requirements.\label{existing-models-perf}](./plots/urbansound8k-existing-models-logmel.png)
+![Model complexity and accuracy scores of existing CNN models using log-mel features on Urbansound8k dataset. Green area bottom left shows the region which satisfies our model requirements.\label{existing-models-perf}](./plots/urbansound8k-existing-models-logmel.png)
 
 
 ### Compared models
@@ -1398,30 +1398,36 @@ due to the reduced input feature size (60 mel filter bands instead of 128).
 Batch Normalization was added to each convolutional block.
 The Keras definition for baseline model can be found in appendix \ref{appendix:baseline-model}.
 
-`FIXME: rename BN to something else. BL? BTL? BTLN`
-
-From this baseline architecture, several model variations are created in order to evaluate
+From the baseline architecture, several model variations are created in order to evaluate
 the effects of using different convolutional blocks and as well as replacing
 max-pooling with strided convolutions.
-First the baseline was modified with just depthwise-separable (nicknamed Baseline-DS),
-or striding (nicknamed Stride-5x5).
-Since the stride height and width in Keras/Tensorflow must be uniformly, 2x2 is used instead of 3x2 from max-pooling.
+First the baseline was modified with just depthwise-separable convolutions (nicknamed Baseline-DS),
+or striding (nicknamed Stride).
+Since the stride height and width in Keras/Tensorflow must be uniform,
+2x2 is used instead of 3x2 from max-pooling.
+
 Three different convolution blocks are tested on top of the strided model:
-Depthwise Separable (Stride-DS-5x5),
-Bottleneck with Depthwise Separable (Stride-BN-DS-5x5)
-and Effnet block (Stride-Effnet-5x5).
+Depthwise Separable (Stride-DS-*),
+Bottleneck with Depthwise Separable (Stride-BTLN-DS)
+and Effnet block (Stride-Effnet).
 These blocks are illustrated in `FIXME: ref picture`.
 For EffNet, LeakyReLU was with ReLu since LeakyReLU is not supported by X-CUBE-AI, version 3.4.
+
 Additionally a version of strided with depthwise separable convolution with 3x3 kernel size (Stride-DS-3x3) is tested.
 The Keras definition the strided model(s) can be found in appendix \ref{appendix:strided-model}.
 
-This results in 7 different models, as seen in Table \ref{table:models}.
-For all models the number of layers and filters were set as high as possible within violating any
-of the device constraints.
+Strided-DS showed promising results in early testing on a single fold.
+Because of that few variations with fewer number of filters were also tested to get an idea for
+the possible performance/complexity tradeoffs.
+In addition to the maximum of 24 filters, 20, 16 and 12 filters were tested. 
+For all other Strided models the number of layers and filters were set as high as
+possible within violating any of the device constraints.
+
+This results in 10 different models, as summarized in Table \ref{table:models}.
 
 \begin{table}[h]
 \input{pyincludes/models.tex}
-\caption[Model architectures comparison]{Model architectures compared. B=Number of convolution blocks, F=Filters in each convolution block, DS=Depthwise Separable, BN=Bottleneck}
+\caption[Parameters of compared models]{Parameters of the compared models. L=Number of convolution layers, F=Filters in each convolution layer, DS=Depthwise Separable, BTLN=Bottleneck}
 \label{table:models}
 \end{table}
 
@@ -1432,29 +1438,26 @@ Residual connections were not tested, as the networks are relatively shallow.
 Grouped convolutions were not tested, as they are not supported by X-CUBE-AI version 3.4.
 
 
-<!--
-`MAYBE: write about RAM optimization in X-CUBE-AI`
-In the SB-CNN architecture X-CUBE-AI will fuse the layers Conv2D -> BN -> MaxPooling2D into a single operation.
-To get the RAM utilization within limits, striding is used as the downsampling strategy.
--->
-
-<!--
-ST FP-SENSING1 function pack[@FP-AI-SENSING1]
--->
-
 <!-- TODO: introduction in method -->
 
 \newpage
 # Methods
 
-![Overview of the full model. The classifier runs on individual analysis windows, and predictions for the whole audio clip done using voting. \label{classification-pipeline}](./img/classification-pipeline.png)
+The method for experimental evaluation of the models follows as closely as possible
+the established practices for the Urbansound8k dataset.
+
+Figure \ref{classification-pipeline} illustrates the overall setup of the
+classification model.
+
+![Overview of the full model. The classifier runs on individual analysis windows, and predictions for the whole audio clip is done by voting over predictions from all the analysis windows. \label{classification-pipeline}](./img/classification-pipeline.png)
 
 ## Preprocessing
 
 Mel-spectrograms are used as the input feature.
 The most compact and most computationally efficient feature-set in use by existing methods was by LD-CNN,
 which used windows of 31 frames @ 22050 Hz (720 ms) with 60 mel-filter bands.
-This has achieved results near the state-of-art, so the same settings were used.
+This has achieved results near the state-of-art, so the same settings were used,
+however the delta mel-spectrograms were dropped to reduce RAM consumption.
 
 
 \begin{table}
@@ -1499,10 +1502,10 @@ A complete summary of experiment settings can be seen in Table \ref{table:experi
 Training was performed on a NVidia GTX2060 GPU with 6GB of RAM
 on a machine with an Intel i5-9400F CPU, 16 GB of RAM and a Kingston A1000 M.2 SSD.
 However the models can be trained on any device supported by TensorFlow and a minimum of 2GB RAM.
-In total 99 training jobs were ran for the experiments, 9 folds for each of 11 tested models.
+In total 100 training jobs were ran for the experiments, 10 folds for each of 10 tested models.
 Jobs were processed with 3 jobs in parallel and took approximately 36 hours in total.
 However GPU utilization was only 15%, suggesting that the training process
-was bottlenecked by the CPU or SSD when preparing the batches.
+was bottlenecked by the CPU or SSD when preparing the training batches for the GPU.
 
 ## Evaluation
 
@@ -1536,19 +1539,45 @@ which would be ignored if only relying on the theoretical MACC number.
 
 ## Model comparisons
 
-![Test accuracy of the different models](./results/models_accuracy.png){ height=30% }
-
-`FIXME: add std-dev to table`
-`FIXME: sort table in same order as figure`
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.0\textwidth]{./results/models_accuracy.png}
+\caption[Test accuracy of the different models]{Test accuracy of the different models. 
+State-of-the-art averages (SB-CNN/LD-CNN and D-CNN) marked with green dots.
+No-information rate marked with black dots.}
+\label{figure:demo}
+\end{figure}
 
 \begin{table}[h]
 \centering
 \input{pyincludes/results.tex}
-\caption{Results for the compared models}
+\caption[Results for the compared models]{
+Results for the compared models.
+CPU usage as measured on microcontroller.
+FG=Foreground samples only, BG=Background samples only.}
 \label{table:results}
 \end{table}
 
-![Accuracy versus compute of different models](./results/models_efficiency.png){ height=30% }
+The Baseline model gets 72.3% mean accuracy.
+This is the same level as SB-CNN and PiczakCNN without data-augmentation (73%)[@SB-CNN],
+but significantly below the 79% of SB-CNN and LD-CNN with data-augmentation.
+As expected, the Baseline uses more CPU than our requirements.
+
+The Strided model is outside the desirable range.
+
+Strided-DS with 70.9% mean accuracy is able to get quite close close the baseline performance,
+despite having $10185/477 = 21x$ fewer multiply-add operations (MACC).
+The practical efficiency gain in CPU usage is however only $971/81 = 12x$.
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.0\textwidth]{./results/models_efficiency.png}
+\caption[Accuracy versus compute of different models]{Accuracy versus compute of different models.
+Variations of the same model family have the same color.
+Strided- has been shortened to S- for readability.}
+\label{figure:demo}
+\end{figure}
 
 `FIXME: change confusion matrix color scale to show nuances in 0-20% range`
 
@@ -1565,6 +1594,7 @@ which would be ignored if only relying on the theoretical MACC number.
 
 <!-- MAYBE: plot training curves over epochs -->
 
+\newpage
 ## On-device testing
 
 \begin{figure}[h]
@@ -1574,11 +1604,12 @@ which would be ignored if only relying on the theoretical MACC number.
 \label{figure:demo}
 \end{figure}
 
-The on-device demonstration used the SENSING1 application example as base,
-and modifications were made to send the predictions out over USB.
-This example code only supports mel-spectrogram preprocessing with 16 kHz sample-rate, 30 filters
-and 1024 samples FFT window with 512 hops, using max-normalization for the analysis windows.
-A Strided-DS-5x5 model was trained on fold 1-8 to match these feature settings.
+The on-device demonstration used the ST FP-SENSING1[@FP-AI-SENSING1] function pack as a base,
+with modifications made to send the model predictions out over USB.
+This example code unfortunately only supports mel-spectrogram preprocessing
+with 16 kHz sample-rate, 30 filters and 1024 samples FFT window with 512 hops,
+using max-normalization for the analysis windows.
+Therefore a Strided-DS model was trained on fold 1-8 to match these feature settings.
 The model scored 72% on the associated validation-set, fold 9.
 
 
@@ -1590,15 +1621,35 @@ Ref Problem
 > Can we classify environmental sounds directly on a wireless and battery-operated noise sensor?
 -->
 
+## Model comparison
+
 `TODO: make into coherent flow`
 
-The Baseline model uses more CPU than our requirements, as expected.
-Also the base Strided model is outside the desirable range.
 
-Depthwise Separable combined with striding (Strided-DS-5x5, Strided-DS-3x3)
-able to match the baseline performance, at a much lower computational cost.
+The lower performance of our Baseline
+may be a result of the reduced feature representation,
+or the reduced number of predictions per
+Compared to LD-CNN the delta-melspectrogram features are missing,
+which might make it easier to learn patterns of fluctuation.
+Two channels in the input also effectively doubles the number of convolutional kernels. 
+Compared to SB-CNN the analysis window is shorter ``
+Since no overlap is used there are only 6 analysis windows
+and predictions to be aggregated over a 4 second clip.
+In LD-CNN and SB-CNN, `FIXME: find out how much overlap`. 
 
-Best result 73%.
+
+
+
+
+
+
+Strided-BTLN-DS and Stride-Effnet performed very poorly in comparison.
+Despite almost the same computational requirements as Strided-DS-24,
+they had accuracy scores that were 6.1 and 10.2 percentage points lower, respectively.
+
+Pareto optimal
+
+
 Far from the state-of-the-art when not considering performance constraints
 Probably below human-level accuracy. Ref ESC-50
 
@@ -1609,12 +1660,17 @@ With estimated 88M MAC/s, a factor 200x more.
 Indicator of huge differences in efficiency between different CNN architectures
 -->
 
-When considering only foreground sounds, accuracy increases significantly.
+Accuracy when considering only foreground sounds improved significantly.
+Median improvement.
+
+When considering , accuracy increases significantly (as expected).
+
 
 When considering the reduced 5-group classification.
 Some misclassifications are within a group of classes, and this increases accuracy.
 Example...
 However still have significant confusion for some groups...
+
 
 Classification is done on 4 second intervals (as that is what is available in Urbansound8k)
 In a noise monitoring situation this is probably way too fine grained.

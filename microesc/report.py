@@ -87,17 +87,25 @@ def get_accuracies(confusions):
     assert len(accs) == 10, len(accs) 
     return pandas.Series(accs) 
 
-def plot_accuracy_comparison(experiments, ylim=(0.60, 0.80), figsize=(12, 4)):
+def plot_accuracy_comparison(experiments, ylim=(0.0, 1.0), figsize=(12, 4)):
 
     df = experiments.copy()
     df.index = experiments.nickname
     acc = df.confusions_test.apply(get_accuracies).T
-    fig, ax = plt.subplots(1, figsize=figsize)
+    fig, ax = plt.subplots(1, figsize=figsize, dpi=300)
     
     acc.boxplot(ax=ax)
 
+    # Mark SOTA models
+    ax.axhline(0.79, linestyle='dotted', color='green')
+    ax.axhline(0.83, linestyle='dotted', color='green')
+
+    # FIXME: better no-information rate
+    ax.axhline(0.10, linestyle='dotted', color='black')
+
     ax.set_ylabel('Accuracy')
     ax.set_ylim(ylim)
+    ax.set_yticks(numpy.arange(ylim[0], ylim[1], 0.1))
 
     #ax.set_xticks(experiments.nickname)
     #ax.set_xlabel('Model')
@@ -106,7 +114,6 @@ def plot_accuracy_comparison(experiments, ylim=(0.60, 0.80), figsize=(12, 4)):
 
 def plot_accuracy_vs_compute(experiments, ylim=(0.60, 0.80),
                                 perf_metric='utilization', figsize=(12,8)):
-    # TODO: color experiment groups
     # TODO: add error bars?
 
     acc = experiments.confusions_test.apply(get_accuracies).T
@@ -115,12 +122,23 @@ def plot_accuracy_vs_compute(experiments, ylim=(0.60, 0.80),
     numpy.testing.assert_allclose(df.test_acc_mean, df.accuracy)
     df['experiment'] = df.index
 
-    fig, ax = plt.subplots(1, figsize=figsize)
-    df.plot.scatter(ax=ax, x=perf_metric, y='accuracy', logx=True)
+    fig, ax = plt.subplots(1, figsize=figsize, dpi=300)
+    def get_color(idx, nick):
+        if nick.startswith('Stride-DS-') and not nick.endswith('3x3'):
+            return 'C0'
+        return 'C{}'.format(1+idx)
+
+    colors = [ get_color(i, n) for i, n in enumerate(df.nickname) ]
+    df.plot.scatter(ax=ax, x=perf_metric, y='accuracy', c=colors, logx=True)
 
     # Y axis
     ax.set_ylim(ylim)
     ax.set_ylabel('Accuracy')
+    ax.grid(True)
+    ax.tick_params(axis='y', grid_alpha=0.2, grid_color='black')
+
+    # X axis
+    ax.tick_params(axis='x', grid_alpha=0.0)
 
     if perf_metric == 'utilization':
         # mark feasible regions
@@ -135,19 +153,25 @@ def plot_accuracy_vs_compute(experiments, ylim=(0.60, 0.80),
             return '{:d}%'.format(int(tick_val*100))
 
         ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(format_utilization))
-        ax.set_xlabel('CPU utilization')
+        ax.set_xlabel('CPU usage')
 
     # Add markers
     def add_labels(row):
         xy = row[perf_metric], row.accuracy
         label = "{}".format(row.nickname) 
+        label = label.replace('Stride-DS-', 'S-DS-')
+        label = label.replace('Stride-', 'S-')
+
         ax.annotate(label, xy,
-                    xytext=(5,20),
+                    xytext=(2,5),
                     textcoords='offset points',
-                    size=10,
-                    rotation=25,
+                    rotation_mode='anchor',
+                    size=7,
+                    rotation=80,
                     color='darkslategrey')
     df.apply(add_labels, axis=1)
+
+    fig.tight_layout()
 
     return fig
 
@@ -231,12 +255,16 @@ def main():
 
     df['val_acc_mean'] = df.confusions_val.apply(get_accuracies).mean(axis=1)
     df['test_acc_mean'] = df.confusions_test.apply(get_accuracies).mean(axis=1)
+    df['test_acc_std'] = df.confusions_test.apply(get_accuracies).std(axis=1)
     df = df.sort_index()
 
     # TODO: add std-dev
     df['foreground_val_acc_mean'] = df.confusions_val_foreground.apply(get_accuracies).mean(axis=1)
     df['foreground_test_acc_mean'] = df.confusions_test_foreground.apply(get_accuracies).mean(axis=1)
     df['background_test_acc_mean'] = df.confusions_test_background.apply(get_accuracies).mean(axis=1)
+    df['foreground_val_acc_std'] = df.confusions_val_foreground.apply(get_accuracies).std(axis=1)
+    df['foreground_test_acc_std'] = df.confusions_test_foreground.apply(get_accuracies).std(axis=1)
+    df['background_test_acc_std'] = df.confusions_test_background.apply(get_accuracies).std(axis=1)
 
 
     #df['grouped_test_acc_mean'] = grouped_confusion(df.confusions_test, groups).apply(get_accuracies).mean(axis=1)
@@ -271,12 +299,12 @@ def main():
 
 
     # Split the variations from all models
-    width_variations = df.nickname.str.startswith('Stride-DS-5x5-')
-    fig = plot_accuracy_comparison(df[width_variations != True])
+    width_variations = df.nickname.str.startswith('Stride-DS-')
+    fig = plot_accuracy_comparison(df[width_variations != True], ylim=(0.0, 1.0), figsize=(7,3))
     save(fig, 'models_accuracy.png')
 
     perf_metric = 'maccs_frame' if args.skip_device else 'utilization'
-    fig = plot_accuracy_vs_compute(df, perf_metric=perf_metric)
+    fig = plot_accuracy_vs_compute(df, perf_metric=perf_metric, figsize=(7,4), ylim=(0.5, 0.8))
     save(fig, 'models_efficiency.png')
 
 

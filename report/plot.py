@@ -38,7 +38,7 @@ def model_table(data_path):
     
     return table.to_latex()
     
-def plot_models(data_path, figsize=(8,4), max_params=128e3, max_maccs=4.5e6):
+def plot_models(data_path, figsize=(12,4), max_params=128e3, max_maccs=4.5e6):
     df = logmel_models(data_path)
     
     fig, ax = plt.subplots(1, figsize=figsize)
@@ -49,7 +49,7 @@ def plot_models(data_path, figsize=(8,4), max_params=128e3, max_maccs=4.5e6):
 
     df.plot.scatter(x='params', y='macc_s', logx=True, logy=True, ax=ax)
     ax.set_xlabel('Model parameters')
-    ax.set_ylabel('Multiply-Adds / second')
+    ax.set_ylabel('MACC / second')
     
     # highlight feasible region
     feasible_x = max_params
@@ -72,6 +72,8 @@ def plot_models(data_path, figsize=(8,4), max_params=128e3, max_maccs=4.5e6):
                     rotation=25,
                     color='darkslategrey')
     df.apply(add_labels, axis=1)
+
+    fig.tight_layout()
 
     return fig
 

@@ -16,17 +16,15 @@ print(df)
 def strformat(fmt, series):
     return [fmt.format(i) for i in series]
 
-#df = df.sort_values('maccs_frame', ascending=False)
 df = df.sort_values('nickname', ascending=True)
 
-width_multiple = df.nickname.str.startswith('Stride-DS-5x5-')
-df = df.loc[width_multiple == False]
+#width_multiple = df.nickname.str.startswith('Stride-DS-5x5-')
+#df = df.loc[width_multiple == False]
 
-#df = df.loc[[ df.nickname for ]] 
 
 conv_shorthand = {
     'depthwise_separable': 'DS',
-    'bottleneck_ds': 'BN-DS',
+    'bottleneck_ds': 'BTLN-DS',
     'effnet': 'Effnet',
     'conv': 'standard',
 }

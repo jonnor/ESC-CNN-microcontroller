@@ -1,13 +1,16 @@
 \begin{tabular}{lllrrlll}
 \toprule
-             Model &   Downsample & Convolution &  L &   F &     MACC &    RAM &   FLASH \\
+          Model &   Downsample & Convolution &  L &   F &     MACC &    RAM &   FLASH \\
 \midrule
-          Baseline &  maxpool 3x2 &    standard &  3 &  24 &  10185 K &  35 kB &  405 kB \\
-       Baseline-DS &  maxpool 3x2 &          DS &  3 &  24 &   1567 K &  55 kB &   96 kB \\
-        Stride-5x5 &   stride 2x2 &    standard &  3 &  22 &   2980 K &  55 kB &  372 kB \\
-  Stride-BN-DS-5x5 &   stride 2x2 &       BN-DS &  3 &  22 &    445 K &  47 kB &   80 kB \\
-     Stride-DS-3x3 &   stride 2x2 &          DS &  4 &  24 &    318 K &  54 kB &   95 kB \\
-     Stride-DS-5x5 &   stride 2x2 &          DS &  3 &  24 &    477 K &  54 kB &  180 kB \\
- Stride-Effnet-5x5 &   stride 2x2 &      Effnet &  3 &  22 &    468 K &  47 kB &  125 kB \\
+       Baseline &  maxpool 3x2 &    standard &  3 &  24 &  10185 K &  35 kB &  405 kB \\
+    Baseline-DS &  maxpool 3x2 &          DS &  3 &  24 &   1567 K &  55 kB &   96 kB \\
+         Stride &   stride 2x2 &    standard &  3 &  22 &   2980 K &  55 kB &  372 kB \\
+ Stride-BTLN-DS &   stride 2x2 &     BTLN-DS &  3 &  22 &    445 K &  47 kB &   80 kB \\
+   Stride-DS-12 &   stride 2x2 &          DS &  3 &  12 &    208 K &  27 kB &   88 kB \\
+   Stride-DS-16 &   stride 2x2 &          DS &  3 &  16 &    291 K &  36 kB &  118 kB \\
+   Stride-DS-20 &   stride 2x2 &          DS &  3 &  20 &    380 K &  45 kB &  149 kB \\
+   Stride-DS-24 &   stride 2x2 &          DS &  3 &  24 &    477 K &  54 kB &  180 kB \\
+  Stride-DS-3x3 &   stride 2x2 &          DS &  4 &  24 &    318 K &  54 kB &   95 kB \\
+  Stride-Effnet &   stride 2x2 &      Effnet &  3 &  22 &    468 K &  47 kB &  125 kB \\
 \bottomrule
 \end{tabular}

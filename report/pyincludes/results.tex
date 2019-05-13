@@ -1,13 +1,16 @@
 \begin{tabular}{lrrrr}
 \toprule
-             Model &  CPU (\%) &  Accuracy &  FG Accuracy &  BG Accuracy \\
+          Model & CPU use &     Accuracy &  FG Accuracy &   BG Accuracy \\
 \midrule
-          Baseline &        0 &      73.1 &         84.3 &         49.6 \\
-        Stride-5x5 &        0 &      71.9 &         82.1 &         50.2 \\
- Stride-Effnet-5x5 &        0 &      67.1 &         75.5 &         49.5 \\
-     Stride-DS-5x5 &        0 &      72.5 &         81.3 &         54.0 \\
-     Stride-DS-3x3 &        0 &      70.1 &         79.4 &         50.6 \\
-  Stride-BN-DS-5x5 &        0 &      68.6 &         77.7 &         49.3 \\
-       Baseline-DS &        0 &      72.7 &         84.0 &         48.8 \\
+       Baseline &  971 ms &  72.3\% $\pm$4.6 &  78.3\% $\pm$7.1 &   60.5\% $\pm$7.7 \\
+    Baseline-DS &  244 ms &  70.2\% $\pm$4.7 &  76.1\% $\pm$7.5 &   58.6\% $\pm$8.2 \\
+         Stride &  325 ms &  68.3\% $\pm$5.2 &  74.1\% $\pm$6.6 &   56.6\% $\pm$8.0 \\
+ Stride-BTLN-DS &   71 ms &  64.8\% $\pm$7.1 &  69.5\% $\pm$8.2 &   55.3\% $\pm$8.9 \\
+   Stride-DS-12 &   38 ms &  66.0\% $\pm$6.0 &  72.6\% $\pm$6.5 &   53.3\% $\pm$9.1 \\
+   Stride-DS-16 &   51 ms &  67.5\% $\pm$5.6 &  73.3\% $\pm$7.7 &   56.2\% $\pm$8.3 \\
+   Stride-DS-20 &   66 ms &  68.4\% $\pm$5.2 &  75.0\% $\pm$7.4 &  55.2\% $\pm$10.0 \\
+   Stride-DS-24 &   81 ms &  70.9\% $\pm$4.3 &  75.8\% $\pm$6.3 &   61.8\% $\pm$6.8 \\
+  Stride-DS-3x3 &   59 ms &  67.2\% $\pm$6.5 &  73.0\% $\pm$7.4 &   55.8\% $\pm$9.1 \\
+  Stride-Effnet &   73 ms &  60.7\% $\pm$6.6 &  66.9\% $\pm$7.9 &   48.7\% $\pm$8.3 \\
 \bottomrule
 \end{tabular}

@@ -65,8 +65,6 @@ Remove dots at the end. 2.2, 2.6, 2.16 etc
 - Fix Github link, to be to final branch
 - Make sure final page is EVEN number
 
-
-
 ### After report
 
 
