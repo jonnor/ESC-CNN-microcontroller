@@ -7,18 +7,24 @@ Feedback needed
 
 ### Draft 3
 
-Results
 
-- Use Strided-DS-24 as chosen model (confusion matrix etc), instead of auto "best"
-- Finish Discussion and Conclusion
-- Make plots a bit prettier
+### Final 1
 
 Abstract
 
 - Write it!
 - Send to OK for feedback
 
-### Draft 4
+Report
+
+- Add short captions to figures, so List of Figures looks nice
+
+Reprod
+
+- Tag a branch for submitted thesis
+- Upload models to GH
+- Results are from git commit `b49efa5dde48f9fd72a32eff4c751d9d0c0de712`
+- Include perftools Python script in appendix?
 
 Materials
 
@@ -28,23 +34,13 @@ Background
 
 - Make missing images
 
-Report
 
-- Add short captions to figures, so List of Figures looks nice
+### Draft 5
 
 Results
 
 - Include error analysis
 - Plot performance of models relative to fold
-
-Reprod
-
-- Tag a branch for submitted thesis
-- Upload models to GH
-- Results are from git commit `b49efa5dde48f9fd72a32eff4c751d9d0c0de712`
-- Include perftools Python script in appendix?
-
-### Draft 5
 
 Add Acknowledgements?
 
@@ -59,7 +55,7 @@ Final
 Do they explain the figure setup/contents OK?
 Short captions for the table of contents.
 Remove dots at the end. 2.2, 2.6, 2.16 etc
-- Double check refering style
+- Check references all valid
 - Do a spell checking pass
 - Do a grammar checking pass. LanguageTool + Grammarly
 - Fix Github link, to be to final branch

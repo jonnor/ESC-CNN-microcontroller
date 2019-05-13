@@ -20,7 +20,7 @@ groups = {
     'danger': [ 'gun_shot' ],
 }
 
-def plot_confusion(cm, classnames, normalize=False, percent=False):
+def plot_confusion(cm, classnames, normalize=False, percent=False, figsize=(6,5)):
 
     fmt = '.2f'
     if normalize:
@@ -29,14 +29,16 @@ def plot_confusion(cm, classnames, normalize=False, percent=False):
         cm = cm_normalize(cm)*100
         fmt = ".1f"
 
-    fig, ax = plt.subplots(1, figsize=(10,8))
-    seaborn.heatmap(cm, annot=True, ax=ax, fmt=fmt);
+    fig, ax = plt.subplots(1, figsize=figsize)
+    seaborn.heatmap(cm, annot=True, ax=ax, fmt=fmt, cmap='viridis');
 
     ax.set_xlabel('Predicted labels')
     ax.set_ylabel('True labels')
-    ax.set_title('Confusion Matrix') 
     ax.xaxis.set_ticklabels(classnames, rotation=60)
     ax.yaxis.set_ticklabels(classnames, rotation=0)
+
+    fig.tight_layout()
+
     return fig
 
 def cm_normalize(cm):
@@ -309,7 +311,9 @@ def main():
 
 
     classnames = urbansound8k.classnames
-    best = df.sort_values('test_acc_mean', ascending=False).head(1).iloc[0]
+    #best = df.sort_values('test_acc_mean', ascending=False).head(1).iloc[0]
+    best = df[df.nickname == 'Stride-DS-24'].iloc[0]
+    print('Selecting', best.nickname)
 
     confusion_matrix = numpy.mean(best.confusions_test, axis=0)
     fig = plot_confusion(confusion_matrix, classnames, percent=True)

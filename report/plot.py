@@ -30,13 +30,13 @@ def model_table(data_path):
     
     table = pandas.DataFrame()
     table['Accuracy (%)'] = df.accuracy*100
-    table['MACC / second'] = [ "{}M".format(int(v/1e6)) for v in df.macc_s ]
-    table['Model parameters'] = [ "{}k".format(int(v/1e3)) for v in df.params ]
+    table['MACC / second'] = [ "{} M".format(int(v/1e6)) for v in df.macc_s ]
+    table['Model parameters'] = [ "{} k".format(int(v/1e3)) for v in df.params ]
     #table['Data augmentation'] = df.augmentation
     table = table.sort_values('Accuracy (%)', ascending=False)
     #table['Time resolution (ms)'] = (df.t_step*1000).astype(int)
     
-    return table.to_latex()
+    return table.to_latex(column_format='lrrr')
     
 def plot_models(data_path, figsize=(12,4), max_params=128e3, max_maccs=4.5e6):
     df = logmel_models(data_path)

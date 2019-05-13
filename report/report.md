@@ -997,7 +997,7 @@ consisting of 2000 samples across 50 classes from 5 major categories.
 The dataset was compiled using sounds from Freesound[@Freesound] online repository.
 A subset of 10 classes is also proposed, often called ESC-10.
 Human accuracy was estimated to be to 81.30% on ESC-50 and
-95.7% on ESC-10[@ESC-50, ch 3.1].
+95.7% on ESC-10[@ESC-50, ch. 3.1].
 The Github repository for ESC-50[@ESC-50-Github] contains a comprehensive summary
 of results on the dataset, with over 40 entries.
 As of April 2019, the best models achieve 86.50% accuracy,
@@ -1192,7 +1192,7 @@ It uses optimized fixed-point maths and SIMD (Single Instruction Multiple Data) 
 perform 4x 8-bit operations at a time.
 This allows it to be up to 4x faster and 5x more energy efficient than floating point[@CMSIS-NN].
 
-<!-- FIXME: figure breaks paragraph -->
+<!-- TODO: Fix figure breaks paragraph -->
 
 ![Low level functions provided by CMSIS-NN (light gray) for use by higher level code (light blue)[@CMSIS-NN]](./img/CMSIS-NN-functions.png)
 
@@ -1345,20 +1345,9 @@ and leave sufficient resources for other parts of an application to run on the d
 To do so, a maximum of 50% of the CPU, RAM, and FLASH capacity is allocated to the model.
 
 ST estimates that an ARM Cortex M4F type device uses approximately 9 cycles/MACC[@X-CUBE-AI-manual].
-With 80 MHz CPU frequency this is approximately 9 MACC/second at 100% CPU utilization.
-Together with the RAM and FLASH from the microcontroller specifications,
-this gives the hard constraints on the model summarized in Table \ref{table:model-constraints}.
-
-
-`FIXME: use standard table caption`
-
-|  Resource    | Maximum (50% capacity) |
-| -------      |:---------:|
-| RAM usage    |   64 kB   | 
-| FLASH use    |   512 kB  |
-| CPU usage    |   4.5 M MACC/s |
-
-Table: Summary of hard device constraints for models \label{table:model-constraints}
+With 80 MHz CPU frequency this is approximately 9 M MACC/second at 100% CPU utilization.
+50% CPU capacity is then estimated as 4.5 M MACC/second,
+and from the microcontroller specifications we get 50% of RAM and FLASH as 64 kB RAM and 512 kB FLASH memory.
 
 For each of these aspects it is highly beneficial to be well below the hard constraints.
 If the FLASH and RAM usage can be reduced to half or one-fourth,
@@ -1368,17 +1357,22 @@ If CPU usage can be reduced to one-tenth, that can reduce power consumption by u
 Models from the existing literature (reviewed in chapter \ref{chapter:esc-models}) are summarized
 in Table \ref{table:urbansound8k-existing-models-logmel}
 and shown with respect to these model constraints
-in Figure \label{existing-models-perf}.
+in Figure \ref{fig:existing-models-perf}.
 Even the smallest existing models require significantly more than the available resources. 
 
 \begin{table}[h]
+\centering
 \input{plots/urbansound8k-existing-models-logmel.tex}
 \caption{Existing methods and their results on Urbansound8k}
 \label{table:urbansound8k-existing-models-logmel}
 \end{table}
 
-![Model complexity and accuracy scores of existing CNN models using log-mel features on Urbansound8k dataset. Green area bottom left shows the region which satisfies our model requirements.\label{existing-models-perf}](./plots/urbansound8k-existing-models-logmel.png)
-
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.0\textwidth]{./plots/urbansound8k-existing-models-logmel.png}
+\caption[Complexity and accuracy scores of existing models]{Model complexity and accuracy scores of existing CNN models using log-mel features on Urbansound8k dataset. Green area bottom left shows the region which satisfies our model requirements.}
+\label{fig:existing-models-perf}
+\end{figure}
 
 ### Compared models
 
@@ -1392,7 +1386,7 @@ This requires twice as much RAM as a single input, and the convolutions in the C
 should be able to learn delta-type features if needed.
 For these reasons SB-CNN was used as the base architecture for experiments.
 
-The baseline model has a few minor modifications from the original SB-CNN model:
+The baseline model has a few modifications from the original SB-CNN model:
 Max pooling is 3x2 instead of 4x2. Without this change the layers become negative sized
 due to the reduced input feature size (60 mel filter bands instead of 128).
 Batch Normalization was added to each convolutional block.
@@ -1514,14 +1508,19 @@ for each of the cross-validation folds.
 The selected models are then evaluated on the test set in each fold.
 
 In addition to the standard cross-validation for Urbansound8k,
-the model performance is evaluated on two simplified variations:
+the model performance is evaluated on also by separating foreground and background sounds.
 
-- Only clips where target sound is in the foreground
+<!--
+`TODO: include grouped analysis`
+
 - Grouping into 5 coarser classes
 
 `TODO: table of group membership`
+-->
 
 <!--
+TODO: include error analysis
+
 Also explored is the consequence of introduce an "unknown" class for low-confidence predictions:
 Predictions where the highest probability is below a certain threshold
 are assigned to the unknown class instead of the original 10 classes.
@@ -1591,20 +1590,38 @@ This can be most clearly seen from Figure \ref{figure:model-efficiency}.
 Despite almost the same computational requirements as Stride-DS-24,
 they had accuracy scores that were 6.1 and 10.2 percentage points lower, respectively.
 
-`FIXME: change confusion matrix color scale to show nuances in 0-20% range`
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.0\textwidth]{./results/confusion_test.png}
+\caption[Confusion matrix on Urbansound8k]{Confusion matrix on Urbansound8k.
+Correct predictions along the diagonal, and misclassifications on the off-diagonal.
+Normalized to shows percentages.
+}
+\label{figure:confusion-matrix}
+\end{figure}
 
-<!-- TODO: plot MAC versus compute time -->
+As seen in Figure \ref{figure:confusion-matrix}, class accuracies vary widely.
+The most accurately predicted classes were Gun Shot (96%), Car Horn (86%), Siren (82.7%) and Dog Bark (81.7%). 
+The poorest performance was on the Air Conditioner class (47% accuracy),
+which was misclassified as almost all the other classes.
+Drilling (60% accuracy) was often often thought to be Jackhammer (20% of the time).
+Engine Idling (59.9%) was also often thought to be Jackhammer (19% of the time).
+The remaining classes, Street Music, Children Playing and Jackhammer had around average performance.
 
-![Confusion matrix on Urbansound8k](./results/confusion_test.png){ height=30% }
+<!--
+TODO: include grouped analysis
 
 ![Confusion matrix in reduced groups with only foreground sounds](./results/grouped_confusion_test_foreground.png){ height=30% }
 
+-->
+
 <!-- TODO: add error analysis plots >
 
+<!-- TODO: plot MAC versus compute time -->
 
 <!-- MAYBE: plot training curves over epochs -->
 
-\newpage
+\clearpage
 ## On-device testing
 
 \begin{figure}[h]
@@ -1644,10 +1661,12 @@ which might have made it easier to learn some patterns
 Compared to SB-CNN the analysis window is shorter (720 ms versus 1765 ms),
 also a 2x reduction in RAM and CPU.
 Since no overlap is used there are only 6 analysis windows and predictions to be aggregated over a 4 second clip.
-In LD-CNN and SB-CNN, `FIXME: find out how much overlap they use`.
-However it is possible that with a more powerful training setup,
-as transfer learning or stronger data augmentation scheme,
-that this gap could be reduced.
+In SB-CNN on the other hand, the hop size during validation and test is 1 frame,
+giving over 100 predictions over a 4 second clip.
+This can improve performance, but requires a much higher CPU usage. 
+However it is also possible that with a more powerful training setup
+with as transfer learning or stronger data augmentation scheme,
+that this performance gap could be reduced.
 
 <!--
 Strided-DS-24 is essentially a combination of the
@@ -1668,12 +1687,13 @@ would have performed better, but this has not been investigated.
 Of the models compared it looks like the Strided-DS family of models
 give the highest accuracy relative to model compute requirements.
 The largest model, Strided-DS-24, was able to achieve near Baseline performance while utilizing 12x less CPU.
-The CPU usage of this model is 11%, well within the 50% set as a requirement,
-allowing the microcontroller to sleep for up to 80% of the time even
-when classifications are performed for every 720 ms window (real-time).
+The CPU usage of this model is 11%, well within the 50% set as a requirement.
+The fact that speedup (12x) was not linear with the MACC reduction (21.5x) highlights the
+importance of measuring execution time on a real device.
 
-The smaller models (with 20,16,12 filters) in the family with less compute requirements had correspondingly
-lower accuracies, suggesting that a tradeoff between model requirements and performance is possible.
+The smaller models (with 20,16,12 filters) in the Strided-DS family
+with less compute requirements had correspondingly ower accuracies.
+This suggests that a the tradeoff between model complexity and performance can be adjusted.
 The Strided-DS-3x3 variation with 4 layers with 3x3 convolutions instead
 was close in performance to the Strided-DS models with 3 layers of 5x5.
 This could be investigated closer, there may exist variations on this 3x3 model
@@ -1693,6 +1713,10 @@ but that spectrogram calculation must be also optimized to reach even lower powe
 In the FP-SENSING1 example used, the spectrogram computation already use ARM-specific
 optimized codepaths from CMSIS, albeit with floating-point and not fixed-point.
 
+Taking into account the preprocessing time, with the Stride-DS-24 model,
+the microcontroller would be able to sleep for approximately 80% of the time
+even when classifications are performed every 720 ms analysis window (real-time).
+
 This is an opportunity for end-to-end models
 that take raw-audio as input instead of requiring preprocessed spectrograms
 (ref section \ref{section:audio-waveform-models}),
@@ -1707,22 +1731,28 @@ as it would allow also the filterbank processing to be offloaded to the CNN co-p
 Deployment of noise monitoring systems,
 and especially systems with noise classification capabilities, are still rare.
 Of the 5 large-scale research projects mentioned in the introduction,
-only the SONYC deployment seems to have some level of noise classification capability.
-Therefore answering the question of whether the 70% accuracy achieved on Urbansound8k,
-or even state-of-the-art accuracy of 83%,
-is sufficient for a useful real-world noise classification system is hard.
+only the SONYC deployment seems to have integrated noise classification capability,
+using state-of-the-art classification algorithms[@SONYC2019].
+They argue that such a system addresses shortcomings of current monitoring
+and enforcement mechanisms by quantifying impact of construction-permits,
+providing historical data to validate noise complaints,
+and support better allocation of manual noise inspection crews[@SONYC2019, ch. 7].
 
-From a critical perspective, 70.9% on Urbansound8k is likely below human-level performance.
+In principle the system proposed here should support the same kind of workflow,
+and whether the reduced accuracy of 70.9% versus state-of-the-art of 79-83%,
+impacts the practical use would have to be evaluated on a case-by-case basis.
+
+From a critical perspective, 70.9% on Urbansound8k is likely below human-level performance:
 While no studies have been done on human-level performance on Urbansound8k directly,
-it is estimated to be 81.3% for ESC-50 and 95.7% on ESC-10[@ESC-50, ch 3.1],
-and PiczakCNN who scored 73% on Urbansound8k scored only 62% on ESC-50 and 81% on ESC-10.
+it is estimated to be 81.3% for ESC-50 and 95.7% on ESC-10[@ESC-50, ch. 3.1],
+and PiczakCNN which scored 73% on Urbansound8k scored only 62% on ESC-50 and 81% on ESC-10[@PiczakCNN].
 
-From an optimistic perspective, today the vast majority of cities do not use widespread
-noise monitoring equipment.
-So *any* sensor with sound-level monitoring and even rudimentary classification capabilities
-would be adding new information that could potentially be of use.
-The key to successful application is to design a system and practice
-which makes use of this, taking into account limitations of the information.
+From an optimistic perspective, the vast majority of cities do not make
+widespread use of noise monitoring equipment today.
+So *any* sensor with sound-level logging and even rudimentary classification capabilities
+would be providing new information that could be used to improve operations.
+But as with any data-driven system, making use of this information would have to
+also take into account the limitations of the system.
 
 From table \ref{table:results} it can be seen that the accuracy for
 foreground sounds is around 5 percentage points better than overall accuracy,
@@ -1732,38 +1762,42 @@ with the best models under 62%, a 8 percentage point drop (or more).
 This is expected since the signal to noise ratio is lower.
 If the information of interest is the predominant sound in an area
 close to the sensor, one could maybe take this into account by only
-classifying loud (and probably closer) sounds,
-in order to achieve higher precision.
+classifying loud (probably closer) sounds, in order to achieve higher precision.
+Of course the reduced ability to classify sounds that are far away
+would require a higher density of sensors, which may be cost prohibitive.
 
-In Urbansound8k classification is done on 4 second intervals.
-In a noise monitoring situation this granularity of information is possibly not needed.
-For example to analyze understand temporal patterns across a day or week,
-information about the predominant noise source(s) on a 15 minute or even hourly might
-be a more suitable time-scale.
+The accuracy for Urbansound8k classification is based on 4 second intervals.
+In a noise monitoring situation this granularity of information may not be needed.
+For example to understand temporal patterns across a day or week,
+or analyze a noise complaint about a persistent noise,
+information about the predominant noise source(s) on a 15 minute resolution might be enough.
 For sound-sources with a relatively long duration (much more than 4 seconds),
 such as children playing, drilling or street music it should
 be possible to achieve higher accuracy by combining many predictions over time. 
 However this is unlikely to help for short, intermittent sounds ("events")
-such as a car honk or a gun-shot.
+such as a car horn or a gun-shot.
+Thankfully performance of the model on these short sounds is
+considerably better than on the long-term sounds.
+
+Given multiple sensors covering one area it may also be possible to
+fuse the individual sensor predictions in order to improve overall predictions.
+
+Finally it may be in a particular deployment be realistic to
+limit classification to only a few, well known sound source classes.
+For example in [@SourceClassificationSensors], authors describe doing a
+3-way classification on sensor nodes near a rock crushing plant.
 
 <!--
-TODO: include error analysis
--->
-
-Before deployment in the field, a more systematic validation of on-device must be performed.
-
-
-Is the easiest-to-classify sound is the loudest
-/ contributing the most to the increased sound level?
-
-
-<!--
+TODO: include grouped classification
 
 When considering the reduced 5-group classification.
 Some misclassifications are within a group of classes, and this increases accuracy.
 Example...
 However still have significant confusion for some groups...
+-->
 
+<!--
+TODO: include error analysis
 -->
 
 
@@ -1791,13 +1825,13 @@ and were able to reach up to 70.9% mean accuracy while consuming only 11% CPU,
 and staying within predefined 50% RAM and FLASH storage budgets.
 To our knowledge, this is the highest reported performance on Urbansound8k on a microcontroller.
 
-`FIXME: one sentence about perf level`
+<!-- FIXME: one sentence about perf level -->
 
 This indicates that it is computationally feasible to classify environmental sound
 on affordable low-power microcontrollers,
 possibly enabling advanced noise monitoring sensor networks with low costs and high density. 
-Further investigations into the power consumption and practical considerations
-of on-edge Environmental Sound Classification using microcontrollers is warranted.
+Further investigations into the power consumption and practical considerations for applying
+on-edge Environmental Sound Classification using microcontrollers is warranted.
 
 ## Further work
 
@@ -1811,7 +1845,7 @@ and without using any multiplications[@leng2018extremely][@cintra2018low].
 
 Utilizing larger amounts of training data might be able to increase performance of models.
 Possible techniques for this are transfer learning[@PretrainingSpeechCommandRecognition],
-or applying stronger data augmentation techniques (such as Mixup[Mixup] or SpecAugment[@SpecAugment]).
+or applying stronger data augmentation techniques (such as Mixup[@Mixup] or SpecAugment[@SpecAugment]).
 
 In a practical deployment of on-sensor classification, it is still desirable to
 collect *some* data for evaluation of performance and further training.

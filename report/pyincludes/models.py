@@ -46,7 +46,7 @@ table = pandas.DataFrame({
     'FLASH': strformat("{:d} kB", (df.flash_usage/1024).astype(int)),
 }, index=df.index)
 
-out = table.to_latex(header=True, index=False)
+out = table.to_latex(header=True, index=False, column_format='lrrllrrr')
 print(out)
 
 outpath = sys.argv[1] 
