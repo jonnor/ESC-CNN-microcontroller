@@ -2,13 +2,13 @@
 # Environmental Sound Classification on Microcontrollers using Convolutional Neural Networks
 
 ## Status
-**Work-in-progress**
+**Thesis ready**
 
 ## Keywords
 
     Wireless Sensor Networks, Embedded Systems
     Edge Computing, Edge Machine Learning
-    Noise classification, ESC, Urbansounds
+    Noise classification, Environmental Sound Classification (ESC), Urbansounds
     Tensorflow, Keras, librosa
 
 ## See also
@@ -17,7 +17,7 @@
 * [emlearn](https://github.com/jonnor/emlearn) - Machine Learning inference engine for Microcontrollers and Embedded Systems
 
 
-## Run experiments locally
+## Run experiments
 
 Install dependencies
 
@@ -29,9 +29,13 @@ Preprocess audio files into features
 
 Train the models
 
-    python3 train.py
+    python3 jobs.py
 
 Evaluate the resulting models
 
     python3 test.py
+
+Plot the results
+
+    python3 report.py
 
