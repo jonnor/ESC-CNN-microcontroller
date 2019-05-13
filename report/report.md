@@ -1532,12 +1532,20 @@ average inference time per sample on the STM32L476 microcontroller.
 This accounts for potential variations in number of MACC/second for different models,
 which would be ignored if only relying on the theoretical MACC number.
 
+Finally the trained models were tested running on the microcontrollers using live audio on the microphone.
+The on-device test used example code from the ST FP-SENSING1[@FP-AI-SENSING1] function pack as a base,
+with modifications made to send the model predictions out over USB.
+The example code unfortunately only supports mel-spectrogram preprocessing
+with 16 kHz sample-rate, 30 filters and 1024 samples FFT window with 512 hops,
+using max-normalization for the analysis windows.
+Therefore a Strided-DS model was trained on fold 1-8 to match these feature settings.
+
+The on-device testing was done ad-hoc with a few samples from Freesound.org,
+as a sanity-check that the model remained functional when ran on the microcontroller.
+No systematic measurements of the performance was performed.
 
 \newpage
 # Results
-
-
-## Model comparisons
 
 \begin{figure}[h]
 \centering
@@ -1545,7 +1553,7 @@ which would be ignored if only relying on the theoretical MACC number.
 \caption[Test accuracy of the different models]{Test accuracy of the different models. 
 State-of-the-art averages (SB-CNN/LD-CNN and D-CNN) marked with green dots.
 No-information rate marked with black dots.}
-\label{figure:demo}
+\label{figure:models-accuracy}
 \end{figure}
 
 \begin{table}[h]
@@ -1558,32 +1566,34 @@ FG=Foreground samples only, BG=Background samples only.}
 \label{table:results}
 \end{table}
 
-The Baseline model gets 72.3% mean accuracy.
-This is the same level as SB-CNN and PiczakCNN without data-augmentation (73%)[@SB-CNN],
-but significantly below the 79% of SB-CNN and LD-CNN with data-augmentation.
-As expected, the Baseline uses more CPU than our requirements.
-
-The Strided model is outside the desirable range.
-
-Strided-DS with 70.9% mean accuracy is able to get quite close close the baseline performance,
-despite having $10185/477 = 21x$ fewer multiply-add operations (MACC).
-The practical efficiency gain in CPU usage is however only $971/81 = 12x$.
-
-
 \begin{figure}[h]
 \centering
 \includegraphics[width=1.0\textwidth]{./results/models_efficiency.png}
 \caption[Accuracy versus compute of different models]{Accuracy versus compute of different models.
 Variations of the same model family have the same color.
 Strided- has been shortened to S- for readability.}
-\label{figure:demo}
+\label{figure:model-efficiency}
 \end{figure}
+
+As seen in Table \ref{table:results} and Figure \ref{figure:models-accuracy}
+the Baseline model gets 72.3% mean accuracy.
+This is the same level as SB-CNN and PiczakCNN without data-augmentation (73%)[@SB-CNN],
+but significantly below the 79% of SB-CNN and LD-CNN with data-augmentation.
+As expected, the Baseline uses more CPU than our requirements
+with 971 ms classification time per 730 ms analysis window.
+
+Stride-DS with 70.9% mean accuracy is able to get quite close close the baseline performance,
+despite having (from Table \ref{table:models}) $10185/477 = 21x$ fewer multiply-add operations (MACC).
+The practical efficiency gain in CPU usage is however only $971/81 = 12x$.
+
+Stride-BTLN-DS and Stride-Effnet performed very poorly in comparison.
+This can be most clearly seen from Figure \ref{figure:model-efficiency}.
+Despite almost the same computational requirements as Stride-DS-24,
+they had accuracy scores that were 6.1 and 10.2 percentage points lower, respectively.
 
 `FIXME: change confusion matrix color scale to show nuances in 0-20% range`
 
 `TODO: plot MAC versus compute time`
-
-## Error analysis
 
 ![Confusion matrix on Urbansound8k](./results/confusion_test.png){ height=30% }
 
@@ -1604,73 +1614,84 @@ Strided- has been shortened to S- for readability.}
 \label{figure:demo}
 \end{figure}
 
-The on-device demonstration used the ST FP-SENSING1[@FP-AI-SENSING1] function pack as a base,
-with modifications made to send the model predictions out over USB.
-This example code unfortunately only supports mel-spectrogram preprocessing
-with 16 kHz sample-rate, 30 filters and 1024 samples FFT window with 512 hops,
-using max-normalization for the analysis windows.
-Therefore a Strided-DS model was trained on fold 1-8 to match these feature settings.
-The model scored 72% on the associated validation-set, fold 9.
+The model used on device (with 16kHz model with 30 mel filters)
+scored 72% on the associated validation-set, fold 9.
+
+Figure \ref {figure:demo} shows a closeup of the on-device testing scenario.
+When playing back a few sounds the system was able to
+correctly classify classes such as "dog barking" most of the time.
+The classes "jackhammer" and "drilling" were confused several times (in both directions),
+but these were often hard to distinguish by ear also.
+The system seemed to struggle with the "children playing" class.
+When not playing any sound, the GPU fan noise from the nearby computer
+was classified as "air conditioner" - which sounded pretty close.
 
 
 \newpage
 # Discussion
 
-<!--
-Ref Problem
-> Can we classify environmental sounds directly on a wireless and battery-operated noise sensor?
--->
 
 ## Model comparison
 
-`TODO: make into coherent flow`
-
-
-The lower performance of our Baseline
+The lower performance of our Baseline relative to SB-CNN/LD-CNN
 may be a result of the reduced feature representation,
-or the reduced number of predictions per
-Compared to LD-CNN the delta-melspectrogram features are missing,
-which might make it easier to learn patterns of fluctuation.
-Two channels in the input also effectively doubles the number of convolutional kernels. 
-Compared to SB-CNN the analysis window is shorter ``
-Since no overlap is used there are only 6 analysis windows
-and predictions to be aggregated over a 4 second clip.
-In LD-CNN and SB-CNN, `FIXME: find out how much overlap`. 
-
-
-
-
-
-
-
-Strided-BTLN-DS and Stride-Effnet performed very poorly in comparison.
-Despite almost the same computational requirements as Strided-DS-24,
-they had accuracy scores that were 6.1 and 10.2 percentage points lower, respectively.
-
-Pareto optimal
-
-
-Far from the state-of-the-art when not considering performance constraints
-Probably below human-level accuracy. Ref ESC-50
+or the reduced number of predictions for one clip.
+Compared to LD-CNN the delta-mel-spectrogram features are missing,
+which might have made it easier to learn some patterns
+- at a cost of twice the RAM and CPU for the first layer.
+Compared to SB-CNN the analysis window is shorter (720 ms versus 1765 ms),
+also a 2x reduction in RAM and CPU.
+Since no overlap is used there are only 6 analysis windows and predictions to be aggregated over a 4 second clip.
+In LD-CNN and SB-CNN, `FIXME: find out how much overlap they use`.
+However it is possible that with a more powerful training setup,
+as transfer learning or stronger data augmentation scheme,
+that this gap could be reduced.
 
 <!--
-Almost reaching level of PiczakCNN[@SB-CNN] with data augmentation,
-and better than without data augmentation[@PiczakCNN].
-With estimated 88M MAC/s, a factor 200x more.
-Indicator of huge differences in efficiency between different CNN architectures
+Strided-DS-24 is essentially a combination of the
+two model reduction tested individually in Baseline-DS and Stride.
+Therefore it is somewhat surprising that Strided-DS-24 has a slightly higher mean than these two. 
+However since the amount of variation in accuracy across the folds is large,
+and the hyperparameters were chosen by testing on Strided-DS models,
+cannot conclude that this is a significant effect.
 -->
+
+The poorly performing Strided-BTLN-DS and Strided-Effnet both have have a bottleneck 1x1
+convolution in the start of each block, reducing the number of channels used in the spatial convolution.
+This hyperparameter was set to a seemingly conservative reduction of 2x
+(original Effnet used 8x[@Effnet], ShuffleNet used 4x[@Shufflenet], albeit on much bigger models).
+It is possible that this choice of hyperparameter is critical and that other values
+would have performed better, but this has not been investigated.
+
+
+Of the models compared it looks like the Strided-DS family of models
+give the highest accuracy relative to model compute requirements.
+The largest model, Strided-DS-24, was able to achieve near Baseline performance while utilizing 12x less CPU.
+The CPU usage of this model is 11%, well within the 50% set as a requirement,
+allowing the microcontroller to sleep for up to 7/ amounts of time even
+when classifications are performed for every 720ms block (real-time).
+
+The smaller models (with 20,16,12 filters) in the family with less compute requirements had correspondingly
+lower accuracies, suggesting that a tradeoff between model requirements and performance is possible.
+
+The Strided-DS-3x3 variation with 4 layers with 3x3 convolutions instead
+was close in performance to the Strided-DS models with 3 layers of 5x5.
+
+The on-device model which was trained on 16kHz with 30 mel filters (on a single fold),
+looked to perform similarly to those with the full 22kHz and 60 mel-filters.
+This may suggest that perhaps the feature representation (and thus compute requirements)
+can be reduced even further without much reduction in performance.
+
+
+## Practical implications
 
 Accuracy when considering only foreground sounds improved significantly.
 Median improvement.
 
-When considering , accuracy increases significantly (as expected).
+Far from the state-of-the-art when not considering performance constraints
+Probably below human-level accuracy. Ref ESC-50
 
-
-When considering the reduced 5-group classification.
-Some misclassifications are within a group of classes, and this increases accuracy.
-Example...
-However still have significant confusion for some groups...
-
+Before deployment in the field, a more systematic validation of on-device must be performed.
 
 Classification is done on 4 second intervals (as that is what is available in Urbansound8k)
 In a noise monitoring situation this is probably way too fine grained.
@@ -1682,56 +1703,59 @@ predominant sound source
 Is the easiest-to-classify sound is the loudest
 / contributing the most to the increased sound level?
 
-`TODO: update to reflect latest results`
+
+
+When considering the reduced 5-group classification.
+Some misclassifications are within a group of classes, and this increases accuracy.
+Example...
+However still have significant confusion for some groups...
 
 
 <!--
-SKIP
-Possible to use slightly bigger microcontroller.
-Able to double Flash. Up to 1024kB RAM, 8x. Approx 8x CPU.
-
-What is the approx cost of system. BOM
-What is the battery lifetime. BOM
+Almost reaching level of PiczakCNN[@SB-CNN] with data augmentation,
+and better than without data augmentation[@PiczakCNN].
+With estimated 88M MAC/s, a factor 200x more.
+Indicator of huge differences in efficiency between different CNN architectures
 -->
+
 
 # Conclusions
 
-<!--
+Based on the need for wireless sensor systems that can monitor and classify environmental noise,
+this project has investigated performing noise classification directly on microcontroller-based sensor hardware.
+This on-sensor classification makes it possible to reduce power-consumption and privacy issues
+associated with transmitting raw audio or detailed audio fingerprints to a cloud system for classification.
 
-Recap what you did.
-Highlight the big accomplishments.
-Conclude. Wraps up your paper. Tie your research to the “real world.”
--->
+Several different Convolutional Neural Networks were designed for the
+STM32L476 low-power microcontroller using the vendor-provided X-CUBE-AI inference engine. 
+The models were evaluated on the Environmental Sound Classification
+task using the standard Urbansound8k dataset, validated briefly for use in real-time classification on device.
+The best models used Depthwise-Separable convolutions with striding,
+and were able to reach up to 70.9% mean accuracy while consuming only 11% CPU,
+and staying within predefined 50% RAM and FLASH storage budgets.
+To our knowledge, this is the highest reported performance on Urbansound8k on a microcontroller.
 
-Able to demonstrate Environmental Sound Classification
-running on a low-power microcontroller suitable for use in a sensor node.
+`FIXME: one sentence about perf level`
 
-The best model achieves a `` accuracy when evaluated on the Urbansound8k dataset,
-using `XX %` of the CPU capacity.
-And under 50% of RAM and FLASH. 
-
-
-`TODO: evaluate`
-`??? is the perf high enough to be useful in practice?`
-`??? When considering foreground/grouped, and class of errors`
+This indicates that it is computationally feasible to classify environmental sound
+on affordable low-power microcontrollers,
+possibly enabling advanced noise monitoring sensor networks with low costs and high density. 
+Further investigations into the power consumption and practical considerations
+of on-edge Environmental Sound Classification using microcontrollers is warranted.
 
 ## Further work
 
-Some further work is identified in two major areas:
-Increasing model efficiency on the Environmental Sound Classification tasks and
-practical challenges with applying on-edge classification of noise in sensor networks. 
-
-Utilizing larger amounts of training data might
-be able to increase performance of the models shown.
-Possible techniques for this are transfer learning[@PretrainingSpeechCommandRecognition],
-or applying stronger data augmentation techniques (such as Mixup[Mixup] or SpecAugment[@SpecAugment]).
-
-Applying quantization should speed up the computations of the models.
-A first step would be to make use of the optimized CMSIS-NN library[@CMSIS-NN],
+Applying quantization to the models should reduce CPU, RAM and FLASH usage.
+This could be used to fit slightly larger models, or to make existing models more efficient.
+A first step could be to make use of the optimized CMSIS-NN library[@CMSIS-NN],
 which utilizes 8-bit integer operations and the SIMD unit in the ARM Cortex M4F.
 However there are also promising results showing that CNNs can be
 effectively implemented with as little as 2 bits[@andri2016yodann][@miyashita2016convolutional][@IncrementalNetworkQuantization],
 and without using any multiplications[@leng2018extremely][@cintra2018low].
+
+Utilizing larger amounts of training data might be able to increase performance of models.
+Possible techniques for this are transfer learning[@PretrainingSpeechCommandRecognition],
+or applying stronger data augmentation techniques (such as Mixup[Mixup] or SpecAugment[@SpecAugment]).
 
 <!--
 Low-power hardware accelerators for Convolutional Neural Networks will hopefully
@@ -1744,9 +1768,9 @@ since it allows also the filterbank processing to be offloaded from the general 
 
 In a practical deployment of on-sensor classification, it is still desirable to
 collect *some* data for evaluation of performance and further training.
-This could be sampled at random.
-But can an on-sensor implementation Active Learning[@ActiveLearningSonyc][@SemiSupervisedActiveLearning]
-make this process more efficient?
+This could be sampled at random, but an on-sensor implementation
+of Active Learning[@ActiveLearningSonyc][@SemiSupervisedActiveLearning]
+could be able to make this process more power efficient.
 
 <!--
 Normally such training and evaluation data is transferred as raw PCM audio,
@@ -1755,7 +1779,7 @@ Could low-power audio coding be applied to compress the data,
 while still enable reliable human labeling and use as evaluation/training data?
 --> 
 
-It is critical for power consumption to reduce how often on-sensor classification is performed.
+It is critical for overall power consumption to reduce how often on-sensor classification is performed.
 This should also benefit from an adaptive sampling strategy.
 For example to primarily do classification for time-periods which exceed
 a sound level threshold, or to sample less often when the sound source changes slowly.
