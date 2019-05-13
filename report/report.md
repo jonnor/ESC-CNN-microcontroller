@@ -824,7 +824,7 @@ Scaling the output to a range of 0-1 or -1,1 is also sometimes done.
 These changes have the effect of removing amplitude variations,
 forcing the model to focus on the patterns of the sound regardless of amplitude.
 
-`TODO: image of normalized mel-spectrogram. Or feature distribution of datasets w/without normalization?`
+<!-- `TODO: image of normalized mel-spectrogram. Or feature distribution of datasets w/without normalization? -->
 
 
 ### Analysis windows
@@ -965,7 +965,9 @@ and ran in 242 ms on a low-end microcontroller (ARM Cortex M0+ at 48 Mhz).
 \newpage
 ## Environmental Sound Classification
 
-`TODO: introduction paragraph`
+Environmental Sound Classification, or Environmental Sound Recognition
+is the task of classifying environmental sounds or noises.
+It has been researched actively within the machine learning community at least since 2006[@EnvironmentalSoundRecognition2014].
 
 ### Datasets
 \label{chapter:datasets}

@@ -5,26 +5,12 @@ Feedback needed
 
 ## TODO
 
-### Draft 3
-
-
 ### Final 1
-
-Abstract
-
-- Write it!
-- Send to OK for feedback
-
-Report
-
-- Add short captions to figures, so List of Figures looks nice
 
 Reprod
 
 - Tag a branch for submitted thesis
-- Upload models to GH
 - Results are from git commit `b49efa5dde48f9fd72a32eff4c751d9d0c0de712`
-- Include perftools Python script in appendix?
 
 Materials
 
@@ -33,6 +19,10 @@ Materials
 Background
 
 - Make missing images
+
+Report
+
+- Add short captions to figures, so List of Figures looks nice
 
 
 ### Draft 5
