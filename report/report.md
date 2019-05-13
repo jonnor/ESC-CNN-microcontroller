@@ -1074,6 +1074,7 @@ performance increased to 83.7%, which seems to be state-of-the-art as of April 2
 
 
 ### Audio waveform models 
+\label{section:audio-waveform-models}
 
 Recently approaches that use the raw audio waveform as input have also been documented.
 
@@ -1085,7 +1086,6 @@ The architecture is illustrated in Figure \ref{figure:envnet}.
 They show that the resulting spectrograms have frequency responses with
 a shape similar to mel-spectrograms.
 The model achieves a 66.3% accuracy score on Urbansound8k[@EnvNet2] with raw audio input.
-
 
 In [@VeryDeepESC], authors evaluated a number of deep CNNs using only 1D convolutions.
 Raw audio with 8kHz sample rate was used as the input.
@@ -1593,13 +1593,13 @@ they had accuracy scores that were 6.1 and 10.2 percentage points lower, respect
 
 `FIXME: change confusion matrix color scale to show nuances in 0-20% range`
 
-`TODO: plot MAC versus compute time`
+<!-- TODO: plot MAC versus compute time -->
 
 ![Confusion matrix on Urbansound8k](./results/confusion_test.png){ height=30% }
 
 ![Confusion matrix in reduced groups with only foreground sounds](./results/grouped_confusion_test_foreground.png){ height=30% }
 
-`TODO: add error analysis plots`
+<!-- TODO: add error analysis plots >
 
 
 <!-- MAYBE: plot training curves over epochs -->
@@ -1616,6 +1616,8 @@ they had accuracy scores that were 6.1 and 10.2 percentage points lower, respect
 
 The model used on device (with 16kHz model with 30 mel filters)
 scored 72% on the associated validation-set, fold 9.
+When running on the device, the model execution took 43 ms per analysis window,
+while preprocessing of the mel-spectrogram took approximately 60 ms.
 
 Figure \ref {figure:demo} shows a closeup of the on-device testing scenario.
 When playing back a few sounds the system was able to
@@ -1623,8 +1625,8 @@ correctly classify classes such as "dog barking" most of the time.
 The classes "jackhammer" and "drilling" were confused several times (in both directions),
 but these were often hard to distinguish by ear also.
 The system seemed to struggle with the "children playing" class.
-When not playing any sound, the GPU fan noise from the nearby computer
-was classified as "air conditioner" - which sounded pretty close.
+When not playing any sound, the GPU fan noise from the nearby machine-learning rig
+was classified as "air conditioner" - which the author can agree sounded pretty close.
 
 
 \newpage
@@ -1663,52 +1665,106 @@ This hyperparameter was set to a seemingly conservative reduction of 2x
 It is possible that this choice of hyperparameter is critical and that other values
 would have performed better, but this has not been investigated.
 
-
 Of the models compared it looks like the Strided-DS family of models
 give the highest accuracy relative to model compute requirements.
 The largest model, Strided-DS-24, was able to achieve near Baseline performance while utilizing 12x less CPU.
 The CPU usage of this model is 11%, well within the 50% set as a requirement,
-allowing the microcontroller to sleep for up to 7/ amounts of time even
-when classifications are performed for every 720ms block (real-time).
+allowing the microcontroller to sleep for up to 80% of the time even
+when classifications are performed for every 720 ms window (real-time).
 
 The smaller models (with 20,16,12 filters) in the family with less compute requirements had correspondingly
 lower accuracies, suggesting that a tradeoff between model requirements and performance is possible.
-
 The Strided-DS-3x3 variation with 4 layers with 3x3 convolutions instead
 was close in performance to the Strided-DS models with 3 layers of 5x5.
+This could be investigated closer, there may exist variations on this 3x3 model
+that would perform better than 5x5.
 
-The on-device model which was trained on 16kHz with 30 mel filters (on a single fold),
-looked to perform similarly to those with the full 22kHz and 60 mel-filters.
+From a one-fold spot check the on-device model trained on
+16kHz sample-rate with 30 mel filters, looked to perform similarly to those with the full 22kHz and 60 mel-filters.
 This may suggest that perhaps the feature representation (and thus compute requirements)
 can be reduced even further without much reduction in performance.
 
+## Spectrogram processing time
 
-## Practical implications
+Interestingly the mel-feature preprocessing took 60 ms on device,
+which is on the same order as the efficient models during inference (38-81 ms).
+This means that the CPU bottleneck is not just the model inference time,
+but that spectrogram calculation must be also optimized to reach even lower power-consumption.
+In the FP-SENSING1 example used, the spectrogram computation already use ARM-specific
+optimized codepaths from CMSIS, albeit with floating-point and not fixed-point.
 
-Accuracy when considering only foreground sounds improved significantly.
-Median improvement.
+This is an opportunity for end-to-end models
+that take raw-audio as input instead of requiring preprocessed spectrograms
+(ref section \ref{section:audio-waveform-models}),
+as they might be able to do this more efficiently.
+When low-power hardware accelerators for Convolutional Neural Networks becomes available,
+an end-to-end CNN model will become extra interesting,
+as it would allow also the filterbank processing to be offloaded to the CNN co-processor.
 
-Far from the state-of-the-art when not considering performance constraints
-Probably below human-level accuracy. Ref ESC-50
+
+## Practical evaluation
+
+Deployment of noise monitoring systems,
+and especially systems with noise classification capabilities, are still rare.
+Of the 5 large-scale research projects mentioned in the introduction,
+only the SONYC deployment seems to have some level of noise classification capability.
+Therefore answering the question of whether the 70% accuracy achieved on Urbansound8k,
+or even state-of-the-art accuracy of 83%,
+is sufficient for a useful real-world noise classification system is hard.
+
+From a critical perspective, 70.9% on Urbansound8k is likely below human-level performance.
+While no studies have been done on human-level performance on Urbansound8k directly,
+it is estimated to be 81.3% for ESC-50 and 95.7% on ESC-10[@ESC-50, ch 3.1],
+and PiczakCNN who scored 73% on Urbansound8k scored only 62% on ESC-50 and 81% on ESC-10.
+
+From an optimistic perspective, today the vast majority of cities do not use widespread
+noise monitoring equipment.
+So *any* sensor with sound-level monitoring and even rudimentary classification capabilities
+would be adding new information that could potentially be of use.
+The key to successful application is to design a system and practice
+which makes use of this, taking into account limitations of the information.
+
+From table \ref{table:results} it can be seen that the accuracy for
+foreground sounds is around 5 percentage points better than overall accuracy,
+reaching above 75%.
+Background sounds on the other hand has a much lower accuracy,
+with the best models under 62%, a 8 percentage point drop (or more).
+This is expected since the signal to noise ratio is lower.
+If the information of interest is the predominant sound in an area
+close to the sensor, one could maybe take this into account by only
+classifying loud (and probably closer) sounds,
+in order to achieve higher precision.
+
+In Urbansound8k classification is done on 4 second intervals.
+In a noise monitoring situation this granularity of information is possibly not needed.
+For example to analyze understand temporal patterns across a day or week,
+information about the predominant noise source(s) on a 15 minute or even hourly might
+be a more suitable time-scale.
+For sound-sources with a relatively long duration (much more than 4 seconds),
+such as children playing, drilling or street music it should
+be possible to achieve higher accuracy by combining many predictions over time. 
+However this is unlikely to help for short, intermittent sounds ("events")
+such as a car honk or a gun-shot.
+
+<!--
+TODO: include error analysis
+-->
 
 Before deployment in the field, a more systematic validation of on-device must be performed.
-
-Classification is done on 4 second intervals (as that is what is available in Urbansound8k)
-In a noise monitoring situation this is probably way too fine grained.
-A detailed time-line might desire per minute resolution.
-Overall picture might be OK with 15 minute or maybe even hourly summarization.
-predominant sound source
 
 
 Is the easiest-to-classify sound is the loudest
 / contributing the most to the increased sound level?
 
 
+<!--
 
 When considering the reduced 5-group classification.
 Some misclassifications are within a group of classes, and this increases accuracy.
 Example...
 However still have significant confusion for some groups...
+
+-->
 
 
 <!--
@@ -1756,15 +1812,6 @@ and without using any multiplications[@leng2018extremely][@cintra2018low].
 Utilizing larger amounts of training data might be able to increase performance of models.
 Possible techniques for this are transfer learning[@PretrainingSpeechCommandRecognition],
 or applying stronger data augmentation techniques (such as Mixup[Mixup] or SpecAugment[@SpecAugment]).
-
-<!--
-Low-power hardware accelerators for Convolutional Neural Networks will hopefully
-become available over the next few years.
-This may enable larger models at the same power budget,
-or to reduce power consumption at a given predictive performance level. 
-End-to-end CNN models using raw audio as input becomes extra interesting with such a co-processor,
-since it allows also the filterbank processing to be offloaded from the general purpose CPU.
--->
 
 In a practical deployment of on-sensor classification, it is still desirable to
 collect *some* data for evaluation of performance and further training.
