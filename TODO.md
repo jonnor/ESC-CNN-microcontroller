@@ -3,10 +3,6 @@
 
 ### Final 1
 
-Materials
-
-- Materials: Add images of compared models
-
 Background
 
 - Make missing images

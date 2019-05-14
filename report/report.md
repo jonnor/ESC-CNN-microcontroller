@@ -1297,7 +1297,7 @@ To develop for the STM32L476 microcontroller the
 SensorTile development kit STEVAL-STLKT01V1[@STEVAL-STLKT01V1] was selected.
 The kit consists of a SensorTile module, an expansion board, and a portable docking board (not used).
 
-![SensorTile module with functional blocks indicated. Module size is 13.5x13.5mm\label{sensortile-annotated}](./img/sensortile-annotated.jpg){short-caption="SensorTile hardware module" width=50%}
+![SensorTile module with functional blocks indicated. Module size is 13.5x13.5mm\label{sensortile-annotated}](./img/sensortile-annotated.jpg){short-caption="SensorTile hardware module" width=75%}
 
 The SensorTile module (see Figure \ref{sensortile-annotated}) contains in addition to the microcontroller: a microphone,
 Bluetooth radio chip, and an Inertial Measurement Unit (accelerometer+gyroscope+compass).
@@ -1307,7 +1307,7 @@ An expansion board allows to connect and power the microcontroller over USB.
 The ST-Link V2 from a Nucleo STM32L476 board is used to program and debug the device.
 The entire setup can be seen in Figure \ref{sensortile-devkit}.
 
-![Development setup of SensorTile kit\label{sensortile-devkit}](./img/sensortile-devkit.jpg){width=50%}
+![Development setup of SensorTile kit\label{sensortile-devkit}](./img/sensortile-devkit.jpg){width=75%}
 
 ## Software
 
@@ -1315,7 +1315,7 @@ The STM32L476 microcontroller is supported by the STM32CubeMX[@STM32CubeMX] deve
 and the X-CUBE-AI[@X-CUBE-AI] neural network add-on from ST Microelectronics.
 Version 3.4.0 of X-CUBE-AI was used.
 
-![STM32CubeMX application with X-CUBE-AI addon after loading a Keras model](./img/stm32cubeai.png){short-caption="STM32CubeMX software application"}
+![STM32CubeMX application with X-CUBE-AI addon after loading a Keras model](./img/stm32cubeai.png){short-caption="STM32CubeMX software application" width=75%}
 
 A Python commandline script was created to streamline collecting model statistics using X-CUBE-AI,
 without having to manually use the STM32CubeMX user interface.
@@ -1386,21 +1386,24 @@ This requires twice as much RAM as a single input, and the convolutions in the C
 should be able to learn delta-type features if needed.
 For these reasons SB-CNN was used as the base architecture for experiments.
 
-The baseline model has a few modifications from the original SB-CNN model:
+The *Baseline* model has a few modifications from the original SB-CNN model:
 Max pooling is 3x2 instead of 4x2. Without this change the layers become negative sized
 due to the reduced input feature size (60 mel filter bands instead of 128).
 Batch Normalization was added to each convolutional block.
 The Keras definition for baseline model can be found in appendix \ref{appendix:baseline-model}.
 
+![Architecture of compared models. Baseline and Stride. In Stride the MaxPooling2d operation (blue) has been removed in favor of striding the convolutional blocks. F=Filters D=Downsampling. CONV means a generic convolution block, replaced with the convolution type for different variations \label{fig:model-architectures}](./img/models.svg){short-caption="Architecture of compared models" width=100%}
+
 From the baseline architecture, several model variations are created in order to evaluate
 the effects of using different convolutional blocks and as well as replacing
 max-pooling with strided convolutions.
-First the baseline was modified with just depthwise-separable convolutions (nicknamed Baseline-DS),
-or striding (nicknamed Stride).
+First the Baseline was modified with just depthwise-separable convolutions (nicknamed Baseline-DS),
+or striding (nicknamed *Stride*).
 Since the stride height and width in Keras/Tensorflow must be uniform,
 2x2 is used instead of 3x2 from max-pooling.
+Figure \ref{fig:model-architectures} illustrates the two architectures.
 
-Three different convolution blocks are tested on top of the strided model:
+Three different convolution blocks are tested on top of the Stride model:
 Depthwise Separable (Stride-DS-*),
 Bottleneck with Depthwise Separable (Stride-BTLN-DS)
 and Effnet block (Stride-Effnet).
@@ -1415,7 +1418,7 @@ Because of that few variations with fewer number of filters were also tested to 
 the possible performance/complexity tradeoffs.
 In addition to the maximum of 24 filters, 20, 16 and 12 filters were tested. 
 For all other Strided models the number of layers and filters were set as high as
-possible within violating any of the device constraints.
+possible without violating any of the device constraints.
 
 This results in 10 different models, as summarized in Table \ref{table:models}.
 
@@ -1424,8 +1427,6 @@ This results in 10 different models, as summarized in Table \ref{table:models}.
 \caption[Parameters of compared models]{Parameters of the compared models. L=Number of convolution layers, F=Filters in each convolution layer, DS=Depthwise Separable, BTLN=Bottleneck}
 \label{table:models}
 \end{table}
-
-`TODO: image of Baseline and Strided`
 
 <!-- `TODO: image of the different convolutional blocks` -->
 
