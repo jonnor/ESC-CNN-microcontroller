@@ -1,8 +1,10 @@
 
 # Environmental Sound Classification on Microcontrollers using Convolutional Neural Networks
 
-## Status
-**Thesis ready**
+## Thesis report
+
+<a href="https://github.com/jonnor/ESC-CNN-microcontroller/releases/download/print1/report-print1.pdf"><img src="https://github.com/jonnor/ESC-CNN-microcontroller/raw/master/report/img/frontpage.png" align="left" height="200" alt="Download thesis report"></a>
+Click image to Download.
 
 ## Keywords
 
@@ -11,10 +13,38 @@
     Noise classification, Environmental Sound Classification (ESC), Urbansounds
     Tensorflow, Keras, librosa
 
-## See also
+## Abstract
 
-* [Machine Learning on Embedded Systems](https://github.com/jonnor/datascience-master/tree/master/embeddedml) notes.
-* [emlearn](https://github.com/jonnor/emlearn) - Machine Learning inference engine for Microcontrollers and Embedded Systems
+Noise is a growing problem in urban areas,
+and according to the WHO is the second environmental cause of health problems in Europe.
+Noise monitoring using Wireless Sensor Networks are
+being applied in order to understand and help mitigate these noise problems.
+It is desirable that these sensor systems, in addition to logging the sound level,
+can indicate what the likely sound source is.
+However, transmitting audio to a cloud system for classification is
+energy-intensive and may cause privacy issues.
+It is also critical for widespread adoption and dense sensor coverage that
+individual sensor nodes are low-cost.
+Therefore we propose to perform the noise classification on the sensor node,
+using a low-cost microcontroller.
+
+Several Convolutional Neural Networks were designed for the
+STM32L476 low-power microcontroller using the Keras deep-learning framework,
+and deployed using the vendor-provided X-CUBE-AI inference engine.
+The resource budget for the model was set at maximum 50% utilization of CPU, RAM, and FLASH.
+10 model variations were evaluated on the Environmental Sound Classification task
+using the standard Urbansound8k dataset.
+
+The best models used Depthwise-Separable convolutions with striding for downsampling,
+and were able to reach 70.9\% mean 10-fold accuracy while consuming only 20% CPU.
+To our knowledge, this is the highest reported performance on Urbansound8k using a microcontroller.
+One of the models was also tested on a microcontroller development device,
+demonstrating the classification of environmental sounds in real-time.
+
+These results indicate that it is computationally feasible to classify environmental sound
+on low-power microcontrollers.
+Further development should make it possible to create wireless sensor-networks
+for noise monitoring with on-edge noise source classification.
 
 
 ## Run experiments
