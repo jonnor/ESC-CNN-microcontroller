@@ -3,10 +3,6 @@
 
 ### Final 1
 
-Background
-
-- Make missing images
-
 Checking
 
 - Do a spell checking pass

@@ -408,10 +408,11 @@ Neural Networks are trained through numerical optimization of an objective funct
 For supervised learning the standard method is mini-batch Gradient Descent with Backpropagation.
 
 For classification the cross-entropy (log loss) function is often applied.
-As predicted probability of the true class gets close to zero, the (negative) log-loss goes towards infinity.
-Figure \ref{fig:log-loss}
+As predicted probability of the true class gets close to zero, the log-loss goes towards infinity.
+This penalizes wrong predictions heavily, see Figure \ref{fig:log-loss}.
 
-`TODO: picture of loss in binary cross entropy`
+![Plot of log-loss for binary classification. \label{fig:log-loss}](./pyplots/logloss.png){ width=100% }
+
 Categorical cross-entropy is an extension of binary cross-entropy to multiple classes.
 Other loss functions are Logistic Loss, Mean Squared Error and Mean Absolute Error.
 
@@ -428,10 +429,9 @@ This is computed as the partial derivative of the function.
 <!--
 MAYBE: mention momentum
 [@SaddlePointNeuralNetworks]
--->
-
 
 `TODO: image of 1-D loss landscape and Gradient Descent`
+-->
 
 The key to calculating the gradients in a multi-layer neural networks
 is *backpropagation*[@BackpropagationNeuralNetworks].
@@ -754,7 +754,7 @@ It however adds compression artifacts, and is best avoided for machine learning 
 Recordings can have multiple channels of audio but for machine learning on audio
 single-channel data (mono-aural) is still common.
 
-### Spectrograms
+### Spectrogram
 
 Sounds of interest often have characteristic patterns not just in time (temporal signature)
 but also in frequency content (spectral signature).
@@ -780,8 +780,10 @@ For speech a typical choice of window length is 20 ms.
 Similar frame lengths are often adopted for acoustic events.
 The STFT returns complex numbers describing phase and magnitude of each frequency bin.
 A spectrogram squaring the absolute of the magnitude, and discards the phase information.
+This is called a *linear spectrogram* or sometimes just spectrogram.
 The lack of phase information means that the spectrogram is not strictly invertible,
 though estimations exist[@GriffinLimSpectrogramInversion][@MCNNSpectrogramInversion].
+A linear spectrogram can be on top in Figure \ref{fig:spectrograms}.
 
 ### Mel-spectrogram
 
@@ -800,7 +802,7 @@ See Figure \ref{figure:filterbanks}.
 The Mel scaled filters is commonly used for audio classification. <!-- TODO: reference -->
 The spectrogram that results for applying a Mel-scale filter-bank is often called a Mel-spectrogram.
 
-`TODO: image of mel-spectrogram`
+![Different spectrograms showing birdsong. Top: Linear spectrogram. Middle: Mel-spectrogram. Bottom: Normalized mel-spectrogram after mean-subtraction and standard scaling. The Mel-spectrograms in this example had the first filter set to 1kHz, eliminating a lot of the low frequency noise seen in the linear spectrogram.](./img/spectrograms.svg){short-caption="Different spectrograms" width=100%}
 
 Mel-Filter Cepstral Coefficients (MFCC) is a feature representation
 computed by performing a Discrete Cosine Transform (DCT) on a mel-spectrogram.

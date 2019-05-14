@@ -21,6 +21,7 @@ includes: pyincludes/urbansound8k-classes.tex \
     pyincludes/experiment-settings.tex \
     pyincludes/models.tex \
     pyincludes/results.tex \
+    pyplots/logloss.png \
     pyplots/filterbanks.png \
     pyplots/dataaugmentations.png \
     plots/urbansound8k-examples.png \
