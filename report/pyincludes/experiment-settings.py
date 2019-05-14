@@ -25,6 +25,7 @@ names = {
     'train_samples': 'Training samples/epoch',
     'val_samples': 'Validation samples/epoch',
     'learning_rate': 'Learning rate',
+    'nesterov_momentum': 'Nesterov momentum',
 }
 
 table = settings.loc[list(names.keys())]

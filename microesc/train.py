@@ -98,8 +98,9 @@ def train_model(out_dir, train, val, model,
     def top3(y_true, y_pred):
         return keras.metrics.top_k_categorical_accuracy(y_true, y_pred, k=3)
 
+    optimizer = keras.optimizers.SGD(lr=learning_rate, momentum=settings['nesterov_momentum'], nesterov=True)
     model.compile(loss='categorical_crossentropy',
-                  optimizer=keras.optimizers.SGD(lr=learning_rate, momentum=0.9, nesterov=True),
+                  optimizer=optimizer,
                   metrics=['accuracy'])
 
     model_path = os.path.join(out_dir, 'e{epoch:02d}-v{val_loss:.2f}.t{loss:.2f}.model.hdf5')

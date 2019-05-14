@@ -17,6 +17,7 @@ default_training_settings = dict(
     val_samples=3000,
     augment=0,
     learning_rate=0.01,
+    nesterov_momentum=0.9,
 )
 
 default_model_settings = dict(

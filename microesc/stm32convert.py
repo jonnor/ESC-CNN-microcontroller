@@ -2,7 +2,7 @@
 """
 Convert a Keras/Lasagne/Caffe model to C for STM32 microcontrollers using ST X-CUBE-AI
 
-Wrapped around the 'generatecode' tool used in STM32CubeMX from the X-CUBE-AI addon
+Wrapper around the 'generatecode' tool used in STM32CubeMX from the X-CUBE-AI addon
 """
 
 import pathlib
@@ -91,13 +91,11 @@ def test_ram_use():
 
     ]
 
-
     for input, expected in examples:
         out = extract_ram_use(input)
-
         assert out == expected, out
 
-# TODO: also extract AI_NETWORK_DATA_ACTIVATIONS_SIZE  and AI_NETWORK_DATA_WEIGHTS_SIZE
+
 def extract_ram_use(str):
     regex = r"AI_ARRAY_OBJ_DECLARE\(([^)]*)\)"
     matches = re.finditer(regex, str, re.MULTILINE)
@@ -113,7 +111,6 @@ def extract_ram_use(str):
 
 
 def generatecode(model_path, out_path, name, model_type, compression):
-
     # Path to CLI tool
     home = str(pathlib.Path.home())
     version = os.environ.get('XCUBEAI_VERSION', '3.4.0')
@@ -135,7 +132,6 @@ def generatecode(model_path, out_path, name, model_type, compression):
     with open(config_path, 'w') as f:
         f.write(config)
 
-    
     # Run generatecode
     args = [
         cmd_path,
@@ -143,8 +139,6 @@ def generatecode(model_path, out_path, name, model_type, compression):
         '-c', config_path,
     ]
     stdout = subprocess.check_output(args, stderr=subprocess.STDOUT)
-
-    # TODO: detect NOT IMPLEMENTED
 
     # Parse MACCs / params from stdout
     stats = extract_stats(stdout)
@@ -185,7 +179,6 @@ def main():
 
     test_ram_use()
 
-
     stats = generatecode(args.model, args.out,
                         name=args.name,
                         model_type=args.type,
@@ -195,8 +188,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
 

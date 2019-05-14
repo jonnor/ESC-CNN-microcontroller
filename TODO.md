@@ -1,16 +1,7 @@
 
-Feedback needed
-
-- Results/Discussion/Conclusion
-
 ## TODO
 
 ### Final 1
-
-Reprod
-
-- Tag a branch for submitted thesis
-- Results are from git commit `b49efa5dde48f9fd72a32eff4c751d9d0c0de712`
 
 Materials
 
@@ -20,15 +11,19 @@ Background
 
 - Make missing images
 
-Report
+Checking
 
-- Add short captions to figures, so List of Figures looks nice
+- Do a spell checking pass
+- Do a grammar checking pass. LanguageTool + Grammarly
+- Do a figure/table captions pass.
+Do they explain the figure setup/contents OK?
+- Make sure final page is EVEN number
 
-
-### Draft 5
+### Final 2
 
 Results
 
+- Include grouped evaluation
 - Include error analysis
 - Plot performance of models relative to fold
 
@@ -39,102 +34,25 @@ Add Acknowledgements?
 - Marianna
 - John
 
-Final
-
-- Do a figure/table captions pass.
-Do they explain the figure setup/contents OK?
-Short captions for the table of contents.
-Remove dots at the end. 2.2, 2.6, 2.16 etc
-- Check references all valid
-- Do a spell checking pass
-- Do a grammar checking pass. LanguageTool + Grammarly
-- Fix Github link, to be to final branch
-- Make sure final page is EVEN number
-
 ### After report
-
 
 Dissemination
 
 - Image of overall project/system
 - Project image, title page
 - Record a demo video
-- Write a blogpost
 - Publish on Arxiv? cs.LG cs.SD eess.AS stat.ML
+- Write a blogpost
 
 Related
 
 - STM32AI: Test different FFT/mel sizes
 - STM32AI: Report/fix melspec preprocessing bug
 https://community.st.com/s/topic/0TO0X0000003iUqWAI/stm32-machine-learning-ai
-- Test USB audio input for classifying on device
+- Test USB audio input for systematic on-device testing of classification 
 
 Experiment
 
-- MAYBE: Fix train and validation generators to be single-pass? 
-
-Code quality
-
-- Add end2end tests
-- Check windowing functions, esp last frame and padding
-
-
-## Done
-
-- Investigated why MobileNets etc use much more RAM than SB-CNN.
-For SB-CNN (Conv2d->MaxPooling2d), X-CUBE-AI fuses in the MaxPooling op, and reduces RAM usage by the pooling factor (4-9x).
-For MobileNet this optimization breaks down, because pooling is not used.
-Layer 2 is then typically too large.
-Instead one can pre-scale down using strided convolutions.
-When done from layer 1, this brings RAM usage under control
-- Fixed CUDA issue with SB-CNN. Can run 5x train at same time with minibatch 100,
-however am still CPU bound and GPU utilization only 30%. Also small batches seem to perform worse.
-With 400 batches and 3 processes, GPU utilization only 20%
-- Tested SystemPerformance tool on STM32.
-Standalone tool works nicely, gives performance for entire network.
-Interactive profiler "Validation tool" did not work, STMCubeMX fails to communicate with firmware.
-Firmware seems to work fine, says "ready to receive host command".
-Validation tool seems to be only tool that can give per-layer inference times. 
-- Test GPU training on GTX2060.
-20 seconds instead of 170 seconds per epoch on mobilenets. 8.5x speedup
-1 model only utilizing 33% of GPU power. Can theoretically run multiple models in parallell, for over 20x speedup
-Under 30 minutes per experiment on all 10 folds.
-However SB-CNN fails with cudaNN error.
-https://github.com/tensorflow/tensorflow/issues/24828
-https://github.com/keras-team/keras/issues/1538
-- STM32AI. Made tool for updating window functions.
-https://github.com/jonnor/emlearn/blob/master/examples/window-function.py
-- Test 16k30 SB-CNN model.
-No compression. 3168k MACC CNN. 200kB flash, 27kB RAM. 396-367 ms
-4 bit compression. 144kB flash, 398ms. Approx 8M MACCS/second
-- Ran FastGRNN example USPS dataset
-- Tested DenseNet for Urbansound8k
-- Sent email for info from dilated conv authors 
-- Sent email for info from LD-CNN authors
-- Tested multiple-instance learning for Urbansound8k
-- Test Dilated CNN for Urbansound8k
-- Test a SB-CNN model for Urbansound8k
-- Test a trivial audio custom model with SMT32CubeAI.
-First crack detection.
-9000 MACC, 2 ms classifier. 8 frames, under 15 ms log-mel preprocessing.
-Approx 4M MACCS/second.
-- Test CNN performance on STM32AI. 80Mhz.
-float32 1024bin FFT,30mels,32frames log-mel preprocessing under 68ms.
-float32 517k MACC CNN classification 78ms. Approx 6M MACCS/second.
-- Trigger LED change to reflect model predictions
-- Check how the neural networks are implemented in STM32CubeAI
-- Tool for extracting MACC from Keras/TensorFlow model. `./experiments/speechcommands/featurecomplexity.py`
-* Tensorflow speechcommand, test to change from MFCC to mel-spec
-* Run Tensorflow speechcommand examples, check perf against published
-- Test standard models examples on STM32 devkits.
-AudioLoop has USB Audio out, useful for recording test data.
-ST BlueSensor Android app useful for testing.
-Built-in example also had BT audio out (but locked at 8kHz?)
-- Move project to dedicated git repo
-- Setup skeleton of report Latex/Markdown
-- Setup Travis CI
-- Installed STM32Cube AI toolchain, and build STM32 AI examples (HAR)
-- Make a shortlist of datasets to consider
-- Order STM32 devkits
+- Use multi-instance learning to get bigger batches and improve GPU utilization
 
 

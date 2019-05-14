@@ -89,12 +89,7 @@ WHO has estimated that in Europe 1.6 million healthy life years (Disability-Adju
 are lost annually due to noise pollution[@WHONoiseBurden2018].
 This makes noise pollution the second environmental cause of health problems in Europe, after air pollution.
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.5\textwidth]{./img/noiseseverity.png}
-\caption[Health impacts of noise]{Health impacts of noise at different severity levels[@NoiseStressConcept]}
-\label{figure:sensornetworks-coding}
-\end{figure}
+![Health impacts of noise at different severity levels [@NoiseStressConcept] \label{figure:sensornetworks-coding}](./img/noiseseverity.png){short-caption="Health impacts of noise at different severity levels" width=50%}
 
 In the EU environmental noise is regulated by Environmental Noise Directive (2002/49/EC)[@EuNoiseDirective].
 The purpose of the directive is to:
@@ -132,7 +127,7 @@ The Sounds of New York City (SONYC)[@SONYC] project had 56 sound sensors install
 and the Barcelona Noise Monitoring System[@BarcelonaNoiseMonitoring] had 86 sound sensors[@BarcelonaNoiseMonitoring2018].
 The CENSE[@CENSE] projects plans to install around 150 sensors in Lorient, France[@CENSESensor].
 
-![Illustration of how Sounds of New York City[@SONYC-CPS] system combines sensor networks and citizen reporting with data analysis and to present city experts and agencies with a visual interactive dashboard "Noise Mission Control".](./img/SONYC-CPS.png){ width=50% }
+![Illustration of how Sounds of New York City[@SONYC-CPS] system combines sensor networks and citizen reporting with data analysis and to present city experts and agencies with a visual interactive dashboard "Noise Mission Control".](./img/SONYC-CPS.png){short-caption="Sounds of New York City noise monitoring system" width=50%}
 
 To keep costs low and support a dense coverage, the sensor nodes can be designed to operate wirelessly.
 Communication is done using wireless radio technologies such as WiFi, GSM, NB-IoT or 6LoWPAN.
@@ -170,7 +165,7 @@ Figure \ref{figure:sensornetworks-coding} shows an overview of the different app
 A) Sensor sends raw audio data with classification on server.
 B) Sensor sends spectrograms as a intermediate audio representation. Classification on server.
 C) Sensor sends neural network audio embeddings as intermediate audio representation. Classification on server.
-D) Sensor performs classification on device and sends result to server. No audio or intermediate needs to be transmitted.
+D) Sensor performs classification on device and sends result to server. No audio or intermediate representation needs to be transmitted.
 }
 \label{figure:sensornetworks-coding}
 \end{figure}
@@ -263,7 +258,7 @@ In single-label classification, a sample can only belong to a single class.
 In closed-set classification, the possible class is one of N predetermined classes.
 Many classification problems are treated as single-label and closed-set.
 
-`TODO: image of classification problem`
+<!-- `TODO: image of classification problem` -->
 
 Metrics are used to evaluate how well the model performs at its task.
 Common metrics for classification include:
@@ -391,7 +386,8 @@ using the argmax function.
 
 An illustration of the mentioned activation functions can be seen in Figure \ref{fig:activation-functions}.
 
-![Commonly used activation functions in neural networks. Input along X axis, output along Y. Range for Sigmoid is (0,1) and for Tanh (-1,1). \label{fig:activation-functions}](./img/activation-functions.svg)
+![Commonly used activation functions in neural networks. Input along X axis, output along Y. Range for Sigmoid is (0,1) and for Tanh (-1,1). \label{fig:activation-functions}](./img/activation-functions.svg){short-caption="Commonly used activation functions"}
+
 
 Increasing the number of neurons and the number of hidden layers
 increases the capacity of the network to learn more complex functions.
@@ -519,9 +515,9 @@ For each location, the kernel multiplies the input data with the *kernel weights
 that becomes the output value. This is shown in Figure \ref{fig:convolution-2d}.
 
 \begin{figure}[h]
-  \centering
-    \includegraphics[width=1.0\textwidth]{./img/convolution-2d.png}
-\caption{2D convolution for a single channel.
+\centering
+\includegraphics[width=1.0\textwidth]{./img/convolution-2d.png}
+\caption[2D convolution for a single channel]{2D convolution for a single channel.
 Red outlines show how the filter moves across the input image.
 Filter weights shown in red numbers, input numbers in blue.
 Green dots illustrate locations of outputs with respect to inputs.
@@ -572,7 +568,7 @@ and a 2D kernel of size $K_w$x$K_h$.
 
 ### Convolutional Neural Network
 
-![The LeNet-5 architecture illustrated. From the original paper[@lecun1998gradient] \label{fig:lenet-5}](./img/lenet5.png)
+![The LeNet-5 architecture illustrated. From the original paper[@lecun1998gradient] \label{fig:lenet-5}](./img/lenet5.png){short-caption="The LetNet-5 architecture"}
 
 A Convolutional Neural Network (CNN) is a neural network that uses convolutional layers
 in addition to (or instead of) fully-connected layers.
@@ -605,7 +601,7 @@ It outputs 1 element for each scanned location in the image.
 With *average pooling*, the output is the average value of the input.
 With *max pooling*, the output is the maximum value of the input (Figure \ref{fig:maxpooling}).
 
-![Max pooling operation. Different positions of the filter are colorized, with the maximum value in each position circled. \label{fig:maxpooling}](./img/maxpooling.png)
+![Max pooling operation. Different positions of the filter are colorized, with the maximum value in each position circled. \label{fig:maxpooling}](./img/maxpooling.png){short-caption="Max pooling operation"}
 
 <!--
 Pooling said to help model be translation invariant.
@@ -617,7 +613,7 @@ then the output of of the convolution will be reduced by half.
 Striding is usually applied in the first convolution in a layer,
 and reduces the number of computations compared to pooling because fewer inputs need to be computed. 
 
-![Strided convolution. The kernel input (marked in red) moves by stride=2, effectively subsampling the input image \label{fig:strided-convolution}](./img/strided-convolution.png)
+![Strided convolution. The kernel input (marked in red) moves by stride=2, effectively subsampling the input image \label{fig:strided-convolution}](./img/strided-convolution.png){short-caption="Strided convolution"}
 
 Striding was used to replace most of the pooling operations in ResNet[@ResNet] (2015),
 which beat human-level performance on the ImageNet task.
@@ -649,7 +645,7 @@ For example with $K_w=K_h=3$, $9/6=1.5$ and with $K_w=K_h=5$ = $25/10=2.5$.
 
 ### Depthwise Separable convolution
 
-![Input/output relationship of standard 3x3 convolution versus Depthwise Separable convolution. Image based on illustrations by Yusuke Uchida[@ConvolutionsIllustrated] \label{fig:depthwise-separable-convolution}](./img/depthwise-separable-convolution.png)
+![Input/output relationship of standard 3x3 convolution versus Depthwise Separable convolution. Image based on illustrations by Yusuke Uchida[@ConvolutionsIllustrated] \label{fig:depthwise-separable-convolution}](./img/depthwise-separable-convolution.png){short-caption="Depthwise Separable Convolution versus standard 3x3 convolution"}
 
 While a standard convolutional layer performs a convolution over both channels and the spatial extent
 a Depthwise Separable convolution splits this into two convolutions:
@@ -703,7 +699,7 @@ and the input image size.
 On ImageNet, MobileNet-160 $\alpha=0.5$ with 76M MACC performs better than SqueezeNet with 1700M MACC,
 a 22x reduction. The smallest tested model was 0.25 MobileNet-128, with 15M MACC and 200k parameters.
 
-![Convolutional blocks of Effnet, ShuffleNet and Mobilenet. Illustration based on Effnet paper[@Effnet]](./img/conv-blocks-imagenets.png)
+![Convolutional blocks of Effnet, ShuffleNet and Mobilenet. Illustration based on Effnet paper[@Effnet]](./img/conv-blocks-imagenets.png){short-caption="Convolutional blocks of Effnet, ShuffleNet and Mobilenet"}
 
 Shufflenet[@Shufflenet] (2017) uses group convolutions in order to reduce computations.
 In order to mix information between different groups of convolutions it introduces
@@ -771,8 +767,9 @@ To reduce artifacts at the boundary of chunks, they are overlapped (typically by
 and a window function (such as the Hann window) is applied before before computing the FFT.
 With the appropriate choice of window function and overlap, the STFT is invertible[@STFTmodifications].
 
-`FIXME: image of windowing / STFT process`
 <!--
+`FIXME: image of windowing / STFT process`
+
 Inspiration for TODO: image, https://dsp.stackexchange.com/questions/19311/stft-why-overlapping-the-window
 -->
 
@@ -842,7 +839,7 @@ With overlap a target sound will be classified a couple of times,
 at a slightly different position inside the analysis window each time.
 This can improve classification accuracy.
 
-![Audio stream split into fixed-length analysis windows without overlap](./img/analysis-windows.png)
+![Audio stream split into fixed-length analysis windows without overlap](./img/analysis-windows.png){width=100%}
 
 A short analysis window has the benefit of reducing the feature size of the classifier,
 which uses less memory and possibly allows to reduce the model complexity,
@@ -898,7 +895,7 @@ A simple form of data augmentation can be done by modifying the sample data slig
 Common data augmentation techniques for audio include Time-shift, Pitch-shift and Time-stretch.
 These are demonstrated in Figure \ref{figure:dataaugmentations}.
 
-![Common data augmentations for audio demonstrated on a dog bark ("woof woof"). Figure shows log-scaled linear spectrograms before and after applying the augmentation. Parameters are exaggerated to show the effects more clearly. \label{figure:dataaugmentations}](./pyplots/dataaugmentations.png)
+![Common data augmentations for audio demonstrated on a dog bark ("woof woof"). Figure shows log-scaled linear spectrograms before and after applying the augmentation. Parameters are exaggerated to show the effects more clearly. \label{figure:dataaugmentations}](./pyplots/dataaugmentations.png){short-caption="Common data augmentations for audio"}
 
 Mixup[@Mixup] is another type of data augmentation technique
 where two samples from different classes are mixed together to create a new sample.
@@ -1048,7 +1045,7 @@ analysis windows, and majority voting versus probability voting.
 Performance on Urbansound8k ranged from 69% to 73%.
 It was found that probability voting and long windows perform slightly better[@PiczakCNN].
  
-![Architecture of Piczak CNN, from the original paper [@PiczakCNN]. The model input has two channels: the spectrogram magnitude (light blue) and a first-order difference "delta" of the spectrogram (purple)) \label{figure:piczak-cnn}](./img/piczak-cnn.png)
+![Architecture of Piczak CNN, from the original paper [@PiczakCNN]. The model input has two channels: the spectrogram magnitude (light blue) and a first-order difference "delta" of the spectrogram (purple)) \label{figure:piczak-cnn}](./img/piczak-cnn.png){short-caption="Architecture of Piczak CNN"}
 
 SB-CNN[@SB-CNN] (2016) is a 3-layer convolutional with uniform 5x5 kernels and 4x2 max pooling.
 The paper also analyzes the effects of several types of data augmentation on Urbansound8k.
@@ -1080,7 +1077,7 @@ performance increased to 83.7%, which seems to be state-of-the-art as of April 2
 
 Recently approaches that use the raw audio waveform as input have also been documented.
 
-![EnvNet[@EnvNet] architecture, using raw audio as input. \label{figure:envnet}](./img/envnet.png)
+![EnvNet[@EnvNet] architecture, using raw audio as input. \label{figure:envnet}](./img/envnet.png){short-caption="EnvNet architecture"}
 
 EnvNet[@EnvNet] (2017) used 1D convolutions in order to learn a 2D spectrogram-like representation
 which is then classified using standard 2D convolutional layers.
@@ -1196,7 +1193,7 @@ This allows it to be up to 4x faster and 5x more energy efficient than floating 
 
 <!-- TODO: Fix figure breaks paragraph -->
 
-![Low level functions provided by CMSIS-NN (light gray) for use by higher level code (light blue)[@CMSIS-NN]](./img/CMSIS-NN-functions.png)
+![Low level functions provided by CMSIS-NN (light gray) for use by higher level code (light blue)[@CMSIS-NN]](./img/CMSIS-NN-functions.png){short-caption="CMSIS-NN code architecture"}
 
 uTensor[@uTensor] by ARM allows to run a subset of TensorFlow models on ARM Cortex-M devices,
 designed for use with the ARM Mbed software platform[@MbedHomepage].
@@ -1273,7 +1270,7 @@ Figure \ref{figure:urbansound8k-examples} shows example audio spectrograms for e
 \begin{figure}[h]
 \centering
 \includegraphics{./plots/urbansound8k-examples.png}
-\caption[Spectrograms from Urbansound8k dataset]{Spectrograms of sound clips from Urbansound8k dataset, selected for each class }
+\caption[Spectrograms from Urbansound8k dataset]{Spectrograms of sound clips from Urbansound8k dataset. Audio clips were selected for each class to give clear,representative spectrograms. }
 \label{figure:urbansound8k-examples}
 \end{figure}
 
@@ -1300,7 +1297,7 @@ To develop for the STM32L476 microcontroller the
 SensorTile development kit STEVAL-STLKT01V1[@STEVAL-STLKT01V1] was selected.
 The kit consists of a SensorTile module, an expansion board, and a portable docking board (not used).
 
-![SensorTile module with functional blocks indicated. Module size is 13.5x13.5mm\label{sensortile-annotated}](./img/sensortile-annotated.jpg)
+![SensorTile module with functional blocks indicated. Module size is 13.5x13.5mm\label{sensortile-annotated}](./img/sensortile-annotated.jpg){short-caption="SensorTile hardware module" width=50%}
 
 The SensorTile module (see Figure \ref{sensortile-annotated}) contains in addition to the microcontroller: a microphone,
 Bluetooth radio chip, and an Inertial Measurement Unit (accelerometer+gyroscope+compass).
@@ -1310,7 +1307,7 @@ An expansion board allows to connect and power the microcontroller over USB.
 The ST-Link V2 from a Nucleo STM32L476 board is used to program and debug the device.
 The entire setup can be seen in Figure \ref{sensortile-devkit}.
 
-![Development setup of SensorTile kit\label{sensortile-devkit}](./img/sensortile-devkit.jpg)
+![Development setup of SensorTile kit\label{sensortile-devkit}](./img/sensortile-devkit.jpg){width=50%}
 
 ## Software
 
@@ -1318,7 +1315,7 @@ The STM32L476 microcontroller is supported by the STM32CubeMX[@STM32CubeMX] deve
 and the X-CUBE-AI[@X-CUBE-AI] neural network add-on from ST Microelectronics.
 Version 3.4.0 of X-CUBE-AI was used.
 
-![STM32CubeMX application with X-CUBE-AI addon after loading a Keras model](./img/stm32cubeai.png)
+![STM32CubeMX application with X-CUBE-AI addon after loading a Keras model](./img/stm32cubeai.png){short-caption="STM32CubeMX software application"}
 
 A Python commandline script was created to streamline collecting model statistics using X-CUBE-AI,
 without having to manually use the STM32CubeMX user interface.
@@ -1335,7 +1332,8 @@ Numpy and Pandas libraries were used for general numeric computations and data m
 The training setup has automated tests made with pytest,
 and uses Travis CI to execute the tests automatically for each change.
 
-All the code is available at \url{https://github.com/jonnor/ESC-CNN-microcontroller}
+All the code is available at \url{https://github.com/jonnor/ESC-CNN-microcontroller/tree/thesis-submitted}.
+Experiments for the reported results were ran on git commit `b49efa5dde48f9fd72a32eff4c751d9d0c0de712`.
 
 
 ## Models
@@ -1406,7 +1404,7 @@ Three different convolution blocks are tested on top of the strided model:
 Depthwise Separable (Stride-DS-*),
 Bottleneck with Depthwise Separable (Stride-BTLN-DS)
 and Effnet block (Stride-Effnet).
-These blocks are illustrated in `FIXME: ref picture`.
+<!-- These blocks are illustrated in `FIXME: ref picture`. -->
 For EffNet, LeakyReLU was with ReLu since LeakyReLU is not supported by X-CUBE-AI, version 3.4.
 
 Additionally a version of strided with depthwise separable convolution with 3x3 kernel size (Stride-DS-3x3) is tested.
@@ -1428,7 +1426,8 @@ This results in 10 different models, as summarized in Table \ref{table:models}.
 \end{table}
 
 `TODO: image of Baseline and Strided`
-`TODO: image of the different convolutional blocks`
+
+<!-- `TODO: image of the different convolutional blocks` -->
 
 Residual connections were not tested, as the networks are relatively shallow.
 Grouped convolutions were not tested, as they are not supported by X-CUBE-AI version 3.4.
@@ -1445,7 +1444,7 @@ the established practices for the Urbansound8k dataset.
 Figure \ref{classification-pipeline} illustrates the overall setup of the
 classification model.
 
-![Overview of the full model. The classifier runs on individual analysis windows, and predictions for the whole audio clip is done by voting over predictions from all the analysis windows. \label{classification-pipeline}](./img/classification-pipeline.png)
+![Overview of the full model. The classifier runs on individual analysis windows, and predictions for the whole audio clip is done by voting over predictions from all the analysis windows. \label{classification-pipeline}](./img/classification-pipeline.png){short-caption="Full model pipeline"}
 
 ## Preprocessing
 
@@ -1490,7 +1489,6 @@ In order to evaluate the model on the entire audio clip, an additional
 pass over the validation set is done which combines predictions from multiple time-windows
 as shown in Figure \ref{classification-pipeline}.
 
-`FIXME: add Nesterov momentum to settings`
 As the optimizer, Stocastic Gradient Decent (SGD) with Nesterov momentum set to 0.9 is used.
 Learning rate was set to 0.005 for all models. Each model is trained for up to 100 epochs.
 A complete summary of experiment settings can be seen in Table \ref{table:experiment-settings}.
@@ -1571,6 +1569,8 @@ FG=Foreground samples only, BG=Background samples only.}
 \centering
 \includegraphics[width=1.0\textwidth]{./results/models_efficiency.png}
 \caption[Accuracy versus compute of different models]{Accuracy versus compute of different models.
+Green section is the area inside our model requirements.
+Red section is not possible to to classification in real-time.
 Variations of the same model family have the same color.
 Strided- has been shortened to S- for readability.}
 \label{figure:model-efficiency}
@@ -1642,7 +1642,7 @@ Figure \ref {figure:demo} shows a closeup of the on-device testing scenario.
 When playing back a few sounds the system was able to
 correctly classify classes such as "dog barking" most of the time.
 The classes "jackhammer" and "drilling" were confused several times (in both directions),
-but these were often hard to distinguish by ear also.
+but these were also often hard to distinguish by ear.
 The system seemed to struggle with the "children playing" class.
 When not playing any sound, the GPU fan noise from the nearby machine-learning rig
 was classified as "air conditioner" - which the author can agree sounded pretty close.
@@ -1708,15 +1708,16 @@ can be reduced even further without much reduction in performance.
 
 ## Spectrogram processing time
 
-Interestingly the mel-feature preprocessing took 60 ms on device,
+On-device testing showed that the mel-feature preprocessing took 60 ms on device,
 which is on the same order as the efficient models during inference (38-81 ms).
 This means that the CPU bottleneck is not just the model inference time,
 but that spectrogram calculation must be also optimized to reach even lower power-consumption.
 In the FP-SENSING1 example used, the spectrogram computation already use ARM-specific
 optimized codepaths from CMSIS, albeit with floating-point and not fixed-point.
 
-Taking into account the preprocessing time, with the Stride-DS-24 model,
-the microcontroller would be able to sleep for approximately 80% of the time
+Taking into account the preprocessing time the Stride-DS-24 model
+would consume approximately 20% CPU.
+The microcontroller would be able to sleep for the remaining 80% of the time
 even when classifications are performed every 720 ms analysis window (real-time).
 
 This is an opportunity for end-to-end models
@@ -1818,12 +1819,12 @@ this project has investigated performing noise classification directly on microc
 This on-sensor classification makes it possible to reduce power-consumption and privacy issues
 associated with transmitting raw audio or detailed audio fingerprints to a cloud system for classification.
 
-Several different Convolutional Neural Networks were designed for the
+Several Convolutional Neural Networks were designed for the
 STM32L476 low-power microcontroller using the vendor-provided X-CUBE-AI inference engine. 
 The models were evaluated on the Environmental Sound Classification
 task using the standard Urbansound8k dataset, validated briefly for use in real-time classification on device.
 The best models used Depthwise-Separable convolutions with striding,
-and were able to reach up to 70.9% mean accuracy while consuming only 11% CPU,
+and were able to reach up to 70.9% mean accuracy while consuming only 20% CPU,
 and staying within predefined 50% RAM and FLASH storage budgets.
 To our knowledge, this is the highest reported performance on Urbansound8k on a microcontroller.
 
@@ -1833,16 +1834,14 @@ This indicates that it is computationally feasible to classify environmental sou
 on affordable low-power microcontrollers,
 possibly enabling advanced noise monitoring sensor networks with low costs and high density. 
 Further investigations into the power consumption and practical considerations for applying
-on-edge Environmental Sound Classification using microcontrollers is warranted.
+on-edge Environmental Sound Classification using microcontrollers seems to be worth pursuing.
 
 ## Further work
 
-Applying quantization to the models should reduce CPU, RAM and FLASH usage.
+Quantization of the models should further reduce CPU, RAM and FLASH usage.
 This could be used to fit slightly larger models, or to make existing models more efficient.
-A first step could be to make use of the optimized CMSIS-NN library[@CMSIS-NN],
-which utilizes 8-bit integer operations and the SIMD unit in the ARM Cortex M4F.
-However there are also promising results showing that CNNs can be
-effectively implemented with as little as 2 bits[@andri2016yodann][@miyashita2016convolutional][@IncrementalNetworkQuantization],
+The CMSIS-NN library[@CMSIS-NN] utilizes 8-bit integer operations and is optimized for the ARM Cortex M4F.
+However it has also been shown that CNNs can be effectively implemented with as little as 2 bits[@andri2016yodann][@miyashita2016convolutional][@IncrementalNetworkQuantization],
 and without using any multiplications[@leng2018extremely][@cintra2018low].
 
 Utilizing larger amounts of training data might be able to increase performance of models.

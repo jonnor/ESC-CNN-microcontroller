@@ -10,10 +10,10 @@ foreground_ratio = by_class.apply(lambda r: numpy.mean(r['salience'] == 1))
 
 table = pandas.DataFrame({
     'Samples': by_class.count()['classID'],
-    'Average duration': by_class.apply(lambda r: '%.2fs' % (r.end-r.start).mean()),
-    'In foreground': [ "{}%".format(int(100*r)) for r in foreground_ratio ]
+    'Duration (avg)': by_class.apply(lambda r: '%.2f s' % (r.end-r.start).mean()),
+    'In foreground': [ "{} %".format(int(100*r)) for r in foreground_ratio ]
 })
-out = table.to_latex(header=True, index=True)
+out = table.to_latex(header=True, index=True, column_format="lrrr")
 print(out)
 
 outpath = sys.argv[1] 
