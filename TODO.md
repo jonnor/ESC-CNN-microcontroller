@@ -7,8 +7,6 @@ Checking
 
 - Do a spell checking pass
 - Do a grammar checking pass. LanguageTool + Grammarly
-- Do a figure/table captions pass.
-Do they explain the figure setup/contents OK?
 - Make sure final page is EVEN number
 
 ### Final 2

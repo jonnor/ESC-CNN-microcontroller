@@ -80,7 +80,7 @@ The WHO has set a Night Noise Guideline level for Europe at 40 dB $L_{night}$.
 
 Noise is a growing problem in urban areas, and due to increasing urbanization more and more people are affected.
 Major sources of noise include transportation, construction, industry and recreational activities.
-The sum of all the noise is referred to as Environmental noise or noise pollution.
+The sum of all the noise is referred to as environmental noise or noise pollution.
 
 Noise pollution over sustained periods of time affects health and well-being in many ways.
 Noise can be a source of annoyance and increased stress, cause sleeping disturbance
@@ -99,12 +99,12 @@ The purpose of the directive is to:
 * Preventing and reducing environmental noise where necessary
 * Preserving environmental noise quality where it is good
 
-Member States of the EU are required create noise maps and noise management action plans every 5 years.
+Member States of the EU are required to create noise maps and noise management action plans every 5 years.
 These must cover all urban areas, major roads, railways and airports over a certain size.
 
 The noise maps are created using simulation of known noise sources (such as car traffic)
 with mathematical sound propagation models, based on estimates for traffic numbers.
-These maps only give yearly average noise levels for day, evening and night.
+These maps only give yearly average noise levels for the day, evening and night.
 
 <!--
 MAYBE: Add paragraph about noise nuisance.
@@ -116,7 +116,7 @@ MAYBE: add info about reduced property value
 MAYBE: mention occupational noise?
 -->
 
-## Noise monitoring with Wireless Sensor Networks
+## Noise Monitoring with Wireless Sensor Networks
 
 Several cities have started to deploy networks of sound sensors in order to better understand and reduce noise issues.
 These sensor networks consist of many sensor nodes positioned in the area of interest,
@@ -125,7 +125,7 @@ transmitting the data to a central system for storage and reporting.
 Examples of established projects are Dublin City Noise[@DublinCityNoise] with 14 sensors across the city since 2016.
 The Sounds of New York City (SONYC)[@SONYC] project had 56 sound sensors installed as of 2018[@SONYC2019],
 and the Barcelona Noise Monitoring System[@BarcelonaNoiseMonitoring] had 86 sound sensors[@BarcelonaNoiseMonitoring2018].
-The CENSE[@CENSE] projects plans to install around 150 sensors in Lorient, France[@CENSESensor].
+The CENSE[@CENSE] project plans to install around 150 sensors in Lorient, France[@CENSESensor].
 
 ![Illustration of how Sounds of New York City[@SONYC-CPS] system combines sensor networks and citizen reporting with data analysis and to present city experts and agencies with a visual interactive dashboard "Noise Mission Control".](./img/SONYC-CPS.png){short-caption="Sounds of New York City noise monitoring system" width=50%}
 
@@ -138,14 +138,14 @@ These sensor networks enable continuous logging of the sound pressure level,
 measured in Decibel (dB SPL) over a reference pressure level (typically \num{20e-6}\si{Pa} ).
 Since the sound pressure level is continuously varying, it is summarized over a specified time-period
 using Equivalent Continuous Sound Level ($L_{eq}$).
-Typical measurement resolution are per minute, per second or per 125 ms.
+Typical measurement resolutions are per minute, per second or per 125 ms.
 Measurements often use A-weighting to approximate the sensitivity of the human ear at different frequencies.
-In Europe sound level sensors are designed to specifications of IEC 61672-1 Sound Level Meters[@IECSoundLevelMeters],
+In Europe, sound level sensors are designed to specifications of IEC 61672-1 Sound Level Meters[@IECSoundLevelMeters],
 and the standard for North America is ANSI S1.4[@ANSISoundLevelMeters].
 
 Sensors can also provide information that can be used to characterize the noise,
 for instance to identify the likely noise sources.
-This is desirable in order to understand the cause of noise,
+This is desirable in order to understand the cause of the noise,
 identify which regulations the noise falls under, which actors may be responsible,
 and to initiate possible interventions.
 
@@ -171,8 +171,8 @@ D) Sensor performs classification on device and sends result to server. No audio
 \end{figure}
 
 
-In [@AudioCodingSensorGrid], authors propose a compressed noise profile based on lossy compression of spectrograms.
-For 125ms time resolution the bit-rate is between 400 and 1400 bits per second,
+In [@AudioCodingSensorGrid], the authors propose a compressed noise profile based on lossy compression of spectrograms.
+For 125ms time resolution, the bit-rate is between 400 and 1400 bits per second,
 however this gave a 5 percentage points reduction in classification accuracy.
 This is shown as case B) of Figure \ref{figure:sensornetworks-coding}.
 
@@ -180,10 +180,10 @@ Others have proposed to use neural networks to produce an audio "embedding" insp
 by the success of word embeddings[@rong2014word2vec] for Natural Language Processing.
 This is shown as case C) of Figure \ref{figure:sensornetworks-coding}.
 In VGGish[@VGGish] model trained on Audioset[@AudioSet]
-a 8-bit, 128 dimensional embedding per 1 seconds clips,
-leading to a datarate of 1024 bits per second.
+an 8-bit, 128-dimensional embedding per 1 second,
+leading to a data rate of 1024 bits per second.
 $L^3$ (Look, Listen, Learn)[@LookListenLearn] similarly proposed an embedding with 512 dimensions.
-The computation of such an embedding generally requires very large models and lots of compute resources.
+The computation of such an embedding generally requires very large models and lots of computational resources.
 $EdgeL^3$[@EdgeL3] showed that the $L^3$ model can be compressed by up to 95%,
 however the authors state that more work is needed to fit the RAM constraints of desirable sensor hardware.
 
@@ -234,7 +234,7 @@ Open-set classification. Novelty detection, clustering
 Machine Learning is the use of algorithms and statistical models
 to effectively perform a task, without having to explicitly program the instructions
 for how to perform this task.
-Instead the algorithms learn to perform the desired function from provided data.
+Instead, the algorithms learn to perform the desired function from provided data.
 
 *Supervised learning* uses a training dataset where each sample is labeled with the correct output.
 These labels are normally provided by manual annotation by humans inspecting the data,
@@ -249,9 +249,9 @@ and for classification a discrete variable.
 ### Classification
 
 Classification is a machine learning task where the goal is to
-train a model which can accurately predict which class(es) the data belongs to.
+train a model that can accurately predict which class(es) the data belongs to.
 Examples use-cases could be to determine from an image which breed a dog is,
-to predict from text whether it is positive or negative towards the subject matter
+to predict from a text whether it is positive or negative towards the subject matter
 - or to determine from audio what kind of sound is present.
 
 In single-label classification, a sample can only belong to a single class. 
@@ -261,10 +261,10 @@ Many classification problems are treated as single-label and closed-set.
 <!-- `TODO: image of classification problem` -->
 
 Metrics are used to evaluate how well the model performs at its task.
-Common metrics for classification include:
+Common metrics for classification include
 *Accuracy* - the ratio of correct predictions to total predictions,
-*Precision* - number of correct positive results divided by the total number of positive predictons,
-*Recall* (Sensitivity) - number of correct positive results divided by the number of predictions that should have been positive.
+*Precision* - the number of correct positive results divided by the total number of positive predictions,
+*Recall* (Sensitivity) - the number of correct positive results divided by the number of predictions that should have been positive.
 
 For a given model there will be a tradeoff between Precision and Recall.
 For binary classification, the range of possible tradeoffs can be evaluated using a
@@ -294,7 +294,7 @@ To estimate how well the model generalizes to new unseen data,
 predictions are made on the *validation set*. 
 The final performance of the trained model is evaluated on a *test set*,
 which has not been used in the training process.
-To get a better estimate of how the model performs K-fold cross validation can be used,
+To get a better estimate of how the model performs K-fold cross-validation can be used,
 where K different training/validation splits are attempted.
 K is usually set to a value between 5 and 10.
 The overall process is illustrated in Figure \ref{figure:crossvalidation}.
@@ -305,13 +305,12 @@ One common style of supervised learning processes is to:
 start with a base model and initialize its parameters (often randomly),
 then make predictions using this model, compare these predictions with the labels to compute
 an error, and then update the parameters in order to attempt to reduce this error.
-This iterative process is illustrated in \ref{figure:training-inference}.
+This iterative process is illustrated in Figure \ref{figure:training-inference}.
 
-![Relationship between training system and the predictive model being trained \label{figure:training-inference}](./img/training-inference.png)
+![Relationship between training system and the predictive model during training \label{figure:training-inference}](./img/training-inference.png)
 
-*Hyperparameters* are settings (parameters) used in the training process that
-are set, but not used as optimization during training.
-Hyperparameters can be chosen by selecting different candidate settings,
+*Hyperparameters* are settings for the training process.
+Hyperparameters can be chosen by trying different candidate settings,
 training model(s) to completion with these settings,
 and evaluating performance on the validation set.
 When performed systematically this is known as a hyperparameter search.
@@ -354,7 +353,7 @@ It consists of an input layer, one or more hidden layers, and an output layer.
 
 Each layer consists of a number of neurons.
 The neurons of one layer are connected to each of the neurons in the preceding layer.
-This type of layer is therefore known as a fully-connected layer.
+This type of layer is therefore known as a fully-connected, or densely-connected layer.
 The input to the network is a 1-dimensional vector.
 If the data is multi-dimensional (like an image) is to be used,
 it must be flattened to a 1-D vector.
@@ -362,7 +361,7 @@ it must be flattened to a 1-D vector.
 Each neuron computes its output as a weighted sum of the inputs,
 offset by a bias and followed by an activation function $f$,
 as illustrated in \ref{fig:artificial-neuron}.
-In the simplest case the activation function is the identity function.
+In the simplest case, the activation function is the identity function.
 This lets the layer express any linear function.
 
 Making predictions with a neural network is done by applying the data
@@ -376,17 +375,17 @@ To be able to express non-linear relationships between input and output,
 non-linear activation functions are applied.
 When non-linearity is used, a neural network becomes a universal function approximator[@cybenko1989approximation].
 
-Commonly used general-purpose non-linear activation functions are tanh and ReLu[@ReLu].
+Commonly used general-purpose non-linear activation functions are Tanh and ReLu[@ReLu].
 Sigmoid and softmax are commonly used at the output stage
 of a neural network for classification, as they convert the input to a probability-like $(0,1)$ range.
-Sigmoid is used for binary classification, and Softmax for multi-class classification.
+Sigmoid is used for binary classification and Softmax for multi-class classification.
 To get a discrete class from these continuous probability values, a decision function is applied.
 The simplest decision function for single-label multi-class classification is to take the largest value,
 using the argmax function.
 
 An illustration of the mentioned activation functions can be seen in Figure \ref{fig:activation-functions}.
 
-![Commonly used activation functions in neural networks. Input along X axis, output along Y. Range for Sigmoid is (0,1) and for Tanh (-1,1). \label{fig:activation-functions}](./img/activation-functions.svg){short-caption="Commonly used activation functions"}
+![Commonly used activation functions in neural networks. Input shown along X-axis, output along Y. Range for Sigmoid is (0,1) and for Tanh (-1,1). \label{fig:activation-functions}](./img/activation-functions.svg){short-caption="Commonly used activation functions"}
 
 
 Increasing the number of neurons and the number of hidden layers
@@ -405,10 +404,10 @@ Leaky ReLU[@LeakyReLu], Parametric ReLu (PReLU)[@PReLu] and Exponential Linear U
 ### Training Neural Networks
 
 Neural Networks are trained through numerical optimization of an objective function (loss function).
-For supervised learning the standard method is mini-batch Gradient Descent with Backpropagation.
+For supervised learning, the standard method is mini-batch Gradient Descent with Backpropagation.
 
-For classification the cross-entropy (log loss) function is often applied.
-As predicted probability of the true class gets close to zero, the log-loss goes towards infinity.
+For classification, the cross-entropy (log loss) function is often applied.
+As the predicted probability of the true class gets close to zero, the log-loss goes towards infinity.
 This penalizes wrong predictions heavily, see Figure \ref{fig:log-loss}.
 
 ![Plot of log-loss for binary classification. \label{fig:log-loss}](./pyplots/logloss.png){ width=100% }
@@ -417,7 +416,7 @@ Categorical cross-entropy is an extension of binary cross-entropy to multiple cl
 Other loss functions are Logistic Loss, Mean Squared Error and Mean Absolute Error.
 
 Making predictions with a forward pass of the neural network
-and computing the loss function allows to estimates how well or how poorly
+and computing the loss function allows estimating how well or how poorly
 the current model performs.
 In order to find out how the model parameters should be changed in order to perform better,
 *Gradient Descent* is applied.
@@ -433,7 +432,7 @@ MAYBE: mention momentum
 `TODO: image of 1-D loss landscape and Gradient Descent`
 -->
 
-The key to calculating the gradients in a multi-layer neural networks
+The key to calculating the gradients in a multi-layer neural network
 is *backpropagation*[@BackpropagationNeuralNetworks].
 Backpropagation works by propagating the error in the last layers "back" towards the input,
 using the partial derivative with respect to the inputs from the layer before it. 
@@ -444,11 +443,11 @@ a hyperparameter in the range of $\num{e-7}$ to $\num{e-2}$.
 Too small learning rates can lead to the model getting stuck in bad minima,
 while too large learning rates can cause training to not converge[@EfficientBackProp, ch 1.5.1].
 
-In *mini-batch* Gradient Descent the training data is processed in multiple fixed size batches of data,
+In *mini-batch* Gradient Descent, the training data is processed in multiple fixed-size batches of data,
 and the loss function and model parameters updates are computed per batch.
 This means that not all the training data has to be kept in memory at the same time,
-which allows to train on very large datasets.
-The batch size is a hyperparameter, and has to be set high enough for the batch loss
+which allows training on very large datasets.
+The batch size is a hyperparameter and has to be set high enough for the batch loss
 to be a reasonable estimate of the loss on the full training set,
 but small enough for the batch to fit into memory.
 
@@ -459,12 +458,12 @@ The mini-batch Gradient Descent optimization with backpropagation
 can be summarized in the following procedure:
 
 1. Sample a mini-batch of data
-2. Forward propagate the data to compute output probabilities, calculate loss
-3. Backpropagate the errors to compute error gradients in entire network
+2. Forward propagate the data to compute output probabilities, calculate the loss
+3. Backpropagate the errors to compute error gradients in the entire network
 4. Update each weight by moving a small amount against the gradient
 5. Go to 1) until all batches of all epochs are completed
 
-Gradient Descent is not guaranteed to find a globally optimal minima,
+Gradient Descent is not guaranteed to find a globally optimal minimum,
 but with suitable choices of hyperparameters can normally find local minima that are good-enough.
 It has also been argued that a global optimum on the training set might
 not be desirable, as it is unlikely to generalize well[@LossSurfaceNeuralNetworks].
@@ -503,11 +502,11 @@ Dropout
 ### Convolutional layers 
 
 Convolutional layers are an alternative to fully-connected layers that allows
-for 2D input and that can exploits the spatial relationship in such data.
+for 2D input and that can exploit the spatial relationship in such data.
 
-In addition to the width and height the input also has a third dimension, the number of *channels*.
+In addition to the width and height, the input also has a third dimension, the number of *channels*.
 The different channels can contain arbitrary kinds of data,
-but common for the first layer would be 3 channels with an RGB color image,
+but common for the first layer would be 3 channels with an RGB color image
 or 1 channel for grayscale images or audio spectrogram.
 
 To perform 2D convolution, a filter (or *kernel*) of fixed size $K_w$x$K_h$ is swept across the 2D input of a channel.
@@ -525,7 +524,7 @@ Green dots illustrate locations of outputs with respect to inputs.
 \label{fig:convolution-2d}
 \end{figure}
 
-This convolution process allows to express many useful transformations on 2D data,
+This convolution process allows expressing many useful transformations on 2D data,
 by simply selecting different weights in the kernel.
 Simple examples are edge detection (horizontal/vertical/diagonal) or smoothening filters (mean/Gaussian). 
 And since the kernels weights in a convolutional layer are trained,
@@ -554,7 +553,7 @@ The number of learnable parameters in a 2D convolutional layer with bias is
 $P_{conv} = M(K_wK_h + 1)$, with $M$ filters and a kernel of size $K_w$x$K_h$.
 Commonly used kernel sizes are 3x3 to 7x7.
 
-In the fully-connected layer there was $(N+1) \times M$ parameters for $N$ inputs and $M$ neurons.
+In the fully-connected layer, there were $(N+1) \times M$ parameters for $N$ inputs and $M$ neurons.
 For 2D images $N=height \times width \times channels$, so even for small image grayscale inputs (N=100x100x1=10000)
 a convolutional layer has much fewer parameters.
 
@@ -573,7 +572,7 @@ and a 2D kernel of size $K_w$x$K_h$.
 A Convolutional Neural Network (CNN) is a neural network that uses convolutional layers
 in addition to (or instead of) fully-connected layers.
 One of the early examples of a CNN model was LeNet5 (1998)[@lecun1998gradient],
-which was successfully applied to recognition of handwritten digits.
+which was successfully applied to the recognition of handwritten digits.
 As seen in Figure \ref{fig:lenet-5}, the architecture uses
 two convolutional layers (with subsampling after each),
 followed by two fully-connected layers and then the output layer.
@@ -591,9 +590,9 @@ This forces the model to learn bigger (relative to the original input space)
 and more complex features (patterns of patterns) in later layers.
 <!-- TODO: ref-->
 
-A pooling layer is one way of accomplishing this,
+A pooling layer is one way to accomplish this,
 and was used in the LeNet5 and VGGNet architectures.
-A 2D pooling operation has $K_w$x$K_h$ sized filter,
+A 2D pooling operation has $K_w$x$K_h$ sized filter
 and scans over the image width and height.
 The stride is normally set to the same size of the operation.
 Each channel is processed independently.
@@ -609,8 +608,8 @@ Pooling said to help model be translation invariant.
 
 Another way of subsampling is by increasing the stride of the convolutions[@AllConvolutionalNet].
 If a kernel has a stride of 2 (as in Figure \ref{fig:strided-convolution}),
-then the output of of the convolution will be reduced by half.
-Striding is usually applied in the first convolution in a layer,
+then the output of the convolution will be reduced by half.
+Striding is usually applied in the first convolution in a layer
 and reduces the number of computations compared to pooling because fewer inputs need to be computed. 
 
 ![Strided convolution. The kernel input (marked in red) moves by stride=2, effectively subsampling the input image \label{fig:strided-convolution}](./img/strided-convolution.png){short-caption="Strided convolution"}
@@ -625,12 +624,12 @@ MAYBE: equation for operations for strided convolution
 
 ### Spatially Separable convolution
 
-While CNNs have relatively low number of parameters, compared to fully-connected layers,
+While CNNs have a relatively low number of parameters, compared to fully-connected layers,
 the convolutional kernels still require a lot of computations.
 Several alternative convolution layers have been proposed to address this.
 
 In a spatially separable convolution, a 2D convolution is factorized into two convolutions with 1D kernels.
-First a 2D convolution with $1 x K_h$ kernel is performed, followed by a 2D convolution with a $K_w x 1$ kernel,
+First, a 2D convolution with a $1 x K_h$ kernel is performed, followed by a 2D convolution with a $K_w x 1$ kernel,
 as illustrated in Figure \ref{fig:spatially-separable-convolution}. The number of operations is
 
 $$
@@ -645,15 +644,15 @@ For example with $K_w=K_h=3$, $9/6=1.5$ and with $K_w=K_h=5$ = $25/10=2.5$.
 
 ### Depthwise Separable convolution
 
-![Input/output relationship of standard 3x3 convolution versus Depthwise Separable convolution. Image based on illustrations by Yusuke Uchida[@ConvolutionsIllustrated] \label{fig:depthwise-separable-convolution}](./img/depthwise-separable-convolution.png){short-caption="Depthwise Separable Convolution versus standard 3x3 convolution"}
+![Input/output relationship of standard 3x3 convolution versus Depthwise Separable convolution. The image is based on illustrations by Yusuke Uchida[@ConvolutionsIllustrated] \label{fig:depthwise-separable-convolution}](./img/depthwise-separable-convolution.png){short-caption="Depthwise Separable Convolution versus standard 3x3 convolution"}
 
 While a standard convolutional layer performs a convolution over both channels and the spatial extent
 a Depthwise Separable convolution splits this into two convolutions:
 First a *Depthwise Convolution* over the spatial extent only,
 followed by a *Pointwise Convolution* over the input channels.
-The diffence is illustrated in Figure \ref{fig:depthwise-separable-convolution}.
+The difference is illustrated in Figure \ref{fig:depthwise-separable-convolution}.
 
-The pointwise convolution is sometimes called a 1x1 convolution,
+The pointwise convolution is sometimes called a 1x1 convolution
 since it is equivalent to a 2D convolution operation with a 1x1 kernel. 
 
 <!-- XXX: add numbering to equations and reference them -->
@@ -677,7 +676,7 @@ SKIP
 ### Efficient CNNs for Image Classification
 
 The development of more efficient Convolutional Neural Networks for
-image classification have received a lot of attention over the last few years.
+image classification has received a lot of attention over the last few years.
 This is especially motivated by the ability to run models
 that give close to state-of-the-art performance on mobile phones and tablets.
 Since spectrograms are 2D inputs that are similar to images, it is possible that some of these
@@ -699,11 +698,11 @@ and the input image size.
 On ImageNet, MobileNet-160 $\alpha=0.5$ with 76M MACC performs better than SqueezeNet with 1700M MACC,
 a 22x reduction. The smallest tested model was 0.25 MobileNet-128, with 15M MACC and 200k parameters.
 
-![Convolutional blocks of Effnet, ShuffleNet and Mobilenet. Illustration based on Effnet paper[@Effnet]](./img/conv-blocks-imagenets.png){short-caption="Convolutional blocks of Effnet, ShuffleNet and Mobilenet"}
+![Convolutional blocks of Effnet, ShuffleNet, and Mobilenet. Illustration based on Effnet paper[@Effnet]](./img/conv-blocks-imagenets.png){short-caption="Convolutional blocks of Effnet, ShuffleNet and Mobilenet"}
 
 Shufflenet[@Shufflenet] (2017) uses group convolutions in order to reduce computations.
-In order to mix information between different groups of convolutions it introduces
-a random channel shuffle.
+In order to mix information between different groups of convolutions,
+it introduces a random channel shuffle.
 
 SqueezeNext[@SqueezeNext] (2018) is based on SqueezeNet but
 uses spatially separable convolution (1x3 and 3x1) to improve inference time.
@@ -738,18 +737,18 @@ as illustrated in Figure \ref{figure:audio-acquisition}.
 
 In the digitization process, the signal is quantized in time at a certain sampling frequency,
 and the amplitude quantized at a certain bit-depth.
-A typical sampling frequency is 44100 Hz and bit-depth 16 bit,
+A typical sampling frequency is 44100 Hz and a bit-depth 16 bit,
 as used in the Audio CD format[@AudioCDspecification].
-With such parameters the majority of human perceivable information in the acoustic sound is captured.
-In this representation sound is a one dimensional sequence of numbers, sometimes referred to as a *waveform*.
+With such parameters, the majority of human-perceivable information in the acoustic sound is captured.
+In this representation sound is a one-dimensional sequence of numbers, sometimes referred to as a *waveform*.
 This is the format utilized by case A) in Figure {figure:sensornetworks-coding} from the introduction.
 
 Digital sound can be stored uncompressed (example format: WAV PCM[@WAVspecification]),
 using lossless compression (FLAC[@FLACHomepage])
 or using lossy compression (MP3[@MP3Standard]).
 Lossy compression removes information that is indistinguishable to the human ear
-and can therefore compress better than lossless.
-It however adds compression artifacts, and is best avoided for machine learning tasks.
+and can compress better than lossless.
+But lossy compression can add compression artifacts, and is best avoided for machine learning tasks.
 
 Recordings can have multiple channels of audio but for machine learning on audio
 single-channel data (mono-aural) is still common.
@@ -760,11 +759,11 @@ Sounds of interest often have characteristic patterns not just in time (temporal
 but also in frequency content (spectral signature).
 Therefore it is common to analyze audio in a time-frequency representation (a *spectrogram*).
 
-A common way to compute a spectrogram from an audio waveform is by using the Short Time Fourier Transform (STFT)[@ShortTimeFourierTransformJos].
-The STFT operates by splitting the audio up in short consecutive chunks,
+A common way to compute a spectrogram from an audio waveform is by using the Short-Time Fourier Transform (STFT)[@ShortTimeFourierTransformJos].
+The STFT operates by splitting the audio up in short consecutive chunks
 and computing the Fast Fourier Transform (FFT) to estimate the frequency content for each chunk.
 To reduce artifacts at the boundary of chunks, they are overlapped (typically by 50%)
-and a window function (such as the Hann window) is applied before before computing the FFT.
+and a window function (such as the Hann window) is applied before computing the FFT.
 With the appropriate choice of window function and overlap, the STFT is invertible[@STFTmodifications].
 
 <!--
@@ -776,10 +775,10 @@ Inspiration for TODO: image, https://dsp.stackexchange.com/questions/19311/stft-
 There is a trade-off between frequency (spectral) resolution and time resolution with the STFT.
 The longer the FFT window the better the frequency resolution,
 but the poorer the temporal resolution.
-For speech a typical choice of window length is 20 ms.
+For speech, a typical choice of window length is 20 ms.
 Similar frame lengths are often adopted for acoustic events.
-The STFT returns complex numbers describing phase and magnitude of each frequency bin.
-A spectrogram squaring the absolute of the magnitude, and discards the phase information.
+The STFT returns complex numbers describing the phase and magnitude of each frequency bin.
+A spectrogram is computed by squaring the absolute of the magnitude and discarding the phase information.
 This is called a *linear spectrogram* or sometimes just spectrogram.
 The lack of phase information means that the spectrogram is not strictly invertible,
 though estimations exist[@GriffinLimSpectrogramInversion][@MCNNSpectrogramInversion].
@@ -790,24 +789,24 @@ A linear spectrogram can be on top in Figure \ref{fig:spectrograms}.
 The more complex the input to a machine learning system is,
 the more processing power is needed both for training and for inference.
 Therefore one would like to reduce the dimensions of inputs as much as possible.
-A STFT spectrogram often has considerable correlation (redundant information) between adjacent frequency bins,
+A linear spectrogram often has considerable correlation (redundant information) between adjacent frequency bins
 and is often reduced to 30-128 frequency bands using a filter-bank.
 Several different filter-bank alternatives have been investigated for audio classification tasks,
-such as 1/3 octave bands, the Bark scale, Gammatone and the Mel scale. <!-- TODO: reference`-->
-All these have filters spacing that increase with frequency, mimicking the human auditory system. <!-- TODO: reference -->
+such as 1/3 octave bands, the Bark scale, Gammatone, and the Mel scale. <!-- TODO: reference`-->
+All these have filters spacing that increases with frequency, mimicking the human auditory system. <!-- TODO: reference -->
 See Figure \ref{figure:filterbanks}.
 
 ![Comparison of different filterbank responses: Mel, Gammatone, 1/3-octave. \label{figure:filterbanks}](./pyplots/filterbanks.png)
 
-The Mel scaled filters is commonly used for audio classification. <!-- TODO: reference -->
+The Mel scaled filters are commonly used for audio classification[@anusuya2011front].
 The spectrogram that results for applying a Mel-scale filter-bank is often called a Mel-spectrogram.
 
-![Different spectrograms showing birdsong. Top: Linear spectrogram. Middle: Mel-spectrogram. Bottom: Normalized mel-spectrogram after mean-subtraction and standard scaling. The Mel-spectrograms in this example had the first filter set to 1kHz, eliminating a lot of the low frequency noise seen in the linear spectrogram.](./img/spectrograms.svg){short-caption="Different spectrograms" width=100%}
+![Different spectrograms showing birdsong. Top: Linear spectrogram. Middle: Mel-spectrogram. Bottom: Normalized mel-spectrogram after mean-subtraction and standard scaling. The Mel-spectrograms in this example had the first filter set to 1kHz, eliminating a lot of the low-frequency noise seen in the linear spectrogram.](./img/spectrograms.svg){short-caption="Different spectrograms" width=100%}
 
 Mel-Filter Cepstral Coefficients (MFCC) is a feature representation
 computed by performing a Discrete Cosine Transform (DCT) on a mel-spectrogram.
 This further reduces dimensionality to just 13-20 bands with low correlation between each band.
-MFCC have been very popular in speech recognition tasks[@anusuya2011front],
+MFCC features have been very popular in speech recognition tasks[@anusuya2011front],
 however in general sound classification tasks mel-spectrograms tend to perform better[@huzaifah2017comparison][@StowellBirdUnsupervisedFeatureLearning]. 
 
 ### Normalization
@@ -815,7 +814,7 @@ however in general sound classification tasks mel-spectrograms tend to perform b
 Audio has a very large dynamic range.
 The human hearing has a lower threshold of hearing down to $20\mu\text{Pa}$ (0 dB SPL)
 and a pain threshold of over 20 Pa (120 dB SPL), a difference of 6 orders of magnitude[@smith1997scientist, ch.22].
-A normal conversation may be 60 dB SPL and a pneumatic drill 110 dB SPL, a 4 orders of magnitude difference.
+A normal conversation might be 60 dB SPL and a pneumatic drill 110 dB SPL, 4 orders of magnitude difference.
 It is common to compress the range of values in spectrograms by applying a log transform.
 
 In order to center the values, the mean (or median) of the spectrogram can be removed.
@@ -833,11 +832,11 @@ The machine learning classifier however generally needs a fixed-size feature vec
 Also when playing back a finite-length recording, the file may be many times longer than
 the sounds that are of interest.
 To solve these problems, the audio stream is split up into analysis windows of fixed length,
-that are classified independently.
+which are classified independently.
 The length of the window is typically a little longer than the longest target sound.
 The windows can follow each-other with no overlap,
 or move forward by a number less than the window length (overlap).
-With overlap a target sound will be classified a couple of times,
+With overlap, a target sound will be classified a couple of times,
 at a slightly different position inside the analysis window each time.
 This can improve classification accuracy.
 
@@ -848,20 +847,20 @@ which uses less memory and possibly allows to reduce the model complexity,
 and in turn allow to make better use of a limited dataset. 
 
 When the length of audio clips is not evenly divisible by length of analysis windows,
-the last window is zero padded.
+the last window is zero-padded.
 
 ### Weak labeling
 
-Sometimes there is a mismatch between the desired length of analysis window,
+Sometimes there is a mismatch between the desired length of the analysis window,
 and the labeled clips available in the training data.
-For example a dataset may consist of labeled audio clips with a length of 10 seconds,
+For example, a dataset may consist of labeled audio clips with a length of 10 seconds,
 while the desired output is every second.
 When a dataset is labeled only with the presence of a sound at a coarse timescale,
 without information about where exactly the relevant sound(s) appears
 it is referred to as *weakly annotated* or *weakly labeled* data[@ComputationalAnalysisSound, ch 14.2.4.1].
 
 If one assumes that the sound of interest occurs throughout the entire audio clip,
-a simple solution is to let each analysis window inherit the label of the audio clip as-is,
+a simple solution is to let each analysis window inherit the label of the audio clip without modification,
 and to train on individual analysis windows.
 If this assumption is problematic, the task can be approached as a Multiple Instance Learning (MIL) problem.
 Under MIL each training sample is a bag of instances (in this case, all analysis windows in an audio clip),
@@ -872,7 +871,7 @@ Several MIL techniques have been explored for audio classification and audio eve
 
 ### Aggregating analysis windows
 
-When evaluating on a test-set where audio clips are 10 seconds,
+When evaluating a test-set where audio clips are 10 seconds,
 but the model classifies analysis windows of 1 second
 the individual predictions must be aggregated into one prediction for the clip.
 
@@ -881,20 +880,20 @@ where the overall prediction is the class that occurs most often across individu
 
 With *soft voting* or *probabilistic voting*,
 the probabilities of individual predictions are averaged together,
-and the output prediction is the class with overall highest probability.
+and the output prediction is the class with the highest probability overall.
 
 <!-- TODO: image showing how voting is performed --> 
 
 
 ### Data augmentation
 
-Access to labeled samples is often limited, because it is expensive to acquire.
+Access to labeled samples is often limited because they are expensive to acquire.
 This can be a limiting factor for reaching good performance using supervised machine learning.
 
 Data Augmentation is a way to synthetically generate new labeled samples from existing ones,
 in order to expand the effective training set.
 A simple form of data augmentation can be done by modifying the sample data slightly.
-Common data augmentation techniques for audio include Time-shift, Pitch-shift and Time-stretch.
+Common data augmentation techniques for audio include Time-shift, Pitch-shift, and Time-stretch.
 These are demonstrated in Figure \ref{figure:dataaugmentations}.
 
 ![Common data augmentations for audio demonstrated on a dog bark ("woof woof"). Figure shows log-scaled linear spectrograms before and after applying the augmentation. Parameters are exaggerated to show the effects more clearly. \label{figure:dataaugmentations}](./pyplots/dataaugmentations.png){short-caption="Common data augmentations for audio"}
@@ -902,7 +901,7 @@ These are demonstrated in Figure \ref{figure:dataaugmentations}.
 Mixup[@Mixup] is another type of data augmentation technique
 where two samples from different classes are mixed together to create a new sample.
 A mixup ratio $\lambda$ controls how much the sample data is mixed,
-and the labels of the new sample is mixed in the same way.
+and the labels of the new sample are mixed in the same way.
 
 $$
 \begin{aligned}
@@ -915,7 +914,7 @@ $$
 The authors argue that this encourages the model to behave linearly in-between training examples.
 It has been shown to increase performance on audio tasks[@ESC-mixup][@AclNet][@Mixup-ASC].
 
-Data augmentation can be applied either to the raw audio waveform,
+Data augmentation can be applied either to the raw audio waveform
 or to preprocessed spectrograms.
 
 <!--
@@ -928,8 +927,8 @@ Cutout
 
 ### Efficient CNNs for Speech Detection
 
-Speech detection is a big application of Audio Classification,
-and there has been research focused on efficient models for use
+Speech detection is a big application of Audio Classification.
+A lot of research has been focused on efficient models for use
 in smartwatches, mobile devices and smart-home devices (Amazon Alexa et.c.).
 In the Keyword Spotting (KWS) the goal is to detect a keyword or phrase that
 indicates that the user wants to enable speech control.
@@ -953,8 +952,8 @@ running keyword spotting at 10 inferences per second while utilizing only 12% CP
 
 FastGRNN[@FastGRNN] (2018) is a Gated Recurrent Neural Network designed
 for fast inference on audio tasks on microcontrollers.
-It uses a simplified gating architecture with residual connection,
-and uses a three-stage training schedule that
+It uses a simplified gating architecture with residual connection
+and a three-stage training schedule that
 forces weights to be quantized in a sparse and low-rank fashion. 
 When evaluated on Google Speech Command Set (12 classes),
 their smallest model of 5.5 KB achieved 92% accuracy
@@ -964,7 +963,7 @@ and ran in 242 ms on a low-end microcontroller (ARM Cortex M0+ at 48 Mhz).
 \newpage
 ## Environmental Sound Classification
 
-Environmental Sound Classification, or Environmental Sound Recognition
+Environmental Sound Classification, or Environmental Sound Recognition,
 is the task of classifying environmental sounds or noises.
 It has been researched actively within the machine learning community at least since 2006[@EnvironmentalSoundRecognition2014].
 
@@ -972,12 +971,12 @@ It has been researched actively within the machine learning community at least s
 \label{chapter:datasets}
 
 The Urbansound taxonomy[@UrbanSound8k, ch 2] is a proposed taxonomy of sound sources,
-developed based on analysis of noise complaints in New York city between 2010 and 2014.
+developed based on analysis of noise complaints in New York City between 2010 and 2014.
 The same authors also compiled the Urbansound dataset[@UrbanSound8k, ch 3],
 based on selecting and manually labeling content from the Freesound[@Freesound] repository.
 10 different classes from the Urbansound taxonomy were selected and
 1302 different recordings were annotated, for a total of 18.5 hours of labeled audio. 
-A curated subset with 8732 audio clips of maximum 4 seconds is known as *Urbansound8k*.
+A curated subset with 8732 audio clips with a maximum length of 4 seconds is known as *Urbansound8k*.
 
 \begin{table}[h]
 \centering
@@ -1004,22 +1003,22 @@ of results on the dataset, with over 40 entries.
 As of April 2019, the best models achieve 86.50% accuracy,
 and all models with over 72% accuracy use some kind of Convolutional Neural Network.
 
-AudioSet [@AudioSet] is a large general purpose ontology of sounds with 632 audio event classes.
-The accompanying dataset has over 2 million annotated clips based on sound from Youtube videos.
+AudioSet [@AudioSet] is a large general-purpose ontology of sounds with 632 audio event classes.
+The accompanying dataset has over 2 million annotated clips based on audio from Youtube videos.
 Each clip is 10 seconds long. 527 classes from the ontology are covered.
 
-In DCASE2019 challenge (in progress, ends July 2019) task 5[@DCASE2019Task5]
+In the DCASE2019 challenge (in progress, ends July 2019) task 5[@DCASE2019Task5]
 audio clips containing common noise categories are to be tagged.
-The tagging is formulated as a multi-label classification on 10 second clips.
+The tagging is formulated as a multi-label classification on 10-second clips.
 The dataset[@SONYC-UST] has 23 fine-grained classes across 8 categories
 with 2794 samples total.
-The data was collected from SONYC noise sensor network in New York city. 
+The data was collected from the SONYC noise sensor network in New York City. 
 
 Several earlier DCASE challenge tasks and datasets
 have been on related topics to Environmental Sound Classification,
 such as Acoustic Scene Detection[@DCASE2017Task1],
 general-purpose tagging of sounds[@DCASE2018Task2],
-and detection of vehicle related sounds[@DCASE2017Task4].
+and detection of vehicle-related sounds[@DCASE2017Task4].
 
 
 <!--
@@ -1035,19 +1034,19 @@ Detection and Classification of Acoustic Scenes and Events (DCASE) challenge in 
 \label{chapter:esc-models}
 
 Many papers have used Convolutional Neural Networks (CNN) for Environmental Sound Classification.
-Approaches based on spectrograms and in particular log-scaled melspectrogram being the most common.
+Approaches based on spectrograms and in particular log-scaled Mel-spectrogram being the most common.
 
 PiczakCNN[@PiczakCNN] in 2015 was one of the first applications of CNNs to the Urbansound8k dataset.
-It uses 2 channels of log-melspectrograms, both the plain spectrogram values
+It uses 2 channels of log-Mel-spectrograms, both the plain spectrogram values
 and the first-order difference (delta spectrogram).
 The model uses 2 convolutional layers, first with size 57x6 (frequency x time) and then 1x3,
 followed by two fully connected layers with 5000 neurons each.
-The paper evaluates short (950 ms) versus long (2.3 seconds)
-analysis windows, and majority voting versus probability voting.
+The paper evaluates short (950 ms) versus long (2.3 seconds) analysis windows
+and majority voting versus probability voting.
 Performance on Urbansound8k ranged from 69% to 73%.
 It was found that probability voting and long windows perform slightly better[@PiczakCNN].
  
-![Architecture of Piczak CNN, from the original paper [@PiczakCNN]. The model input has two channels: the spectrogram magnitude (light blue) and a first-order difference "delta" of the spectrogram (purple)) \label{figure:piczak-cnn}](./img/piczak-cnn.png){short-caption="Architecture of Piczak CNN"}
+![The architecture of Piczak CNN, from the original paper [@PiczakCNN]. The model input has two channels: the spectrogram magnitude (light blue) and a first-order difference "delta" of the spectrogram (purple)) \label{figure:piczak-cnn}](./img/piczak-cnn.png){short-caption="Architecture of Piczak CNN"}
 
 SB-CNN[@SB-CNN] (2016) is a 3-layer convolutional with uniform 5x5 kernels and 4x2 max pooling.
 The paper also analyzes the effects of several types of data augmentation on Urbansound8k.
@@ -1058,19 +1057,19 @@ consistently gave a performance boost across all classes.
 
 
 D-CNN[@D-CNN] (2017) uses feature representation and model architecture that largely follows that of PiczakCNN,
-however the second layer uses dilated convolutions with a dilation rate of 2. 
+however, the second layer uses dilated convolutions with a dilation rate of 2. 
 With additional data augmentation of time-stretching and noise addition,
 this gave a performance of up to 81.9% accuracy on Urbansound8k.
 LeakyRelu was found to perform slightly better than ReLu which scored 81.2%.
 
 A recent paper investigated the effects of mixup for data augmentation[@ESC-mixup].
 Their model uses 4 blocks of 2 convolutional layers each, with each block followed by max pooling.
-The second and third blocks together form a spatially separated convolution:
+The second block and third block together form a spatially separated convolution:
 the second block uses two 3x1 convolutions, and third block uses two 1x5 convolutions. 
-On mel-spectrograms the model scored 74.7% on Urbansound8k without data augmentation,
+On Mel-spectrograms the model scored 74.7% on Urbansound8k without data augmentation,
 77.3% with only mixup applied,
 and 82.6% when time stretching and pitch shift was combined with mixup.
-When using Gammatone spectrogram features instead of mel-spectrogram
+When using Gammatone spectrogram features instead of Mel-spectrogram
 performance increased to 83.7%, which seems to be state-of-the-art as of April 2019.
 
 
@@ -1088,48 +1087,48 @@ They show that the resulting spectrograms have frequency responses with
 a shape similar to mel-spectrograms.
 The model achieves a 66.3% accuracy score on Urbansound8k[@EnvNet2] with raw audio input.
 
-In [@VeryDeepESC], authors evaluated a number of deep CNNs using only 1D convolutions.
-Raw audio with 8kHz sample rate was used as the input.
+In [@VeryDeepESC], the authors evaluated a number of deep CNNs using only 1D convolutions.
+Raw audio with 8 kHz sample rate was used as the input.
 Their 18 layer model (M18) got a 71% accuracy on Urbansound8k,
 and the 11 layer version (M11) got 69%.
 
 EnvNet2[@EnvNet2] (2018) is like EnvNet but with 13 layers total instead of 7,
 and using 44.1 kHz input sample-rate instead of 16 kHz.
-Without data augmentation it achieves 69.1% accuracy on Urbansound8k.
-When combining data augmentation with a technique similar to mixup called between-class examples,
+Without data augmentation, it achieves 69.1% accuracy on Urbansound8k.
+When combining data augmentation with Between-Class examples, a technique similar to Mixup,
 the model is able to reach 78.3% on Urbansound8k.
 
-### Resource efficient models
+### Resource-efficient models
 
 There are also a few studies on Environmental Sound Classification (ESC)
-that explicitly target making resource efficient models, measured
+that explicitly target making resource-efficient models, measured
 in number of parameters and compute operations.
 
 WSNet[@WSNet] is a 1D network on raw audio designed for efficiency.
 It proposes a weight sampling approach for efficient quantization of weights to
-reache an accuracy of 70.5% on UrbandSound8k with a 288K parameters and 100M MAC.
+reach an accuracy of 70.5% on UrbandSound8k with 288 K parameters and 100 M MAC.
 
 LD-CNN[@LD-CNN] is a more efficient version of D-CNN.
 In order to reduce parameters the early layers use spatially separable convolutions,
 and the middle layers used dilated convolutions.
-As a result the model has 2.05MB of parameters, 50x fewer than D-CNN,
+As a result, the model has 2.05MB of parameters, 50x fewer than D-CNN,
 while accuracy only dropped by 2% to 79% on Urbansound8k.
 
-AclNet [@AclNet] is a CNN architecture.
+AclNet [@AclNet] is an end-to-end CNN architecture.
 It uses 2 layers of 1D strided convolution as a learned filterbank
 to create a 2D spectrogram-like set of features.
 Then a VGG style architecture with Depthwise Separable Convolutions is applied.
 A width multiplier allows to adjust model complexity by changing the number of kernels in each layer,
 and a number of model variations were tested.
-Data augmentation and mixup is applied, and gave up to 5% boost.
+Data augmentation and mixup was applied, and gave up to a 5% boost.
 Evaluated on ESC-50, the best performing model gets 85.65% accuracy, very close to state-of-the-art.
-The smallest model had 7.3M MACC with 15k parameters and got 75% accuracy on ESC-50.
+The smallest model had 7.3 M MACC with 15 k parameters and got 75% accuracy on ESC-50.
 
 eGRU[@eGRU] demonstrates a Recurrent Neural Network based on a modified Gated Recurrent Unit.
 The feature representation used was raw STFT spectrogram from 8Khz audio.
 The model was tested using Urbansound8k, however it did not use the pre-existing folds and test-set,
 so the results may not be directly comparable to others.
-With full-precision floating point the model got 72% accuracy.
+With full-precision floating-point the model got 72% accuracy.
 When running on device using the proposed quantization technique the accuracy fell to 61%.
 
 As of April 2019, eGRU was the only paper that could be found for the ESC task
@@ -1149,16 +1148,16 @@ Common forms of peripherals include General Purpose Input Output (GPIO) for digi
 Analog to Digital (ADC) converter for analog inputs,
 and high-speed serial communications for digital inter-system communication
 using protocols like I2C and SPI.
-For digital audio communication, specialized peripherals exists using the I2S or PDM protocols.
+For digital audio communication, specialized peripherals exist using the I2S or PDM protocols.
 
 Microcontrollers are widely used across all forms of electronics, such as
 household electronics and mobile devices, telecommunications infrastructure,
-cars and industrial systems.
-In 2017 over 25 billion microcontrollers were shipped,
-and is expected to grow by more than 50% over the next 5 years[@ICInsightsMCUSales].
+cars, and industrial systems.
+In 2017 over 25 billion microcontrollers were shipped
+and shipments are expected to grow by more than 50% over the next 5 years[@ICInsightsMCUSales].
 
 Examples of microcontrollers (from ST Microelectronics)
-that could be used for audio processing is shown in Table \ref{table:microcontrollers}.
+that could be used for audio processing are shown in Table \ref{table:microcontrollers}.
 Similar offerings are available from other manufacturers such as
 Texas Instruments, Freescale, Atmel, Nordic Semiconductors, NXP.
 
@@ -1180,7 +1179,7 @@ to grow 10 times over 300 million units in 2018, and up to 3.2 billion in 2028.
 
 ### Machine learning on microcontrollers
 
-For sensor systems the primary usecase for Machine Learning
+For sensor systems, the primary use case for Machine Learning
 is to train a model on a desktop or cloud system ("off-line" learning),
 then to deploy the model to the microcontroller to perform inference.
 Dedicated tools are available for converting models
@@ -1191,13 +1190,13 @@ CMSIS-NN by ARM is a low-level library for ARM Cortex-M microcontrollers impleme
 basic neural network building blocks, such as 2D convolutions, pooling and Gated Recurrent Units.
 It uses optimized fixed-point maths and SIMD (Single Instruction Multiple Data) instructions to
 perform 4x 8-bit operations at a time.
-This allows it to be up to 4x faster and 5x more energy efficient than floating point[@CMSIS-NN].
+This allows it to be up to 4x faster and 5x more energy efficient than floating-point[@CMSIS-NN].
 
 <!-- TODO: Fix figure breaks paragraph -->
 
-![Low level functions provided by CMSIS-NN (light gray) for use by higher level code (light blue)[@CMSIS-NN]](./img/CMSIS-NN-functions.png){short-caption="CMSIS-NN code architecture"}
+![Low level functions provided by CMSIS-NN (light gray) for use by higher-level code (light blue)[@CMSIS-NN]](./img/CMSIS-NN-functions.png){short-caption="CMSIS-NN code architecture"}
 
-uTensor[@uTensor] by ARM allows to run a subset of TensorFlow models on ARM Cortex-M devices,
+uTensor[@uTensor] by ARM allows running a subset of TensorFlow models on ARM Cortex-M devices,
 designed for use with the ARM Mbed software platform[@MbedHomepage].
 
 TensorFlow Lite for Microcontrollers is an experimental port of
@@ -1208,7 +1207,7 @@ They plan to reuse platform-specific libraries such as CMSIS-NN or uTensor
 in order to be as efficient as possible.
 
 EdgeML by Microsoft Research India[@EdgeMLGithub] is a research project
-and open source code repository which contains novel algorithms
+and open-source code repository which contains novel algorithms
 developed especially for microcontrollers,
 such as Bonsai[@Bonsai], ProtoNN[@ProtoNN] and FastGRNN[@FastGRNN].
 
@@ -1219,7 +1218,7 @@ and run them using C code designed for microcontrollers.
 X-CUBE-AI[@X-CUBE-AI] by ST Microelectronics provides official support for
 performing inference with Neural Networks on their STM32 microcontrollers. 
 It is an add-on to the STM32CubeMX[@STM32CubeMX] software development kit,
-and allows loading trained models from various formats, including:
+and allows loading trained models from various formats, including
 Keras (Tensorflow[@TensorFlow]), Caffe[@Caffe] and PyTorch[@PyTorch].
 In X-CUBE-AI 3.4, all computations are done in single-precision float.
 Model compression is supported by quantizing model weights by 4x or 8x,
@@ -1254,7 +1253,7 @@ Kendryte K210 is a microcontroller based on the open RISC-V architecture
 that includes a convolutional neural network accelerator[@KendryteK210Datasheet]. 
 
 GreenWaves GAP8 is a RISC-V chip with 8 cores designed for parallel-processing.
-They claim a 16x improvement in power efficiency over a ARM Cortex M7 chip[@GAP8vsARM].
+They claim a 16x improvement in power efficiency over an ARM Cortex M7 chip[@GAP8vsARM].
 
 
 
@@ -1280,7 +1279,7 @@ The dataset comes prearranged into 10 folds for cross-validation.
 A single fold may contain multiple clips from the same source file,
 but the same source file is not used in multiple folds to prevent data leakage.
 
-The target sound is rarely alone in the sound clip, and may be in the background,
+The target sound is rarely alone in the sound clip and might be in the background,
 partially obscured by sounds outside the available classes.
 This makes Urbansound8k a relatively challenging dataset.
 
@@ -1288,12 +1287,12 @@ This makes Urbansound8k a relatively challenging dataset.
 
 The microcontroller chosen for this thesis is the STM32L476[@STM32L476] from STMicroelectronics.
 This is a mid-range device from ST32L4 series of ultra-low-power microcontroller.
-It has a ARM Cortex M4F running at 80 MHz, with hardware floating-point unit (FPU)
+It has an ARM Cortex M4F running at 80 MHz, with hardware floating-point unit (FPU)
 and DSP instructions. It has 1024 kB of program memory (Flash), and 128 kB of RAM.
 
-For audio input both analog and digital microphones (I2S/PDM) are supported.
+For audio input, both analog and digital microphones (I2S/PDM) are supported.
 The microcontroller can also send and receive audio over USB from a host computer.
-A SD-card interface can be used to record samples to collect a dataset.
+An SD-card interface can be used to record samples to collect a dataset.
 
 To develop for the STM32L476 microcontroller the
 SensorTile development kit STEVAL-STLKT01V1[@STEVAL-STLKT01V1] was selected.
@@ -1319,7 +1318,7 @@ Version 3.4.0 of X-CUBE-AI was used.
 
 ![STM32CubeMX application with X-CUBE-AI addon after loading a Keras model](./img/stm32cubeai.png){short-caption="STM32CubeMX software application" width=75%}
 
-A Python commandline script was created to streamline collecting model statistics using X-CUBE-AI,
+A Python command-line script was created to streamline collecting model statistics using X-CUBE-AI,
 without having to manually use the STM32CubeMX user interface.
 It is attached in appendix \ref{appendix:stm32convert}.
 This tool provides required Flash storage (in bytes), RAM usage
@@ -1331,7 +1330,7 @@ The machine learning models are implemented in Keras using the Tensorflow backen
 To perform feature extraction during training the librosa[@librosa] Python library was used.
 Numpy and Pandas libraries were used for general numeric computations and data management.
 
-The training setup has automated tests made with pytest,
+The training setup has automated tests made with the pytest testing framework,
 and uses Travis CI to execute the tests automatically for each change.
 
 All the code is available at \url{https://github.com/jonnor/ESC-CNN-microcontroller/tree/thesis-submitted}.
@@ -1342,18 +1341,18 @@ Experiments for the reported results were ran on git commit `b49efa5dde48f9fd72a
 
 ### Model requirements
 
-The candidate models have to fit the constraints of our hardware platform,
+The candidate models have to fit the constraints of our hardware platform
 and leave sufficient resources for other parts of an application to run on the device.
 To do so, a maximum of 50% of the CPU, RAM, and FLASH capacity is allocated to the model.
 
 ST estimates that an ARM Cortex M4F type device uses approximately 9 cycles/MACC[@X-CUBE-AI-manual].
-With 80 MHz CPU frequency this is approximately 9 M MACC/second at 100% CPU utilization.
-50% CPU capacity is then estimated as 4.5 M MACC/second,
-and from the microcontroller specifications we get 50% of RAM and FLASH as 64 kB RAM and 512 kB FLASH memory.
+With 80 MHz CPU frequency, this is approximately 9 M MACC/second at 100% CPU utilization.
+50% CPU capacity is then estimated as 4.5 M MACC/second.
+50% of RAM and FLASH of the microcontroller in use is 64 kB RAM and 512 kB FLASH memory.
 
-For each of these aspects it is highly beneficial to be well below the hard constraints.
+For each of these aspects, it is highly beneficial to be well below the hard constraints.
 If the FLASH and RAM usage can be reduced to half or one-fourth,
-cost of the microcontroller is reduced by almost 2/4x.
+the cost of the microcontroller is reduced by almost 2/4x.
 If CPU usage can be reduced to one-tenth, that can reduce power consumption by up to 10 times.
 
 Models from the existing literature (reviewed in chapter \ref{chapter:esc-models}) are summarized
@@ -1382,24 +1381,24 @@ SB-CNN and LD-CNN are the two best candidates for a baseline model,
 being the only two that are close to the desired performance characteristic.
 SB-CNN utilizes a CNN architecture with small uniformly sized kernels (5x5) followed by max pooling,
 which is very similar to efficient CNN models for image classification.
-LD-CNN on the other hand uses less conventional full-height layers in the start,
-and takes both mel-spectrogram and delta-melspectrogram as inputs.
-This requires twice as much RAM as a single input, and the convolutions in the CNN
+LD-CNN, on the other hand, uses less conventional full-height layers in the start
+and takes both mel-spectrogram and delta-Mel-spectrogram as inputs.
+This requires twice as much RAM as a single input and the convolutions in the CNN
 should be able to learn delta-type features if needed.
-For these reasons SB-CNN was used as the base architecture for experiments.
+For these reasons, SB-CNN was used as the base architecture for experiments.
 
 The *Baseline* model has a few modifications from the original SB-CNN model:
 Max pooling is 3x2 instead of 4x2. Without this change the layers become negative sized
-due to the reduced input feature size (60 mel filter bands instead of 128).
+due to the reduced input feature size (60 Mel filter bands instead of 128).
 Batch Normalization was added to each convolutional block.
-The Keras definition for baseline model can be found in appendix \ref{appendix:baseline-model}.
+The Keras definition for the Baseline model can be found in appendix \ref{appendix:baseline-model}.
 
-![Architecture of compared models. Baseline and Stride. In Stride the MaxPooling2d operation (blue) has been removed in favor of striding the convolutional blocks. F=Filters D=Downsampling. CONV means a generic convolution block, replaced with the convolution type for different variations \label{fig:model-architectures}](./img/models.svg){short-caption="Architecture of compared models" width=100%}
+![Base architecture of the compared models: Baseline and Stride. In Stride the MaxPooling2d operation (blue) has been removed in favor of striding the convolutional blocks. F=Filters D=Downsampling. CONV means a generic convolution block, replaced with the convolution type for different variations \label{fig:model-architectures}](./img/models.svg){short-caption="Architecture of compared models" width=100%}
 
 From the baseline architecture, several model variations are created in order to evaluate
 the effects of using different convolutional blocks and as well as replacing
 max-pooling with strided convolutions.
-First the Baseline was modified with just depthwise-separable convolutions (nicknamed Baseline-DS),
+First, the Baseline was modified with just Depthwise-Separable convolutions (nicknamed Baseline-DS)
 or striding (nicknamed *Stride*).
 Since the stride height and width in Keras/Tensorflow must be uniform,
 2x2 is used instead of 3x2 from max-pooling.
@@ -1411,15 +1410,14 @@ Bottleneck with Depthwise Separable (Stride-BTLN-DS)
 and Effnet block (Stride-Effnet).
 <!-- These blocks are illustrated in `FIXME: ref picture`. -->
 For EffNet, LeakyReLU was with ReLu since LeakyReLU is not supported by X-CUBE-AI, version 3.4.
-
-Additionally a version of strided with depthwise separable convolution with 3x3 kernel size (Stride-DS-3x3) is tested.
+Additionally, a version of strided with Depthwise-Separable convolution with 3x3 kernel size (Stride-DS-3x3) was tested.
 The Keras definition the strided model(s) can be found in appendix \ref{appendix:strided-model}.
 
 Strided-DS showed promising results in early testing on a single fold.
-Because of that few variations with fewer number of filters were also tested to get an idea for
-the possible performance/complexity tradeoffs.
+Therefore a few variations with fewer number of filters were also tested,
+to get an idea for the possible performance/complexity tradeoffs.
 In addition to the maximum of 24 filters, 20, 16 and 12 filters were tested. 
-For all other Strided models the number of layers and filters were set as high as
+For all other Strided models, the number of layers and filters were set as high as
 possible without violating any of the device constraints.
 
 This results in 10 different models, as summarized in Table \ref{table:models}.
@@ -1453,10 +1451,9 @@ classification model.
 
 Mel-spectrograms are used as the input feature.
 The most compact and most computationally efficient feature-set in use by existing methods was by LD-CNN,
-which used windows of 31 frames @ 22050 Hz (720 ms) with 60 mel-filter bands.
-This has achieved results near the state-of-art, so the same settings were used,
-however the delta mel-spectrograms were dropped to reduce RAM consumption.
-
+which used windows of 31 frames @ 22050 Hz (720 ms) with 60 Mel-filter bands.
+This has achieved results near the state-of-art, so the same overall settings were used.
+However, the delta mel-spectrograms were dropped to reduce RAM consumption.
 
 \begin{table}
 \centering
@@ -1465,12 +1462,11 @@ however the delta mel-spectrograms were dropped to reduce RAM consumption.
 \label{table:experiment-settings}
 \end{table}
 
-
-During preprocessing Data Augmentation is also performed.
-Time-stretching and Pitch-shifting following [@SB-CNN], for a total of 12 variations per sample.
+During preprocessing, Data Augmentation is also performed.
+Time-stretching and Pitch-shifting was done following [@SB-CNN], for a total of 12 variations per sample.
 The preprocessed mel-spectrograms are stored on disk as Numpy arrays for use during training.
 
-During training time each window of mel-spectrogram frames is normalized by subtracting
+During training time each window of Mel-spectrogram frames is normalized by subtracting
 the mean of the window and dividing by the standard deviation.
 
 ## Training
@@ -1479,12 +1475,12 @@ the mean of the window and dividing by the standard deviation.
 `?! Include Hyperparameter search ?`
 -->
 
-The preassigned folds of the Urbansound8k dataset was used,
-with 9-fold cross-validation during training and fold 10 as the held-out test set.
+The preassigned folds of the Urbansound8k dataset were used.
+One of the folds was used as a validation set, and one fold was held-out as the test set.
 
-Training is done on individual analysis windows,
+Training was done on individual analysis windows,
 with each window inheriting the label of the audio clip it belongs to.
-In each mini-batch, audio clips from training set are selected randomly.
+In each mini-batch, audio clips from the training set are selected randomly.
 And for each audio clip, a time window is selected from a random position[@SB-CNN].
 This effectively implements time-shifting data augmentation.
 
@@ -1492,22 +1488,23 @@ In order to evaluate the model on the entire audio clip, an additional
 pass over the validation set is done which combines predictions from multiple time-windows
 as shown in Figure \ref{classification-pipeline}.
 
-As the optimizer, Stocastic Gradient Decent (SGD) with Nesterov momentum set to 0.9 is used.
-Learning rate was set to 0.005 for all models. Each model is trained for up to 100 epochs.
+As the optimizer, Stochastic Gradient Decent (SGD) with Nesterov momentum set to 0.9 is used.
+The learning rate was set to 0.005 for all models. Each model is trained for up to 100 epochs.
 A complete summary of experiment settings can be seen in Table \ref{table:experiment-settings}.
 
-Training was performed on a NVidia GTX2060 GPU with 6GB of RAM
+Training was performed on an NVidia GTX2060 GPU with 6GB of RAM
 on a machine with an Intel i5-9400F CPU, 16 GB of RAM and a Kingston A1000 M.2 SSD.
 However the models can be trained on any device supported by TensorFlow and a minimum of 2GB RAM.
+
 In total 100 training jobs were ran for the experiments, 10 folds for each of 10 tested models.
 Jobs were processed with 3 jobs in parallel and took approximately 36 hours in total.
-However GPU utilization was only 15%, suggesting that the training process
+GPU utilization was only 15%, suggesting that the training process
 was bottlenecked by the CPU or SSD when preparing the training batches for the GPU.
 
 ## Evaluation
 
-Once training is completed, the model epoch with best performance on the validation set is selected
-for each of the cross-validation folds.
+Once training is completed, the model epoch with the best performance on the validation
+set is selected for each of the cross-validation folds.
 The selected models are then evaluated on the test set in each fold.
 
 In addition to the standard cross-validation for Urbansound8k,
@@ -1534,17 +1531,17 @@ average inference time per sample on the STM32L476 microcontroller.
 This accounts for potential variations in number of MACC/second for different models,
 which would be ignored if only relying on the theoretical MACC number.
 
-Finally the trained models were tested running on the microcontrollers using live audio on the microphone.
-The on-device test used example code from the ST FP-SENSING1[@FP-AI-SENSING1] function pack as a base,
+Finally, the trained models were tested running on the microcontrollers using live audio on the microphone.
+The on-device test used the example code from the ST FP-SENSING1[@FP-AI-SENSING1] function pack as a base,
 with modifications made to send the model predictions out over USB.
-The example code unfortunately only supports mel-spectrogram preprocessing
+The example code unfortunately only supports Mel-spectrogram preprocessing
 with 16 kHz sample-rate, 30 filters and 1024 samples FFT window with 512 hops,
 using max-normalization for the analysis windows.
 Therefore a Strided-DS model was trained on fold 1-8 to match these feature settings.
 
 The on-device testing was done ad-hoc with a few samples from Freesound.org,
 as a sanity-check that the model remained functional when ran on the microcontroller.
-No systematic measurements of the performance was performed.
+No systematic measurement of the performance was performed.
 
 \newpage
 # Results
@@ -1586,7 +1583,7 @@ but significantly below the 79% of SB-CNN and LD-CNN with data-augmentation.
 As expected, the Baseline uses more CPU than our requirements
 with 971 ms classification time per 730 ms analysis window.
 
-Stride-DS with 70.9% mean accuracy is able to get quite close close the baseline performance,
+Stride-DS with 70.9% mean accuracy is able to get quite close the baseline performance,
 despite having (from Table \ref{table:models}) $10185/477 = 21x$ fewer multiply-add operations (MACC).
 The practical efficiency gain in CPU usage is however only $971/81 = 12x$.
 
@@ -1609,7 +1606,7 @@ As seen in Figure \ref{figure:confusion-matrix}, class accuracies vary widely.
 The most accurately predicted classes were Gun Shot (96%), Car Horn (86%), Siren (82.7%) and Dog Bark (81.7%). 
 The poorest performance was on the Air Conditioner class (47% accuracy),
 which was misclassified as almost all the other classes.
-Drilling (60% accuracy) was often often thought to be Jackhammer (20% of the time).
+Drilling (60% accuracy) was often thought to be Jackhammer (20% of the time).
 Engine Idling (59.9%) was also often thought to be Jackhammer (19% of the time).
 The remaining classes, Street Music, Children Playing and Jackhammer had around average performance.
 
@@ -1636,10 +1633,10 @@ TODO: include grouped analysis
 \label{figure:demo}
 \end{figure}
 
-The model used on device (with 16kHz model with 30 mel filters)
+The model used on the device (with 16kHz model with 30 mel filters)
 scored 72% on the associated validation-set, fold 9.
 When running on the device, the model execution took 43 ms per analysis window,
-while preprocessing of the mel-spectrogram took approximately 60 ms.
+while preprocessing of the Mel-spectrogram took approximately 60 ms.
 
 Figure \ref {figure:demo} shows a closeup of the on-device testing scenario.
 When playing back a few sounds the system was able to
@@ -1660,16 +1657,16 @@ was classified as "air conditioner" - which the author can agree sounded pretty 
 The lower performance of our Baseline relative to SB-CNN/LD-CNN
 may be a result of the reduced feature representation,
 or the reduced number of predictions for one clip.
-Compared to LD-CNN the delta-mel-spectrogram features are missing,
+Compared to LD-CNN the delta-Mel-spectrogram features are missing,
 which might have made it easier to learn some patterns
 - at a cost of twice the RAM and CPU for the first layer.
 Compared to SB-CNN the analysis window is shorter (720 ms versus 1765 ms),
 also a 2x reduction in RAM and CPU.
-Since no overlap is used there are only 6 analysis windows and predictions to be aggregated over a 4 second clip.
+Since no overlap is used there are only 6 analysis windows and predictions to be aggregated over a 4 second long clip.
 In SB-CNN on the other hand, the hop size during validation and test is 1 frame,
-giving over 100 predictions over a 4 second clip.
+giving over 100 predictions over a 4 second long clip.
 This can improve performance, but requires a much higher CPU usage. 
-However it is also possible that with a more powerful training setup
+However, it is also possible that with a more powerful training setup
 with as transfer learning or stronger data augmentation scheme,
 that this performance gap could be reduced.
 
@@ -1682,7 +1679,7 @@ and the hyperparameters were chosen by testing on Strided-DS models,
 cannot conclude that this is a significant effect.
 -->
 
-The poorly performing Strided-BTLN-DS and Strided-Effnet both have have a bottleneck 1x1
+The poorly performing Strided-BTLN-DS and Strided-Effnet both have a bottleneck 1x1
 convolution in the start of each block, reducing the number of channels used in the spatial convolution.
 This hyperparameter was set to a seemingly conservative reduction of 2x
 (original Effnet used 8x[@Effnet], ShuffleNet used 4x[@Shufflenet], albeit on much bigger models).
@@ -1697,7 +1694,7 @@ The fact that speedup (12x) was not linear with the MACC reduction (21.5x) highl
 importance of measuring execution time on a real device.
 
 The smaller models (with 20,16,12 filters) in the Strided-DS family
-with less compute requirements had correspondingly ower accuracies.
+with less compute requirements had correspondingly lower accuracies.
 This suggests that a the tradeoff between model complexity and performance can be adjusted.
 The Strided-DS-3x3 variation with 4 layers with 3x3 convolutions instead
 was close in performance to the Strided-DS models with 3 layers of 5x5.
@@ -1705,18 +1702,18 @@ This could be investigated closer, there may exist variations on this 3x3 model
 that would perform better than 5x5.
 
 From a one-fold spot check the on-device model trained on
-16kHz sample-rate with 30 mel filters, looked to perform similarly to those with the full 22kHz and 60 mel-filters.
+16 kHz sample-rate with 30 Mel filters, looked to perform similarly to those with the full 22 kHz and 60 Mel filters.
 This may suggest that perhaps the feature representation (and thus compute requirements)
 can be reduced even further without much reduction in performance.
 
 ## Spectrogram processing time
 
-On-device testing showed that the mel-feature preprocessing took 60 ms on device,
-which is on the same order as the efficient models during inference (38-81 ms).
+On-device testing showed that the Mel-feature preprocessing took 60 ms,
+which is on the same order as the most efficient models during inference (38-81 ms).
 This means that the CPU bottleneck is not just the model inference time,
-but that spectrogram calculation must be also optimized to reach even lower power-consumption.
-In the FP-SENSING1 example used, the spectrogram computation already use ARM-specific
-optimized codepaths from CMSIS, albeit with floating-point and not fixed-point.
+but that the spectrogram calculation must be also optimized to reach even lower power-consumption.
+In the FP-SENSING1 example used, the spectrogram computation already uses ARM-specific
+optimized code from the CMSIS library, albeit with floating-point and not fixed-point.
 
 Taking into account the preprocessing time the Stride-DS-24 model
 would consume approximately 20% CPU.
@@ -1740,9 +1737,9 @@ Of the 5 large-scale research projects mentioned in the introduction,
 only the SONYC deployment seems to have integrated noise classification capability,
 using state-of-the-art classification algorithms[@SONYC2019].
 They argue that such a system addresses shortcomings of current monitoring
-and enforcement mechanisms by quantifying impact of construction-permits,
+and enforcement mechanisms by quantifying the impact of construction-permits,
 providing historical data to validate noise complaints,
-and support better allocation of manual noise inspection crews[@SONYC2019, ch. 7].
+and allow better allocation of manual noise inspection crews[@SONYC2019, ch. 7].
 
 In principle the system proposed here should support the same kind of workflow,
 and whether the reduced accuracy of 70.9% versus state-of-the-art of 79-83%,
@@ -1763,34 +1760,34 @@ also take into account the limitations of the system.
 From table \ref{table:results} it can be seen that the accuracy for
 foreground sounds is around 5 percentage points better than overall accuracy,
 reaching above 75%.
-Background sounds on the other hand has a much lower accuracy,
-with the best models under 62%, a 8 percentage point drop (or more).
+Background sounds, on the other hand, have a much lower accuracy.
+The best models score under 62% accuracy, an 8 percentage point drop (or more).
 This is expected since the signal to noise ratio is lower.
 If the information of interest is the predominant sound in an area
 close to the sensor, one could maybe take this into account by only
 classifying loud (probably closer) sounds, in order to achieve higher precision.
-Of course the reduced ability to classify sounds that are far away
-would require a higher density of sensors, which may be cost prohibitive.
+Of course, the reduced ability to classify sounds that are far away
+would require a higher density of sensors, which may be cost-prohibitive.
 
-The accuracy for Urbansound8k classification is based on 4 second intervals.
+The accuracy for Urbansound8k classification is based on 4-second intervals.
 In a noise monitoring situation this granularity of information may not be needed.
 For example to understand temporal patterns across a day or week,
 or analyze a noise complaint about a persistent noise,
-information about the predominant noise source(s) on a 15 minute resolution might be enough.
+information about the predominant noise source(s) with 15 minute resolution might be enough.
 For sound-sources with a relatively long duration (much more than 4 seconds),
 such as children playing, drilling or street music it should
 be possible to achieve higher accuracy by combining many predictions over time. 
-However this is unlikely to help for short, intermittent sounds ("events")
+However, this is unlikely to help for short, intermittent sounds ("events")
 such as a car horn or a gun-shot.
 Thankfully performance of the model on these short sounds is
 considerably better than on the long-term sounds.
 
-Given multiple sensors covering one area it may also be possible to
+Given multiple sensors covering one area, it may also be possible to
 fuse the individual sensor predictions in order to improve overall predictions.
 
-Finally it may be in a particular deployment be realistic to
-limit classification to only a few, well known sound source classes.
-For example in [@SourceClassificationSensors], authors describe doing a
+Finally, for a particular deployment it may be realistic to
+limit classification to only a few characteristic sound classes.
+For example in [@SourceClassificationSensors], the authors describe doing a
 3-way classification on sensor nodes near a rock crushing plant.
 
 <!--
@@ -1825,7 +1822,8 @@ associated with transmitting raw audio or detailed audio fingerprints to a cloud
 Several Convolutional Neural Networks were designed for the
 STM32L476 low-power microcontroller using the vendor-provided X-CUBE-AI inference engine. 
 The models were evaluated on the Environmental Sound Classification
-task using the standard Urbansound8k dataset, validated briefly for use in real-time classification on device.
+task using the standard Urbansound8k dataset,
+and validated briefly by testing real-time classification on a SensorTile device.
 The best models used Depthwise-Separable convolutions with striding,
 and were able to reach up to 70.9% mean accuracy while consuming only 20% CPU,
 and staying within predefined 50% RAM and FLASH storage budgets.
@@ -1842,20 +1840,20 @@ on-edge Environmental Sound Classification using microcontrollers seems to be wo
 ## Further work
 
 Quantization of the models should further reduce CPU, RAM and FLASH usage.
-This could be used to fit slightly larger models, or to make existing models more efficient.
+This could be used to fit slightly larger models or to make existing models more efficient.
 The CMSIS-NN library[@CMSIS-NN] utilizes 8-bit integer operations and is optimized for the ARM Cortex M4F.
 However it has also been shown that CNNs can be effectively implemented with as little as 2 bits[@andri2016yodann][@miyashita2016convolutional][@IncrementalNetworkQuantization],
 and without using any multiplications[@leng2018extremely][@cintra2018low].
 
-Utilizing larger amounts of training data might be able to increase performance of models.
-Possible techniques for this are transfer learning[@PretrainingSpeechCommandRecognition],
-or applying stronger data augmentation techniques (such as Mixup[@Mixup] or SpecAugment[@SpecAugment]).
+Utilizing larger amounts of training data might be able to increase performance of the models.
+Possible techniques for this are transfer learning[@PretrainingSpeechCommandRecognition]
+or applying stronger data augmentation techniques such as Mixup[@Mixup] or SpecAugment[@SpecAugment].
 
 In a practical deployment of on-sensor classification, it is still desirable to
 collect *some* data for evaluation of performance and further training.
 This could be sampled at random, but an on-sensor implementation
 of Active Learning[@ActiveLearningSonyc][@SemiSupervisedActiveLearning]
-could be able to make this process more power efficient.
+could be able to make this process more power-efficient.
 
 <!--
 Normally such training and evaluation data is transferred as raw PCM audio,
@@ -1866,7 +1864,7 @@ while still enable reliable human labeling and use as evaluation/training data?
 
 It is critical for overall power consumption to reduce how often on-sensor classification is performed.
 This should also benefit from an adaptive sampling strategy.
-For example to primarily do classification for time-periods which exceed
+For example to primarily do classification for time-periods that exceed
 a sound level threshold, or to sample less often when the sound source changes slowly.
 
 
