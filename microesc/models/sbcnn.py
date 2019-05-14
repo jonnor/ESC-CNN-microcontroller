@@ -56,12 +56,12 @@ def build_model(frames=128, bands=128, channels=1, num_labels=10,
     backend = [
         Flatten(),
 
+        Dropout(dropout),
         Dense(fully_connected, kernel_regularizer=l2(0.001)),
         Activation('relu'),
-        Dropout(dropout),
 
-        Dense(num_labels, kernel_regularizer=l2(0.001)),
         Dropout(dropout),
+        Dense(num_labels, kernel_regularizer=l2(0.001)),
         Activation('softmax'),
     ]
     layers = block1 + block2 + block3 + backend

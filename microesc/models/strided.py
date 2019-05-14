@@ -98,12 +98,12 @@ def backend_dense1(x, n_classes, fc=64, regularization=0.001, dropout=0.5):
     """
 
     x = Flatten()(x)
+    x = Dropout(dropout)(x)
     x = Dense(fc, kernel_regularizer=l2(regularization))(x)
     x = Activation('relu')(x)
-    x = Dropout(dropout)(x)
 
-    x = Dense(n_classes, kernel_regularizer=l2(regularization))(x)
     x = Dropout(dropout)(x)
+    x = Dense(n_classes, kernel_regularizer=l2(regularization))(x)
     x = Activation('softmax')(x)
     return x
 
