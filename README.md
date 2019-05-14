@@ -3,8 +3,10 @@
 
 ## Thesis report
 
-<a href="https://github.com/jonnor/ESC-CNN-microcontroller/releases/download/print1/report-print1.pdf"><img src="https://github.com/jonnor/ESC-CNN-microcontroller/raw/master/report/img/frontpage.png" align="left" height="200" alt="Download thesis report"></a>
-Click image to Download.
+<a href="https://github.com/jonnor/ESC-CNN-microcontroller/releases/download/print1/report-print1.pdf"><img src="https://github.com/jonnor/ESC-CNN-microcontroller/raw/master/report/img/frontpage.png" height="200" alt="Download thesis report (PDF)"></a>
+
+<a href="https://github.com/jonnor/ESC-CNN-microcontroller/releases/download/print1/report-print1.pdf">Download thesis report (PDF)</a>
+
 
 ## Keywords
 
