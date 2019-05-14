@@ -25,8 +25,11 @@ Resulting in XX% accuracy on Urbansound8k dataset.
 
 -->
 
-
 \newpage
+\thispagestyle{empty}
+\mbox{}
+
+
 # Introduction
 
 <!--
