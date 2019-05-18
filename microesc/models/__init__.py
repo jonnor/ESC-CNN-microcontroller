@@ -34,6 +34,7 @@ def build(settings):
         'downsample_size',
         'n_stages',
         'dropout',
+        'fully_connected',
         'n_blocks_per_stage',
         'filters',
     ]

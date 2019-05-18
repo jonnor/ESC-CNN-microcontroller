@@ -33,6 +33,7 @@ default_model_settings = dict(
     voting='mean',
     voting_overlap=0.0,
     normalize='meanstd',
+    fully_connected=64,
 )
 
 names = set().union(*[
