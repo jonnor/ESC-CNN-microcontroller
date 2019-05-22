@@ -301,8 +301,12 @@ def main():
 
 
     # Split the variations from all models
-    width_variations = df.nickname.str.startswith('Stride-DS-')
-    fig = plot_accuracy_comparison(df[width_variations != True], ylim=(0.0, 1.0), figsize=(7,3))
+    def is_width_variation(name):
+        return name.startswith('Stride-DS-') and not name == 'Stride-DS-24'
+
+    width_variations = df.nickname.apply(is_width_variation) 
+    comp = df[width_variations != True]
+    fig = plot_accuracy_comparison(comp, ylim=(0.0, 1.0), figsize=(7,3))
     save(fig, 'models_accuracy.png')
 
     perf_metric = 'maccs_frame' if args.skip_device else 'utilization'
