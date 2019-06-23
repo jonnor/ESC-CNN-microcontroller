@@ -441,8 +441,6 @@ What about greedy algorithms with random restarts/jumps?
 
 
 
-
-
 # Power draw
 
 perftest firmware
@@ -460,64 +458,4 @@ RUN1. 10.5mA @ 80 Mhz
 LPRun. 270uA @ 2Mhz. 
 LPSleep. 80uA @ 2Mhz. SAI/ADC still active
 
-
-# Presentation
-
-Outline
-
-- Coverpage
-- Demo
-- Motivation
-- Challenges
-- Working method.
-Independent study Audio Classification. DAT390, DCASE2018 conference
-Literature review. Summarized in report
-- How it works
-- Experiments
-- Results
-- Summary
-- Next steps
-ION. Forskningsraadet. Pilot Oslo Kommune
-Publishing
-
-
-## Intro
-
-When we talk, sound is a critical part of our communication, conveying not just statements
-but also information about.
-As we walk around 
-
-Sound can convey information also when 
-before we can see them
-alerted about dangerous situation
-
-Sound is used to communicate, be it by speech, audible gestures or computerized signals (
-
-car speeding up or slowing down
-fire alarm
-
-We communicate with eachother using sound when we talk, 
-
-communicating with intent
-
-side-effect of many human activities
-
-
-source of information
-understanding of the environment around us
-
-
-Since the industrial revolution, the human soundscape has become increasingly busy.
-
-mechanical and electromechanical devices
-Urbanization. Many more people in the same area
-
-transportation. Cars, railroads, aeroplanes
-construction. Drilling, cutting
-machinery
-
-The sum of all the noise is referred to as Environmental noise.
-
-Environmental noise is the summary of noise pollution from outside,
-caused by transport, industrial and recreational activities.
 

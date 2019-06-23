@@ -1,15 +1,11 @@
 
 ## TODO
 
-### Final 1
+## Defense
 
-Checking
+Errata
 
-- Do a spell checking pass
-- Do a grammar checking pass. LanguageTool + Grammarly
-- Make sure final page is EVEN number
-
-### Final 2
+- Missing model in result plot. Strided-DS-24
 
 Results
 
@@ -17,14 +13,7 @@ Results
 - Include error analysis
 - Plot performance of models relative to fold
 
-Add Acknowledgements?
-
-- Kristian
-- Oliver
-- Marianna
-- John
-
-### After report
+## After report
 
 Dissemination
 
@@ -36,13 +25,13 @@ Dissemination
 
 Related
 
-- STM32AI: Test different FFT/mel sizes
-- STM32AI: Report/fix melspec preprocessing bug
+- STM32AI: Report melspec preprocessing bug
 https://community.st.com/s/topic/0TO0X0000003iUqWAI/stm32-machine-learning-ai
 - Test USB audio input for systematic on-device testing of classification 
 
 Experiment
 
+- Test 16kHz with 30 mels
 - Use multi-instance learning to get bigger batches and improve GPU utilization
-
+- Improve Data Augmentation
 
