@@ -26,29 +26,52 @@ Internet of Things specialist
 
 `TODO: describe impacts`
 
-## Environmental Sound Classification
+## Noise Mapping
 
-::: notes
+`TODO: find a picture`
 
-Widely researched. 1000 hits on Google Scholar
+Simulation only
 
-:::
+- Known sources
+- Yearly average value
+- Updated every 5 years
+- Low data quality. Ex: communal roads
 
-## Wireless Sensor Networks
+`TODO: source for low-quality data`
+
+## Noise Monitoring with Wireless Sensor Networks
+
+`TODO: find a picture`
+
+Measures the noise level continiously
 
 - Wide and dense coverage needed -> Sensors need to be low-cost
-- Opportunity: Wireless simplifies installation, reduces costs
-- Challenge: Power consumption
+- **Opportunity**: Wireless simplifies installation, reduces costs
+- **Challenge**: Power consumption
 
 ::: notes
-No network cabling, no power cabling
-No site infrastructure needed
-Less invasive
-Fewer approvals needed
-Temporary installs feasible
-Mobile sensors possible
+
+* No network cabling, no power cabling
+* No site infrastructure needed
+* Less invasive
+* Fewer approvals needed
+* Temporary installs feasible
+* Mobile sensors possible
 
 Electrician is 750 NOK/hour
+:::
+
+## Environmental Sound Classification
+
+`TODO: define the task`
+
+Given a sound
+
+::: notes
+
+* Widely researched. 1000 hits on Google Scholar
+* 2017: Human-level performance (ESC-50 dataset)
+
 :::
 
 ## Data Transmission
@@ -81,6 +104,8 @@ DSP SIMD instructions
 - Training and inference are independent implementations. Have to be in sync
 
 :::
+
+
 
 # Existing work
 
@@ -171,7 +196,7 @@ Based on SB-CNN (Salamon+Bello, 2016)
 ::: notes
 
 * Baseline is outside requirements
-* Rest fits theoretical constraints
+* Rest fits the theoretical constraints
 * Sometimes had to reduce number of base filters to 22 to fit in RAM
 
 :::
@@ -179,18 +204,41 @@ Based on SB-CNN (Salamon+Bello, 2016)
 
 # Methods
 
+Standard procedure for Urbansound8k
+
 - Classification problem
-- 10-fold cross-validation
-- 
+- 4 second sound clips
+- 10 classes
+- 10-fold cross-validation, predefined
+- Metric: Accuracy
 
 ## Preprocessing
 
-![](../report/results/models_accuracy.png){width=100%}
+- Convert to log-Mel-spectrogram
+- 22 kHz, 60 mels, 1024 bin FFT, 31 frame window (720 ms)
+- Time-stretching and Pitch-shifting data augmentation
+- 12 variations per sample
+
+<!--
+![](../report/results/training-settings.png)
+-->
 
 ## Training
 
+- NVidia GTX2060 GPU 6 GB
 - 10 models x 10 folds = 100 training jobs
-- 3 jobs in parallel, 36 hours total
+- 3 jobs in parallel
+- 36 hours total
+
+::: notes 
+
+- ! GPU utilization only 15%
+- CPU utilization was near 100%
+- Larger models to utilize GPU better?
+- Parallel processing limited by RAM of biggest models
+- GPU-based augmentation might be faster
+
+:::
 
 ## Evaluation
 
@@ -226,7 +274,7 @@ Fewer
 :::
 
 - Performance of Strided-DS-24 similar to Baseline despite 12x the CPU use
-- Suprising: Stride alone worse than Strided-DS-24
+- Suprising? Stride alone worse than Strided-DS-24
 - Bottleneck and EffNet performed poorly
 - Practical speedup not linear with MACC
 
@@ -255,11 +303,15 @@ Fewer
 
 `TODO: list conclusions`
 
+
+
 # Demo
 
 ## Demo video
 
 `TODO: add inline or link`
+
+
 
 # Next steps
 
