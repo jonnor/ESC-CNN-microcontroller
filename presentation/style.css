@@ -6,3 +6,7 @@
     margin: 0px;
     padding: 10px;
 }
+
+#soundsensing h2 {
+    display: none;
+}

@@ -7,6 +7,16 @@
 
 <a href="https://github.com/jonnor/ESC-CNN-microcontroller/releases/download/print1/report-print1.pdf">Download thesis report (PDF)</a>
 
+### Errata
+
+In `print1` version of report
+
+- Fig 5.1. DS-Strided-24 result is missing
+- Fig 5.1. No-information-rate should be 11.5% instead of 10%.
+Did not take class-imbalance into account
+- Fig 2.10. Labels EffNet and ShuffleNet swapped
+- Fig 5.3. Missing description of model used. Uses Stride-DS-24
+- Table 4.1. Nesterov momentum shows NaN. Should be 0.9
 
 ## Keywords
 

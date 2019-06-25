@@ -137,13 +137,16 @@ EffNet, LD-CNN
 
 ## X-CUBE-AI
 
-`TODO: add screenshot`
+![](img/xcubeai.png)
 
 ::: notes
 
-First public version came out in December 2019
-Version 3.4.0 used
-Not reported in use yet on Google Scholar
+* First public version came out in December 2018
+* Version 3.4.0
+* Not reported in use yet on Google Scholar
+* Ahead of TensorFlow Lite for Microcontrollers
+* Means did not need to implement myself in `emlearn`
+* Decisive for choosing the STM32 hardware platform 
 
 :::
 
@@ -158,16 +161,31 @@ Based on SB-CNN (Salamon+Bello, 2016)
 
 ## Convolution options
 
-`TODO: image of different convolutions`
+`TODO: image of different convolutions blocks`
 
+
+## All models
+
+![](img/models-list.png)
+
+::: notes
+
+* Baseline is outside requirements
+* Rest fits theoretical constraints
+* Sometimes had to reduce number of base filters to 22 to fit in RAM
+
+:::
 
 
 # Methods
 
-- Classification
-- Couple of
+- Classification problem
+- 10-fold cross-validation
+- 
 
 ## Preprocessing
+
+![](../report/results/models_accuracy.png){width=100%}
 
 ## Training
 
@@ -176,9 +194,15 @@ Based on SB-CNN (Salamon+Bello, 2016)
 
 ## Evaluation
 
-- Measuring CPU time on device
+For each fold of each model
 
-`TODO: screenshot`
+- Select best model based on validation accuracy
+- Calculate accuracy on test set
+- Calculated accuracy for foreground,background 
+
+For each model
+
+- Measure CPU time on device
 
 # Results & Discussion
 
@@ -186,13 +210,42 @@ Based on SB-CNN (Salamon+Bello, 2016)
 
 ![](../report/results/models_accuracy.png){width=100%}
 
+::: notes
+
+- Baseline relative to SB-CNN and LD-CNN is down from 79% to 73%
+Expected because poorer input representation.
+Fewer 
+
+
+:::
+
 ## Performance vs compute
 
 ![](../report/results/models_efficiency.png){width=100%}
 
-## Spectrogram processing time
+:::
 
-`TODO: add results`
+- Performance of Strided-DS-24 similar to Baseline despite 12x the CPU use
+- Suprising: Stride alone worse than Strided-DS-24
+- Bottleneck and EffNet performed poorly
+- Practical speedup not linear with MACC
+
+:::
+
+## Spectrogram processing
+
+* Model: Stride-DS-24 (60 mels, 1024 FFT, 22 kHz): *81 milliseconds*
+
+* Preprocessing: mel-spectrogram (30 mels, 1024 FFT, 16 kHz): *60 milliseconds*
+
+::: notes
+
+* Bottleneck for reducing CPU time / power consumption
+* Opportunity for end2end models.
+* Does not seem to be there yet? Not explicitly considered in literature
+* Especially interesting with CNN co-processors
+
+:::
 
 ## Confusion matrix
 
@@ -230,11 +283,13 @@ Stronger training process
 
 ## Soundsensing
 
-`TODO: add company logo`
+![](img/soundsensing-logo.png)
+
+Sensor Systems for Noise Monitoring
 
 - Supported by Norwegian Research Council
 - Pilot project with Oslo Kommune
-- Accepted by StartupLab incubator
+- Accepted to incubator at StartupLab
 
 # Summary
 
@@ -255,17 +310,43 @@ Stronger training process
 
 # BONUS
 
-## Unknown class
 
-Improves precision at expense of recall
-
-`TODO: add picture`
 
 ## Grouped classification
 
 ![](../report/results/grouped_confusion_test_foreground.png){}
 
 Foreground-only
+
+## Adding Unknown class
+
+![](img/unknown-class.png){}
+
+::: notes
+
+Idea: If confidence of model is low, consider it as "unknown"
+
+* Left: Histogram of correct/incorrect predictions
+* Right: Precision/recall curves
+* Precision improves at expense of recall
+* 90%+ precision possible at 40% recall
+
+Usefulness:
+
+* Avoids making decisions on poor grounds
+* "Unknown" samples good candidates for labeling->dataset. Active Learning 
+* Low recall not a problem? Data is abundant, 15 samples a 4 seconds per minute per sensor
+
+:::
+
+## CPU efficiency
+
+![](img/cpu-efficiency.png){}
+
+::: notes
+
+
+:::
 
 ## What could be done better
 
