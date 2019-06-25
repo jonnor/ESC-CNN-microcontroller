@@ -4,10 +4,16 @@
 
 # TODO
 
-- Setup presentation outline
+- Go through presentation once
 - Make frontpage image
-- Add all images
+- Add remaining images
+- Test presentation on proper screen
+- Add notes to all slides
 - Make demo video
+- Add grouped eval image
+- Add unknown class image
+- Make sure all findings covered
+- Check all Summary points justified
 
 # Errata
 
@@ -36,30 +42,14 @@ Remarks
 
 - GPU utilization was poor. Model too small?
 
-# Highlights
-
-- Microcontroller challenges.
-RAM,FLASH,CPU
-Two independent implementations. Train/inference. Have to be in sync
-- Thorough literature review
-- Real-life application
-- Best result in literature for microcontrollers
-- Practical results
-- Recognized by Forskningsraadet
-- Recognized by Justin/Emanuel
-
-
 # Demo video
 
 TODO
 
-- Flash firmware onto device
-- Design frontend cover paper 
-- Buy dark cardboard. A3
+- Finish frontend cover paper 
 - Print white A4 with design on
+- Flash firmware onto device
 - Implement colors to match paper
- 
-- Attach things with double-sided tape
 
 Recording
 
@@ -67,22 +57,4 @@ Recording
 - Camera: Laptop
 - Sound playback. Phone
 
-# Outline
-
-- Coverpage
-- Outline
-- Motivation
-- Challenges
-- Working method.
-Independent study Audio Classification
-DCASE2018 conference
-Literature review. Summarized in report
-- How it works
-- Experiments
-- Results
-- DEMO
-- Next steps
-ION. Forskningsraadet. Pilot Oslo Kommune
-Paper publishing
-- Summary
 

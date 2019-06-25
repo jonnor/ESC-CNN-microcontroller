@@ -202,14 +202,19 @@ Based on SB-CNN (Salamon+Bello, 2016)
 
 `TODO: list conclusions`
 
+# Demo
+
+## Demo video
+
+`TODO: add inline or link`
 
 # Next steps
 
 ## Improving performance
 
-Quantization
+Model quantization
 
-- CMSIS-NN 8bit SIMD -> 4x speedup
+- *CMSIS-NN* 8bit SIMD -> 4x speedup
 
 Stronger training process 
 
@@ -225,6 +230,8 @@ Stronger training process
 
 ## Soundsensing
 
+`TODO: add company logo`
+
 - Supported by Norwegian Research Council
 - Pilot project with Oslo Kommune
 - Accepted by StartupLab incubator
@@ -233,14 +240,16 @@ Stronger training process
 
 ## Summary
 
-- Project based on growing problem area
+- Noise pollution is a growing problem
+- Wireless Sensor Networks used to quantify
+- On-sensor classification desirable for power/cost and privacy
 - Thorough literature review on efficient CNN and ESC
 - Methods. Follows established practices for ESC
 - Results. Best reported for Urbansound8k on a microcontroller
 - Demonstrated working in a practical test
 - Basis for a new company from NMBU Data Science
 
-# Questions
+# Questions?
 
 `TODO: add project image`
 
@@ -254,7 +263,9 @@ Improves precision at expense of recall
 
 ## Grouped classification
 
-`TODO: add picture`
+![](../report/results/grouped_confusion_test_foreground.png){}
+
+Foreground-only
 
 ## What could be done better
 
@@ -305,8 +316,8 @@ eased finding suitable model parameters
 
 ## Bug: Integer truncation
 
-![](img/fail-truncation.png){width=100%}
+![](img/fail-truncation.png)
 
 ## Dropout location
 
-![](img/fail-dropout.png){width=100%}
+![](img/fail-dropout.png)
