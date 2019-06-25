@@ -24,30 +24,60 @@ Internet of Things specialist
 
 ## Noise Pollution
 
-`TODO: describe impacts`
+Reduces health due to stress and loss of sleep
+
+In Norway
+
+* 1.9 million affected by road noise (2014, SSB)
+* 10'000 healty years lost per year (Folkehelseinstituttet)
+
+In Europe
+
+* 13 million suffering from sleep disturbance (EEA)
+* 900'000 DALY lost (WHO)
+
+
+::: notes
+
+1.9 million
+https://www.ssb.no/natur-og-miljo/artikler-og-publikasjoner/flere-nordmenn-utsatt-for-stoy
+
+1999: 1.2 million 
+
+10 245 tapte friske leveår i Norge hvert år
+https://www.miljostatus.no/tema/stoy/stoy-og-helse/
+
+
+https://www.eea.europa.eu/themes/human/noise/noise-2
+
+Burden of Disease WHO
+http://www.euro.who.int/__data/assets/pdf_file/0008/136466/e94888.pdf
+
+:::
+
 
 ## Noise Mapping
 
-`TODO: find a picture`
+Simulation only, no direct measurements
 
-Simulation only
+![](img/stoykart.png)
+
+::: notes
 
 - Known sources
 - Yearly average value
 - Updated every 5 years
 - Low data quality. Ex: communal roads
 
-`TODO: source for low-quality data`
+Image: https://www.regjeringen.no/no/tema/plan-bygg-og-eiendom/plan--og-bygningsloven/plan/kunnskapsgrunnlaget-i-planlegging/statistikk-i-plan/id2396747/
 
-## Noise Monitoring with Wireless Sensor Networks
+:::
 
-`TODO: find a picture`
+## Noise Monitoring
+
+![](img/noise-monitoring.jpg)
 
 Measures the noise level continiously
-
-- Wide and dense coverage needed -> Sensors need to be low-cost
-- **Opportunity**: Wireless simplifies installation, reduces costs
-- **Challenge**: Power consumption
 
 ::: notes
 
@@ -59,32 +89,44 @@ Measures the noise level continiously
 * Mobile sensors possible
 
 Electrician is 750 NOK/hour
+
+Image: https://www.nti-audio.com/en/applications/noise-measurement/unattended-monitoring
 :::
+
+## Wireless Sensor Networks
+
+- Wide and dense coverage wanted
+- Sensors need to be low-cost
+- **Opportunity**: Wireless reduces costs
+- **Challenge**: Power consumption
+
 
 ## Environmental Sound Classification
 
-`TODO: define the task`
+> Given an audio signal of environmental sounds,
+> determine which class it belongs to
 
-Given a sound
+* Widely researched. 1000 hits on Google Scholar
+* Datasets. Urbansound8k (10 classes), ESC-50, AudioSet (632 classes)
+* 2017: Human-level performance on ESC-50
 
 ::: notes
 
-* Widely researched. 1000 hits on Google Scholar
-* 2017: Human-level performance (ESC-50 dataset)
+https://github.com/karoldvl/ESC-50
 
 :::
 
-## Data Transmission
+## Architecture
 
 ![](../report/img/sensornetworks.png){width=100%}
 
 ## Microcontroller 
 
-STM32L476
-
 ![](../report/img/sensortile-annotated.jpg){width=100%}
 
 ::: notes
+
+STM32L476
 
 ARM Cortex M4F
 Hardware floating-point unit (FPU)
@@ -95,35 +137,53 @@ DSP SIMD instructions
 
 :::
 
-## Model constraints
+## Model requirements
 
-`TODO: list constraints`
+With 50% of STM32L476 capacity:
+
+* 4.5 M MACC/second
+* 64 kB RAM
+* 512 kB FLASH memory
 
 ::: notes
 
-- Training and inference are independent implementations. Have to be in sync
+* RAM: 1000x 64 MB
+* PROGMEM: 1000x 512 MB
+* CPU: 1000x 5 GFLOPS
+* GPU: 1000'000X 5 TFLOPS
 
 :::
 
 
-
 # Existing work
-
-
-## Audio Classification state-of-the-art
 
 - Convolutional Neural Networks dominate
 - Mel-spectrogram input standard
-- End2end models (raw audio input) research very active
+- End2end models: getting close in accuracy
+- Techniques come from image classification
+- "Edge ML" focused on mobile-phone class HW
+- "Tiny ML" (sensors) just starting
+
+::: notes
+
+* Efficient Keyword-Spotting
+* Efficient (image) CNNs
+* Efficient ESC-CNN
+
+ESC-CNN
+
+* 23 papers reviewed in detail
+* 10 referenced in thesis
+* Only 4 consider computational efficiency
+
+:::
 
 
-## Mel-spectrogram
-
-![](../report/img/spectrograms.svg){width=100%}
-
-## Existing Urbansound methods
+## Urbansound8k methods
 
 ![](../report/plots/urbansound8k-existing-models-logmel.png){width=100%}
+
+eGRU: running on ARM Cortex-M0 microcontroller, accuracy 61% with **non-standard** evaluation
 
 ::: notes
 
@@ -131,13 +191,13 @@ Assuming no overlap. Most models use very high overlap, 100X higher compute
 
 :::
 
-## Depthwise-separable convolution
+## Depthwise-separable
 
-MobileNet, "Hello Edge"
+MobileNet, "Hello Edge", AclNet
 
 ![](../report/img/depthwise-separable-convolution.png){width=100%}
  
-## Spatially-separable convolution
+## Spatially-separable
 
 EffNet, LD-CNN
 
@@ -146,8 +206,6 @@ EffNet, LD-CNN
 
 
 # Materials
-
-## Overview
 
 - Dataset: Urbansound8k
 - Hardware: STM32L476 SensorTile
@@ -212,6 +270,10 @@ Standard procedure for Urbansound8k
 - 10-fold cross-validation, predefined
 - Metric: Accuracy
 
+## Pipeline
+
+![](../report/img/classification-pipeline.png){max-height=100%}
+
 ## Preprocessing
 
 - Convert to log-Mel-spectrogram
@@ -225,8 +287,9 @@ Standard procedure for Urbansound8k
 
 ## Training
 
-- NVidia GTX2060 GPU 6 GB
+- NVidia RTX2060 GPU 6 GB
 - 10 models x 10 folds = 100 training jobs
+- 100 epochs
 - 3 jobs in parallel
 - 36 hours total
 
@@ -244,9 +307,8 @@ Standard procedure for Urbansound8k
 
 For each fold of each model
 
-- Select best model based on validation accuracy
-- Calculate accuracy on test set
-- Calculated accuracy for foreground,background 
+1. Select best model based on validation accuracy
+2. Calculate accuracy on test set
 
 For each model
 
@@ -262,10 +324,13 @@ For each model
 
 - Baseline relative to SB-CNN and LD-CNN is down from 79% to 73%
 Expected because poorer input representation.
-Fewer 
-
+Much lower overlap 
 
 :::
+
+## List of results
+
+![](img/results.png){width=100%}
 
 ## Performance vs compute
 
@@ -282,9 +347,11 @@ Fewer
 
 ## Spectrogram processing
 
-* Model: Stride-DS-24 (60 mels, 1024 FFT, 22 kHz): *81 milliseconds*
+Mel-spectrogram preprocessing<br/>(30 mels, 1024 FFT, 16 kHz)<br/>**60** milliseconds
 
-* Preprocessing: mel-spectrogram (30 mels, 1024 FFT, 16 kHz): *60 milliseconds*
+
+Stride-DS-24 model<br/>(60 mels, 1024 FFT, 22 kHz)<br/>**81** milliseconds
+
 
 ::: notes
 
@@ -295,14 +362,17 @@ Fewer
 
 :::
 
-## Confusion matrix
+## Confusion
 
-![](../report/results/confusion_test.png){width=100%}
+![](../report/results/confusion_test.png){height=100%}
 
 ## Conclusions
 
-`TODO: list conclusions`
-
+- Best architecture: Depthwise-Separable convolutions with striding
+- Best performance: 70.9% mean accuracy, under 20% CPU
+- Highest reported Urbansound8k on microcontroller (over eGRU 62%)
+- Spectrogram preprocessing becoming a bottleneck
+- Feasible to perform ESC on microcontroller
 
 
 # Demo
@@ -324,7 +394,13 @@ Model quantization
 Stronger training process 
 
 - Data Augmentation. *Mixup*, *SpecAugment*
-- Transfer Learning on more data. *AudioSet* 
+- Transfer Learning on more data. *AudioSet*
+
+Evaluate 16 kHz, 30 mels
+
+:::
+EnvNet-v2 got 78.3% on Urbansound8k with 16 kHz
+:::
 
 ## Practical challenges
 
@@ -348,7 +424,7 @@ Sensor Systems for Noise Monitoring
 ## Summary
 
 - Noise pollution is a growing problem
-- Wireless Sensor Networks used to quantify
+- Wireless Sensor Networks can used to quantify
 - On-sensor classification desirable for power/cost and privacy
 - Thorough literature review on efficient CNN and ESC
 - Methods. Follows established practices for ESC
@@ -435,6 +511,10 @@ eased finding suitable model parameters
 
 # MISC
 
+## Mel-spectrogram
+
+![](../report/img/spectrograms.svg)
+
 ## 2D-convolution
 
 ![](../report/img/convolution-2d.png){width=100%}
@@ -454,3 +534,6 @@ eased finding suitable model parameters
 ## Dropout location
 
 ![](img/fail-dropout.png)
+
+
+

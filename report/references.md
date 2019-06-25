@@ -388,6 +388,22 @@ Increased accuracy by 4%, from 78% to 82% on
 DCASE 2016, acoustic scene classification
 
 
+### End-to-End Environmental Sound Classification using a 1D Convolutional Neural Network
+https://arxiv.org/abs/1904.08990v1
+Sajjad Abdoli, Patrick Cardinal, Alessandro Lameiras Koerich
+April 2018
+
+Raw audio input
+Gammatone initalization
+!! Claims 89% mean accuracy on Urbansound8k
+! no data augmentation
+Best model 500k parameters, 4 second window
+Also tested 2, 1, 0.5 second windows, 80%+ perf
+0.5 second 116k parameters.
+50-75% overlap
+
+
+
 ### Not All Ops Are Created Equal!
 https://arxiv.org/abs/1801.04326
 [@lai2018not]

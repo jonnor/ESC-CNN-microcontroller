@@ -10,3 +10,24 @@
 #soundsensing h2 {
     display: none;
 }
+
+#architecture h2 {
+    display: none;
+}
+
+#pipeline h2 {
+    display: none;
+}
+
+#confusion {
+    padding: 0px;
+}
+
+#confusion p {
+    margin: 0px;
+}
+
+#confusion h2 {
+    display: none;
+}
+

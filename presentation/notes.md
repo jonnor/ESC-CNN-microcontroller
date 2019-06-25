@@ -1,6 +1,8 @@
 
-20 minutes.
+20-30 minutes.
 20 slides?
+
+6 sections a 5 minutes 
 
 # TODO
 
