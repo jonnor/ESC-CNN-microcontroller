@@ -11,9 +11,9 @@
 
 # Errata
 
-Results. Missing in diagram
-TODO: Show why
-
+- Fig 5.1. Missing DS-Strided-24
+- Fig 5.1. No-information-rate not taking class-imbalance into account
+- Fig 2.10. Labels EffNet and ShuffleNet swapped
 
 # Scope
 
@@ -48,6 +48,24 @@ Two independent implementations. Train/inference. Have to be in sync
 - Recognized by Forskningsraadet
 - Recognized by Justin/Emanuel
 
+
+# Demo video
+
+TODO
+
+- Flash firmware onto device
+- Design frontend cover paper 
+- Buy dark cardboard. A3
+- Print white A4 with design on
+- Implement colors to match paper
+ 
+- Attach things with double-sided tape
+
+Recording
+
+- Clear table + wall
+- Camera: Laptop
+- Sound playback. Phone
 
 # Outline
 
