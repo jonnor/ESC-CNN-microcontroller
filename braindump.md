@@ -62,6 +62,9 @@ Exponential Moving Average?
 
 ## Testing
 
+Air Conditioner
+https://annotator.freesound.org/fsd/explore/%252Fm%252F025wky1/
+
 Jackhammer
 https://annotator.freesound.org/fsd/explore/%252Fm%252F03p19w/
 https://freesound.org/people/Mark_Ian/sounds/131918/
@@ -70,8 +73,13 @@ Dog bark
 https://annotator.freesound.org/fsd/explore/%252Fm%252F0bt9lr/
 http://freesound.org/s/365053
 
+Children Playing
+https://annotator.freesound.org/fsd/explore/%252Ft%252Fdd00013/
+https://freesound.org/people/odilonmarcenaro/sounds/237022/
 
-
+Siren
+https://annotator.freesound.org/fsd/explore/%252Fm%252F04qvtq/
+https://freesound.org/people/dobroide/sounds/94636/
 
 ## Kubernetes
 
