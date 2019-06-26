@@ -385,9 +385,8 @@ Stride-DS-24 model<br/>(60 mels, 1024 FFT, 22 kHz)<br/>**81** milliseconds
 
 ## Demo video
 
-`TODO: add inline or link`
-
-
+<video src="demo.mp4" type="video/mp4" controls/>
+</video>
 
 # Next steps
 
