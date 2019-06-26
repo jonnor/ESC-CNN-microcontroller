@@ -1,11 +1,17 @@
 
 ---
-title: Environmental Sound Classification on Microcontrollers using Convolutional Neural Networks
 author: Jon Nordby <jononor@gmail.com>
 date: June 26, 2019
 margin: 0
 css: style.css
+pagetitle: 'ss'
 ---
+
+# Intro { data-state="intro" data-background="img/cover.png" }
+
+<!--
+### Environmental Sound Classification on Microcontrollers using Convolutional Neural Networks
+-->
 
 # Introduction
 
@@ -432,9 +438,8 @@ Sensor Systems for Noise Monitoring
 - Demonstrated working in a practical test
 - Basis for a new company from NMBU Data Science
 
-# Questions?
+# Questions? { data-state="questions" data-background="img/cover.png" }
 
-`TODO: add project image`
 
 # BONUS
 
@@ -498,16 +503,12 @@ eased finding suitable model parameters
 <!--
 ## Publishing
 
+MAYBE: add quote or teaser
+
 - Planning a paper submission to journal/conference
 - Have contacted Salamon, Bello
 -->
 
-## Working method
-
-- Independent study Audio Classification. DAT390
-- DCASE2018 conference
-- Literature review. Summarized in report
-- Experiments phase. Tried large amount of different classifiers
 
 # MISC
 
