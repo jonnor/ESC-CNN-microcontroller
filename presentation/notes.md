@@ -7,19 +7,8 @@
 # TODO
 
 - Go through presentation once
-- Make frontpage image
-- Add remaining images
 - Add notes to all slides
 
-- Make demo video
-- Make sure all findings covered
-- Check all Summary points justified
-
-## Demo video
-
-- Flash firmware onto device
-- Implement colors to match paper
-- Record it
 
 # Scope
 

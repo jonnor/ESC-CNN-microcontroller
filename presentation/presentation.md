@@ -87,6 +87,21 @@ Measures the noise level continiously
 
 ::: notes
 
+Need many of them
+
+Expensive
+
+:::
+
+## Wireless Sensor Networks
+
+- Wide and dense coverage wanted
+- Sensors need to be low-cost
+- **Opportunity**: Wireless reduces costs
+- **Challenge**: Power consumption
+
+::: notes
+
 * No network cabling, no power cabling
 * No site infrastructure needed
 * Less invasive
@@ -98,14 +113,6 @@ Electrician is 750 NOK/hour
 
 Image: https://www.nti-audio.com/en/applications/noise-measurement/unattended-monitoring
 :::
-
-## Wireless Sensor Networks
-
-- Wide and dense coverage wanted
-- Sensors need to be low-cost
-- **Opportunity**: Wireless reduces costs
-- **Challenge**: Power consumption
-
 
 ## Environmental Sound Classification
 
@@ -203,6 +210,15 @@ MobileNet, "Hello Edge", AclNet
 
 ![](../report/img/depthwise-separable-convolution.png){width=100%}
  
+::: notes
+
+* Much fewer operations
+* Less expressive 
+
+3x3, 64 filters - 7.5x speedup
+
+:::
+
 ## Spatially-separable
 
 EffNet, LD-CNN
@@ -216,13 +232,25 @@ EffNet, LD-CNN
 - Dataset: Urbansound8k
 - Hardware: STM32L476 SensorTile
 - Inference framework: X-CUBE-AI
-- Models: CNN, 11 variations
+- Models: CNN, 10 variations
 - Training: Keras+Tensorflow
 
 ## Urbansound8k 
 
 ![](../report/plots/urbansound8k-examples.png){width=100%}
 
+::: notes 
+
+Classes from an urban sound taxonomy,
+based on noise complains in New York city
+
+Most sounds around 4 seconds. Some classes around 1 second
+
+Foreground/background
+
+
+
+:::
 
 ## X-CUBE-AI
 
@@ -248,10 +276,29 @@ Based on SB-CNN (Salamon+Bello, 2016)
 ![](../report/img/models.svg){height=100%}
 
 
+::: notes
+
+Baseline from SB-CNN
+
+Few modifications
+
+* Uses smaller input feature representation
+* Reduced downsample factor to accommodate
+
+CONV = entry point for trying different convolution operators
+
+:::
+
 ## Convolution options
 
-`TODO: image of different convolutions blocks`
+- Standard Convolution
+- Depthwise-Separable Convolution
+- Bottleneck (Bottleneck PW, Depthwise-Separable)
+- EffNet (Bottleneck, Spatial Separable)
 
+<!--
+`TODO: image of different convolutions blocks`
+-->
 
 ## All models
 
@@ -283,13 +330,9 @@ Standard procedure for Urbansound8k
 ## Preprocessing
 
 - Convert to log-Mel-spectrogram
-- 22 kHz, 60 mels, 1024 bin FFT, 31 frame window (720 ms)
+- 22 kHz, 60 mels, 1024 bin FFT, 31 frames (720 ms)
 - Time-stretching and Pitch-shifting data augmentation
 - 12 variations per sample
-
-<!--
-![](../report/results/training-settings.png)
--->
 
 ## Training
 
@@ -334,9 +377,6 @@ Much lower overlap
 
 :::
 
-## List of results
-
-![](img/results.png){width=100%}
 
 ## Performance vs compute
 
@@ -350,6 +390,10 @@ Much lower overlap
 - Practical speedup not linear with MACC
 
 :::
+
+## List of results
+
+![](img/results.png){width=100%}
 
 ## Spectrogram processing
 
@@ -511,9 +555,22 @@ MAYBE: add quote or teaser
 
 # MISC
 
+## Errata
+
+- Fig 5.1. DS-Strided-24 result is missing
+- Fig 5.1. No-information-rate should be 11.5% instead of 10%.
+Did not take class-imbalance into account
+- Fig 2.10. Labels EffNet and ShuffleNet swapped
+- Fig 5.3. Missing description of model used. Uses Stride-DS-24
+- Table 4.1. Nesterov momentum shows NaN. Should be 0.9
+
 ## Mel-spectrogram
 
 ![](../report/img/spectrograms.svg)
+
+## Training settings
+
+![](../report/results/training-settings.png)
 
 ## 2D-convolution
 
