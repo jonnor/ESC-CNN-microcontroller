@@ -3,11 +3,6 @@
 
 ## After report
 
-Demo video
-
-- Record it
-- Publish it
-
 Dissemination
 
 - Image of overall project/system
@@ -24,5 +19,7 @@ Experiment
 
 - Test 16kHz with 30 mels
 - Use multi-instance learning. Get bigger batches and improve GPU utilization
+- Do hyperparameter optimization per model
+- Double-check reproduction of SB-CNN results
 - Improve Data Augmentation
 
