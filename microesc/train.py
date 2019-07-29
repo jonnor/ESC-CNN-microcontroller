@@ -132,7 +132,7 @@ def build_multi_instance(base, windows=6, bands=32, frames=72, channels=1):
 
 
 def train_model(out_dir, fold, builder,
-                feature_dir, settings):
+                feature_dir, settings, name):
     """Train a single model"""    
 
     frame_samples = settings['hop_length']
@@ -158,6 +158,9 @@ def train_model(out_dir, fold, builder,
     checkpoint = keras.callbacks.ModelCheckpoint(model_path, monitor='val_acc', mode='max',
                                          period=1, verbose=1, save_best_only=False)
 
+    tensorboard = keras.callbacks.TensorBoard(log_dir=f'./logs/{name}', histogram_freq=0,
+                          write_graph=True, write_images=False)
+
     def voted_score(epoch, logs):
         d = {
             'voted_val_acc': logs['val_acc'], # XXX: legacy compat
@@ -170,7 +173,7 @@ def train_model(out_dir, fold, builder,
     train_gen = generator(fold[0], augment=False) # FIXME: enable augmentation
     val_gen = generator(fold[1], augment=False)
 
-    callbacks_list = [checkpoint, log]
+    callbacks_list = [checkpoint, log, tensorboard]
     hist = model.fit_generator(train_gen,
                         validation_data=val_gen,
                         callbacks=callbacks_list,
@@ -302,7 +305,7 @@ def main():
     h = train_model(output_dir, fold_data,
                       builder=build_model,
                       feature_dir = feature_dir,
-                      settings=exsettings)
+                      settings=exsettings, name=name)
 
 
 
