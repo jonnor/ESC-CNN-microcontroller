@@ -59,18 +59,6 @@ def compute_mels(y, settings):
     return mels
 
 
-def sample_windows(length, frame_samples, window_frames, overlap=0.5, start=0):
-    """Split @samples into a number of windows of samples
-    with length @frame_samples * @window_frames
-    """
-
-    ws = frame_samples * window_frames
-    while start < length:
-        end = min(start + ws, length)
-        yield start, end
-        start += (ws * (1-overlap))
-
-
 def features_url(settings, base=default_base_url):
     id = settings_id(settings)
     ext = '.zip'  
@@ -106,36 +94,17 @@ def maybe_download(settings, workdir):
     return feature_dir
 
 
-def load_sample(sample, settings, feature_dir, window_frames,
-                start_time=None, augment=None, normalize='meanstd'):
+def extract_window(inmels, settings, start_time, normalize):
+
     n_mels = settings['n_mels']
     sample_rate = settings['samplerate']
     hop_length = settings['hop_length']
+    window_frames = settings['frames']
 
-    aug = None
-    if augment and settings['augmentations'] > 0:
-        aug = numpy.random.randint(-1, settings['augmentations'])
-        if aug == -1:
-            aug = None
-
-    # Load precomputed features
-    folder = os.path.join(feature_dir, settings_id(settings))
-    path = feature_path(sample, out_folder=folder, augmentation=aug)
-    mels = numpy.load(path)['arr_0']
-    assert mels.shape[0] == n_mels, mels.shape
-
-    if start_time is None:
-        # Sample a window in time randomly
-        min_start = max(0, mels.shape[1]-window_frames)
-        if min_start == 0:
-            start = 0
-        else:
-            start = numpy.random.randint(0, min_start)
-    else:
-        start = int(start_time * (sample_rate / hop_length))
-
+    start = int(start_time * (sample_rate / hop_length))
     end = start + window_frames
-    mels = mels[:, start:end]
+    #print('s', start, end, inmels.shape[1], end-start/inmels.shape[1])
+    mels = inmels[:, start:end]
 
     # Normalize the window
     if mels.shape[1] > 0:
@@ -149,40 +118,59 @@ def load_sample(sample, settings, feature_dir, window_frames,
         else:
             mels = librosa.core.power_to_db(mels, top_db=80, ref=0.0)
     else:
-        print('Warning: Sample {} with start {} has 0 length'.format(sample, start_time))
+        print('Warning: Sample {} with start {} has 0 length'.format(inmels.shape, start_time))
 
     # Pad to standard size
-    if window_frames is None:
-        padded = mels
-    else:
-        padded = numpy.full((n_mels, window_frames), 0.0, dtype=float)
-        inp = mels[:, 0:min(window_frames, mels.shape[1])]
-        padded[:, 0:inp.shape[1]] = inp
+    padded = numpy.full((n_mels, window_frames), 0.0, dtype=float)
+    inp = mels[:, 0:min(window_frames, mels.shape[1])]
+    padded[:, 0:inp.shape[1]] = inp
 
     # add channel dimension
     data = numpy.expand_dims(padded, -1)
     return data
 
 
-Sample = collections.namedtuple('Sample', 'start end fold slice_file_name')
+def load_sample(sample, exsettings, feature_dir,
+                overlap=0, start=0, augmentation=None, normalize='meanstd'):
 
-def load_windows(sample, settings, loader, overlap, start=0):
-    sample_rate = settings['samplerate']
-    frame_samples = settings['hop_length']
-    window_frames = settings['frames']
+    n_mels = exsettings['n_mels']
+    f_settings = settings(exsettings)
+
+    # Load precomputed features
+    folder = os.path.join(feature_dir, settings_id(f_settings))
+    path = feature_path(sample, out_folder=folder, augmentation=augmentation)
+    mels = numpy.load(path)['arr_0']
+    assert mels.shape[0] == n_mels, mels.shape
+
+    sample_rate = exsettings['samplerate']
+    frame_samples = exsettings['hop_length']
+    window_frames = exsettings['frames']
+
+    # augmentations may change the sample duration
+    duration = mels.shape[1] * frame_samples/sample_rate
+
+    # cut into windows, and normalized
+    window_length = ((frame_samples * window_frames) / sample_rate)
+    hop_length = (1-overlap) * window_length
+    n_windows = int(numpy.ceil(4.0 / hop_length))
+
+    starts = [ start + (i*hop_length) for i in range(0, n_windows) ]
+    if duration < window_length:
+        # make sure short files have at least one window
+        starts = [ starts[0] ]
+    else:
+        starts = [ s for s in starts if s < (duration-(hop_length/2)) ]
 
     windows = []
-
-    duration = sample.end - sample.start
-    length = int(sample_rate * duration)
-
-    for win in sample_windows(length, frame_samples, window_frames, overlap=overlap, start=start):
-        chunk = Sample(start=win[0]/sample_rate,
-                       end=win[1]/sample_rate,
-                       fold=sample.fold,
-                       slice_file_name=sample.slice_file_name)    
-        d = loader(chunk)
+    for s in starts:
+        d = extract_window(mels, exsettings, s, normalize=normalize)
         windows.append(d)
+    d = numpy.stack(windows)
+
+    # single numpy array, zero-padded
+    s = (n_windows, n_mels, window_frames, 1)
+    windows = numpy.zeros(shape=s)
+    windows[:d.shape[0], :, :, :] = d
 
     return windows
 

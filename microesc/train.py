@@ -32,46 +32,44 @@ class Generator(keras.utils.Sequence):
         self.feature_settings = features.settings(settings)
         self.settings = settings
 
-    def _load(self, sample):
-        def load_chunk(chunk):
-            return features.load_sample(chunk,
-                            self.feature_settings,
-                            feature_dir=self.feature_dir,
-                            start_time=chunk.start,
-                            window_frames=self.settings['frames'],
-                            augment=self.augment)
-
+    def _load(self, sample, augmentation=None):
         # FIXME: use time-shifting augmentation, randomize starts
-        wins = features.load_windows(sample,
+
+        windows = features.load_sample(sample,
             self.settings,
-            loader=load_chunk,
+            feature_dir=self.feature_dir,
+            augmentation=augmentation,
             overlap=self.settings['voting_overlap'],
             start=0)
-
-        d = numpy.stack(wins)
-        s = (6, d.shape[1], d.shape[2], d.shape[3])
-        windows = numpy.zeros(shape=s)
-        windows[:d.shape[0], :, :, :] = d
 
         #print('lo', len(wins), d.shape, windows.shape)
         return windows
 
     def __len__(self):
-        np = numpy
-        return int(np.ceil(len(self.x) / float(self.batch_size))) * self.n_augmentations
+        # FIXME: make sure to include all data, not using floor
+        sample_batches = int(numpy.floor(len(self.x) / float(self.batch_size)))
+        augmented = sample_batches * self.n_augmentations
+        return augmented
     
     def __getitem__(self, idx):
-        # FIXME: take augmentation into account
-        from_idx = idx * self.batch_size
-        to_idx = (idx + 1) * self.batch_size
-        #print('b', from_idx, to_idx)
+        # take augmentation into account
+        aug_idx = idx % self.n_augmentations 
+        sample_idx = idx // self.n_augmentations
 
+        # select data
+        from_idx = sample_idx * self.batch_size
+        to_idx = (sample_idx + 1) * self.batch_size
         X = self.x.iloc[from_idx:to_idx]
         y = self.y.iloc[from_idx:to_idx]
 
-        #print('xx', X.shape, y.shape)
+        assert X.shape[0] == self.batch_size, (X.shape, self.batch_size, from_idx)
+        assert y.shape[0] == self.batch_size, (y.shape)
 
-        data = [ self._load(d) for _, d in X.iterrows() ]
+        #print('xx', X.shape, y.shape)
+        if not self.augment:
+            aug_idx = None
+
+        data = [ self._load(d, augmentation=aug_idx) for _, d in X.iterrows() ]
         y = keras.utils.to_categorical(y, num_classes=self.n_classes)
         batch = (numpy.stack(data), numpy.array(y))
         #print('x', batch[0].shape)
@@ -158,8 +156,9 @@ def train_model(out_dir, fold, builder,
     checkpoint = keras.callbacks.ModelCheckpoint(model_path, monitor='val_acc', mode='max',
                                          period=1, verbose=1, save_best_only=False)
 
-    tensorboard = keras.callbacks.TensorBoard(log_dir=f'./logs/{name}', histogram_freq=0,
-                          write_graph=True, write_images=False)
+    tensorboard = keras.callbacks.TensorBoard(log_dir=f'./logs/{name}',
+                            histogram_freq=0, update_freq=1000,
+                            write_graph=True, write_images=False)
 
     def voted_score(epoch, logs):
         d = {
@@ -170,7 +169,7 @@ def train_model(out_dir, fold, builder,
     log_path = os.path.join(out_dir, 'train.csv')
     log = LogCallback(log_path, voted_score)
 
-    train_gen = generator(fold[0], augment=False) # FIXME: enable augmentation
+    train_gen = generator(fold[0], augment=True)
     val_gen = generator(fold[1], augment=False)
 
     callbacks_list = [checkpoint, log, tensorboard]
