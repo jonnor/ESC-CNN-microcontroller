@@ -92,7 +92,7 @@ WHO has estimated that in Europe 1.6 million healthy life years (Disability-Adju
 are lost annually due to noise pollution[@WHONoiseBurden2018].
 This makes noise pollution the second environmental cause of health problems in Europe, after air pollution.
 
-![Health impacts of noise at different severity levels [@NoiseStressConcept] \label{figure:sensornetworks-coding}](./img/noiseseverity.png){short-caption="Health impacts of noise at different severity levels" width=50%}
+![Health impacts of noise at different severity levels [@NoiseStressConcept] \label{figure:noiseseverity}](./img/noiseseverity.png){short-caption="Health impacts of noise at different severity levels" width=50%}
 
 In the EU environmental noise is regulated by Environmental Noise Directive (2002/49/EC)[@EuNoiseDirective].
 The purpose of the directive is to:
