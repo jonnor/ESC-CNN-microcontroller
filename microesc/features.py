@@ -148,6 +148,7 @@ def load_sample(sample, exsettings, feature_dir,
 
     # augmentations may change the sample duration
     duration = mels.shape[1] * frame_samples/sample_rate
+    duration -= start
 
     # cut into windows, and normalized
     window_length = ((frame_samples * window_frames) / sample_rate)

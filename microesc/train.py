@@ -33,16 +33,22 @@ class Generator(keras.utils.Sequence):
         self.settings = settings
 
     def _load(self, sample, augmentation=None):
-        # FIXME: use time-shifting augmentation, randomize starts
+
+        # Time-shift augmentation, randomize starts
+        sample_rate = self.settings['samplerate']
+        frame_samples = self.settings['hop_length']
+        window_frames = self.settings['frames']
+        dur = sample.end - sample.start
+        window_length = ((frame_samples * window_frames) / sample_rate)
+        start = numpy.random.random() * (min(window_length, dur)/2)
 
         windows = features.load_sample(sample,
             self.settings,
             feature_dir=self.feature_dir,
             augmentation=augmentation,
             overlap=self.settings['voting_overlap'],
-            start=0)
+            start=start)
 
-        #print('lo', len(wins), d.shape, windows.shape)
         return windows
 
     def __len__(self):
