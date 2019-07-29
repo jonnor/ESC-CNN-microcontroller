@@ -40,7 +40,11 @@ class Generator(keras.utils.Sequence):
         window_frames = self.settings['frames']
         dur = sample.end - sample.start
         window_length = ((frame_samples * window_frames) / sample_rate)
-        start = numpy.random.random() * (min(window_length, dur)/2)
+
+        if self.augment:
+            start = numpy.random.random() * (min(window_length, dur)/2)
+        else:
+            start = 0
 
         windows = features.load_sample(sample,
             self.settings,
@@ -48,6 +52,10 @@ class Generator(keras.utils.Sequence):
             augmentation=augmentation,
             overlap=self.settings['voting_overlap'],
             start=start)
+
+        #no = numpy.random.randint(0, 100)
+        #name = sample.slice_file_name.replace('.wav', '.npy')
+        #numpy.save(f'features/{name}', windows)
 
         return windows
 
@@ -182,7 +190,10 @@ def train_model(out_dir, fold, builder,
     hist = model.fit_generator(train_gen,
                         validation_data=val_gen,
                         callbacks=callbacks_list,
-                        epochs=epochs, verbose=1, workers=1)
+                        epochs=epochs,
+                        shuffle=True,
+                        verbose=1,
+                        workers=1)
 
     df = history_dataframe(hist)
     history_path = os.path.join(out_dir, 'history.csv')
