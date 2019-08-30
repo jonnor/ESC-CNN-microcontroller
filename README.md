@@ -18,6 +18,21 @@ Did not take class-imbalance into account
 - Fig 5.3. Missing description of model used. Uses Stride-DS-24
 - Table 4.1. Nesterov momentum shows NaN. Should be 0.9
 
+## Citing
+
+You can use the following BibTeX entry
+
+```bibtex
+@mastersthesis{esc_micro_cnn_nordby2019,
+    title={Environmental Sound Classification on Microcontrollers using Convolutional Neural Networks},
+    author={Jon Nordby},
+    year=2019,
+    month=5,
+    school={Norwegian University of Life Sciences},
+    url={http://hdl.handle.net/11250/2611624}
+}
+```
+
 ## Keywords
 
     Wireless Sensor Networks, Embedded Systems
