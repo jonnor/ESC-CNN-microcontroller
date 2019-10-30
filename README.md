@@ -76,6 +76,8 @@ for noise monitoring with on-edge noise source classification.
 
 ## Run experiments
 
+### Setting up
+
 Install dependencies
 
     pip install -r requirements.txt
@@ -83,6 +85,13 @@ Install dependencies
 Preprocess audio files into features
 
     python3 preprocess.py
+
+Check that the environment is working.
+This will run training process, but only for a few minutes.
+
+    python3 jobs.py --check
+
+### Running
 
 Train the models
 
