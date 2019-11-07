@@ -8,7 +8,7 @@ import pandas
 
 here = os.path.dirname(__file__)
 
-default_path = os.path.join(here, '../../data/UrbanSound8K/')
+default_path = os.path.join(here, '../data/UrbanSound8K/')
 
 classes = {
     'car_horn': 1,
