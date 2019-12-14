@@ -3,6 +3,7 @@ import os.path
 import math
 import shutil
 import sys
+import time
 
 import librosa
 import numpy
@@ -28,41 +29,52 @@ def augmentations(audio, sr):
 
     return out
 
+def compute(inp, outp, settings, force):
+    sr = settings['samplerate']
+
+    _lazy_y = None
+    def load():
+        nonlocal _lazy_y
+        if _lazy_y is None:
+            _lazy_y, _sr = librosa.load(inp, sr=sr)
+            assert _sr == sr, _sr
+        return _lazy_y
+
+    if not os.path.exists(outp) or force:
+        start_time = time.time()
+        y = load()
+        loaded_time = time.time()
+        f = features.compute_mels(y, settings)
+        computed_time = time.time()
+        numpy.savez(outp, f)
+        saved_time = time.time()
+
+        #import pandas
+        #times = pandas.Series([start_time, loaded_time, computed_time, saved_time])
+        #print(times.diff(1))
+
+
+    if settings['augmentations']:
+
+        paths = [ outp.replace('.npz', '.aug{}.npz'.format(aug)) for aug in range(12) ]
+        exists = [ os.path.exists(p) for p in paths ]
+        if not all(exists) or force:
+            y = load()
+            augmented = augmentations(y, sr).values()
+            assert settings['augmentations'] == 12
+            assert len(augmented) == settings['augmentations'], len(augmented)
+
+            for aug, (augdata, path) in enumerate(zip(augmented, paths)):
+                f = features.compute_mels(augdata, settings)
+                numpy.savez(path, f)
+
+    return outp
+
+
 def precompute(samples, settings, out_dir, n_jobs=8, verbose=1, force=False):
     out_folder = out_dir
 
-    def compute(inp, outp):
-        sr = settings['samplerate']
 
-        _lazy_y = None
-        def load():
-            nonlocal _lazy_y
-            if _lazy_y is None:
-                _lazy_y, _sr = librosa.load(inp, sr=sr)
-                assert _sr == sr, _sr
-            return _lazy_y
-
-        if not os.path.exists(outp) or force:
-            y = load()
-            f = features.compute_mels(y, settings)
-            numpy.savez(outp, f)
-
-        if settings['augmentations']:
-
-            paths = [ outp.replace('.npz', '.aug{}.npz'.format(aug)) for aug in range(12) ]
-            exists = [ os.path.exists(p) for p in paths ]
-            if not all(exists) or force:
-                y = load()
-                augmented = augmentations(y, sr).values()
-                assert settings['augmentations'] == 12
-                assert len(augmented) == settings['augmentations'], len(augmented)
-
-                for aug, (augdata, path) in enumerate(zip(augmented, paths)):
-                    f = features.compute_mels(augdata, settings)
-                    numpy.savez(path, f)
-
-        return outp
-    
     def job_spec(sample):
         path = urbansound8k.sample_path(sample)
         out_path = features.feature_path(sample, out_folder)
@@ -71,7 +83,7 @@ def precompute(samples, settings, out_dir, n_jobs=8, verbose=1, force=False):
         if not os.path.exists(f):
             os.makedirs(f)
 
-        return path, out_path
+        return path, out_path, settings, force
         
     jobs = [joblib.delayed(compute)(*job_spec(sample)) for _, sample in samples.iterrows()]
     feature_files = joblib.Parallel(n_jobs=n_jobs, verbose=verbose)(jobs)
