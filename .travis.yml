@@ -2,8 +2,16 @@ dist: xenial
 language: python
 python: 
   - "3.6"
+before_install:
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - source "$HOME/miniconda/etc/profile.d/conda.sh"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda info -a
 install:
-  - pip install -r requirements.txt
+  - conda env create -f environment.yml
   - wget https://github.com/jgm/pandoc/releases/download/2.7.1/pandoc-2.7.1-linux.tar.gz
   - tar -xf pandoc-2.7.1-linux.tar.gz
   - export PATH=`pwd`/pandoc-2.7.1/bin/:$PATH
