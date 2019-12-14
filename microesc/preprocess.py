@@ -90,7 +90,7 @@ def precompute(samples, settings, out_dir, n_jobs=8, verbose=1, force=False):
 
 
 
-def parse(args):
+def parse():
     import argparse
     parser = argparse.ArgumentParser(description='Preprocess audio into features')
 
@@ -98,19 +98,19 @@ def parse(args):
     a = parser.add_argument
 
     a('--archive', dest='archive_dir', default='',
-        help='%(default)s')
+        help='')
 
     a('--jobs', type=int, default=8,
         help='Number of parallel jobs')
     a('--force', type=bool, default=False,
         help='Always recompute features')
 
-    parsed = parser.parse_args(args)
+    parsed = parser.parse_args()
     return parsed
 
 
 def main():
-    args = parse(sys.argv[1:])
+    args = parse()
     archive = args.archive_dir
 
     urbansound8k.default_path = os.path.join(args.datasets_dir, 'UrbanSound8K/')
