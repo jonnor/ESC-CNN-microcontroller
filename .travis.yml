@@ -37,3 +37,4 @@ addons:
       - ghostscript
       - gcc-arm-none-eabi
       - libnewlib-arm-none-eabi
+      - librsvg2-bin
