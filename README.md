@@ -78,9 +78,14 @@ for noise monitoring with on-edge noise source classification.
 
 ### Setting up
 
-Install dependencies
+Recommend using [miniconda](https://conda.io/en/latest/miniconda.html) for
 
-    pip install -r requirements.txt
+    conda env create -f environment.yml
+    conda activate microesc
+
+As an altenative, one can use pip
+
+    #pip install -r requirements.txt
 
 Preprocess audio files into features
 
