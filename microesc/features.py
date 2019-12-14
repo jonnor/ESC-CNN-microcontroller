@@ -105,6 +105,13 @@ def maybe_download(settings, workdir):
 
     return feature_dir
 
+def load_audio(sample, settings):
+
+    path = urbansound8k.sample_path(sample)
+    y, sr = librosa.load(path, sr=settings['samplerate'])
+    audio = numpy.expand_dims(y, axis=0)
+    return audio
+
 
 def load_sample(sample, settings, feature_dir, window_frames,
                 start_time=None, augment=None, normalize='meanstd'):

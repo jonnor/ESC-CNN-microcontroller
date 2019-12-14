@@ -195,6 +195,29 @@ def load_training_data(data, fold):
     assert test_folds[0] == fold, (test_folds[0], '!=', fold) # by convention, test fold is fold number
     return train_data, val_data
 
+
+def build_melspec_model(settings, classifier):
+
+    sr = settings['samplerate']
+    shape = (1, sr * 0.72  )
+    
+    from keras.layers import Input
+    from keras import Model
+    from kapre.time_frequency import Melspectrogram
+
+    melspec = Melspectrogram(sr=sr, n_mels=settings['n_mels'], 
+              n_dft=settings['n_fft'], n_hop=settings['hop_length'], 
+              return_decibel_melgram=True,
+              trainable_kernel=False, name='melgram')
+
+    input = Input(shape=shape)
+    x = melspec(input)
+    x = classifier(x)
+    model = Model(input,x)
+    
+    return model
+
+
 def main():
     setup_keras()
 
@@ -233,14 +256,12 @@ def main():
     train_data, val_data = load_training_data(data, fold)
 
     def load(sample, validation):
-        augment = not validation and train_settings['augment'] != 0
-        d = features.load_sample(sample, feature_settings, feature_dir=feature_dir,
-                        window_frames=model_settings['frames'],
-                        augment=augment, normalize=exsettings['normalize'])
+        d = features.load_audio(sample, exsettings)
         return d
 
     def build_model():
         m = models.build(exsettings)
+        m = build_melspec_model(exsettings, m)
         return m
 
     load_model = args['load']
