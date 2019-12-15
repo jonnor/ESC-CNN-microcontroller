@@ -33,7 +33,10 @@ def dataframe_generator(X, Y, loader, batchsize=10, n_classes=10):
     while True:
         idx = numpy.random.choice(len(X), size=batchsize, replace=False)
         rows = X.iloc[idx, :].iterrows()
-        data = [ loader(d) for _, d in rows ]
+
+        #data = [ loader(d) for _, d in rows ]
+        data = numpy.zeros(shape=(400, 60, 31, 1))
+
         y = Y.iloc[idx]
         y = keras.utils.to_categorical(y, num_classes=n_classes)
         batch = (numpy.array(data), numpy.array(y))

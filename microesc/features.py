@@ -6,6 +6,7 @@ import os.path
 import urllib.request
 import zipfile
 import collections
+import time
 
 import pandas
 import numpy
@@ -108,6 +109,8 @@ def maybe_download(settings, workdir):
 
 def load_sample(sample, settings, feature_dir, window_frames,
                 start_time=None, augment=None, normalize='meanstd'):
+    start_t = time.time()    
+
     n_mels = settings['n_mels']
     sample_rate = settings['samplerate']
     hop_length = settings['hop_length']
@@ -121,7 +124,12 @@ def load_sample(sample, settings, feature_dir, window_frames,
     # Load precomputed features
     folder = os.path.join(feature_dir, settings_id(settings))
     path = feature_path(sample, out_folder=folder, augmentation=aug)
+
+
+    before_load = time.time()
     mels = numpy.load(path)['arr_0']
+    after_load = time.time()
+
     assert mels.shape[0] == n_mels, mels.shape
 
     if start_time is None:
@@ -161,6 +169,11 @@ def load_sample(sample, settings, feature_dir, window_frames,
 
     # add channel dimension
     data = numpy.expand_dims(padded, -1)
+
+    end_t = time.time()
+
+    #print(f'load feature {(end_t-start_t)*1000}, {(after_load-before_load)*1000}')
+
     return data
 
 
