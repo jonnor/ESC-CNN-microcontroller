@@ -18,6 +18,55 @@ import sklearn.metrics
 from . import features, urbansound8k, common, models, stats
 from . import settings as Settings
 
+class Generator(keras.utils.Sequence):
+
+    def __init__(self, x_set, y_set, feature_dir, settings, n_classes=10, augment=False):
+        self.x, self.y = x_set, y_set
+        self.batch_size = settings['batch']
+        self.n_classes = n_classes
+        self.augment = augment
+        self.n_augmentations = settings['augmentations'] if self.augment else 1
+        self.feature_dir = feature_dir
+        self.feature_settings = features.settings(settings)
+        self.settings = settings
+
+    def _load(self, sample, augmentation=None):
+        d = features.load_sample(sample, self.feature_settings, feature_dir=self.feature_dir,
+                        window_frames=self.settings['frames'],
+                        augment=augmentation, normalize=self.settings['normalize'])
+
+        return d
+
+    def __len__(self):
+        # FIXME: make sure to include all data, not using floor
+        sample_batches = int(numpy.floor(len(self.x) / float(self.batch_size)))
+        augmented = sample_batches * self.n_augmentations
+        return augmented
+    
+    def __getitem__(self, idx):
+        # take augmentation into account
+        aug_idx = idx % self.n_augmentations 
+        sample_idx = idx // self.n_augmentations
+
+        # select data
+        from_idx = sample_idx * self.batch_size
+        to_idx = (sample_idx + 1) * self.batch_size
+        X = self.x.iloc[from_idx:to_idx]
+        y = self.y.iloc[from_idx:to_idx]
+
+        assert X.shape[0] == self.batch_size, (X.shape, self.batch_size, from_idx)
+        assert y.shape[0] == self.batch_size, (y.shape)
+
+        #print('xx', X.shape, y.shape)
+        if not self.augment:
+            aug_idx = None
+
+        data = [ self._load(d, augmentation=aug_idx) for _, d in X.iterrows() ]
+        y = keras.utils.to_categorical(y, num_classes=self.n_classes)
+        batch = (numpy.stack(data), numpy.array(y))
+        #print('x', batch[0].shape)
+        return batch
+
 
 def dataframe_generator(X, Y, loader, batchsize=10, n_classes=10):
     """
@@ -81,8 +130,7 @@ class LogCallback(keras.callbacks.Callback):
 
 
 
-def train_model(out_dir, train, val, model,
-                loader, val_loader, settings, seed=1):
+def train_model(out_dir, train, val, model, settings, feature_dir, seed=1):
     """Train a single model"""    
 
     frame_samples = settings['hop_length']
@@ -107,6 +155,15 @@ def train_model(out_dir, train, val, model,
     checkpoint = keras.callbacks.ModelCheckpoint(model_path, monitor='val_acc', mode='max',
                                          period=1, verbose=1, save_best_only=False)
 
+    def load(sample, validation):
+        augment = not validation and train_settings['augment'] != 0
+        d = features.load_sample(sample, features.settings(settings), feature_dir=feature_dir,
+                        window_frames=settings['frames'],
+                        augment=augment, normalize=settings['normalize'])
+        return d
+
+    val_loader=functools.partial(load, validation=True)
+
     def voted_score():
         y_pred = features.predict_voted(settings, model, val,
                         loader=val_loader, method=settings['voting'], overlap=settings['voting_overlap'])
@@ -122,15 +179,23 @@ def train_model(out_dir, train, val, model,
     log = LogCallback(log_path, voted_score)
 
 
-    train_gen = dataframe_generator(train, train.classID, loader=loader, batchsize=batch_size)
-    val_gen = dataframe_generator(val, val.classID, loader=val_loader, batchsize=batch_size)
+    def generator(data, augment):
+        return Generator(data, data.classID, feature_dir=feature_dir,
+                         settings=settings, augment=augment)
+
+    train_gen = generator(train, augment=True)
+    val_gen = generator(val, augment=False)
+
 
     callbacks_list = [checkpoint, log]
     hist = model.fit_generator(train_gen, validation_data=val_gen,
                         steps_per_epoch=math.ceil(train_samples/batch_size),
                         validation_steps=math.ceil(val_samples/batch_size),
                         callbacks=callbacks_list,
-                        epochs=epochs, verbose=1)
+                        epochs=epochs,
+                        verbose=1,
+                        use_multiprocessing=False, workers=4,
+    )
 
     df = history_dataframe(hist)
     history_path = os.path.join(out_dir, 'history.csv')
@@ -232,16 +297,11 @@ def main():
     data = urbansound8k.load_dataset()
     train_data, val_data = load_training_data(data, fold)
 
-    def load(sample, validation):
-        augment = not validation and train_settings['augment'] != 0
-        d = features.load_sample(sample, feature_settings, feature_dir=feature_dir,
-                        window_frames=model_settings['frames'],
-                        augment=augment, normalize=exsettings['normalize'])
-        return d
 
     def build_model():
         m = models.build(exsettings)
         return m
+
 
     load_model = args['load']
     if load_model:
@@ -262,9 +322,7 @@ def main():
     print('Settings', json.dumps(exsettings))
 
     h = train_model(output_dir, train_data, val_data,
-                      model=m,
-                      loader=functools.partial(load, validation=False),
-                      val_loader=functools.partial(load, validation=True),
+                      model=m, feature_dir=feature_dir,
                       settings=exsettings)
 
 
