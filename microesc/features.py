@@ -107,7 +107,7 @@ def maybe_download(settings, workdir):
 
 
 def load_sample(sample, settings, feature_dir, window_frames,
-                start_time=None, augment=None, normalize='meanstd'):
+                start_time=None, augment=None, normalize='meanstd', data=None):
     n_mels = settings['n_mels']
     sample_rate = settings['samplerate']
     hop_length = settings['hop_length']
@@ -119,10 +119,14 @@ def load_sample(sample, settings, feature_dir, window_frames,
             aug = None
 
     # Load precomputed features
-    folder = os.path.join(feature_dir, settings_id(settings))
-    path = feature_path(sample, out_folder=folder, augmentation=aug)
-    mels = numpy.load(path)['arr_0']
-    assert mels.shape[0] == n_mels, mels.shape
+    if data is None:
+        folder = os.path.join(feature_dir, settings_id(settings))
+        folder = feature_dir
+        path = feature_path(sample, out_folder=folder, augmentation=aug)
+        mels = numpy.load(path)['arr_0']
+        assert mels.shape[0] == n_mels, mels.shape
+    else:
+        mels = data
 
     if start_time is None:
         # Sample a window in time randomly
@@ -146,6 +150,8 @@ def load_sample(sample, settings, feature_dir, window_frames,
             mels = librosa.core.power_to_db(mels, top_db=80)
             mels -= numpy.mean(mels)
             mels /= ( numpy.std(mels) + 1e-9)
+        elif normalize == 'none':
+            mels = mels
         else:
             mels = librosa.core.power_to_db(mels, top_db=80, ref=0.0)
     else:
