@@ -15,6 +15,7 @@ default_training_settings = dict(
     batch=50,
     train_samples=36000,
     val_samples=3000,
+    checkpoint_period=1,
     augment=0,
     learning_rate=0.01,
     nesterov_momentum=0.9,

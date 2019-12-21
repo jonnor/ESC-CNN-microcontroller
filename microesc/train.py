@@ -98,14 +98,14 @@ def train_model(out_dir, train, val, model,
     def top3(y_true, y_pred):
         return keras.metrics.top_k_categorical_accuracy(y_true, y_pred, k=3)
 
+    print('learning_rate', learning_rate)
     optimizer = keras.optimizers.SGD(lr=learning_rate, momentum=settings['nesterov_momentum'], nesterov=True)
     model.compile(loss='categorical_crossentropy',
                   optimizer=optimizer,
                   metrics=['accuracy'])
 
     model_path = os.path.join(out_dir, 'e{epoch:02d}-v{val_loss:.2f}.t{loss:.2f}.model.hdf5')
-    checkpoint = keras.callbacks.ModelCheckpoint(model_path, monitor='val_acc', mode='max',
-                                         period=1, verbose=1, save_best_only=False)
+
 
     def voted_score():
         y_pred = features.predict_voted(settings, model, val,
@@ -125,7 +125,13 @@ def train_model(out_dir, train, val, model,
     train_gen = dataframe_generator(train, train.classID, loader=loader, batchsize=batch_size)
     val_gen = dataframe_generator(val, val.classID, loader=val_loader, batchsize=batch_size)
 
-    callbacks_list = [checkpoint, log]
+    callbacks_list = [log]
+    checkpoint_period = settings.get('checkpoint_period', -1)
+    if checkpoint_period > 0:
+        checkpoint = keras.callbacks.ModelCheckpoint(model_path, monitor='val_acc', mode='max',
+                                             period=checkpoint_period, verbose=1, save_best_only=False)
+        callbacks_list.append(checkpoint)
+
     hist = model.fit_generator(train_gen, validation_data=val_gen,
                         steps_per_epoch=math.ceil(train_samples/batch_size),
                         validation_steps=math.ceil(val_samples/batch_size),
