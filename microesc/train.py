@@ -70,8 +70,6 @@ class LogCallback(keras.callbacks.Callback):
         self._log_file.flush() # ensure data hits disk
 
     def on_epoch_end(self, epoch, logs):
-        logs = logs.copy()
-    
         more = self.score() # uses current model
         for k, v in more.items():
             logs[k] = v
