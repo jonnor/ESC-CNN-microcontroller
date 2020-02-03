@@ -6,6 +6,8 @@ urbansound8k.py: Helper for downloading and loading the Urbansound8k dataset as 
 Copyright: Jon Nordby <jononor@gmail.com>
 License: MIT https://opensource.org/licenses/MIT
 
+Originally developed as part of https://github.com/jonnor/ESC-CNN-microcontroller
+
 The UrbanSound8K dataset is under the Creative Commons Attribution Noncommercial License (by-nc), version 3.
 """
 
