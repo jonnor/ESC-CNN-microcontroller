@@ -1,4 +1,14 @@
 
+
+"""
+urbansound8k.py: Helper for downloading and loading the Urbansound8k dataset as a Pandas DataFrame
+
+Copyright: Jon Nordby <jononor@gmail.com>
+License: MIT https://opensource.org/licenses/MIT
+
+The UrbanSound8K dataset is under the Creative Commons Attribution Noncommercial License (by-nc), version 3.
+"""
+
 import os.path
 import urllib.request
 import tarfile
