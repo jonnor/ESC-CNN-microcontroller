@@ -35,9 +35,9 @@ classes = {
 classnames = [ ni[0] for ni in sorted(classes.items(), key=lambda kv: kv[1]) ]
 
 download_urls = [
-    'https://storage.googleapis.com/urbansound8k/UrbanSound8K.tar.gz',
 	'https://zenodo.org/record/1203745/files/UrbanSound8K.tar.gz',
     'https://serv.cusp.nyu.edu/files/jsalamon/datasets/UrbanSound8K.tar.gz',
+    'https://storage.googleapis.com/urbansound8k/UrbanSound8K.tar.gz',
 ] 
 def maybe_download_dataset(workdir):
 
