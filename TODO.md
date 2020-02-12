@@ -18,7 +18,6 @@ https://community.st.com/s/topic/0TO0X0000003iUqWAI/stm32-machine-learning-ai
 Experiment
 
 - Test 16kHz with 30 mels
-- Use multi-instance learning. Get bigger batches and improve GPU utilization
 - Do hyperparameter optimization per model
 - Double-check reproduction of SB-CNN results
 - Improve Data Augmentation
