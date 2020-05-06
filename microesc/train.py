@@ -79,6 +79,24 @@ class LogCallback(keras.callbacks.Callback):
         self.write_entry(epoch, logs)
 
 
+def dump_validation_data(val_gen):
+
+    Xs = []
+    Ys = []
+
+    i = 0
+    for batch in val_gen:
+        X, y = batch
+        Xs.append(X)
+        Ys.append(y)
+        if i < 4:
+            break
+        i += 1
+
+    Xs = numpy.concatenate(Xs)
+    Ys = numpy.concatenate(Ys)
+
+    numpy.savez('test_data.npz', x_test=Xs, y_test=Ys)
 
 
 def train_model(out_dir, train, val, model,
@@ -124,6 +142,9 @@ def train_model(out_dir, train, val, model,
 
     train_gen = dataframe_generator(train, train.classID, loader=loader, batchsize=batch_size)
     val_gen = dataframe_generator(val, val.classID, loader=val_loader, batchsize=batch_size)
+
+    dump_validation_data(val_gen)
+
 
     callbacks_list = [checkpoint, log]
     hist = model.fit_generator(train_gen, validation_data=val_gen,
