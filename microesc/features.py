@@ -106,7 +106,7 @@ def maybe_download(settings, workdir):
     return feature_dir
 
 
-def load_sample(sample, settings, feature_dir, window_frames,
+def load_sample(sample, settings, feature_dir, window_frames, mels=None,
                 start_time=None, augment=None, normalize='meanstd'):
     n_mels = settings['n_mels']
     sample_rate = settings['samplerate']
@@ -119,9 +119,10 @@ def load_sample(sample, settings, feature_dir, window_frames,
             aug = None
 
     # Load precomputed features
-    folder = os.path.join(feature_dir, settings_id(settings))
-    path = feature_path(sample, out_folder=folder, augmentation=aug)
-    mels = numpy.load(path)['arr_0']
+    if mels is None:
+        folder = os.path.join(feature_dir, settings_id(settings))
+        path = feature_path(sample, out_folder=folder, augmentation=aug)
+        mels = numpy.load(path)['arr_0']
     assert mels.shape[0] == n_mels, mels.shape
 
     if start_time is None:
