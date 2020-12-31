@@ -40,7 +40,13 @@ def compute(inp, outp, settings, force):
             assert _sr == sr, _sr
         return _lazy_y
 
-    if not os.path.exists(outp) or force:
+    exists = os.path.exists(outp)
+    size = 0
+    if exists:
+        #print(os.stat(outp))
+        size = os.stat(outp).st_size
+    valid = exists and size > 0
+    if not valid or force:
         start_time = time.time()
         y = load()
         loaded_time = time.time()
