@@ -7,7 +7,7 @@ from keras.layers import Convolution2D, MaxPooling2D, SeparableConv2D
 from keras.regularizers import l2
 
 
-def build_model(frames=128, bands=128, channels=1, num_labels=10,
+def build_model(frames=128, bands=128, channels=1, n_classes=10,
                 conv_size=(5,5), conv_block='conv',
                 downsample_size=(4,2),
                 fully_connected=64,
@@ -61,7 +61,7 @@ def build_model(frames=128, bands=128, channels=1, num_labels=10,
         Activation('relu'),
 
         Dropout(dropout),
-        Dense(num_labels, kernel_regularizer=l2(0.001)),
+        Dense(n_classes, kernel_regularizer=l2(0.001)),
         Activation('softmax'),
     ]
     layers = block1 + block2 + block3 + backend
