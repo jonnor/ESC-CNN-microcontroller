@@ -3,9 +3,14 @@ import os.path
 
 import yaml
 
-def ensure_dir(path):
-    if not os.path.exists(path):
-        os.makedirs(path)
+def ensure_dir(directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+
+def ensure_dir_for_file(path):
+    directory = os.path.dirname(path)
+    ensure_dir(directory)
 
 def ensure_directories(*dirs):
     for dir in dirs:
