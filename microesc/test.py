@@ -173,6 +173,9 @@ def parse(args):
     a('--check', action='store_true', default='',
         help='Run a check pass, not actually evaluating')
 
+    a('--skip-stats', action='store_true', default='',
+        help='Do not compute on-device stats')
+
     a('--out', dest='results_dir', default='./data/results',
         help='%(default)s')
 
@@ -223,9 +226,10 @@ def main():
         layer_info.to_csv(layer_info_path)
         return pandas.Series(model_stats)
 
-    model_stats = best.groupby(level='experiment').apply(get_stats)
-    print('Model stats\n', model_stats)
-    model_stats.to_csv(os.path.join(out_dir, 'stm32stats.csv'))
+    if not args.skip_stats:
+        model_stats = best.groupby(level='experiment').apply(get_stats)
+        print('Model stats\n', model_stats)
+        model_stats.to_csv(os.path.join(out_dir, 'stm32stats.csv'))
 
     print('Testing models...')
     results = evaluate(best, folds, predictor=predict, out_dir=out_dir, dry_run=args.check)
