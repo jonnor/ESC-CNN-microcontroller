@@ -203,7 +203,8 @@ def main():
 
     def load_sample(sample):
         return features.load_sample(sample, settings, start_time=sample.start,
-                    window_frames=frames, feature_dir=args.features_dir)
+                    window_frames=frames, feature_dir=args.features_dir,
+                    normalize=exsettings['normalize'])
 
     def predict(model, data):
         return features.predict_voted(exsettings, model, data, loader=load_sample,

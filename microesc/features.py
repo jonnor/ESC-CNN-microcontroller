@@ -194,6 +194,8 @@ def predict_voted(settings, model, samples, loader, method='mean', overlap=0.5):
         windows = load_windows(sample, settings, loader, overlap=overlap)
         inputs = numpy.stack(windows)
 
+        #print(f'predict_voted {numpy.mean(inputs):.2f} {numpy.std(inputs):.2f}')
+
         predictions = model.predict(inputs)
         if method == 'mean':
             p = numpy.mean(predictions, axis=0)
