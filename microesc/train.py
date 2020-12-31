@@ -19,7 +19,7 @@ from . import features, urbansound8k, common, models, stats
 from . import settings as Settings
 
 
-def dataframe_generator(X, Y, loader, batchsize=10, n_classes=10):
+def dataframe_generator(X, Y, loader, batchsize=10, n_classes=10, random_state=1):
     """
     Keras generator for lazy-loading data based on a pandas.DataFrame
     
@@ -30,8 +30,10 @@ def dataframe_generator(X, Y, loader, batchsize=10, n_classes=10):
         
     assert len(X) == len(Y), 'X and Y must be equal length'
 
+    gen = numpy.random.RandomState(seed=random_state)
+
     while True:
-        idx = numpy.random.choice(len(X), size=batchsize, replace=False)
+        idx = gen.choice(len(X), size=batchsize, replace=False)
         rows = X.iloc[idx, :].iterrows()
         data = [ loader(d) for _, d in rows ]
         y = Y.iloc[idx]
