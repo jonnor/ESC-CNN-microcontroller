@@ -40,16 +40,18 @@ def model_table(data_path):
     
 def plot_models(data_path, figsize=(12,4), max_params=128e3, max_maccs=4.5e6):
     df = logmel_models(data_path)
-    
+    print(df)    
+
     fig, ax = plt.subplots(1, figsize=figsize)
 
     check_missing(df, 'accuracy')
     check_missing(df, 'kparams')
     check_missing(df, 'mmacc')
 
-    df.plot.scatter(x='params', y='macc_s', logx=True, logy=True, ax=ax)
+    df.plot(kind="scatter", x='params', y='macc_s', logx=True, logy=True, ax=ax, marker="x", color="black")
     ax.set_xlabel('Model parameters')
     ax.set_ylabel('MACC / second')
+    ax.grid(which="major", color='grey', alpha=0.5, linestyle='-', linewidth=1)
     
     # highlight feasible region
     feasible_x = max_params
@@ -58,7 +60,7 @@ def plot_models(data_path, figsize=(12,4), max_params=128e3, max_maccs=4.5e6):
     y = [ 0,  0, feasible_y, feasible_y ]
     ax.fill(x, y, color='green', alpha=0.5)
     
-    linestyle = dict(color='black', linewidth=0.5)
+    linestyle = dict(color='green', linewidth=1.0, linestyle="dotted")
     ax.axvline(feasible_x, **linestyle)
     ax.axhline(feasible_y, **linestyle)
     
@@ -66,10 +68,10 @@ def plot_models(data_path, figsize=(12,4), max_params=128e3, max_maccs=4.5e6):
         xy = row.params, row.macc_s
         label = "{}  {:.1f}%".format(row['name'], 100*row.accuracy) 
         ax.annotate(label, xy,
-                    xytext=(5,40), 
+                    xytext=(3,3), 
                     textcoords='offset points',
                     size=12,
-                    rotation=25,
+                    rotation=0,
                     color='darkslategrey')
     df.apply(add_labels, axis=1)
 

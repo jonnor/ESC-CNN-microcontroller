@@ -8,3 +8,4 @@ DilaConv,0.78,,,,YanChen2019,"?","log-MISSING-mel"
 Dmix-CNN-gt,0.837,0.777,837,1180,ZhichaoZhang,"pitchshift,timestretch,mixup","gammatone+delta",443,44100,1024,512,128,128
 EnvNetv2,0.783,0.691,,,Tokozume,"betweenclass","waveform"
 WSNet,0.70,,,288,Xiaojie,"?","waveform"
+Nordby2019-S24,0.709,0.680,477,45,Nordby2019,"?","logmel",0.45,22050,1024,512,31,60

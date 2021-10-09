@@ -11,7 +11,7 @@ import csv
 
 import pandas
 import numpy
-import keras
+from tensorflow import keras
 import librosa
 import sklearn.metrics
 
@@ -96,8 +96,9 @@ def train_model(out_dir, train, val, model,
     def top3(y_true, y_pred):
         return keras.metrics.top_k_categorical_accuracy(y_true, y_pred, k=3)
 
-    print('learning_rate', learning_rate)
-    optimizer = keras.optimizers.SGD(lr=learning_rate, momentum=settings['nesterov_momentum'], nesterov=True)
+    optimizer = keras.optimizers.SGD(lr=learning_rate,
+        momentum=settings['nesterov_momentum'], nesterov=True)
+
     model.compile(loss='categorical_crossentropy',
                   optimizer=optimizer,
                   metrics=['accuracy'])

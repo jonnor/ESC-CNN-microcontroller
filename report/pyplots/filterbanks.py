@@ -92,7 +92,7 @@ def plot_filterbank_gammatone(ax, fs=44100):
 def plot_filterbank_mel(ax, n_mels=32, n_fft=4097, fmin=10, fmax=22050, fs=44100):
     from pyfilterbank import melbank
     melmat, (melfreq, fftfreq) = melbank.compute_melmat(n_mels,
-                                                        fmin, fmax, num_fft_bands=4097, sample_rate=fs)
+                                                        fmin, fmax, num_fft_bands=n_fft, sample_rate=fs)
 
     ax.plot(fftfreq, 20*numpy.log10(melmat.T+1e-9))
     #ax.grid(True)
